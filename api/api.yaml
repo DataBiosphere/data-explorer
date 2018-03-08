@@ -1,0 +1,20 @@
+swagger: '2.0'
+info:
+  title: Data Explorer Service
+  description: API Service that reads from Elasticsearch.
+  license:
+    name: BSD
+    url: 'http://opensource.org/licenses/BSD-3-Clause'
+  version: '0.0.1'
+paths:
+  /facets:
+    get:
+      description: Returns facets.
+      responses:
+        200:
+          description: Facets.
+          schema:
+            type: string
+      tags:
+        # Put in facets_controller.py instead of default_controller.py.
+        - Facets

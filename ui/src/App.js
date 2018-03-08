@@ -16,6 +16,18 @@ class App extends Component {
       </div>
     );
   }
+
+  componentDidMount() {
+    fetch("/api/facets",
+    // Viewing localhost:<port> always work without credentials.
+    // On some corporate networks, viewing <hostname>:<port> triggers a
+    // redirect. Including credentials prevents a CORS error.
+    {
+        credentials: 'include'
+    })
+        .then(response => response.json())
+        .then(jsondata => console.log(jsondata))
+  }
 }
 
 export default App;

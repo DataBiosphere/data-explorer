@@ -1,0 +1,24 @@
+---
+swagger: "2.0"
+info:
+  description: "API Service that reads from Elasticsearch."
+  version: "0.0.1"
+  title: "Data Explorer Service"
+  license:
+    name: "BSD"
+    url: "http://opensource.org/licenses/BSD-3-Clause"
+paths:
+  /facets:
+    get:
+      tags:
+      - "Facets"
+      description: "Returns facets."
+      operationId: "facets_get"
+      parameters: []
+      responses:
+        200:
+          description: "Facets."
+          schema:
+            type: "string"
+      x-swagger-router-controller: "data_explorer.controllers.facets_controller"
+definitions: {}
