@@ -4,8 +4,8 @@
 latter lists only direct dependencies. To regenerate run:
 
 ```
-virtualenv /tmp/data-explorer-api
-source /tmp/data-explorer-api/bin/activate
+virtualenv ~/virtualenv/data-explorer-api
+source ~/virtualenv/data-explorer-api/bin/activate
 pip install -r requirements-to-freeze.txt
 pip freeze | sort -f > requirements.txt
 deactivate
