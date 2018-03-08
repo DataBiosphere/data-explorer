@@ -10,6 +10,8 @@ info:
 paths:
   /facets:
     get:
+      tags:
+      - "Facets"
       description: "Returns facets."
       operationId: "facets_get"
       parameters: []
@@ -18,5 +20,5 @@ paths:
           description: "Facets."
           schema:
             type: "string"
-      x-swagger-router-controller: "data_explorer.controllers.default_controller"
+      x-swagger-router-controller: "data_explorer.controllers.facets_controller"
 definitions: {}
