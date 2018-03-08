@@ -1,0 +1,26 @@
+version: '3'
+services:
+  ui:
+    build:
+      context: ui
+    volumes:
+      - ./ui:/ui
+      # See https://stackoverflow.com/a/32785014 for why this is needed.
+      - /ui/node_modules
+  api:
+    build:
+      context: api
+    ports:
+      - 8390:8390
+    environment:
+      - PATH_PREFIX=/api
+  nginx_proxy:
+    # Child services must have links named "ui", "api".
+    image: nginx
+    ports:
+      - 4400:4400
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    links:
+      - ui
+      - api
