@@ -1,6 +1,3 @@
-# Allow developers to symlink their preferred configuration.
-/docker-compose.yml
-
 *.py[cod]
 *$py.class
 build/
