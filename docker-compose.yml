@@ -24,6 +24,10 @@ services:
       - 8390:8390
     environment:
       - PATH_PREFIX=/api
+    volumes:
+      # Mount the python source so that code changes don't require rebuilding
+      # the image. Changes to requirements.txt will still require rebuilds.
+      - ./api/data_explorer:/app/data_explorer
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.2
     ports:
