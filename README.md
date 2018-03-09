@@ -4,7 +4,7 @@
 
 For local development, nginx is used to get around CORS.
 
-![Architecture overview](https://i.imgur.com/tKv8FEL.png)
+![Architecture overview](https://i.imgur.com/VU8dZlZ.png)
 
 ## Development
 
