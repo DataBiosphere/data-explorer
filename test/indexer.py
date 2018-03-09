@@ -17,6 +17,8 @@ INDEX_NAME = 'test'
 
 def init_elasticsearch():
   # Wait for Elasticsearch to come up.
+  # I had trouble getting wait_for_status to work, so just use sleep. See
+  # https://discuss.elastic.co/t/cant-get-python-client-wait-for-status-to-work/123163
   time.sleep(10)
 
   # This script is invoked from docker-compose, so use service name.
