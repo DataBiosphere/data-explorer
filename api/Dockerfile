@@ -4,6 +4,7 @@ WORKDIR /app
 ADD requirements.txt /app
 RUN pip install -r requirements.txt
 
-ADD data_explorer /app/data_explorer
+COPY data_explorer /app/data_explorer
 
-ENTRYPOINT ["gunicorn", "-b", ":8390", "data_explorer.__main__:app"]
+# --reload will restart server after code change
+ENTRYPOINT ["gunicorn", "-b", ":8390", "--reload", "data_explorer.__main__:app"]
