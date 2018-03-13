@@ -1,0 +1,4 @@
+# The first part of docker build is to upload build context to docker engine.
+# By skipping these large directories, docker build is faster.
+ui/node_modules
+.git

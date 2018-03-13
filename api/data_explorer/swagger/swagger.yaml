@@ -17,8 +17,32 @@ paths:
       parameters: []
       responses:
         200:
-          description: "Facets."
+          description: "Success"
           schema:
-            type: "string"
+            $ref: "#/definitions/FacetsResponse"
       x-swagger-router-controller: "data_explorer.controllers.facets_controller"
-definitions: {}
+definitions:
+  FacetsResponse:
+    type: "array"
+    description: "Results from a faceted search."
+    items:
+      $ref: "#/definitions/Facet"
+  Facet:
+    properties:
+      facet_name:
+        type: "string"
+      values:
+        type: "array"
+        items:
+          $ref: "#/definitions/FacetValue"
+    description: "A facet. For example, the Gender facet would include the facet name\
+      \ \"Gender\", as well as counts for all possible values.\n"
+  FacetValue:
+    properties:
+      value_name:
+        type: "string"
+        description: "Facet value name, for example, \"Male\"."
+      count:
+        type: "integer"
+        description: "Facet value count."
+    description: "A facet value, for example, \"Male\"/34 hits."

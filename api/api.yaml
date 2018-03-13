@@ -12,9 +12,37 @@ paths:
       description: Returns facets.
       responses:
         200:
-          description: Facets.
+          description: Success
           schema:
-            type: string
+            $ref: '#/definitions/FacetsResponse'
       tags:
         # Put in facets_controller.py instead of default_controller.py.
         - Facets
+definitions:
+  FacetsResponse:
+    description: Results from a faceted search.
+    type: array
+    items:
+      $ref: '#/definitions/Facet'
+  Facet:
+    description: >
+      A facet. For example, the Gender facet would include the facet name
+      "Gender", as well as counts for all possible values.
+    properties:
+      facet_name:
+        type: string
+        descrption: Facet name, for example, "Gender".
+      values:
+        type: array
+        items:
+          $ref: '#/definitions/FacetValue'
+  FacetValue:
+    description: A facet value, for example, "Male"/34 hits.
+    properties:
+      value_name:
+        type: string
+        description: Facet value name, for example, "Male".
+      count:
+        type: integer
+        description: Facet value count.
+
