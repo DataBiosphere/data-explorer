@@ -18,7 +18,6 @@ Specifically:
 
   * There must be a file named `dataset.json` that has a `name` field. This
 determines the name of the Elasticsearch index.
-  * There must be a file named `facet_fields.csv` with the `field name for indexing/UI` column filled out.
 
 ## Architecture overview
 

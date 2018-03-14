@@ -1,3 +1,6 @@
+# This Dockerfile must be run from repo root - not api/ - since config is in
+# repo root.
+
 FROM python:2
 
 WORKDIR /app
@@ -10,8 +13,6 @@ ENV PATH_PREFIX /api
 # builds.
 ENV PYTHONDONTWRITEBYTECODE 1
 
-# This Dockerfile must be run from repo root - not api/ - since config is in
-# repo root.
 COPY config/dataset.json /app/
 COPY api/data_explorer /app/data_explorer
 
