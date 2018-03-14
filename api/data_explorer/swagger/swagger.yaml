@@ -23,13 +23,19 @@ paths:
       x-swagger-router-controller: "data_explorer.controllers.facets_controller"
 definitions:
   FacetsResponse:
-    type: "array"
+    properties:
+      facets:
+        type: "array"
+        items:
+          $ref: "#/definitions/Facet"
+      count:
+        type: "integer"
+        description: "Number of entities represented by current facet selection. For\
+          \ example, this could be 40, representing 40 people.\n"
     description: "Results from a faceted search."
-    items:
-      $ref: "#/definitions/Facet"
   Facet:
     properties:
-      facet_name:
+      name:
         type: "string"
       values:
         type: "array"
@@ -39,10 +45,10 @@ definitions:
       \ \"Gender\", as well as counts for all possible values.\n"
   FacetValue:
     properties:
-      value_name:
+      name:
         type: "string"
         description: "Facet value name, for example, \"Male\"."
       count:
         type: "integer"
         description: "Facet value count."
-    description: "A facet value, for example, \"Male\"/34 hits."
+    description: "A facet value, for example, \"Male\"/34."
