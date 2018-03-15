@@ -1,5 +1,6 @@
 """Subclass of FacetedSearch for Data explorer datasets."""
 
+import jsmin
 import json
 
 from elasticsearch_dsl import FacetedSearch
@@ -8,11 +9,10 @@ from elasticsearch_dsl import TermsFacet
 
 def _get_index_name():
     """Gets index name from /app/dataset.json."""
-    # JSON doesn't support comments
-    # (https://plus.google.com/+DouglasCrockfordEsq/posts/RK8qyGVaGSr). Remove
-    # comments before parsing.
+    # Remove comments using jsmin, as recommended by JSON creator
+    # (https://plus.google.com/+DouglasCrockfordEsq/posts/RK8qyGVaGSr).
     with open('/app/dataset.json') as f:
-        dataset = json.loads('\n'.join([row for row in f.readlines() if len(row.split('//')) == 1]))
+        dataset = json.loads(jsmin.jsmin(f.read()))
         return dataset['name']
 
 
