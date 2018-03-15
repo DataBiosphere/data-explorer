@@ -60,7 +60,7 @@ TODO(melissachang): Add Javascript definitions for React.
 * Install `swagger-codegen-cli.jar`.
 ```
 # Linux
-wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O ~/swagger-codegen-cli.jar
+wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.3.1/swagger-codegen-cli-2.3.1.jar -O ~/swagger-codegen-cli.jar
 # macOS
 brew install swagger-codegen
 ```
