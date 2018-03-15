@@ -33,8 +33,6 @@ automatically implement the API, as defined in `api/api.yaml`, for the API
 server and the UI. Whenever the API is updated, follow these steps to
 update the server implementations:
 
-TODO(melissachang): Add Javascript definitions for React.
-
 * Clear out existing generated models:
     ```
     rm ui/src/api/model/*
