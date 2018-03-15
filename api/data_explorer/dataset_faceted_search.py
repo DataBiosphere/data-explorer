@@ -9,9 +9,9 @@ from elasticsearch_dsl import TermsFacet
 
 def _get_index_name():
     """Gets index name from /app/dataset.json."""
-    # Remove comments using jsmin, as recommended by JSON creator
-    # (https://plus.google.com/+DouglasCrockfordEsq/posts/RK8qyGVaGSr).
     with open('/app/dataset.json') as f:
+        # Remove comments using jsmin, as recommended by JSON creator
+        # (https://plus.google.com/+DouglasCrockfordEsq/posts/RK8qyGVaGSr).
         dataset = json.loads(jsmin.jsmin(f.read()))
         return dataset['name']
 
