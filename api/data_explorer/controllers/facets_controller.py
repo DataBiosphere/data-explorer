@@ -1,15 +1,31 @@
-import connexion
-from datetime import date, datetime
-from typing import List, Dict
-from six import iteritems
-from ..util import deserialize_date, deserialize_datetime
+from datetime import date
+import json
+
+from elasticsearch import Elasticsearch
+from flask import current_app
+
+from data_explorer.models.facet import Facet
+from data_explorer.models.facet_value import FacetValue
+from data_explorer.models.facets_response import FacetsResponse
+from ..dataset_faceted_search import DatasetFacetedSearch
 
 
 def facets_get():
     """
-    facets_get
     Returns facets.
 
-    :rtype: str
+    Returns:
+        List of Facets.
     """
-    return 'do some magic!'
+    search = DatasetFacetedSearch()
+    search.using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
+    # Need to rebuild search._s with new s.using.
+    search.__init__()
+    response = search.execute()
+    facets = []
+    for facet_name, values in response.facets.to_dict().iteritems():
+        facet_values = []
+        for name, count, _ in values:
+            facet_values.append(FacetValue(name=name, count=count))
+        facets.append(Facet(name=facet_name, values=facet_values))
+    return FacetsResponse(facets=facets, count=response._faceted_search.count())

@@ -39,6 +39,11 @@ parser.add_argument(
     type=str,
     help='Path prefix, e.g. /api, to serve from',
     default=os.environ.get('PATH_PREFIX'))
+parser.add_argument(
+    '--elasticsearch_url',
+    type=str,
+    help='Elasticsearch url, e.g. elasticsearch:9200',
+    default=os.environ.get('ELASTICSEARCH_URL'))
 
 if __name__ == '__main__':
     parser.add_argument(
@@ -53,6 +58,7 @@ else:
     args, _ = parser.parse_known_args()
 
 app = connexion.App(__name__, specification_dir='./swagger/', swagger_ui=True)
+app.app.config['ELASTICSEARCH_URL'] = args.elasticsearch_url
 if args.allow_origins:
     prefix = args.path_prefix or ''
     CORS(

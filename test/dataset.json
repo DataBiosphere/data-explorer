@@ -1,0 +1,7 @@
+{
+  // Elasticsearch index will be given this name.
+  "name": "test",
+  // Name of BigQuery field that is primary key. Elasticsearch documents will
+  // have this ID.
+  "primary_key": "n/a for test dataset"
+}
