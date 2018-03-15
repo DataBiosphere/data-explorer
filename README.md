@@ -37,10 +37,16 @@ TODO(melissachang): Add Javascript definitions for React.
 
 * Clear out existing generated models:
     ```
-    sudo rm api/data_explorer/models/*
+    rm ui/src/api/model/*
+    rm api/data_explorer/models/*
     ```
-* Regenerate both the python and Javascript definitions.
+* Regenerate Javascript and Python definitions.
     ```
+    java -jar ~/swagger-codegen-cli.jar generate \
+      -i api/api.yaml \
+      -l javascript \
+      -o ui/src/api \
+      -DuseES6=true
     java -jar ~/swagger-codegen-cli.jar generate \
       -i api/api.yaml \
       -l python-flask \

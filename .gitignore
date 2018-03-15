@@ -20,6 +20,7 @@ venv/
 
 # dependencies
 /ui/node_modules
+/ui/src/api/node_modules
 
 # IDEs and editors
 /.idea
