@@ -33,14 +33,18 @@ automatically implement the API, as defined in `api/api.yaml`, for the API
 server and the UI. Whenever the API is updated, follow these steps to
 update the server implementations:
 
-TODO(melissachang): Add Javascript definitions for React.
-
 * Clear out existing generated models:
     ```
-    sudo rm api/data_explorer/models/*
+    rm ui/src/api/model/*
+    rm api/data_explorer/models/*
     ```
-* Regenerate both the python and Javascript definitions.
+* Regenerate Javascript and Python definitions.
     ```
+    java -jar ~/swagger-codegen-cli.jar generate \
+      -i api/api.yaml \
+      -l javascript \
+      -o ui/src/api \
+      -DuseES6=true
     java -jar ~/swagger-codegen-cli.jar generate \
       -i api/api.yaml \
       -l python-flask \
@@ -54,7 +58,7 @@ TODO(melissachang): Add Javascript definitions for React.
 * Install `swagger-codegen-cli.jar`.
 ```
 # Linux
-wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.2.3/swagger-codegen-cli-2.2.3.jar -O ~/swagger-codegen-cli.jar
+wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.3.1/swagger-codegen-cli-2.3.1.jar -O ~/swagger-codegen-cli.jar
 # macOS
 brew install swagger-codegen
 ```
