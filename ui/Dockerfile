@@ -1,7 +1,7 @@
 FROM node
 
 WORKDIR /ui
-COPY package.json package-lock.json src/api /ui/
+COPY package.json package-lock.json /ui/
 # src/api contains Swagger-generated data_explorer_service. This is needed by
 # "npm install" beacuse package.json has a local dependency on
 # data_explorer_service.
@@ -10,3 +10,4 @@ RUN npm install
 RUN npm install react-scripts@1.1.1 -g
 
 CMD ["npm", "start"]
+COPY a/b /ui/a/b/
