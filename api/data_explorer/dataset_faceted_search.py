@@ -3,6 +3,7 @@
 import jsmin
 import json
 
+from elasticsearch_dsl import HistogramFacet
 from elasticsearch_dsl import FacetedSearch
 from elasticsearch_dsl import TermsFacet
 
@@ -14,6 +15,17 @@ def _get_index_name():
         # (https://plus.google.com/+DouglasCrockfordEsq/posts/RK8qyGVaGSr).
         dataset = json.loads(jsmin.jsmin(f.read()))
         return dataset['name']
+
+
+def _get_facets():
+    return {
+        # Use ".keyword" because we want aggregation on keyword field, not term
+        # field. See
+        # https://www.elastic.co/guide/en/elasticsearch/reference/6.2/fielddata.html#before-enabling-fielddata
+        'Age': HistogramFacet(field='Age.keyword'),
+        'Gender': TermsFacet(field='Gender.keyword'),
+        'Region': TermsFacet(field='Region.keyword'),
+    }
 
 
 class DatasetFacetedSearch(FacetedSearch):
@@ -30,11 +42,7 @@ class DatasetFacetedSearch(FacetedSearch):
         response = search.execute()
     """
     index = _get_index_name()
-    # TODO(melissachang): Get facets from facet_fields.csv.
-    facets = {
-        'Gender': TermsFacet(field='Gender.keyword'),
-        'Region': TermsFacet(field='Region.keyword'),
-    }
+    facets = _get_facets()
 
     def search(self):
         s = super(DatasetFacetedSearch, self).search()

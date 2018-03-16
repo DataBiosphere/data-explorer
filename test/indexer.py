@@ -1,11 +1,15 @@
 """For convenience, load test data into Elasticsearch index "test".
 
+Input must be JSON, not CSV. Unlike JSON, CSV values don't have types, so
+numbers would be indexed as strings. (And there is no easy way in Python to
+detect the type of a string.)
+
 Unfortunately there's no easy way to index a JSON file using curl. (See
 https://stackoverflow.com/questions/23798433/json-bulk-import-to-elasticstearch.)
 So write a Python script.
 """
 
-import csv
+import json
 import time
 
 from elasticsearch import Elasticsearch
@@ -35,9 +39,19 @@ def init_elasticsearch():
 
 def main():
   es = init_elasticsearch()
-  with open('test.csv') as f:
-    reader = csv.DictReader(f)
-    helpers.bulk(es, reader, index=INDEX_NAME, doc_type='type')
+  actions = []
+  with open('test.json') as f:
+    records = json.load(f)
+    for record in records:
+      action = {
+        '_index': INDEX_NAME,
+        # type will go away in future versions of Elasticsearch. Just use any string
+        # here.
+        '_type' : 'type',
+        '_source': record,
+      }
+      actions.append(action)
+  helpers.bulk(es, actions)
 
 
 if __name__ == '__main__':

@@ -12,12 +12,13 @@ To use a different dataset:
 * Index your data into the Elasticsearch started by `docker-compose up`. You can
 use one of the indexers at
 https://github.com/DataBiosphere/data-explorer-indexers, or any other indexer.
-* In `api`, create a symlink named `config` that points to a config directory similar to
-[this one](https://github.com/DataBiosphere/data-explorer-indexers/tree/8f22de4ad7750c60ab4d73d6608cb154436f68af/bigquery/config/template).
-Specifically:
-
+* In `api`, create a symlink named `config` that points to the `config`
+directory from the above step. See [example](https://github.com/DataBiosphere/data-explorer-indexers/blob/master/bigquery/config/platinum_genomes/facet_fields.csv)
+here. Specifically:
   * There must be a file named `dataset.json` that has a `name` field. This
 determines the name of the Elasticsearch index.
+  * There must be a file named `facet_fields.csv` with the `readable_field_name`
+column filled out.
 
 ## Architecture overview
 
