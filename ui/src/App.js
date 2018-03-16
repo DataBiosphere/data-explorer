@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+import { ApiClient, FacetsApi } from 'data_explorer_service';
+
 class App extends Component {
   render() {
     return (
@@ -18,16 +20,18 @@ class App extends Component {
   }
 
   componentDidMount() {
-    fetch("/api/facets",
-    // Viewing localhost:<port> always work without credentials.
-    // On some corporate networks, viewing <hostname>:<port> triggers a
-    // redirect. Including credentials prevents a CORS error.
-    {
-        credentials: 'include'
-    })
-        .then(response => response.json())
-        .then(jsondata => console.log(jsondata))
+    var apiClient = new ApiClient();
+    apiClient.basePath = '/api'
+    var api = new FacetsApi(apiClient)
+    var callback = function(error, data, response) {
+      if (error) {
+        console.error(error);
+      } else {
+        console.log('API called successfully. Returned data: ');
+        console.log(data);
+      }
+    };
+    api.facetsGet(callback);
   }
 }
-
 export default App;
