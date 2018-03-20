@@ -15,9 +15,6 @@ def facets_get():
         List of Facets.
     """
     search = DatasetFacetedSearch()
-    search.using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
-    # Need to rebuild search._s with new s.using.
-    search.__init__()
     response = search.execute()
     facets = []
     for facet_name, values in response.facets.to_dict().iteritems():

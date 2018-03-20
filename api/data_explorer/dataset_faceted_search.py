@@ -3,12 +3,15 @@
 import jsmin
 import json
 
+from flask import current_app
+
+from elasticsearch import Elasticsearch
 from elasticsearch_dsl import HistogramFacet
 from elasticsearch_dsl import FacetedSearch
 from elasticsearch_dsl import TermsFacet
 
 
-def _get_index_name():
+def get_index_name():
     """Gets index name from /app/dataset.json."""
     with open('/app/dataset.json') as f:
         # Remove comments using jsmin, as recommended by JSON creator
@@ -17,12 +20,13 @@ def _get_index_name():
         return dataset['name']
 
 
-def _get_facets():
+def get_facets():
+    """Gets facets from /app/facet_fields.csv."""
     return {
+        'Age': HistogramFacet(field='Age', interval=7),
         # Use ".keyword" because we want aggregation on keyword field, not term
         # field. See
         # https://www.elastic.co/guide/en/elasticsearch/reference/6.2/fielddata.html#before-enabling-fielddata
-        'Age': HistogramFacet(field='Age.keyword'),
         'Gender': TermsFacet(field='Gender.keyword'),
         'Region': TermsFacet(field='Region.keyword'),
     }
@@ -31,18 +35,23 @@ def _get_facets():
 class DatasetFacetedSearch(FacetedSearch):
     """Subclass of FacetedSearch for Datasets.
 
-    This class body is run when module is loaded; there is no app context yet.
-    App context contains configuration such as Elasticsearch URL. To use this
-    class, specify Elasticsearch URL like so:
-
-        search = DatasetFacetedSearch()
-        search.using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
-        # Need to rebuild search._s with new s.using.
-        search.__init__()
-        response = search.execute()
+    app.config['ELASTICSEARCH_URL'], app.config['INDEX_NAME'], and
+    app.config['FACETS'] must be set before creating a DatasetFacetedSearch
+    object.
     """
-    index = _get_index_name()
-    facets = _get_facets()
+
+    def __init__(self):
+        """Initializes DatasetFacetedSearch object.
+
+        Contains initialization that should be done once over the lifetime of
+        the Flask server, rather than once per request. For example, there's no
+        need to read facet_fields.csv for every request.
+        """
+        self.index = current_app.config['INDEX_NAME']
+        self.facets = current_app.config['FACETS']
+        self.using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
+        # Now that using is set, create _s.
+        super(DatasetFacetedSearch, self).__init__()
 
     def search(self):
         s = super(DatasetFacetedSearch, self).search()

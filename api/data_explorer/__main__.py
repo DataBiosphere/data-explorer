@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 
 import argparse
-import connexion
 import logging
 import os
+
+import connexion
 from flask_cors import CORS
+
 from .encoder import JSONEncoder
+import dataset_faceted_search
 
 
 def split_env_flag(name):
@@ -77,6 +80,11 @@ app.app.logger.setLevel(logging.INFO)
 
 app.app.json_encoder = JSONEncoder
 app.add_api('swagger.yaml', base_path=args.path_prefix)
+
+# Read config files. Just do this once; don't need to read files on every
+# request.
+app.app.config['INDEX_NAME'] = dataset_faceted_search.get_index_name()
+app.app.config['FACETS'] = dataset_faceted_search.get_facets()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=args.port)
