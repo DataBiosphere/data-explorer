@@ -14,20 +14,20 @@ class App extends Component {
   constructor(props) {
     super(props);
       this.state = {
-          facetResponse: null
+          facetsResponse: null
       };
   }
 
   render() {
-    if (this.state.facetResponse == null) {
+    if (this.state.facetsResponse == null) {
       // Server has not yet responded or returned an error
       return <div></div>;
     } else {
         return (
             <MuiThemeProvider>
                 <div className="app">
-                    <Header count = {this.state.facetResponse.count} />
-                    <FacetsGrid facetResponse = {this.state.facetResponse} />
+                    <Header count = {this.state.facetsResponse.count} />
+                    <FacetsGrid facetsResponse = {this.state.facetsResponse} />
                 </div>
             </MuiThemeProvider>
         );
@@ -43,7 +43,7 @@ class App extends Component {
         console.error(error);
         // TODO(alanhwang): Redirect to an error page
       } else {
-        this.setState({facetResponse: data});
+        this.setState({facetsResponse: data});
       }
     }.bind(this);
     api.facetsGet(callback);

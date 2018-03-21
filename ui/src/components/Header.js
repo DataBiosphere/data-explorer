@@ -10,10 +10,10 @@ function Header(props) {
     return (
         <div className="header">
             {/* TODO(alanhwang): Include the logo here */}
-            <div className="countBox">
+            <div className="totalCountBox">
                 <AccountCircle color={white} className="icon"/>
-                <div className="countBoxText">
-                    <div className="count">{count}</div>
+                <div className="totalCountBoxText">
+                    <div className="totalCount">{count}</div>
                     <div>Participants</div>
                 </div>
             </div>

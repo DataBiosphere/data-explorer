@@ -5,10 +5,10 @@ import FacetCard from "./FacetCard";
 import {GridList, GridTile} from "material-ui/GridList";
 
 function FacetsGrid(props) {
-    const facetResponse = props.facetResponse;
-    const facetsList = facetResponse.facets.map((facet) =>
+    const facetsResponse = props.facetsResponse;
+    const facetsList = facetsResponse.facets.map((facet) =>
         <GridTile key={facet.name}>
-            <FacetCard facet={facet} count={facetResponse.count} className='facetCard'/>
+            <FacetCard facet={facet} count={facetsResponse.count} className='facetCard'/>
         </GridTile>
     );
     return (

@@ -4,7 +4,7 @@
     vertical-align: center;
 }
 
-.logo {
+.datasetLogo {
     width: 90%;
     display: block;
     margin-left: auto;
@@ -12,7 +12,7 @@
     margin-bottom: 15px;
 }
 
-.countBox {
+.totalCountBox {
     width: 100%;
     background-color: #553A70 !important;
     margin-bottom: 20px;
@@ -21,14 +21,14 @@
     padding-bottom: 30px;
 }
 
-.countBoxText {
+.totalCountBoxText {
     color: white;
     float: right;
     margin-right: 4%;
     text-align: right;
 }
 
-.count {
+.totalCount {
     font-size: x-large;
 }
 
