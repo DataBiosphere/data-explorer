@@ -93,7 +93,7 @@ export default class ApiClient {
     * @returns {String} The string representation of <code>param</code>.
     */
     paramToString(param) {
-        if (param == undefined || param == null) {
+        if (param === undefined || param == null) {
             return '';
         }
         if (param instanceof Date) {
@@ -115,9 +115,9 @@ export default class ApiClient {
             path = '/' + path;
         }
 
-        var url = this.basePath + path;
+        let url = this.basePath + path;
         url = url.replace(/\{([\w-]+)\}/g, (fullMatch, key) => {
-            var value;
+            let value;
             if (pathParams.hasOwnProperty(key)) {
                 value = this.paramToString(pathParams[key]);
             } else {
@@ -151,7 +151,7 @@ export default class ApiClient {
     * @returns {String} The chosen content type, preferring JSON.
     */
     jsonPreferredMime(contentTypes) {
-        for (var i = 0; i < contentTypes.length; i++) {
+        for (let i = 0; i < contentTypes.length; i++) {
             if (this.isJsonMime(contentTypes[i])) {
                 return contentTypes[i];
             }
@@ -206,10 +206,10 @@ export default class ApiClient {
     * @returns {Object.<String, Object>} normalized parameters.
     */
     normalizeParams(params) {
-        var newParams = {};
-        for (var key in params) {
-            if (params.hasOwnProperty(key) && params[key] != undefined && params[key] != null) {
-                var value = params[key];
+        let newParams = {};
+        for (let key in params) {
+            if (params.hasOwnProperty(key) && params[key] !== undefined && params[key] != null) {
+                let value = params[key];
                 if (this.isFileParam(value) || Array.isArray(value)) {
                     newParams[key] = value;
                 } else {
@@ -293,7 +293,7 @@ export default class ApiClient {
     */
     applyAuthToRequest(request, authNames) {
         authNames.forEach((authName) => {
-            var auth = this.authentications[authName];
+            let auth = this.authentications[authName];
             switch (auth.type) {
                 case 'basic':
                     if (auth.username || auth.password) {
@@ -303,7 +303,7 @@ export default class ApiClient {
                     break;
                 case 'apiKey':
                     if (auth.apiKey) {
-                        var data = {};
+                        let data = {};
                         if (auth.apiKeyPrefix) {
                             data[auth.name] = auth.apiKeyPrefix + ' ' + auth.apiKey;
                         } else {
@@ -340,13 +340,13 @@ export default class ApiClient {
     * @returns A value of the specified type.
     */
     deserialize(response, returnType) {
-        if (response == null || returnType == null || response.status == 204) {
+        if (response == null || returnType == null || response.status === 204) {
             return null;
         }
 
         // Rely on SuperAgent for parsing response body.
         // See http://visionmedia.github.io/superagent/#parsing-response-bodies
-        var data = response.body;
+        let data = response.body;
         if (data == null || (typeof data === 'object' && typeof data.length === 'undefined' && !Object.keys(data).length)) {
             // SuperAgent does not always produce a body; use the unparsed response as a fallback
             data = response.text;
@@ -384,8 +384,8 @@ export default class ApiClient {
         queryParams, headerParams, formParams, bodyParam, authNames, contentTypes, accepts,
         returnType, callback) {
 
-        var url = this.buildUrl(path, pathParams);
-        var request = superagent(httpMethod, url);
+        let url = this.buildUrl(path, pathParams);
+        let request = superagent(httpMethod, url);
 
         // apply authentications
         this.applyAuthToRequest(request, authNames);
@@ -408,10 +408,10 @@ export default class ApiClient {
         // set request timeout
         request.timeout(this.timeout);
 
-        var contentType = this.jsonPreferredMime(contentTypes);
+        let contentType = this.jsonPreferredMime(contentTypes);
         if (contentType) {
             // Issue with superagent and multipart/form-data (https://github.com/visionmedia/superagent/issues/746)
-            if(contentType != 'multipart/form-data') {
+            if(contentType !== 'multipart/form-data') {
                 request.type(contentType);
             }
         } else if (!request.header['Content-Type']) {
@@ -420,9 +420,9 @@ export default class ApiClient {
 
         if (contentType === 'application/x-www-form-urlencoded') {
             request.send(querystring.stringify(this.normalizeParams(formParams)));
-        } else if (contentType == 'multipart/form-data') {
-            var _formParams = this.normalizeParams(formParams);
-            for (var key in _formParams) {
+        } else if (contentType === 'multipart/form-data') {
+            let _formParams = this.normalizeParams(formParams);
+            for (let key in _formParams) {
                 if (_formParams.hasOwnProperty(key)) {
                     if (this.isFileParam(_formParams[key])) {
                         // file field
@@ -436,7 +436,7 @@ export default class ApiClient {
             request.send(bodyParam);
         }
 
-        var accept = this.jsonPreferredMime(accepts);
+        let accept = this.jsonPreferredMime(accepts);
         if (accept) {
             request.accept(accept);
         }
@@ -461,7 +461,7 @@ export default class ApiClient {
 
         request.end((error, response) => {
             if (callback) {
-                var data = null;
+                let data = null;
                 if (!error) {
                     try {
                         data = this.deserialize(response, returnType);
@@ -524,15 +524,15 @@ export default class ApiClient {
                     return type.constructFromObject(data);
                 } else if (Array.isArray(type)) {
                     // for array type like: ['String']
-                    var itemType = type[0];
+                    let itemType = type[0];
 
                     return data.map((item) => {
                         return ApiClient.convertToType(item, itemType);
                     });
                 } else if (typeof type === 'object') {
                     // for plain object type like: {'String': 'Integer'}
-                    var keyType, valueType;
-                    for (var k in type) {
+                    let keyType, valueType;
+                    for (let k in type) {
                         if (type.hasOwnProperty(k)) {
                             keyType = k;
                             valueType = type[k];
@@ -540,12 +540,11 @@ export default class ApiClient {
                         }
                     }
 
-                    var result = {};
-                    for (var k in data) {
+                    let result = {};
+                    for (let k in data) {
                         if (data.hasOwnProperty(k)) {
-                            var key = ApiClient.convertToType(k, keyType);
-                            var value = ApiClient.convertToType(data[k], valueType);
-                            result[key] = value;
+                            let key = ApiClient.convertToType(k, keyType);
+                            result[key] = ApiClient.convertToType(data[k], valueType);
                         }
                     }
 
@@ -564,12 +563,12 @@ export default class ApiClient {
     */
     static constructFromObject(data, obj, itemType) {
         if (Array.isArray(data)) {
-            for (var i = 0; i < data.length; i++) {
+            for (let i = 0; i < data.length; i++) {
                 if (data.hasOwnProperty(i))
                     obj[i] = ApiClient.convertToType(data[i], itemType);
             }
         } else {
-            for (var k in data) {
+            for (let k in data) {
                 if (data.hasOwnProperty(k))
                     obj[k] = ApiClient.convertToType(data[k], itemType);
             }

@@ -1,0 +1,31 @@
+.facetCard {
+    height: 280px;
+    margin: 2%;
+}
+
+.facetValueName {
+    float: left;
+    text-align: left;
+}
+
+.facetValueCount {
+    float: right;
+    text-align: right;
+}
+
+.cardHeader {
+    padding: 15px;
+}
+
+.subHeader {
+    margin-top: 5px;
+    color: gray;
+}
+
+.totalCount {
+    float: left;
+}
+
+.numberSelected {
+    float: right;
+}
