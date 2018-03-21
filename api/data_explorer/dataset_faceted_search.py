@@ -36,7 +36,6 @@ def get_facets():
     using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
     mapping = Mapping.from_es(current_app.config['INDEX_NAME'], 'type',
             using=using).to_dict()
-    current_app.logger.info('dataset_faceted_search mapping %s' % mapping)
     facets = {}
     for facet_row in facet_rows:
         field_name = facet_row['readable_field_name']
