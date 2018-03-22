@@ -13,7 +13,7 @@ ENV PATH_PREFIX /api
 # builds.
 ENV PYTHONDONTWRITEBYTECODE 1
 
-COPY config/dataset.json /app/
+COPY config /app/config
 COPY api/data_explorer /app/data_explorer
 
 # --reload will restart server after code change
