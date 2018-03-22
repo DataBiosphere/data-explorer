@@ -1,7 +1,8 @@
 # coding: utf-8
 
+# flake8: noqa
 from __future__ import absolute_import
 # import models into model package
-from .facet import Facet
-from .facet_value import FacetValue
-from .facets_response import FacetsResponse
+from data_explorer.models.facet import Facet
+from data_explorer.models.facet_value import FacetValue
+from data_explorer.models.facets_response import FacetsResponse

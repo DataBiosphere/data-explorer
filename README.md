@@ -38,21 +38,13 @@ update the server implementations:
 
 * Clear out existing generated models:
     ```
-    rm ui/src/api/model/*
+    rm ui/src/api/src/model/*
     rm api/data_explorer/models/*
     ```
 * Regenerate Javascript and Python definitions.
     ```
-    java -jar ~/swagger-codegen-cli.jar generate \
-      -i api/api.yaml \
-      -l javascript \
-      -o ui/src/api \
-      -DuseES6=true
-    java -jar ~/swagger-codegen-cli.jar generate \
-      -i api/api.yaml \
-      -l python-flask \
-      -o api \
-      -DsupportPython2=true,packageName=data_explorer
+    java -jar ~/swagger-codegen-cli.jar generate -i api/api.yaml -l javascript -o ui/src/api -DuseES6=true
+    java -jar ~/swagger-codegen-cli.jar generate -i api/api.yaml -l python-flask -o api -DsupportPython2=true,packageName=data_explorer
     ```
 * Update the server implementations to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
 

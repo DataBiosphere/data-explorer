@@ -46,7 +46,7 @@ class App extends Component {
         this.setState({facetsResponse: data});
       }
     }.bind(this);
-    api.facetsGet(callback);
+    api.facetsGet({}, callback);
   }
 }
 

@@ -44,16 +44,20 @@ export default class FacetsApi {
 
     /**
      * Returns facets.
+     * @param {Object} opts Optional parameters
+     * @param {Array.<String>} opts.filter 
      * @param {module:api/FacetsApi~facetsGetCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/FacetsResponse}
      */
-    facetsGet(callback) {
+    facetsGet(opts, callback) {
+      opts = opts || {};
       let postBody = null;
 
 
       let pathParams = {
       };
       let queryParams = {
+        'filter': this.apiClient.buildCollectionParam(opts['filter'], 'csv')
       };
       let headerParams = {
       };

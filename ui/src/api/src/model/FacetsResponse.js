@@ -24,26 +24,23 @@ import Facet from './Facet';
 * @module model/FacetsResponse
 * @version 0.0.1
 */
-export default class FacetsResponse extends Array {
+export default class FacetsResponse {
     /**
     * Constructs a new <code>FacetsResponse</code>.
     * Results from a faceted search.
     * @alias module:model/FacetsResponse
     * @class
-    * @extends Array
     */
 
     constructor() {
         
-        super();
-        
 
         
         
 
         
 
-        return this;
+        
     }
 
     /**
@@ -57,15 +54,29 @@ export default class FacetsResponse extends Array {
         if (data) {
             obj = obj || new FacetsResponse();
 
-            ApiClient.constructFromObject(data, obj, 'Facet');
-
             
             
+            
 
+            if (data.hasOwnProperty('facets')) {
+                obj['facets'] = ApiClient.convertToType(data['facets'], [Facet]);
+            }
+            if (data.hasOwnProperty('count')) {
+                obj['count'] = ApiClient.convertToType(data['count'], 'Number');
+            }
         }
         return obj;
     }
 
+    /**
+    * @member {Array.<module:model/Facet>} facets
+    */
+    facets = undefined;
+    /**
+    * Number of entities represented by current facet selection. For example, this could be 40, representing 40 people. 
+    * @member {Number} count
+    */
+    count = undefined;
 
 
 
