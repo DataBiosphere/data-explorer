@@ -4,7 +4,7 @@
 
 Run Data explorer with a test dataset:
 
-* `docker-compose up`
+* `docker-compose up --build`
 * Navigate to `localhost:4400`
 
 To use a different dataset:
@@ -12,13 +12,15 @@ To use a different dataset:
 * Index your data into the Elasticsearch started by `docker-compose up`. You can
 use one of the indexers at
 https://github.com/DataBiosphere/data-explorer-indexers, or any other indexer.
-* In `api`, create a symlink named `config` that points to the `config`
+* In `api/`, create a symlink named `config` that points to the `config`
 directory from the above step. See [example](https://github.com/DataBiosphere/data-explorer-indexers/blob/master/bigquery/config/platinum_genomes/facet_fields.csv)
 here. Specifically:
   * There must be a file named `dataset.json` that has a `name` field. This
 determines the name of the Elasticsearch index.
   * There must be a file named `facet_fields.csv` with the `readable_field_name`
 column filled out.
+* `docker-compose up --build`
+* Navigate to `localhost:4400`
 
 ## Architecture overview
 

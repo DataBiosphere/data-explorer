@@ -62,12 +62,6 @@ class DatasetFacetedSearch(FacetedSearch):
     """
 
     def __init__(self):
-        """Initializes DatasetFacetedSearch object.
-
-        Contains initialization that should be done once over the lifetime of
-        the Flask server, rather than once per request. For example, there's no
-        need to read facet_fields.csv for every request.
-        """
         self.index = current_app.config['INDEX_NAME']
         self.facets = current_app.config['FACETS']
         self.using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
