@@ -12,21 +12,9 @@ paths:
       description: Returns facets.
       parameters:
         - name: filter
-          # Ideally this query parameter would use an object. However, OpenAPI
-          # 2.0 doesn't support objects in query parameters
-          # (https://swagger.io/docs/specification/2-0/describing-parameters/#faq)
-          # In order to use OpenAPI 3.0, I would need swagger-codegen 3.0.0. I
-          # had trouble getting swagger-codegen 3.0.0 to work
-          # (https://github.com/swagger-api/swagger-codegen/issues/7891).
-          # TODO: After swagger-codegen 3.0 is GA, try again.
-          # Another alternative is to change GET to POST, since POST bodies can
-          # have objects. I prefer GET because they're much easier to test.
-          # One can load localhost:8390/api/facets?filter=Gender=female, instead
-          # of:
-          # - Load Swagger UI at localhost:8390/api/ui
-          # - Click on Try it out
-          # - Enter filter body. Make sure braces are correct
-          # - Click Execute
+          # Unfortunately OpenAPI 2.0 doesn't allow objects in GET query
+          # parameters. So hardcode something like "Gender=female".
+          # TODO(#32): Investigate switching to OpenAPI 3.0.
           description: >
             filter represents selected facet values. Elasticsearch query will
             be run only over selected facet values. filter is an array of
