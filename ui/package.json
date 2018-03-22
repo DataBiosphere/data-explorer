@@ -6,7 +6,8 @@
     "data_explorer_service": "file:src/api",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-scripts": "1.1.1"
+    "react-scripts": "1.1.1",
+    "material-ui": "0.x"
   },
   "scripts": {
     "start": "PORT=4400 react-scripts start",

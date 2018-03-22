@@ -1,6 +1,3 @@
-from datetime import date
-import json
-
 from elasticsearch import Elasticsearch
 from flask import current_app
 
