@@ -57,13 +57,13 @@ class DatasetFacetedSearch(FacetedSearch):
     """Subclass of FacetedSearch for Datasets.
 
     app.config['ELASTICSEARCH_URL'], app.config['INDEX_NAME'], and
-    app.config['FACETS'] must be set before creating a DatasetFacetedSearch
-    object.
+    app.config['ELASTICSEARCH_FACETS'] must be set before creating a
+    DatasetFacetedSearch object.
     """
 
     def __init__(self):
         self.index = current_app.config['INDEX_NAME']
-        self.facets = current_app.config['FACETS']
+        self.facets = current_app.config['ELASTICSEARCH_FACETS']
         self.using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
         # Now that using is set, create _s.
         super(DatasetFacetedSearch, self).__init__()

@@ -90,7 +90,7 @@ def init():
     # init(), Flask complains that we're working outside of application
     # context. @app.app.before_first_request guarentees that app context has
     # been set up.
-    app.app.config['FACETS'] = dataset_faceted_search.get_facets()
+    app.app.config['ELASTICSEARCH_FACETS'] = dataset_faceted_search.get_facets()
 
 
 if __name__ == '__main__':
