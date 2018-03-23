@@ -48,7 +48,7 @@ def get_facets():
         else:
             # Assume numeric type.
             # TODO: Handle other types.
-            facets[field_name] = HistogramFacet(field=field_name, interval=7)
+            facets[field_name] = HistogramFacet(field=field_name, interval=10)
     current_app.logger.info('dataset_faceted_search facets: %s' % facets)
     return facets
 

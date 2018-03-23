@@ -14,7 +14,7 @@ function FacetsGrid(props) {
     return (
         <GridList
             className="gridList"
-            cols={4}
+            cols={3}
             cellHeight="auto"
             padding={1}
         >
