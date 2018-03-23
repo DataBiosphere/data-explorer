@@ -48,6 +48,10 @@ def get_facets():
         else:
             # Assume numeric type.
             # TODO: Handle other types.
+            # TODO: Automatically figure out bucket intervals. Unfortunately
+            # Elasticsearch won't do this for us
+            # (https://github.com/elastic/elasticsearch/issues/9572). Make the
+            # ranges easy to read (10-19,20-29 instead of 10-17,18-25).
             facets[field_name] = HistogramFacet(field=field_name, interval=10)
     current_app.logger.info('dataset_faceted_search facets: %s' % facets)
     return facets

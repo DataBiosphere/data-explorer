@@ -20,8 +20,6 @@ def facets_get():
     response = search.execute()
     facets = []
     for facet_name, values in response.facets.to_dict().iteritems():
-        # isinstance(current_app.config['ELASTICSEARCH_FACETS']['Age'], HistogramFacet)
-        # hf._params['interval']
         facet_values = []
         for name, count, _ in values:
             es_facet = current_app.config['ELASTICSEARCH_FACETS'][facet_name]
