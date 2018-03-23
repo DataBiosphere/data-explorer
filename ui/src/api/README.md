@@ -72,6 +72,10 @@ var DataExplorerService = require('data_explorer_service');
 
 var api = new DataExplorerService.FacetsApi()
 
+var opts = { 
+  'filter': ["filter_example"] // {[String]} 
+};
+
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
@@ -79,7 +83,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.facetsGet(callback);
+api.facetsGet(opts, callback);
 
 ```
 

@@ -14,7 +14,13 @@ paths:
       - "Facets"
       description: "Returns facets."
       operationId: "facets_get"
-      parameters: []
+      parameters:
+      - name: "filter"
+        in: "query"
+        required: false
+        type: "array"
+        items:
+          type: "string"
       responses:
         200:
           description: "Success"
@@ -33,16 +39,39 @@ definitions:
         description: "Number of entities represented by current facet selection. For\
           \ example, this could be 40, representing 40 people.\n"
     description: "Results from a faceted search."
+    example:
+      count: 6
+      facets:
+      - values:
+        - name: "name"
+          count: 0
+        - name: "name"
+          count: 0
+        name: "name"
+      - values:
+        - name: "name"
+          count: 0
+        - name: "name"
+          count: 0
+        name: "name"
   Facet:
     properties:
       name:
         type: "string"
+        description: "Facet name, for example, \"Gender\"."
       values:
         type: "array"
         items:
           $ref: "#/definitions/FacetValue"
     description: "A facet. For example, the Gender facet would include the facet name\
       \ \"Gender\", as well as counts for all possible values.\n"
+    example:
+      values:
+      - name: "name"
+        count: 0
+      - name: "name"
+        count: 0
+      name: "name"
   FacetValue:
     properties:
       name:
@@ -52,3 +81,6 @@ definitions:
         type: "integer"
         description: "Facet value count."
     description: "A facet value, for example, \"Male\"/34."
+    example:
+      name: "name"
+      count: 0

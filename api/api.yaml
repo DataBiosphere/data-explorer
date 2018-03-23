@@ -10,6 +10,20 @@ paths:
   /facets:
     get:
       description: Returns facets.
+      parameters:
+        - name: filter
+          # Unfortunately OpenAPI 2.0 doesn't allow objects in GET query
+          # parameters. So hardcode something like "Gender=female".
+          # TODO(#32): Investigate switching to OpenAPI 3.0.
+          description: >
+            filter represents selected facet values. Elasticsearch query will
+            be run only over selected facet values. filter is an array of
+            strings, where each string has the format "facetName=facetValue".
+            Example url /facets?filter=Gender=female,Region=northwest,Region=southwest
+          in: query
+          type: array
+          items:
+            type: string
       responses:
         200:
           description: Success
@@ -38,7 +52,7 @@ definitions:
     properties:
       name:
         type: string
-        descrption: Facet name, for example, "Gender".
+        description: Facet name, for example, "Gender".
       values:
         type: array
         items:

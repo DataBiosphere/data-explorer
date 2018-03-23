@@ -26,7 +26,7 @@ import ApiClient from '../ApiClient';
 export default class FacetValue {
     /**
     * Constructs a new <code>FacetValue</code>.
-    * A facet value, for example, \&quot;Male\&quot;/34 hits.
+    * A facet value, for example, \&quot;Male\&quot;/34.
     * @alias module:model/FacetValue
     * @class
     */
@@ -57,8 +57,8 @@ export default class FacetValue {
             
             
 
-            if (data.hasOwnProperty('value_name')) {
-                obj['value_name'] = ApiClient.convertToType(data['value_name'], 'String');
+            if (data.hasOwnProperty('name')) {
+                obj['name'] = ApiClient.convertToType(data['name'], 'String');
             }
             if (data.hasOwnProperty('count')) {
                 obj['count'] = ApiClient.convertToType(data['count'], 'Number');
@@ -69,9 +69,9 @@ export default class FacetValue {
 
     /**
     * Facet value name, for example, \"Male\".
-    * @member {String} value_name
+    * @member {String} name
     */
-    value_name = undefined;
+    name = undefined;
     /**
     * Facet value count.
     * @member {Number} count

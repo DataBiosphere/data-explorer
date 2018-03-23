@@ -58,8 +58,8 @@ export default class Facet {
             
             
 
-            if (data.hasOwnProperty('facet_name')) {
-                obj['facet_name'] = ApiClient.convertToType(data['facet_name'], 'String');
+            if (data.hasOwnProperty('name')) {
+                obj['name'] = ApiClient.convertToType(data['name'], 'String');
             }
             if (data.hasOwnProperty('values')) {
                 obj['values'] = ApiClient.convertToType(data['values'], [FacetValue]);
@@ -69,9 +69,10 @@ export default class Facet {
     }
 
     /**
-    * @member {String} facet_name
+    * Facet name, for example, \"Gender\".
+    * @member {String} name
     */
-    facet_name = undefined;
+    name = undefined;
     /**
     * @member {Array.<module:model/FacetValue>} values
     */
