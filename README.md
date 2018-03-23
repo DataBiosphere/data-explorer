@@ -4,16 +4,17 @@
 
 Run Data explorer with a test dataset:
 
+* `ln -s test config`
 * `docker-compose up --build`
 * Navigate to `localhost:4400`
 
 To use a different dataset:
 
-* Index your data into the Elasticsearch started by `docker-compose up`. You can
-use one of the indexers at
+* Index your data into an Elasticsearch started by
+`docker run -p 9200:9200 docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.2`. You can use one of the indexers at
 https://github.com/DataBiosphere/data-explorer-indexers, or any other indexer.
-* In `api/`, create a symlink named `config` that points to the `config`
-directory from the above step. See [example](https://github.com/DataBiosphere/data-explorer-indexers/blob/master/bigquery/config/platinum_genomes/facet_fields.csv)
+* Create a directory named `config` and copy over config files from above step.
+See [example](https://github.com/DataBiosphere/data-explorer-indexers/blob/master/bigquery/config/platinum_genomes)
 here. Specifically:
   * There must be a file named `dataset.json` that has a `name` field. This
 determines the name of the Elasticsearch index.
@@ -24,9 +25,9 @@ column filled out.
 
 ## Architecture overview
 
-For local development, nginx is used to get around CORS.
+For local development, an nginx reverse proxy is used to get around CORS.
 
-![Architecture overview](https://i.imgur.com/VU8dZlZ.png)
+![Architecture overview](https://i.imgur.com/ilh7RF1.png)
 
 ## Development
 

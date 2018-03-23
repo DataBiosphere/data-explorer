@@ -48,7 +48,11 @@ def get_facets():
         else:
             # Assume numeric type.
             # TODO: Handle other types.
-            facets[field_name] = HistogramFacet(field=field_name, interval=7)
+            # TODO: Automatically figure out bucket intervals. Unfortunately
+            # Elasticsearch won't do this for us
+            # (https://github.com/elastic/elasticsearch/issues/9572). Make the
+            # ranges easy to read (10-19,20-29 instead of 10-17,18-25).
+            facets[field_name] = HistogramFacet(field=field_name, interval=10)
     current_app.logger.info('dataset_faceted_search facets: %s' % facets)
     return facets
 
@@ -57,13 +61,13 @@ class DatasetFacetedSearch(FacetedSearch):
     """Subclass of FacetedSearch for Datasets.
 
     app.config['ELASTICSEARCH_URL'], app.config['INDEX_NAME'], and
-    app.config['FACETS'] must be set before creating a DatasetFacetedSearch
-    object.
+    app.config['ELASTICSEARCH_FACETS'] must be set before creating a
+    DatasetFacetedSearch object.
     """
 
     def __init__(self):
         self.index = current_app.config['INDEX_NAME']
-        self.facets = current_app.config['FACETS']
+        self.facets = current_app.config['ELASTICSEARCH_FACETS']
         self.using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
         # Now that using is set, create _s.
         super(DatasetFacetedSearch, self).__init__()
