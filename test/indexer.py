@@ -37,7 +37,10 @@ def init_elasticsearch():
   print('Deleting and recreating %s index.' % INDEX_NAME)
   try:
     es.indices.delete(index=INDEX_NAME)
-  except Exception:
+  except Exception as e:
+    # Sometimes index exists before this script is run, and the delete fails.
+    # Print exception to help debug those cases.
+    print('Deleting test index failed: %s' % e)
     pass
   es.indices.create(index=INDEX_NAME, body={})
   return es
