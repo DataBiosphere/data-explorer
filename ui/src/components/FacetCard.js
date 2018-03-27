@@ -12,7 +12,9 @@ function FacetCard(props) {
         <ListItem
             className="listItem"
             key={facetValue.name}
-            leftCheckbox={<Checkbox />}
+            leftCheckbox={<Checkbox
+                onCheck={(event, isInputChecked) => props.updateFacets(facet.name, facetValue.name, isInputChecked)}
+            />}
             primaryText={<div>
                 <div className="facetValueName">{facetValue.name}</div>
                 <div className="facetValueCount">{facetValue.count}</div>
