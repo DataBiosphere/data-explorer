@@ -18,7 +18,7 @@ paths:
           description: >
             filter represents selected facet values. Elasticsearch query will
             be run only over selected facet values. filter is an array of
-            strings, where each string has the format "facetName=facetValues".
+            strings, where each string has the format "facetName=facetValue".
             Example url /facets?filter=Gender=female,Region=northwest,Region=southwest
           in: query
           type: array
