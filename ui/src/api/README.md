@@ -73,7 +73,7 @@ var DataExplorerService = require('data_explorer_service');
 var api = new DataExplorerService.FacetsApi()
 
 var opts = { 
-  'filter': ["filter_example"] // {[String]} filter represents selected facet values. Elasticsearch query will be run only over selected facet values. filter is an array of strings, where each string has the format \"facetName=facetValues\". Example url /facets?filter=Gender=female&Region=northwest,southwest 
+  'filter': ["filter_example"] // {[String]} filter represents selected facet values. Elasticsearch query will be run only over selected facet values. filter is an array of strings, where each string has the format \"facetName=facetValues\". Example url /facets?filter=Gender=female,Region=northwest,Region=southwest 
 };
 
 var callback = function(error, data, response) {
