@@ -66,7 +66,6 @@ class FacetsGrid extends Component {
                 this.searchFilters.set(facetName, this.removeFacet(this.searchFilters.get(facetName), facetValue));
             }
         }
-        console.log(this.serialize(this.searchFilters));
         this.api.facetsGet({filter: this.serialize(this.searchFilters)}, this.callback);
     }
 
@@ -82,12 +81,14 @@ class FacetsGrid extends Component {
 
     serialize(searchFilters) {
         let filterStr = [];
-        searchFilters.forEach((value, key) => {
-            if (value.length !== 0) {
-                filterStr.push(encodeURIComponent(key) + "=" + encodeURIComponent(value));
+        searchFilters.forEach((values, key) => {
+            if (values.length > 0) {
+                for (let value of values) {
+                    filterStr.push(key + "=" + value);
+                }
             }
         });
-        return filterStr.join('&');
+        return filterStr.join(',');
     }
 }
 
