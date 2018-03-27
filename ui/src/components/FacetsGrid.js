@@ -61,13 +61,13 @@ class FacetsGrid extends Component {
             this.searchFilters.set(facetName, [facetValue]);
         } else if (this.searchFilters.get(facetName) !== undefined) {
             if (isSelected && !this.searchFilters.get(facetName).includes(facetValue)) {
-                // this.searchFilters.set(facetName, this.searchFilters.get(facetName).push(facetValue));
                 this.searchFilters.get(facetName).push(facetValue);
             } else if (!isSelected) {
                 this.searchFilters.set(facetName, this.removeFacet(this.searchFilters.get(facetName), facetValue));
             }
         }
-        this.api.facetsGet(this.cleanFilterList(this.searchFilters), this.callback);
+        console.log(this.serialize(this.searchFilters));
+        this.api.facetsGet({filter: this.serialize(this.searchFilters)}, this.callback);
     }
 
     removeFacet(valueList, facetValue) {
@@ -80,14 +80,14 @@ class FacetsGrid extends Component {
         return valueList;
     }
 
-    cleanFilterList(searchFilters) {
-        let cleanFilters = {};
+    serialize(searchFilters) {
+        let filterStr = [];
         searchFilters.forEach((value, key) => {
             if (value.length !== 0) {
-                cleanFilters[key] = value;
+                filterStr.push(encodeURIComponent(key) + "=" + encodeURIComponent(value));
             }
         });
-        return cleanFilters;
+        return filterStr.join('&');
     }
 }
 
