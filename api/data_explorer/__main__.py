@@ -88,7 +88,7 @@ def init():
     app.app.config['INDEX_NAME'] = dataset_faceted_search.get_index_name()
     # get_facets() reads from current_app.config. If we move this outside of
     # init(), Flask complains that we're working outside of application
-    # context. @app.app.before_first_request guarentees that app context has
+    # context. @app.app.before_first_request guarantees that app context has
     # been set up.
     app.app.config['ELASTICSEARCH_FACETS'] = dataset_faceted_search.get_facets()
 
