@@ -5,6 +5,7 @@ from elasticsearch_dsl import HistogramFacet
 from flask import current_app
 
 from ..dataset_faceted_search import DatasetFacetedSearch
+import urllib
 
 
 def facets_get(filter=None):  # noqa: E501
@@ -12,12 +13,11 @@ def facets_get(filter=None):  # noqa: E501
 
     Returns facets. # noqa: E501
 
-    :param filter: filter represents selected facet values. Elasticsearch query will be run only over selected facet values. filter is an array of strings, where each string has the format \&quot;facetName&#x3D;facetValue\&quot;. Example url /facets?filter&#x3D;Gender&#x3D;female,Region&#x3D;northwest,Region&#x3D;southwest 
-    :type filter: List[str]
+    :param filterArr: filter represents selected facet values. Elasticsearch query will be run only over selected facet values. filter is an array of strings, where each string has the format \&quot;facetName&#x3D;facetValue\&quot;. Example url /facets?filter&#x3D;Gender&#x3D;female,Region&#x3D;northwest,Region&#x3D;southwest
+    :type filterArr: List[str]
 
     :rtype: FacetsResponse
     """
-
     search = DatasetFacetedSearch(deserialize(filter))
     response = search.execute()
     facets = []
@@ -39,12 +39,16 @@ def facets_get(filter=None):  # noqa: E501
     return FacetsResponse(facets=facets, count=response._faceted_search.count())
 
 
-def deserialize(filter):
-    if not filter:
+def deserialize(filter_arr):
+    if not filter_arr:
         return {}
     parsed_filter = {}
-    for filterString in filter.split('&'):
-        keyVal = filterString.split('=')
-        if len(keyVal) == 2:
-            parsed_filter[keyVal[0]] = keyVal[1].split(',')
+    for facet_filter in filter_arr:
+        filter_str = urllib.unquote(facet_filter).decode('utf8')
+        key_val = filter_str.split('=')
+        if len(key_val) == 2:
+            if not key_val[0] in parsed_filter:
+                parsed_filter[key_val[0]] = [key_val[1]]
+            else:
+                parsed_filter[key_val[0]].append(key_val[1])
     return parsed_filter
