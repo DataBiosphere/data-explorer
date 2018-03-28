@@ -34,14 +34,18 @@ def init_elasticsearch():
   # This script is invoked from docker-compose, so use service name.
   # If running this script directly on host, change to "localhost:9200".
   es = Elasticsearch(["elasticsearch:9200"])
-  print('Deleting and recreating %s index.' % INDEX_NAME)
+  print('Deleting %s index.' % INDEX_NAME)
   try:
     es.indices.delete(index=INDEX_NAME)
   except Exception as e:
-    # Sometimes index exists before this script is run, and the delete fails.
-    # Print exception to help debug those cases.
-    print('Deleting test index failed: %s' % e)
+    # Sometimes delete fails even though index exists. Add logging to help
+    # debug.
+    print('Deleting %s index failed: %s' % (INDEX_NAME, e))
+    # Ignore 404: index not found
+    index = es.indices.get(index=INDEX_NAME, ignore=404)
+    print('es.indices.get(index=%s): %s' % (INDEX_NAME, index))
     pass
+  print('Creating %s index.' % INDEX_NAME)
   es.indices.create(index=INDEX_NAME, body={})
   return es
 
