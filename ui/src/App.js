@@ -31,6 +31,7 @@ class App extends Component {
               });
           }
       }.bind(this);
+      // Map of facetName:[facetValues] pairs
       this.searchFilters = new Map();
       this.updateFacets = this.updateFacets.bind(this);
   }
@@ -93,7 +94,7 @@ class App extends Component {
             // Remove facetValue from the list of filters for facetName
             this.searchFilters.set(facetName, this.removeFacet(currentFacetValues, facetValue));
         }
-        this.facetsApi.facetsGet({filter: this.serializeFilters(this.searchFilters)}, this.facetsCallback);
+        this.facetsApi.facetsGet({filter: this.filterMapToArray(this.searchFilters)}, this.facetsCallback);
     }
 
     removeFacet(valueList, facetValue) {
@@ -106,16 +107,22 @@ class App extends Component {
         return newValueList;
     }
 
-    serializeFilters(searchFilters) {
-        let filterList = [];
-        searchFilters.forEach((values, key) => {
+  /**
+   * Converts a Map of filters to an Array of filter strings interpretable by
+   * the backend
+   * @param filterMap Map of facetName:[facetValues] pairs
+   * @return [string] Array of "facetName=facetValue" strings
+   */
+    filterMapToArray(filterMap) {
+        let filterArray = [];
+        filterMap.forEach((values, key) => {
             if (values.length > 0) {
                 for (let value of values) {
-                    filterList.push(key + "=" + value);
+                    filterArray.push(key + "=" + value);
                 }
             }
         });
-        return filterList;
+        return filterArray;
     }
 }
 
