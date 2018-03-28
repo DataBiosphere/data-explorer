@@ -1,4 +1,4 @@
-"""For convenience, load test data into Elasticsearch index "test".
+"""For convenience, load test data into Elasticsearch index "insurance_data".
 
 For real datasets, one would use one of the indexers in
 https://github.com/DataBiosphere/data-explorer-indexers/, or from somewhere
@@ -22,7 +22,7 @@ from elasticsearch import Elasticsearch
 from elasticsearch import helpers
 
 
-INDEX_NAME = 'test'
+INDEX_NAME = 'insurance_data'
 
 
 def init_elasticsearch():

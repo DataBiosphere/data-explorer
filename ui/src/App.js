@@ -1,5 +1,6 @@
 import './App.css';
-import { ApiClient, FacetsApi } from 'data_explorer_service';
+import { ApiClient, DatasetApi, FacetsApi } from 'data_explorer_service';
+import DatasetResponse from "./api/src/model/DatasetResponse";
 import FacetsGrid from "./components/FacetsGrid";
 import Header from "./components/Header";
 
@@ -9,22 +10,26 @@ import { MuiThemeProvider } from "material-ui";
 class App extends Component {
 
   constructor(props) {
-    super(props);
+      super(props);
       this.state = {
+          datasetName: '',
           facetsResponse: null
       };
   }
 
   render() {
-    if (this.state.facetsResponse == null) {
+    if (this.state.facetsResponse == null || this.state.datasetName == '') {
       // Server has not yet responded or returned an error
       return <div></div>;
     } else {
         return (
             <MuiThemeProvider>
                 <div className="app">
-                    <Header count = {this.state.facetsResponse.count} />
-                    <FacetsGrid facetsResponse = {this.state.facetsResponse} />
+                    <Header
+                        datasetName={this.state.datasetName}
+                        totalCount={this.state.facetsResponse.count}
+                    />
+                    <FacetsGrid facetsResponse={this.state.facetsResponse} />
                 </div>
             </MuiThemeProvider>
         );
@@ -32,10 +37,11 @@ class App extends Component {
   }
 
   componentDidMount() {
+    // Call /api/facets
     let apiClient = new ApiClient();
     apiClient.basePath = '/api';
-    let api = new FacetsApi(apiClient);
-    let callback = function(error, data) {
+    let facetsApi = new FacetsApi(apiClient);
+    let facetsCallback = function(error, data) {
       if (error) {
         console.error(error);
         // TODO(alanhwang): Redirect to an error page
@@ -43,7 +49,20 @@ class App extends Component {
         this.setState({facetsResponse: data});
       }
     }.bind(this);
-    api.facetsGet({}, callback);
+    facetsApi.facetsGet({}, facetsCallback);
+
+
+    // Call /api/dataset
+    let datasetApi = new DatasetApi(apiClient);
+    let datasetCallback = function(error, data) {
+      if (error) {
+        console.error(error);
+        // TODO(alanhwang): Redirect to an error page
+      } else {
+        this.setState({datasetName: data.name});
+      }
+    }.bind(this);
+    datasetApi.datasetGet(datasetCallback);
   }
 }
 

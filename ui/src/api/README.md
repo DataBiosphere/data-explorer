@@ -93,11 +93,13 @@ All URIs are relative to *https://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+*DataExplorerService.DatasetApi* | [**datasetGet**](docs/DatasetApi.md#datasetGet) | **GET** /dataset | 
 *DataExplorerService.FacetsApi* | [**facetsGet**](docs/FacetsApi.md#facetsGet) | **GET** /facets | 
 
 
 ## Documentation for Models
 
+ - [DataExplorerService.DatasetResponse](docs/DatasetResponse.md)
  - [DataExplorerService.Facet](docs/Facet.md)
  - [DataExplorerService.FacetValue](docs/FacetValue.md)
  - [DataExplorerService.FacetsResponse](docs/FacetsResponse.md)

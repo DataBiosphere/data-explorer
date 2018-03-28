@@ -7,6 +7,17 @@ info:
     url: 'http://opensource.org/licenses/BSD-3-Clause'
   version: '0.0.1'
 paths:
+  /dataset:
+    get:
+      description: Gets dataset information, such as name.
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/DatasetResponse'
+      tags:
+        # Put in dataset_controller.py instead of default_controller.py.
+        - Dataset
   /facets:
     get:
       description: Returns facets.
@@ -33,6 +44,11 @@ paths:
         # Put in facets_controller.py instead of default_controller.py.
         - Facets
 definitions:
+  DatasetResponse:
+    description: "Dataset information."
+    properties:
+      name:
+        type: string
   FacetsResponse:
     description: "Results from a faceted search."
     properties:

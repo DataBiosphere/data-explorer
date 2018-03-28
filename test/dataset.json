@@ -1,7 +1,7 @@
 {
   // Dataset name. This name will be displayed in the Data Explorer UI. Also,
   // the Elasticsearch index will be given this name.
-  "name": "test",
+  "name": "Insurance data",
   // Name of BigQuery column that represents primary key. See
   // https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery#overview
   // for more information.

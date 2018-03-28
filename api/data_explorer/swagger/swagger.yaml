@@ -8,6 +8,19 @@ info:
     name: "BSD"
     url: "http://opensource.org/licenses/BSD-3-Clause"
 paths:
+  /dataset:
+    get:
+      tags:
+      - "Dataset"
+      description: "Gets dataset information, such as name."
+      operationId: "dataset_get"
+      parameters: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/DatasetResponse"
+      x-swagger-router-controller: "data_explorer.controllers.dataset_controller"
   /facets:
     get:
       tags:
@@ -32,6 +45,13 @@ paths:
             $ref: "#/definitions/FacetsResponse"
       x-swagger-router-controller: "data_explorer.controllers.facets_controller"
 definitions:
+  DatasetResponse:
+    properties:
+      name:
+        type: "string"
+    description: "Dataset information."
+    example:
+      name: "name"
   FacetsResponse:
     properties:
       facets:

@@ -30,12 +30,16 @@ def convert_to_index_name(s):
 
 
 def get_index_name():
-    """Gets index name from dataset.json."""
+    """Gets Elasticsearch index name."""
+    return convert_to_index_name(get_dataset_name())
+
+def get_dataset_name():
+    """Gets dataset name from dataset.json."""
     with open('/app/config/dataset.json') as f:
         # Remove comments using jsmin, as recommended by JSON creator
         # (https://plus.google.com/+DouglasCrockfordEsq/posts/RK8qyGVaGSr).
         dataset = json.loads(jsmin.jsmin(f.read()))
-        return convert_to_index_name(dataset['name'])
+        return dataset['name']
 
 
 def get_facets():
