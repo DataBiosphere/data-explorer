@@ -65,10 +65,12 @@ class DatasetFacetedSearch(FacetedSearch):
     DatasetFacetedSearch object.
     """
 
-    """filters should be a dictionary of facet_name:[object] values to filter
-    the query on. Ex: {'Region':['southeast', 'northwest'], 'Gender':['male']}.
-    """
     def __init__(self, filters={}):
+        """
+        :param filters: a dictionary of facet_name:[object] values to filter
+        the query on.
+        Ex: {'Region':['southeast', 'northwest'], 'Gender':['male']}.
+        """
         self.index = current_app.config['INDEX_NAME']
         self.facets = current_app.config['ELASTICSEARCH_FACETS']
         self.using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])

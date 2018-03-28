@@ -39,9 +39,12 @@ def facets_get(filter=None):  # noqa: E501
     return FacetsResponse(facets=facets, count=response._faceted_search.count())
 
 
-# filter_arr is an array of strings with format "facet_name=facet_value". A
-# facet_name may be repeated if multiple filters are desired.
 def deserialize(filter_arr):
+    """
+    :param filter_arr: an array of strings with format "facet_name=facet_value".
+    A facet_name may be repeated if multiple filters are desired.
+    :return: A dict of facet_name:[facet_value] mappings.
+    """
     if not filter_arr:
         return {}
     parsed_filter = {}
