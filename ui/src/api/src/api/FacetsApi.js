@@ -54,10 +54,15 @@ export default class FacetsApi {
       let postBody = null;
 
 
-      let pathParams = {};
-      let queryParams = {'filter': opts['filter']};
-      let headerParams = {};
-      let formParams = {};
+      let pathParams = {
+      };
+      let queryParams = {
+        'filter': this.apiClient.buildCollectionParam(opts['filter'], 'csv')
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
 
       let authNames = [];
       let contentTypes = [];
