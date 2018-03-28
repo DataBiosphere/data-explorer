@@ -13,12 +13,30 @@ class App extends Component {
       super(props);
       this.state = {
           datasetName: '',
-          facetsResponse: null
+          facets: null,
+          totalCount: null
       };
+
+      this.apiClient = new ApiClient();
+      this.apiClient.basePath = '/api';
+      this.facetsApi = new FacetsApi(this.apiClient);
+      this.facetsCallback = function(error, data) {
+          if (error) {
+              console.error(error);
+              // TODO(alanhwang): Redirect to an error page
+          } else {
+              this.setState({
+                  facets: data.facets,
+                  totalCount: data.count
+              });
+          }
+      }.bind(this);
+      this.searchFilters = new Map();
+      this.updateFacets = this.updateFacets.bind(this);
   }
 
   render() {
-    if (this.state.facetsResponse == null || this.state.datasetName == '') {
+    if (this.state.facets == null || this.state.datasetName === '') {
       // Server has not yet responded or returned an error
       return <div></div>;
     } else {
@@ -27,9 +45,13 @@ class App extends Component {
                 <div className="app">
                     <Header
                         datasetName={this.state.datasetName}
-                        totalCount={this.state.facetsResponse.count}
+                        totalCount={this.state.totalCount}
                     />
-                    <FacetsGrid facetsResponse={this.state.facetsResponse} />
+                    <FacetsGrid
+                        updateFacets={this.updateFacets}
+                        facets={this.state.facets}
+                        totalCount={this.state.totalCount}
+                    />
                 </div>
             </MuiThemeProvider>
         );
@@ -37,23 +59,10 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // Call /api/facets
-    let apiClient = new ApiClient();
-    apiClient.basePath = '/api';
-    let facetsApi = new FacetsApi(apiClient);
-    let facetsCallback = function(error, data) {
-      if (error) {
-        console.error(error);
-        // TODO(alanhwang): Redirect to an error page
-      } else {
-        this.setState({facetsResponse: data});
-      }
-    }.bind(this);
-    facetsApi.facetsGet({}, facetsCallback);
-
+    this.facetsApi.facetsGet({}, this.facetsCallback);
 
     // Call /api/dataset
-    let datasetApi = new DatasetApi(apiClient);
+    let datasetApi = new DatasetApi(this.apiClient);
     let datasetCallback = function(error, data) {
       if (error) {
         console.error(error);
@@ -64,6 +73,50 @@ class App extends Component {
     }.bind(this);
     datasetApi.datasetGet(datasetCallback);
   }
+
+    /**
+     * Updates the selection for a single facet value and refreshes the facets data from the server.
+     * @param facetName string containing the name of the facet corresponding to this value
+     * @param facetValue string containing the name of this facet value
+     * @param isSelected bool indicating whether this facetValue should be added to or removed from the query
+     * */
+    updateFacets(facetName, facetValue, isSelected) {
+        let currentFacetValues = this.searchFilters.get(facetName);
+        if (isSelected) {
+            // Add facetValue to the list of filters for facetName
+            if (currentFacetValues === undefined) {
+                this.searchFilters.set(facetName, [facetValue]);
+            } else {
+                currentFacetValues.push(facetValue);
+            }
+        } else if (this.searchFilters.get(facetName) !== undefined) {
+            // Remove facetValue from the list of filters for facetName
+            this.searchFilters.set(facetName, this.removeFacet(currentFacetValues, facetValue));
+        }
+        this.facetsApi.facetsGet({filter: this.serializeFilters(this.searchFilters)}, this.facetsCallback);
+    }
+
+    removeFacet(valueList, facetValue) {
+        let newValueList = [];
+        for (let i = 0; i < valueList.length; i++) {
+            if (valueList[i] !== facetValue) {
+                newValueList.push(valueList[i])
+            }
+        }
+        return newValueList;
+    }
+
+    serializeFilters(searchFilters) {
+        let filterStr = [];
+        searchFilters.forEach((values, key) => {
+            if (values.length > 0) {
+                for (let value of values) {
+                    filterStr.push(key + "=" + value);
+                }
+            }
+        });
+        return filterStr.join(',');
+    }
 }
 
 export default App;
