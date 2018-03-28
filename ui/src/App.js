@@ -93,7 +93,13 @@ class App extends Component {
             // Remove facetValue from the list of filters for facetName
             this.searchFilters.set(facetName, this.removeFacet(currentFacetValues, facetValue));
         }
-        this.facetsApi.facetsGet({filter: this.serializeFilters(this.searchFilters)}, this.facetsCallback);
+        let filterString = this.serializeFilters(this.searchFilters);
+        if (filterString) {
+            this.facetsApi.facetsGet({filter: filterString}, this.facetsCallback);
+        } else {
+            this.facetsApi.facetsGet({}, this.facetsCallback)
+        }
+
     }
 
     removeFacet(valueList, facetValue) {
