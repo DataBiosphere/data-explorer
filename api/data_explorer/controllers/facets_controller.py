@@ -30,7 +30,7 @@ def facets_get(filter=None):  # noqa: E501
                 #   name 10: count 15     (There are 15 people aged 10-19)
                 #   name 20: count 33     (There are 33 people aged 20-29)
                 # Convert "10" -> "10-19".
-                range_str = bucket_number_to_string(name, es_facet._params['interval'])
+                range_str = number_to_range(name, es_facet._params['interval'])
                 facet_values.append(FacetValue(name=range_str, count=count))
             else:
                 facet_values.append(FacetValue(name=name, count=count))
@@ -47,6 +47,7 @@ def deserialize(filter_arr):
     if not filter_arr:
         return {}
     parsed_filter = {}
+    # filter_str looks like "Gender=male"
     for facet_filter in filter_arr:
         filter_str = urllib.unquote(facet_filter).decode('utf8')
         key_val = filter_str.split('=')
@@ -54,7 +55,7 @@ def deserialize(filter_arr):
         facet_value = key_val[1]
         es_facet = current_app.config['ELASTICSEARCH_FACETS'][facet_name]
         if isinstance(es_facet, HistogramFacet):
-            facet_value = bucket_string_to_number(facet_value)
+            facet_value = range_to_number(facet_value)
         if len(key_val) == 2:
             if not facet_name in parsed_filter:
                 parsed_filter[facet_name] = [facet_value]
@@ -62,8 +63,10 @@ def deserialize(filter_arr):
                 parsed_filter[facet_name].append(facet_value)
     return parsed_filter
 
-def bucket_number_to_string(bucket_number, interval_size):
+def number_to_range(bucket_number, interval_size):
+    """Converts "X" -> "X-Y"."""
     return '%d-%d' % (bucket_number, bucket_number + interval_size - 1)
 
-def bucket_string_to_number(bucket_string):
+def range_to_number(bucket_string):
+    """Converts "X-Y" -> "X"."""
     return int(bucket_string.split('-')[0])
