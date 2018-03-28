@@ -107,15 +107,15 @@ class App extends Component {
     }
 
     serializeFilters(searchFilters) {
-        let filterStr = [];
+        let filterArr = [];
         searchFilters.forEach((values, key) => {
             if (values.length > 0) {
                 for (let value of values) {
-                    filterStr.push(key + "=" + value);
+                    filterArr.push(key + "=" + value);
                 }
             }
         });
-        return filterStr.join(',');
+        return filterArr;
     }
 }
 
