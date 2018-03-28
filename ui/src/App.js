@@ -1,8 +1,5 @@
 import './App.css';
 import { ApiClient, FacetsApi } from 'data_explorer_service';
-import Facet from "./api/src/model/Facet";
-import FacetValue from "./api/src/model/FacetValue";
-import FacetsResponse from "./api/src/model/FacetsResponse";
 import FacetsGrid from "./components/FacetsGrid";
 import Header from "./components/Header";
 
