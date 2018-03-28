@@ -14,7 +14,8 @@ function FacetsGrid(props) {
                 facet={facet}
                 count={totalCount}
                 updateFacets={updateFacets}
-                className='facetCard'/>
+                className='facetCard'
+            />
         </GridTile>
     );
     return (

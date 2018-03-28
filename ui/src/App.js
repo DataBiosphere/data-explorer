@@ -50,7 +50,8 @@ class App extends Component {
                     <FacetsGrid
                         updateFacets={this.updateFacets}
                         facets={this.state.facets}
-                        totalCount={this.state.totalCount}/>
+                        totalCount={this.state.totalCount}
+                    />
                 </div>
             </MuiThemeProvider>
         );
