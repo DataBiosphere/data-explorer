@@ -57,29 +57,32 @@ class FacetsGrid extends Component {
      * @param isSelected bool indicating whether this facetValue should be added to or removed from the query
      * */
     updateFacets(facetName, facetValue, isSelected) {
-        if (this.searchFilters.get(facetName) === undefined && isSelected) {
-            this.searchFilters.set(facetName, [facetValue]);
-        } else if (this.searchFilters.get(facetName) !== undefined) {
-            if (isSelected && !this.searchFilters.get(facetName).includes(facetValue)) {
-                this.searchFilters.get(facetName).push(facetValue);
-            } else if (!isSelected) {
-                this.searchFilters.set(facetName, this.removeFacet(this.searchFilters.get(facetName), facetValue));
+        let currFacetVals = this.searchFilters.get(facetName);
+        if (isSelected) {
+            // Add facetValue to the list of filters for facetName
+            if (currFacetVals === undefined) {
+                this.searchFilters.set(facetName, [facetValue]);
+            } else if (!this.searchFilters.get(facetName).includes(facetValue)) {
+                currFacetVals.push(facetValue);
             }
+        } else if (this.searchFilters.get(facetName) !== undefined) {
+            // Remove facetValue from the list of filters for facetName
+            this.searchFilters.set(facetName, this.removeFacet(currFacetVals, facetValue));
         }
-        this.api.facetsGet({filter: this.serialize(this.searchFilters)}, this.callback);
+        this.api.facetsGet({filter: this.serializeFilters(this.searchFilters)}, this.callback);
     }
 
     removeFacet(valueList, facetValue) {
-        for (let i = valueList.length-1; i >= 0; i--) {
-            if (valueList[i] === facetValue) {
-                valueList.splice(i, 1);
-                break;
+        let newValueList = [];
+        for (let i = 0; i < valueList.length; i++) {
+            if (valueList[i] !== facetValue) {
+                newValueList.push(valueList[i])
             }
         }
-        return valueList;
+        return newValueList;
     }
 
-    serialize(searchFilters) {
+    serializeFilters(searchFilters) {
         let filterStr = [];
         searchFilters.forEach((values, key) => {
             if (values.length > 0) {
