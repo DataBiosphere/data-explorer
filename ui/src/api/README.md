@@ -70,11 +70,7 @@ Please follow the [installation](#installation) instruction and execute the foll
 ```javascript
 var DataExplorerService = require('data_explorer_service');
 
-var api = new DataExplorerService.FacetsApi()
-
-var opts = { 
-  'filter': ["filter_example"] // {[String]} filter represents selected facet values. Elasticsearch query will be run only over selected facet values. filter is an array of strings, where each string has the format \"facetName=facetValue\". Example url /facets?filter=Gender=female,Region=northwest,Region=southwest 
-};
+var api = new DataExplorerService.DatasetApi()
 
 var callback = function(error, data, response) {
   if (error) {
@@ -83,7 +79,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.facetsGet(opts, callback);
+api.datasetGet(callback);
 
 ```
 
