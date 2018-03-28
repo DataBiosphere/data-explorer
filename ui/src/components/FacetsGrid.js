@@ -11,7 +11,8 @@ class FacetsGrid extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            facetsResponse: props.facetsResponse
+            totalCount: props.facetsResponse.count,
+            facets: props.facetsResponse.facets
         };
         this.searchFilters = new Map();
         let apiClient = new ApiClient();
@@ -22,18 +23,21 @@ class FacetsGrid extends Component {
                 console.error(error);
                 // TODO(alanhwang): Redirect to an error page
             } else {
-                this.setState({facetsResponse: data});
+                this.setState({
+                  totalCount: data.count,
+                  facets: data.facets
+                });
             }
         }.bind(this);
         this.updateFacets = this.updateFacets.bind(this);
     }
 
     render() {
-        const facetsList = this.state.facetsResponse.facets.map((facet) =>
+        const facetsList = this.state.facets.map((facet) =>
             <GridTile key={facet.name}>
                 <FacetCard
                     facet={facet}
-                    count={this.state.facetsResponse.count}
+                    count={this.state.totalCount}
                     updateFacets={this.updateFacets}
                     className='facetCard'/>
             </GridTile>
@@ -57,17 +61,17 @@ class FacetsGrid extends Component {
      * @param isSelected bool indicating whether this facetValue should be added to or removed from the query
      * */
     updateFacets(facetName, facetValue, isSelected) {
-        let currFacetVals = this.searchFilters.get(facetName);
+        let currentFacetValues = this.searchFilters.get(facetName);
         if (isSelected) {
             // Add facetValue to the list of filters for facetName
-            if (currFacetVals === undefined) {
+            if (currentFacetValues === undefined) {
                 this.searchFilters.set(facetName, [facetValue]);
-            } else if (!this.searchFilters.get(facetName).includes(facetValue)) {
-                currFacetVals.push(facetValue);
+            } else {
+                currentFacetValues.push(facetValue);
             }
         } else if (this.searchFilters.get(facetName) !== undefined) {
             // Remove facetValue from the list of filters for facetName
-            this.searchFilters.set(facetName, this.removeFacet(currFacetVals, facetValue));
+            this.searchFilters.set(facetName, this.removeFacet(currentFacetValues, facetValue));
         }
         this.api.facetsGet({filter: this.serializeFilters(this.searchFilters)}, this.callback);
     }
