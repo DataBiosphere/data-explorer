@@ -4,6 +4,15 @@
     vertical-align: center;
 }
 
+.headerBox {
+    width: 100%;
+    background-color: #553A70 !important;
+    margin-bottom: 20px;
+    overflow: hidden;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
 .datasetLogo {
     width: 90%;
     display: block;
@@ -12,13 +21,12 @@
     margin-bottom: 15px;
 }
 
-.totalCountBox {
-    width: 100%;
-    background-color: #553A70 !important;
-    margin-bottom: 20px;
-    overflow: hidden;
-    padding-top: 30px;
-    padding-bottom: 30px;
+.datasetName {
+    color: white;
+    float: left;
+    font-size: 30px;
+    font-weight: bold;
+    padding-left: 20px;
 }
 
 .totalCountBoxText {
@@ -30,10 +38,4 @@
 
 .totalCount {
     font-size: x-large;
-}
-
-.icon {
-    transform: scale(2.2);
-    margin-left: 6%;
-    margin-top: 10px;
 }

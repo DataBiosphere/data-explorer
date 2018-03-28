@@ -1,19 +1,18 @@
 import './Header.css';
 
 import React from 'react';
-import AccountCircle from 'material-ui/svg-icons/action/account-circle.js';
-import {white} from 'material-ui/styles/colors';
 
 function Header(props) {
-    const count = props.count;
+    const datasetName = props.datasetName
+    const totalCount = props.totalCount;
 
     return (
         <div className="header">
             {/* TODO(alanhwang): Include the logo here */}
-            <div className="totalCountBox">
-                <AccountCircle color={white} className="icon"/>
+            <div className="headerBox">
+                <div className="datasetName">{datasetName}</div>
                 <div className="totalCountBoxText">
-                    <div className="totalCount">{count}</div>
+                    <div className="totalCount">{totalCount}</div>
                     <div>Participants</div>
                 </div>
             </div>

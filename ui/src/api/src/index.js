@@ -13,9 +13,11 @@
 
 
 import ApiClient from './ApiClient';
+import DatasetResponse from './model/DatasetResponse';
 import Facet from './model/Facet';
 import FacetValue from './model/FacetValue';
 import FacetsResponse from './model/FacetsResponse';
+import DatasetApi from './api/DatasetApi';
 import FacetsApi from './api/FacetsApi';
 
 
@@ -58,6 +60,12 @@ export {
     ApiClient,
 
     /**
+     * The DatasetResponse model constructor.
+     * @property {module:model/DatasetResponse}
+     */
+    DatasetResponse,
+
+    /**
      * The Facet model constructor.
      * @property {module:model/Facet}
      */
@@ -74,6 +82,12 @@ export {
      * @property {module:model/FacetsResponse}
      */
     FacetsResponse,
+
+    /**
+    * The DatasetApi service constructor.
+    * @property {module:api/DatasetApi}
+    */
+    DatasetApi,
 
     /**
     * The FacetsApi service constructor.

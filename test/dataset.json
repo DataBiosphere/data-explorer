@@ -1,7 +1,9 @@
 {
-  // Elasticsearch index will be given this name.
-  "name": "test",
-  // Name of BigQuery field that is primary key. Elasticsearch documents will
-  // have this ID.
+  // Dataset name. This name will be displayed in the Data Explorer UI. Also,
+  // the Elasticsearch index will be given this name.
+  "name": "Insurance data",
+  // Name of BigQuery column that represents primary key. See
+  // https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery#overview
+  // for more information.
   "primary_key": "n/a for test dataset"
 }
