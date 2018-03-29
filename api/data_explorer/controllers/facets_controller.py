@@ -44,7 +44,7 @@ def deserialize(filter_arr):
     A facet_name may be repeated if multiple filters are desired.
     :return: A dict of facet_name:[facet_value] mappings.
     """
-    if not filter_arr or not ' '.join(filter_arr):
+    if not filter_arr or filter_arr == [""]:
         return {}
     parsed_filter = {}
     # filter_str looks like "Gender=male"

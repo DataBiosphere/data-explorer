@@ -95,9 +95,9 @@ class App extends Component {
             this.filterMap.set(facetName, this.removeFacet(currentFacetValues, facetValue));
         }
         
-        let filterString = this.filterMapToArray(this.filterMap);
-        if (filterString) {
-            this.facetsApi.facetsGet({filter: filterString}, this.facetsCallback);
+        let filterArray = this.filterMapToArray(this.filterMap);
+        if (filterArray) {
+            this.facetsApi.facetsGet({filter: filterArray}, this.facetsCallback);
         } else {
             this.facetsApi.facetsGet({}, this.facetsCallback)
         }
