@@ -27,7 +27,6 @@ function Header(props) {
                     <FileCloudUpload color={white} />
                 </IconButton>
             </ToolbarGroup>
-
         </Toolbar>
     );
 }
