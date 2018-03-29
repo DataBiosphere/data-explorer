@@ -31,7 +31,8 @@ class App extends Component {
               });
           }
       }.bind(this);
-      this.searchFilters = new Map();
+      // Map from facet name to a list of facet values.
+      this.filterMap = new Map();
       this.updateFacets = this.updateFacets.bind(this);
   }
 
@@ -81,19 +82,19 @@ class App extends Component {
      * @param isSelected bool indicating whether this facetValue should be added to or removed from the query
      * */
     updateFacets(facetName, facetValue, isSelected) {
-        let currentFacetValues = this.searchFilters.get(facetName);
+        let currentFacetValues = this.filterMap.get(facetName);
         if (isSelected) {
             // Add facetValue to the list of filters for facetName
             if (currentFacetValues === undefined) {
-                this.searchFilters.set(facetName, [facetValue]);
+                this.filterMap.set(facetName, [facetValue]);
             } else {
                 currentFacetValues.push(facetValue);
             }
-        } else if (this.searchFilters.get(facetName) !== undefined) {
+        } else if (this.filterMap.get(facetName) !== undefined) {
             // Remove facetValue from the list of filters for facetName
-            this.searchFilters.set(facetName, this.removeFacet(currentFacetValues, facetValue));
+            this.filterMap.set(facetName, this.removeFacet(currentFacetValues, facetValue));
         }
-        this.facetsApi.facetsGet({filter: this.serializeFilters(this.searchFilters)}, this.facetsCallback);
+        this.facetsApi.facetsGet({filter: this.filterMapToArray(this.filterMap)}, this.facetsCallback);
     }
 
     removeFacet(valueList, facetValue) {
@@ -106,16 +107,25 @@ class App extends Component {
         return newValueList;
     }
 
-    serializeFilters(searchFilters) {
-        let filterStr = [];
-        searchFilters.forEach((values, key) => {
+  /**
+   * Converts a Map of filters to an Array of filter strings interpretable by
+   * the backend
+   * @param filterMap Map of facetName:[facetValues] pairs
+   * @return [string] Array of "facetName=facetValue" strings
+   */
+    filterMapToArray(filterMap) {
+        let filterArray = [];
+        filterMap.forEach((values, key) => {
+          // Scenario where there are no values for a key: A single value is
+          // checked for a facet. The value is unchecked. The facet name will
+          // still be a key in filterMap, but there will be no values.
             if (values.length > 0) {
                 for (let value of values) {
-                    filterStr.push(key + "=" + value);
+                    filterArray.push(key + "=" + value);
                 }
             }
         });
-        return filterStr.join(',');
+        return filterArray;
     }
 }
 
