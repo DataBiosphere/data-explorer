@@ -23,7 +23,7 @@ function Header(props) {
                     <div>Participants</div>
                 </div>
                 <ToolbarSeparator className="separator" />
-                <IconButton touch={true} tooltip="Export to Saturn">
+                <IconButton tooltip="Export to Saturn">
                     <FileCloudUpload color={white} />
                 </IconButton>
             </ToolbarGroup>
