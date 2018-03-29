@@ -19,7 +19,7 @@
 
 .subHeader {
     margin-top: 5px;
-    color: gray;
+    color: #553A70;
 }
 
 .totalCount {
@@ -28,4 +28,8 @@
 
 .numberSelected {
     float: right;
+}
+
+.grayText {
+    color: gray !important;
 }

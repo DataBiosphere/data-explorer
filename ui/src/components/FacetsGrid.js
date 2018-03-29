@@ -12,7 +12,7 @@ function FacetsGrid(props) {
         <GridTile key={facet.name}>
             <FacetCard
                 facet={facet}
-                count={totalCount}
+                totalCount={totalCount}
                 updateFacets={updateFacets}
                 className='facetCard'
             />
