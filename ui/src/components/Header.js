@@ -1,22 +1,34 @@
 import './Header.css';
 
 import React from 'react';
+import IconButton from 'material-ui/IconButton';
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+import FileCloudUpload from 'material-ui/svg-icons/file/cloud-upload';
+import {white} from 'material-ui/styles/colors';
 
 function Header(props) {
     const datasetName = props.datasetName
     const totalCount = props.totalCount;
 
     return (
-        <div className="header">
-            {/* TODO(alanhwang): Include the logo here */}
-            <div className="headerBox">
-                <div className="datasetName">{datasetName}</div>
-                <div className="totalCountBoxText">
-                    <div className="totalCount">{totalCount}</div>
+        <Toolbar className="toolbar">
+            <ToolbarGroup firstChild={true}>
+                <ToolbarTitle className="datasetName" text={datasetName} />
+            </ToolbarGroup>
+            <ToolbarGroup>
+                <div className="participantCountBox">
+                    <div className="totalCountText">
+                        {totalCount}
+                    </div>
                     <div>Participants</div>
                 </div>
-            </div>
-        </div>
+                <ToolbarSeparator className="separator" />
+                <IconButton touch={true} tooltip="Export to Saturn">
+                    <FileCloudUpload color={white} />
+                </IconButton>
+            </ToolbarGroup>
+
+        </Toolbar>
     );
 }
 
