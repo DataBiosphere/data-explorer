@@ -11,9 +11,9 @@ class FacetCard extends Component {
         super(props);
 
         this.facetValues = this.props.facet.values;
+        this.totalCount = this.props.totalCount;
 
         this.state = {
-            facetCount: this.props.totalCount,
             selectedValues: []
         };
 
@@ -39,19 +39,13 @@ class FacetCard extends Component {
                 <div className="cardHeader">
                     <div>{this.props.facet.name}</div>
                     <div className="subHeader">
-                        <span>{this.state.facetCount}</span>
+                        <span>{this.props.totalCount}</span>
                         <span className="numberSelected">{this.state.selectedValues.length} / {facetValues.length}</span>
                     </div>
                 </div>
                 <List>{facetValues}</List>
             </Card>
         );
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.totalCount !== this.props.totalCount) {
-            this.setState({facetCount: nextProps.totalCount});
-        }
     }
 
     /** Update this card's state and trigger the callback on the parent component. */
