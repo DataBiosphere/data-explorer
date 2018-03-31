@@ -14,7 +14,7 @@ class FacetCard extends Component {
 
         this.state = {
             selectedValues: [],
-            totalCount: this.props.totalCount,
+            facetCount: this.props.totalCount,
         };
 
         this.onValueCheck = this.onValueCheck.bind(this);
@@ -45,7 +45,7 @@ class FacetCard extends Component {
                 <div className="cardHeader">
                     <div>{this.props.facet.name}</div>
                     <div className="subHeader">
-                        <span>{this.state.totalCount}</span>
+                        <span>{this.state.facetCount}</span>
                         <span className="numberSelected">{this.state.selectedValues.length} / {facetValues.length}</span>
                     </div>
                 </div>
