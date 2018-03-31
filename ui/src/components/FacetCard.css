@@ -19,7 +19,7 @@
 
 .subHeader {
     margin-top: 5px;
-    color: #553A70;
+    color: gray;
 }
 
 .totalCount {
@@ -31,5 +31,5 @@
 }
 
 .grayText {
-    color: gray !important;
+    color: silver !important;
 }
