@@ -1,6 +1,7 @@
 import './App.css';
 import { ApiClient, DatasetApi, FacetsApi } from 'data_explorer_service';
 import DatasetResponse from "./api/src/model/DatasetResponse";
+import ExportFab from "./components/ExportFab";
 import FacetsGrid from "./components/FacetsGrid";
 import Header from "./components/Header";
 
@@ -53,6 +54,7 @@ class App extends Component {
                         facets={this.state.facets}
                         totalCount={this.state.totalCount}
                     />
+                    <ExportFab></ExportFab>
                 </div>
             </MuiThemeProvider>
         );
