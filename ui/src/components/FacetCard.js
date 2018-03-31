@@ -12,7 +12,7 @@ class FacetCard extends Component {
 
         this.state = {
             selectedValues: [],
-            facetCount: this.sumCounts(this.props.facet.values),
+            facetCount: this.sumFacetValueCounts(this.props.facet.values, []),
         };
 
         this.onValueCheck = this.onValueCheck.bind(this);
@@ -21,7 +21,7 @@ class FacetCard extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.totalCount !== this.props.totalCount) {
-            this.setState({facetCount: this.sumCounts(nextProps.facet.values)});
+            this.setState({facetCount: this.sumFacetValueCounts(nextProps.facet.values, this.state.selectedValues)});
         }
     }
 
@@ -71,11 +71,16 @@ class FacetCard extends Component {
         return false;
     }
 
-    sumCounts(facetValues) {
+    /**
+     * @param facetValues FacetValue[] to sum counts over
+     * @param selectedValueNames Optional string[] to select a subset of facetValues to sum counts for
+     * @return count the total sum of all facetValue counts, optionally filtered by selectedValueNames
+     * */
+    sumFacetValueCounts(facetValues, selectedValueNames) {
         let count = 0;
         facetValues.forEach((value) => {
-            if (!this.isUnselected(value)) {
-                count += value.count
+            if (selectedValueNames.length === 0 || selectedValueNames.indexOf(value.name) > -1) {
+                count += value.count;
             }
         });
         return count;
