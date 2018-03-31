@@ -6,7 +6,7 @@
 
 .datasetName {
     color:white !important;
-    font-size: 40px;
+    font-size: 30px !important;
     font-weight: bold;
     padding-left: 30px;
 }
@@ -16,7 +16,7 @@
 }
 
 .totalCountText {
-    font-size: 25px;
+    font-size: 25px !important;
     text-align: center;
 }
 
