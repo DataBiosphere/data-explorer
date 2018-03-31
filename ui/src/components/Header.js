@@ -1,22 +1,26 @@
 import './Header.css';
 
 import React from 'react';
+import {Toolbar, ToolbarGroup, ToolbarTitle} from 'material-ui/Toolbar';
 
 function Header(props) {
-    const datasetName = props.datasetName
+    const datasetName = props.datasetName;
     const totalCount = props.totalCount;
 
     return (
-        <div className="header">
-            {/* TODO(alanhwang): Include the logo here */}
-            <div className="headerBox">
-                <div className="datasetName">{datasetName}</div>
-                <div className="totalCountBoxText">
-                    <div className="totalCount">{totalCount}</div>
+        <Toolbar className="toolbar">
+            <ToolbarGroup firstChild={true}>
+                <ToolbarTitle className="datasetName" text={datasetName} />
+            </ToolbarGroup>
+            <ToolbarGroup>
+                <div className="participantCountBox">
+                    <div className="totalCountText">
+                        {totalCount}
+                    </div>
                     <div>Participants</div>
                 </div>
-            </div>
-        </div>
+            </ToolbarGroup>
+        </Toolbar>
     );
 }
 
