@@ -1,6 +1,7 @@
 import './App.css';
 import { ApiClient, DatasetApi, FacetsApi } from 'data_explorer_service';
 import DatasetResponse from "./api/src/model/DatasetResponse";
+import ExportFab from "./components/ExportFab";
 import FacetsGrid from "./components/FacetsGrid";
 import Header from "./components/Header";
 
@@ -53,6 +54,7 @@ class App extends Component {
                         facets={this.state.facets}
                         totalCount={this.state.totalCount}
                     />
+                    <ExportFab></ExportFab>
                 </div>
             </MuiThemeProvider>
         );
@@ -94,7 +96,13 @@ class App extends Component {
             // Remove facetValue from the list of filters for facetName
             this.filterMap.set(facetName, this.removeFacet(currentFacetValues, facetValue));
         }
-        this.facetsApi.facetsGet({filter: this.filterMapToArray(this.filterMap)}, this.facetsCallback);
+        
+        let filterArray = this.filterMapToArray(this.filterMap);
+        if (filterArray) {
+            this.facetsApi.facetsGet({filter: filterArray}, this.facetsCallback);
+        } else {
+            this.facetsApi.facetsGet({}, this.facetsCallback)
+        }
     }
 
     removeFacet(valueList, facetValue) {
