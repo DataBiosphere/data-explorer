@@ -10,11 +10,9 @@ class FacetCard extends Component {
     constructor(props) {
         super(props);
 
-        this.facetValues = this.props.facet.values;
-
         this.state = {
             selectedValues: [],
-            facetCount: this.props.totalCount,
+            facetCount: this.sumCounts(this.props.facet.values),
         };
 
         this.onValueCheck = this.onValueCheck.bind(this);
@@ -67,7 +65,10 @@ class FacetCard extends Component {
     }
 
     isUnselected(facetValue) {
-        return this.state.selectedValues.length > 0 && this.state.selectedValues.indexOf(facetValue.name) < 0;
+        if (this.state) {
+            return this.state.selectedValues.length > 0 && this.state.selectedValues.indexOf(facetValue.name) < 0;
+        }
+        return false;
     }
 
     sumCounts(facetValues) {
