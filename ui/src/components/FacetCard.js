@@ -23,7 +23,7 @@ class FacetCard extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.totalCount !== this.props.totalCount) {
-            this.setState({totalCount: this.sumCounts(nextProps.facet.values)});
+            this.setState({facetCount: this.sumCounts(nextProps.facet.values)});
         }
     }
 
