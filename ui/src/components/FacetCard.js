@@ -11,14 +11,20 @@ class FacetCard extends Component {
         super(props);
 
         this.facetValues = this.props.facet.values;
-        this.totalCount = this.props.totalCount;
 
         this.state = {
-            selectedValues: []
+            selectedValues: [],
+            totalCount: this.props.totalCount,
         };
 
         this.onValueCheck = this.onValueCheck.bind(this);
         this.isUnselected = this.isUnselected.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.totalCount !== this.props.totalCount) {
+            this.setState({totalCount: this.sumCounts(nextProps.facet.values)});
+        }
     }
 
     render() {
@@ -39,7 +45,7 @@ class FacetCard extends Component {
                 <div className="cardHeader">
                     <div>{this.props.facet.name}</div>
                     <div className="subHeader">
-                        <span>{this.props.totalCount}</span>
+                        <span>{this.state.totalCount}</span>
                         <span className="numberSelected">{this.state.selectedValues.length} / {facetValues.length}</span>
                     </div>
                 </div>
@@ -62,6 +68,16 @@ class FacetCard extends Component {
 
     isUnselected(facetValue) {
         return this.state.selectedValues.length > 0 && this.state.selectedValues.indexOf(facetValue.name) < 0;
+    }
+
+    sumCounts(facetValues) {
+        let count = 0;
+        facetValues.forEach((value) => {
+            if (!this.isUnselected(value)) {
+                count += value.count
+            }
+        });
+        return count;
     }
 }
 
