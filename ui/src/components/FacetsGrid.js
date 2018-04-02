@@ -6,15 +6,12 @@ import {GridList, GridTile} from "material-ui/GridList";
 
 function FacetsGrid(props) {
     const facets = props.facets;
-    const totalCount = props.totalCount;
     const updateFacets = props.updateFacets;
     const facetsList = facets.map((facet) =>
         <GridTile key={facet.name}>
             <FacetCard
                 facet={facet}
-                totalCount={totalCount}
                 updateFacets={updateFacets}
-                className='facetCard'
             />
         </GridTile>
     );
