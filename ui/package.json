@@ -3,13 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "ajv": "^6.4.0",
     "data_explorer_service": "file:src/api",
+    "husky": "^0.14.3",
+    "material-ui": "0.x",
+    "prettier": "^1.11.1",
+    "pretty-quick": "^1.4.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-scripts": "1.1.1",
-    "material-ui": "0.x"
+    "react-scripts": "1.1.1"
   },
   "scripts": {
+    "precommit": "pretty-quick --staged",
     "start": "PORT=4400 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
