@@ -64,3 +64,7 @@ brew install swagger-codegen
 ```
 
 * [Set up git secrets.](https://github.com/DataBiosphere/data-explorer/tree/master/hooks)
+
+### Formatting
+
+The `/ui` repository is formatted via [Prettier](https://prettier.io/) and adheres to its style enforcements..
