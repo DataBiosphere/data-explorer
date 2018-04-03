@@ -52,7 +52,6 @@ class App extends Component {
                     <FacetsGrid
                         updateFacets={this.updateFacets}
                         facets={this.state.facets}
-                        totalCount={this.state.totalCount}
                     />
                     <ExportFab></ExportFab>
                 </div>

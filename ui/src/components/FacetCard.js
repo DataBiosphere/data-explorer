@@ -10,15 +10,18 @@ class FacetCard extends Component {
     constructor(props) {
         super(props);
 
-        this.facetValues = this.props.facet.values;
-        this.totalCount = this.props.totalCount;
-
         this.state = {
-            selectedValues: []
+            selectedValues: [],
         };
 
+        this.facetCount = this.sumFacetValueCounts(this.props.facet.values, []);
+
         this.onValueCheck = this.onValueCheck.bind(this);
-        this.isUnselected = this.isUnselected.bind(this);
+        this.isDimmed = this.isDimmed.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.facetCount = this.sumFacetValueCounts(nextProps.facet.values, this.state.selectedValues);
     }
 
     render() {
@@ -29,7 +32,7 @@ class FacetCard extends Component {
                 leftCheckbox={<Checkbox
                     onCheck={(event, isInputChecked) => this.onValueCheck(facetValue, isInputChecked)}
                 />}
-                primaryText={<div className={this.isUnselected(facetValue) ? " grayText" : ""}>
+                primaryText={<div className={this.isDimmed(facetValue) ? " grayText" : ""}>
                     <div className="facetValueName">{facetValue.name}</div>
                     <div className="facetValueCount">{facetValue.count}</div>
                 </div>}/>
@@ -39,7 +42,7 @@ class FacetCard extends Component {
                 <div className="cardHeader">
                     <div>{this.props.facet.name}</div>
                     <div className="subHeader">
-                        <span>{this.props.totalCount}</span>
+                        <span>{this.facetCount}</span>
                         <span className="numberSelected">{this.state.selectedValues.length} / {facetValues.length}</span>
                     </div>
                 </div>
@@ -60,8 +63,26 @@ class FacetCard extends Component {
         this.props.updateFacets(this.props.facet.name, facetValue.name, isInputChecked);
     }
 
-    isUnselected(facetValue) {
-        return this.state.selectedValues.length > 0 && this.state.selectedValues.indexOf(facetValue.name) < 0;
+    isDimmed(facetValue) {
+        if (this.state) {
+            return this.state.selectedValues.length > 0 && this.state.selectedValues.indexOf(facetValue.name) < 0;
+        }
+        return false;
+    }
+
+    /**
+     * @param facetValues FacetValue[] to sum counts over
+     * @param selectedValueNames Optional string[] to select a subset of facetValues to sum counts for
+     * @return count the total sum of all facetValue counts, optionally filtered by selectedValueNames
+     * */
+    sumFacetValueCounts(facetValues, selectedValueNames) {
+        let count = 0;
+        facetValues.forEach((value) => {
+            if (selectedValueNames.length === 0 || selectedValueNames.indexOf(value.name) > -1) {
+                count += value.count;
+            }
+        });
+        return count;
     }
 }
 
