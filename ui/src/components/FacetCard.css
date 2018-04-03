@@ -1,35 +1,35 @@
 .facetCard {
-    margin: 2%;
-    padding-bottom: 8px;
+  margin: 2%;
+  padding-bottom: 8px;
 }
 
 .facetValueName {
-    float: left;
-    text-align: left;
+  float: left;
+  text-align: left;
 }
 
 .facetValueCount {
-    float: right;
-    text-align: right;
+  float: right;
+  text-align: right;
 }
 
 .cardHeader {
-    padding: 15px;
+  padding: 15px;
 }
 
 .subHeader {
-    margin-top: 5px;
-    color: gray;
+  margin-top: 5px;
+  color: gray;
 }
 
 .totalCount {
-    float: left;
+  float: left;
 }
 
 .numberSelected {
-    float: right;
+  float: right;
 }
 
 .grayText {
-    color: silver !important;
+  color: silver !important;
 }
