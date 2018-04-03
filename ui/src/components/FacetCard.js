@@ -65,6 +65,35 @@ class FacetCard extends Component {
     );
   }
 
+  isDimmed(facetValue) {
+    return (
+      this.state.selectedValues.length > 0 &&
+      this.state.selectedValues.indexOf(facetValue.name) < 0
+    );
+  }
+
+  /**
+   * @param facetValues FacetValue[] to sum counts over
+   * @param selectedValueNames Optional string[] to select a subset of facetValues to sum counts for
+   * @return number count the total sum of all facetValue counts, optionally filtered by selectedValueNames
+   * */
+  sumFacetValueCounts(facetValues, selectedValueNames) {
+    let count = 0;
+    if (selectedValueNames.length === 0) {
+      facetValues.forEach(value => {
+        count += value.count;
+      });
+    } else {
+      facetValues.forEach(value => {
+        if (selectedValueNames.indexOf(value.name) > -1) {
+          count += value.count;
+        }
+      });
+    }
+
+    return count;
+  }
+
   /** Update this card's state and trigger the callback on the parent component. */
   onValueCheck(facetValue, isInputChecked) {
     let newValues = this.state.selectedValues;
@@ -78,13 +107,6 @@ class FacetCard extends Component {
       this.props.facet.name,
       facetValue.name,
       isInputChecked
-    );
-  }
-
-  isUnselected(facetValue) {
-    return (
-      this.state.selectedValues.length > 0 &&
-      this.state.selectedValues.indexOf(facetValue.name) < 0
     );
   }
 }
