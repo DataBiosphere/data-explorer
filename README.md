@@ -67,4 +67,4 @@ brew install swagger-codegen
 
 ### Formatting
 
-The `/ui` repository is formatted via [Prettier](https://prettier.io/) and adheres to its style enforcements..
+The `/ui` repository is formatted via [Prettier](https://prettier.io/). husky is used to automatically format files upon commit.
