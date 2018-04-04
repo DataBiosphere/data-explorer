@@ -1,10 +1,12 @@
 [
   {
+    // Remove Smoker so we can test that facet card total count is computed
+    // computed correctly. Smoker card will show 1337; other cards will show
+    // 1338.
     "Age": 19,
     "Gender": "female",
     "BMI": 27.9,
     "Children": 0,
-    "Smoker": "yes",
     "Region": "southwest",
     "Charges": 16884.924
   },

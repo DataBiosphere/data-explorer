@@ -10,20 +10,19 @@ class FacetCard extends Component {
     super(props);
 
     this.facetValues = this.props.facet.values;
-    this.totalCount = this.props.totalCount;
 
     this.state = {
       selectedValues: []
     };
 
-    this.facetCount = this.sumFacetValueCounts(this.props.facet.values, []);
+    this.totalFacetValueCount = this.sumFacetValueCounts(this.props.facet.values, []);
 
     this.onValueCheck = this.onValueCheck.bind(this);
     this.isDimmed = this.isDimmed.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    this.facetCount = this.sumFacetValueCounts(
+    this.totalFacetValueCount = this.sumFacetValueCounts(
       nextProps.facet.values,
       this.state.selectedValues
     );
@@ -52,13 +51,8 @@ class FacetCard extends Component {
     return (
       <Card className="facetCard">
         <div className="cardHeader">
-          <div>{this.props.facet.name}</div>
-          <div className="subHeader">
-            <span>{this.facetCount}</span>
-            <span className="numberSelected">
-              {this.state.selectedValues.length} / {facetValues.length}
-            </span>
-          </div>
+          <span>{this.props.facet.name}</span>
+          <span className="totalFacetValueCount">{this.totalFacetValueCount}</span>
         </div>
         <List>{facetValues}</List>
       </Card>

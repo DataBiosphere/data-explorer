@@ -15,6 +15,7 @@ https://stackoverflow.com/questions/23798433/json-bulk-import-to-elasticstearch.
 So write a Python script.
 """
 
+import jsmin
 import json
 import time
 
@@ -54,7 +55,9 @@ def main():
   es = init_elasticsearch()
   actions = []
   with open('test.json') as f:
-    records = json.load(f)
+    # Remove comments using jsmin, as recommended by JSON creator
+    # (https://plus.google.com/+DouglasCrockfordEsq/posts/RK8qyGVaGSr).
+    records = json.loads(jsmin.jsmin(f.read()))
     for record in records:
       action = {
         '_index': INDEX_NAME,

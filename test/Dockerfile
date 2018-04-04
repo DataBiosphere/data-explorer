@@ -1,6 +1,6 @@
 FROM python:2
 
-RUN pip install elasticsearch
+RUN pip install elasticsearch jsmin
 
 WORKDIR /app
 COPY . /app

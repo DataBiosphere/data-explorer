@@ -3,6 +3,17 @@
   padding-bottom: 8px;
 }
 
+.cardHeader {
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 15px;
+}
+
+.totalFacetValueCount {
+  color: gray;
+  float: right;
+}
+
 .facetValueName {
   float: left;
   text-align: left;
@@ -11,23 +22,6 @@
 .facetValueCount {
   float: right;
   text-align: right;
-}
-
-.cardHeader {
-  padding: 15px;
-}
-
-.subHeader {
-  margin-top: 5px;
-  color: gray;
-}
-
-.totalCount {
-  float: left;
-}
-
-.numberSelected {
-  float: right;
 }
 
 .grayText {
