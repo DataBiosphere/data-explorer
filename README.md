@@ -63,8 +63,10 @@ wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.3.1/swagge
 brew install swagger-codegen
 ```
 
+* In `ui/` run `npm install`. This will install tools used during git precommit,
+  such as formatting tools.
 * [Set up git secrets.](https://github.com/DataBiosphere/data-explorer/tree/master/hooks)
 
 ### Formatting
 
-The `/ui` repository is formatted via [Prettier](https://prettier.io/). husky is used to automatically format files upon commit.
+`ui/` is formatted via [Prettier](https://prettier.io/). husky is used to automatically format files upon commit.
