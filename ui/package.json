@@ -17,7 +17,30 @@
     "precommit": "pretty-quick --staged",
     "start": "PORT=4400 react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-export-extensions": "^6.22.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "enzyme-to-json": "^3.3.3",
+    "identity-obj-proxy": "^3.0.0",
+    "jest": "^22.4.3",
+    "jest-cli": "^22.4.3",
+    "react-test-renderer": "^16.3.1"
+  },
+  "jest": {
+    "setupFiles": ["./test/jestsetup.js"],
+    "snapshotSerializers": ["enzyme-to-json/serializer"],
+    "modulePathIgnorePatterns": ["<rootDir>/src/api/"],
+    "moduleNameMapper": {
+      "^.+\\.(css|scss)$": "identity-obj-proxy"
+    }
   }
 }
