@@ -100,7 +100,10 @@ class FacetCard extends Component {
     if (isInputChecked) {
       newValues.push(facetValue.name);
     } else {
-      newValues.splice(newValues.indexOf(facetValue.name), 1);
+      let facetIndex = newValues.indexOf(facetValue.name);
+      if (facetIndex > -1) {
+        newValues.splice(facetIndex, 1);
+      }
     }
     this.setState({ selectedValues: newValues });
     this.props.updateFacets(
