@@ -1,6 +1,6 @@
 import React from "react";
-import FacetsGrid from "./FacetsGrid";
-import { getFacetsList } from "../../../test/mockUtils";
+import FacetsGrid from "../../src/components/facets/FacetsGrid";
+import { getFacetsList } from "../mockutils";
 
 test("Renders with input", () => {
   const wrapper = shallow(

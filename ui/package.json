@@ -43,7 +43,7 @@
     "moduleNameMapper": {
       "^.+\\.(css|scss)$": "identity-obj-proxy"
     },
-    "setupFiles": ["./test/jestsetup.js"],
+    "setupFiles": ["./tests/jestsetup.js"],
     "snapshotSerializers": ["enzyme-to-json/serializer"]
   }
 }
