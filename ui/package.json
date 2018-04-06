@@ -14,6 +14,8 @@
     "react-scripts": "1.1.1"
   },
   "scripts": {
+    "lint": "prettier **/*.js **/*.css",
+    "fix": "prettier --write **/*.js **/*.css",
     "precommit": "pretty-quick --staged",
     "start": "PORT=4400 react-scripts start",
     "build": "react-scripts build",
@@ -36,11 +38,12 @@
     "react-test-renderer": "^16.3.1"
   },
   "jest": {
-    "setupFiles": ["./test/jestsetup.js"],
-    "snapshotSerializers": ["enzyme-to-json/serializer"],
+    "coveragePathIgnorePatterns": ["<rootDir>/src/api/"],
     "modulePathIgnorePatterns": ["<rootDir>/src/api/"],
     "moduleNameMapper": {
       "^.+\\.(css|scss)$": "identity-obj-proxy"
-    }
+    },
+    "setupFiles": ["./test/jestsetup.js"],
+    "snapshotSerializers": ["enzyme-to-json/serializer"]
   }
 }

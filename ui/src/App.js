@@ -1,7 +1,7 @@
 import "./App.css";
 import { ApiClient, DatasetApi, FacetsApi } from "data_explorer_service";
 import ExportFab from "./components/ExportFab";
-import FacetsGrid from "./components/FacetsGrid";
+import FacetsGrid from "./components/facets/FacetsGrid";
 import Header from "./components/Header";
 
 import React, { Component } from "react";

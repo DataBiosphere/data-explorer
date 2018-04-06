@@ -1,0 +1,196 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Renders with empty Facets list 1`] = `
+<GridList
+  cellHeight="auto"
+  className="gridList"
+  cols={3}
+  padding={1}
+/>
+`;
+
+exports[`Renders with input 1`] = `
+<GridList
+  cellHeight="auto"
+  className="gridList"
+  cols={3}
+  padding={1}
+>
+  <GridTile
+    actionPosition="right"
+    cols={1}
+    containerElement="div"
+    key="Facet 1"
+    rows={1}
+    titleBackground="rgba(0, 0, 0, 0.4)"
+    titlePosition="bottom"
+  >
+    <FacetCard
+      facet={
+        Facet {
+          "name": "Facet 1",
+          "values": Array [
+            FacetValue {
+              "count": 10,
+              "name": "FacetValue 1",
+            },
+            FacetValue {
+              "count": 20,
+              "name": "FacetValue 2",
+            },
+            FacetValue {
+              "count": 30,
+              "name": "FacetValue 3",
+            },
+            FacetValue {
+              "count": 40,
+              "name": "FacetValue 4",
+            },
+            FacetValue {
+              "count": 50,
+              "name": "FacetValue 5",
+            },
+            FacetValue {
+              "count": 60,
+              "name": "FacetValue 6",
+            },
+          ],
+        }
+      }
+      updateFacets={[Function]}
+    />
+  </GridTile>
+  <GridTile
+    actionPosition="right"
+    cols={1}
+    containerElement="div"
+    key="Facet 2"
+    rows={1}
+    titleBackground="rgba(0, 0, 0, 0.4)"
+    titlePosition="bottom"
+  >
+    <FacetCard
+      facet={
+        Facet {
+          "name": "Facet 2",
+          "values": Array [
+            FacetValue {
+              "count": 10,
+              "name": "FacetValue 1",
+            },
+            FacetValue {
+              "count": 20,
+              "name": "FacetValue 2",
+            },
+            FacetValue {
+              "count": 30,
+              "name": "FacetValue 3",
+            },
+            FacetValue {
+              "count": 40,
+              "name": "FacetValue 4",
+            },
+            FacetValue {
+              "count": 50,
+              "name": "FacetValue 5",
+            },
+            FacetValue {
+              "count": 60,
+              "name": "FacetValue 6",
+            },
+          ],
+        }
+      }
+      updateFacets={[Function]}
+    />
+  </GridTile>
+  <GridTile
+    actionPosition="right"
+    cols={1}
+    containerElement="div"
+    key="Facet 3"
+    rows={1}
+    titleBackground="rgba(0, 0, 0, 0.4)"
+    titlePosition="bottom"
+  >
+    <FacetCard
+      facet={
+        Facet {
+          "name": "Facet 3",
+          "values": Array [
+            FacetValue {
+              "count": 10,
+              "name": "FacetValue 1",
+            },
+            FacetValue {
+              "count": 20,
+              "name": "FacetValue 2",
+            },
+            FacetValue {
+              "count": 30,
+              "name": "FacetValue 3",
+            },
+            FacetValue {
+              "count": 40,
+              "name": "FacetValue 4",
+            },
+            FacetValue {
+              "count": 50,
+              "name": "FacetValue 5",
+            },
+            FacetValue {
+              "count": 60,
+              "name": "FacetValue 6",
+            },
+          ],
+        }
+      }
+      updateFacets={[Function]}
+    />
+  </GridTile>
+  <GridTile
+    actionPosition="right"
+    cols={1}
+    containerElement="div"
+    key="Facet 4"
+    rows={1}
+    titleBackground="rgba(0, 0, 0, 0.4)"
+    titlePosition="bottom"
+  >
+    <FacetCard
+      facet={
+        Facet {
+          "name": "Facet 4",
+          "values": Array [
+            FacetValue {
+              "count": 10,
+              "name": "FacetValue 1",
+            },
+            FacetValue {
+              "count": 20,
+              "name": "FacetValue 2",
+            },
+            FacetValue {
+              "count": 30,
+              "name": "FacetValue 3",
+            },
+            FacetValue {
+              "count": 40,
+              "name": "FacetValue 4",
+            },
+            FacetValue {
+              "count": 50,
+              "name": "FacetValue 5",
+            },
+            FacetValue {
+              "count": 60,
+              "name": "FacetValue 6",
+            },
+          ],
+        }
+      }
+      updateFacets={[Function]}
+    />
+  </GridTile>
+</GridList>
+`;
