@@ -12,7 +12,8 @@ beforeEach(() => {
   mockDatasetGet.mockClear();
 });
 
-test("Renders the app empty before receiving data", () => {
+test("Renders the app empty before receiving all data", () => {
+  mockDatasetGet.mockImplementationOnce(() => {});
   const tree = shallow(<App />);
 
   expect(tree).toMatchSnapshot();
@@ -66,7 +67,7 @@ test("De-selecting already unselected facet does nothing", () => {
 });
 
 test("Error getting facets does nothing", () => {
-  mockFacetsGet.mockImplementation((request, callback) => {
+  mockFacetsGet.mockImplementationOnce((request, callback) => {
     callback("Expected error for get facets", null, null);
     return null;
   });
@@ -76,7 +77,7 @@ test("Error getting facets does nothing", () => {
 });
 
 test("Error getting dataset does nothing", () => {
-  mockDatasetGet.mockImplementation(callback => {
+  mockDatasetGet.mockImplementationOnce(callback => {
     callback("Expected error for get dataset", null, null);
     return null;
   });
