@@ -1,3 +1,169 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Renders the app 1`] = `<div />`;
+exports[`Renders the app after receiving data 1`] = `
+<MuiThemeProvider>
+  <div
+    className="app"
+  >
+    <Header
+      datasetName="Test Dataset Name"
+      totalCount={210}
+    />
+    <FacetsGrid
+      facets={
+        Array [
+          Facet {
+            "name": "Facet 1",
+            "values": Array [
+              FacetValue {
+                "count": 10,
+                "name": "FacetValue 1",
+              },
+              FacetValue {
+                "count": 20,
+                "name": "FacetValue 2",
+              },
+              FacetValue {
+                "count": 30,
+                "name": "FacetValue 3",
+              },
+              FacetValue {
+                "count": 40,
+                "name": "FacetValue 4",
+              },
+            ],
+          },
+          Facet {
+            "name": "Facet 2",
+            "values": Array [
+              FacetValue {
+                "count": 10,
+                "name": "FacetValue 1",
+              },
+              FacetValue {
+                "count": 20,
+                "name": "FacetValue 2",
+              },
+              FacetValue {
+                "count": 30,
+                "name": "FacetValue 3",
+              },
+              FacetValue {
+                "count": 40,
+                "name": "FacetValue 4",
+              },
+            ],
+          },
+          Facet {
+            "name": "Facet 3",
+            "values": Array [
+              FacetValue {
+                "count": 10,
+                "name": "FacetValue 1",
+              },
+              FacetValue {
+                "count": 20,
+                "name": "FacetValue 2",
+              },
+              FacetValue {
+                "count": 30,
+                "name": "FacetValue 3",
+              },
+              FacetValue {
+                "count": 40,
+                "name": "FacetValue 4",
+              },
+            ],
+          },
+        ]
+      }
+      updateFacets={[Function]}
+    />
+    <ExportFab />
+  </div>
+</MuiThemeProvider>
+`;
+
+exports[`Renders the app empty before receiving data 1`] = `
+<MuiThemeProvider>
+  <div
+    className="app"
+  >
+    <Header
+      datasetName="Test Dataset Name"
+      totalCount={210}
+    />
+    <FacetsGrid
+      facets={
+        Array [
+          Facet {
+            "name": "Facet 1",
+            "values": Array [
+              FacetValue {
+                "count": 10,
+                "name": "FacetValue 1",
+              },
+              FacetValue {
+                "count": 20,
+                "name": "FacetValue 2",
+              },
+              FacetValue {
+                "count": 30,
+                "name": "FacetValue 3",
+              },
+              FacetValue {
+                "count": 40,
+                "name": "FacetValue 4",
+              },
+            ],
+          },
+          Facet {
+            "name": "Facet 2",
+            "values": Array [
+              FacetValue {
+                "count": 10,
+                "name": "FacetValue 1",
+              },
+              FacetValue {
+                "count": 20,
+                "name": "FacetValue 2",
+              },
+              FacetValue {
+                "count": 30,
+                "name": "FacetValue 3",
+              },
+              FacetValue {
+                "count": 40,
+                "name": "FacetValue 4",
+              },
+            ],
+          },
+          Facet {
+            "name": "Facet 3",
+            "values": Array [
+              FacetValue {
+                "count": 10,
+                "name": "FacetValue 1",
+              },
+              FacetValue {
+                "count": 20,
+                "name": "FacetValue 2",
+              },
+              FacetValue {
+                "count": 30,
+                "name": "FacetValue 3",
+              },
+              FacetValue {
+                "count": 40,
+                "name": "FacetValue 4",
+              },
+            ],
+          },
+        ]
+      }
+      updateFacets={[Function]}
+    />
+    <ExportFab />
+  </div>
+</MuiThemeProvider>
+`;

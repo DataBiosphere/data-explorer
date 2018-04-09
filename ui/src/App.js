@@ -98,7 +98,7 @@ class App extends Component {
     }
 
     let filterArray = this.filterMapToArray(this.filterMap);
-    if (filterArray) {
+    if (filterArray.length > 0) {
       this.facetsApi.facetsGet({ filter: filterArray }, this.facetsCallback);
     } else {
       this.facetsApi.facetsGet({}, this.facetsCallback);
