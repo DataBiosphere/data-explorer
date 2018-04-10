@@ -51,7 +51,6 @@ class App extends Component {
               updateFacets={this.updateFacets}
               facets={this.state.facets}
             />
-            <ExportFab />
           </div>
         </MuiThemeProvider>
       );
