@@ -19,22 +19,24 @@ def facets_get(filter=None):  # noqa: E501
     :rtype: FacetsResponse
     """
     search = DatasetFacetedSearch(deserialize(filter))
-    response = search.execute()
+    response = search.execute();
+    response_facets = response.facets.to_dict()
     facets = []
-    for facet_name, values in response.facets.to_dict().iteritems():
-        facet_values = []
-        for name, count, _ in values:
-            es_facet = current_app.config['ELASTICSEARCH_FACETS'][facet_name]
-            if isinstance(es_facet, HistogramFacet):
-                # For histograms, Elasticsearch returns:
-                #   name 10: count 15     (There are 15 people aged 10-19)
-                #   name 20: count 33     (There are 33 people aged 20-29)
-                # Convert "10" -> "10-19".
-                range_str = number_to_range(name, es_facet._params['interval'])
-                facet_values.append(FacetValue(name=range_str, count=count))
-            else:
-                facet_values.append(FacetValue(name=name, count=count))
-        facets.append(Facet(name=facet_name, values=facet_values))
+    for facet_name in current_app.config['ELASTICSEARCH_FACETS'].keys():
+        if facet_name in response_facets:
+            facet_values = []
+            for name, count, _ in response_facets[facet_name]:
+                es_facet = current_app.config['ELASTICSEARCH_FACETS'][facet_name]
+                if isinstance(es_facet, HistogramFacet):
+                    # For histograms, Elasticsearch returns:
+                    #   name 10: count 15     (There are 15 people aged 10-19)
+                    #   name 20: count 33     (There are 33 people aged 20-29)
+                    # Convert "10" -> "10-19".
+                    range_str = number_to_range(name, es_facet._params['interval'])
+                    facet_values.append(FacetValue(name=range_str, count=count))
+                else:
+                    facet_values.append(FacetValue(name=name, count=count))
+            facets.append(Facet(name=facet_name, values=facet_values))
     return FacetsResponse(facets=facets, count=response._faceted_search.count())
 
 

@@ -6,6 +6,7 @@ import json
 
 from flask import current_app
 
+from collections import OrderedDict
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import HistogramFacet
 from elasticsearch_dsl import FacetedSearch
@@ -56,7 +57,7 @@ def get_facets():
     using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
     mapping = Mapping.from_es(current_app.config['INDEX_NAME'], 'type',
             using=using).to_dict()
-    facets = {}
+    facets = OrderedDict()
     for facet_row in facet_rows:
         field_name = facet_row['readable_field_name']
         field_type = mapping['type']['properties'][field_name]['type']
