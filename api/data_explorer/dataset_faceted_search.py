@@ -57,6 +57,7 @@ def get_facets():
     using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
     mapping = Mapping.from_es(current_app.config['INDEX_NAME'], 'type',
             using=using).to_dict()
+    # Preserve order, so facets are returned in the same order as facet_fields.csv
     facets = OrderedDict()
     for facet_row in facet_rows:
         field_name = facet_row['readable_field_name']

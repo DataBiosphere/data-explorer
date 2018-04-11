@@ -19,13 +19,13 @@ def facets_get(filter=None):  # noqa: E501
     :rtype: FacetsResponse
     """
     search = DatasetFacetedSearch(deserialize(filter))
-    response = search.execute();
-    response_facets = response.facets.to_dict()
+    es_response = search.execute();
+    es_facets = es_response.facets.to_dict()
     facets = []
     for facet_name in current_app.config['ELASTICSEARCH_FACETS'].keys():
-        if facet_name in response_facets:
+        if facet_name in es_facets:
             facet_values = []
-            for name, count, _ in response_facets[facet_name]:
+            for name, count, _ in es_facets[facet_name]:
                 es_facet = current_app.config['ELASTICSEARCH_FACETS'][facet_name]
                 if isinstance(es_facet, HistogramFacet):
                     # For histograms, Elasticsearch returns:
