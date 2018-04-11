@@ -33,37 +33,3 @@ exports[`Renders correctly 1`] = `
   </ToolbarGroup>
 </Toolbar>
 `;
-
-exports[`Renders with input 1`] = `
-<Toolbar
-  className="toolbar"
-  noGutter={false}
->
-  <ToolbarGroup
-    firstChild={true}
-    lastChild={false}
-  >
-    <ToolbarTitle
-      className="datasetName"
-      text="Dataset Name"
-    />
-  </ToolbarGroup>
-  <ToolbarGroup
-    firstChild={false}
-    lastChild={false}
-  >
-    <div
-      className="participantCountBox"
-    >
-      <div
-        className="totalCountText"
-      >
-        100
-      </div>
-      <div>
-        Participants
-      </div>
-    </div>
-  </ToolbarGroup>
-</Toolbar>
-`;
