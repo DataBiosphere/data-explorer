@@ -25,14 +25,6 @@ exports[`Renders correctly after receiving all data 1`] = `
                 "count": 20,
                 "name": "FacetValue 2",
               },
-              FacetValue {
-                "count": 30,
-                "name": "FacetValue 3",
-              },
-              FacetValue {
-                "count": 40,
-                "name": "FacetValue 4",
-              },
             ],
           },
           Facet {
@@ -45,35 +37,6 @@ exports[`Renders correctly after receiving all data 1`] = `
               FacetValue {
                 "count": 20,
                 "name": "FacetValue 2",
-              },
-              FacetValue {
-                "count": 30,
-                "name": "FacetValue 3",
-              },
-              FacetValue {
-                "count": 40,
-                "name": "FacetValue 4",
-              },
-            ],
-          },
-          Facet {
-            "name": "Facet 3",
-            "values": Array [
-              FacetValue {
-                "count": 10,
-                "name": "FacetValue 1",
-              },
-              FacetValue {
-                "count": 20,
-                "name": "FacetValue 2",
-              },
-              FacetValue {
-                "count": 30,
-                "name": "FacetValue 3",
-              },
-              FacetValue {
-                "count": 40,
-                "name": "FacetValue 4",
               },
             ],
           },

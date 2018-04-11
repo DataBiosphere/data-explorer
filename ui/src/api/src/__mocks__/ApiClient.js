@@ -19,7 +19,7 @@ export const mockCallApi = jest.fn(
     if (path === "facets" && httpMethod === "GET") {
       let getFacetsResponse = new FacetsResponse();
       getFacetsResponse.count = 210;
-      getFacetsResponse.facets = getFacetsList(5, 6);
+      getFacetsResponse.facets = getFacetsList(2, 2);
       return getFacetsResponse;
     }
     return null;
