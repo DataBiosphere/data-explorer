@@ -38,7 +38,6 @@ class FacetCard extends Component {
         key={facetValue.name}
         leftCheckbox={
           <Checkbox
-            className="listItemCheckbox"
             onCheck={(event, isInputChecked) =>
               this.onValueCheck(facetValue, isInputChecked)
             }
@@ -100,10 +99,7 @@ class FacetCard extends Component {
     if (isInputChecked) {
       newValues.push(facetValue.name);
     } else {
-      let facetIndex = newValues.indexOf(facetValue.name);
-      if (facetIndex > -1) {
-        newValues.splice(facetIndex, 1);
-      }
+      newValues.splice(newValues.indexOf(facetValue.name), 1);
     }
     this.setState({ selectedValues: newValues });
     this.props.updateFacets(

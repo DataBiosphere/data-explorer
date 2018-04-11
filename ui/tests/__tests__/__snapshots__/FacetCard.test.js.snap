@@ -1,5 +1,161 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Renders correctly 1`] = `
+<Card
+  className="facetCard"
+  expandable={false}
+  expanded={null}
+  initiallyExpanded={false}
+>
+  <div
+    className="cardHeader"
+  >
+    <span>
+      Facet Name
+    </span>
+    <span
+      className="totalFacetValueCount"
+    >
+      60
+    </span>
+  </div>
+  <List>
+    <ListItem
+      autoGenerateNestedIndicator={true}
+      className="listItem"
+      containerElement="span"
+      disableKeyboardFocus={false}
+      disabled={false}
+      initiallyOpen={false}
+      insetChildren={false}
+      key="FacetValue 1"
+      leftCheckbox={
+        <Checkbox
+          disabled={false}
+          labelPosition="right"
+          onCheck={[Function]}
+        />
+      }
+      nestedItems={Array []}
+      nestedLevel={0}
+      onKeyboardFocus={[Function]}
+      onMouseEnter={[Function]}
+      onMouseLeave={[Function]}
+      onNestedListToggle={[Function]}
+      onTouchEnd={[Function]}
+      onTouchStart={[Function]}
+      open={null}
+      primaryText={
+        <div
+          className=""
+        >
+          <div
+            className="facetValueName"
+          >
+            FacetValue 1
+          </div>
+          <div
+            className="facetValueCount"
+          >
+            10
+          </div>
+        </div>
+      }
+      primaryTogglesNestedList={false}
+      secondaryTextLines={1}
+    />
+    <ListItem
+      autoGenerateNestedIndicator={true}
+      className="listItem"
+      containerElement="span"
+      disableKeyboardFocus={false}
+      disabled={false}
+      initiallyOpen={false}
+      insetChildren={false}
+      key="FacetValue 2"
+      leftCheckbox={
+        <Checkbox
+          disabled={false}
+          labelPosition="right"
+          onCheck={[Function]}
+        />
+      }
+      nestedItems={Array []}
+      nestedLevel={0}
+      onKeyboardFocus={[Function]}
+      onMouseEnter={[Function]}
+      onMouseLeave={[Function]}
+      onNestedListToggle={[Function]}
+      onTouchEnd={[Function]}
+      onTouchStart={[Function]}
+      open={null}
+      primaryText={
+        <div
+          className=""
+        >
+          <div
+            className="facetValueName"
+          >
+            FacetValue 2
+          </div>
+          <div
+            className="facetValueCount"
+          >
+            20
+          </div>
+        </div>
+      }
+      primaryTogglesNestedList={false}
+      secondaryTextLines={1}
+    />
+    <ListItem
+      autoGenerateNestedIndicator={true}
+      className="listItem"
+      containerElement="span"
+      disableKeyboardFocus={false}
+      disabled={false}
+      initiallyOpen={false}
+      insetChildren={false}
+      key="FacetValue 3"
+      leftCheckbox={
+        <Checkbox
+          disabled={false}
+          labelPosition="right"
+          onCheck={[Function]}
+        />
+      }
+      nestedItems={Array []}
+      nestedLevel={0}
+      onKeyboardFocus={[Function]}
+      onMouseEnter={[Function]}
+      onMouseLeave={[Function]}
+      onNestedListToggle={[Function]}
+      onTouchEnd={[Function]}
+      onTouchStart={[Function]}
+      open={null}
+      primaryText={
+        <div
+          className=""
+        >
+          <div
+            className="facetValueName"
+          >
+            FacetValue 3
+          </div>
+          <div
+            className="facetValueCount"
+          >
+            30
+          </div>
+        </div>
+      }
+      primaryTogglesNestedList={false}
+      secondaryTextLines={1}
+    />
+  </List>
+</Card>
+`;
+
 exports[`Renders correctly with input 1`] = `
 <Card
   className="facetCard"

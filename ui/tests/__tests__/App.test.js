@@ -12,21 +12,17 @@ beforeEach(() => {
   mockDatasetGet.mockClear();
 });
 
-test("Renders the app empty before receiving all data", () => {
+test("Renders an empty div before receiving all data", () => {
   mockDatasetGet.mockImplementationOnce(() => {});
   const tree = shallow(<App />);
 
   expect(tree).toMatchSnapshot();
-  expect(mockFacetsGet).toHaveBeenCalledTimes(1);
-  expect(mockDatasetGet).toHaveBeenCalledTimes(1);
 });
 
-test("Renders the app after receiving data", () => {
+test("Renders correctly after receiving all data", () => {
   const tree = shallow(<App />);
 
   expect(tree).toMatchSnapshot();
-  expect(mockFacetsGet).toHaveBeenCalledTimes(1);
-  expect(mockDatasetGet).toHaveBeenCalledTimes(1);
 });
 
 test("Stringifies queries when calling the API to update Facets", () => {
@@ -36,7 +32,6 @@ test("Stringifies queries when calling the API to update Facets", () => {
   tree.instance().updateFacets("Facet 1", "FacetValue 1", false);
   tree.instance().updateFacets("Facet 1", "FacetValue 2", false);
 
-  expect(mockFacetsGet).toHaveBeenCalledTimes(5);
   expect(mockFacetsGet).toHaveBeenCalledWith(
     {},
     tree.instance().facetsCallback
@@ -51,17 +46,6 @@ test("Stringifies queries when calling the API to update Facets", () => {
   );
   expect(mockFacetsGet).toHaveBeenCalledWith(
     { filter: ["Facet 1=FacetValue 2"] },
-    tree.instance().facetsCallback
-  );
-});
-
-test("De-selecting already unselected facet does nothing", () => {
-  const tree = shallow(<App />);
-  tree.instance().updateFacets("Facet 1", "FacetValue 1", false);
-
-  expect(mockFacetsGet).toHaveBeenCalledTimes(2);
-  expect(mockFacetsGet).toHaveBeenCalledWith(
-    {},
     tree.instance().facetsCallback
   );
 });
