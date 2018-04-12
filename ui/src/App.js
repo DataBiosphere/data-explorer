@@ -1,8 +1,7 @@
 import "./App.css";
 import { ApiClient, DatasetApi, FacetsApi } from "data_explorer_service";
-import DatasetResponse from "./api/src/model/DatasetResponse";
 import ExportFab from "./components/ExportFab";
-import FacetsGrid from "./components/FacetsGrid";
+import FacetsGrid from "./components/facets/FacetsGrid";
 import Header from "./components/Header";
 
 import React, { Component } from "react";
@@ -99,7 +98,7 @@ class App extends Component {
     }
 
     let filterArray = this.filterMapToArray(this.filterMap);
-    if (filterArray) {
+    if (filterArray.length > 0) {
       this.facetsApi.facetsGet({ filter: filterArray }, this.facetsCallback);
     } else {
       this.facetsApi.facetsGet({}, this.facetsCallback);

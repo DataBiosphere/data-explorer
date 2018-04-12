@@ -1,0 +1,4 @@
+// Used for UI unit tests
+{
+  "presets": ["env", "react"]
+}

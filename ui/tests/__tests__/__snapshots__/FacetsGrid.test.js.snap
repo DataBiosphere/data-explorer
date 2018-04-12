@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Renders correctly 1`] = `
+<GridList
+  cellHeight="auto"
+  className="gridList"
+  cols={3}
+  padding={1}
+>
+  <GridTile
+    actionPosition="right"
+    cols={1}
+    containerElement="div"
+    key="Facet 1"
+    rows={1}
+    titleBackground="rgba(0, 0, 0, 0.4)"
+    titlePosition="bottom"
+  >
+    <FacetCard
+      facet={
+        Facet {
+          "name": "Facet 1",
+          "values": Array [
+            FacetValue {
+              "count": 10,
+              "name": "FacetValue 1",
+            },
+            FacetValue {
+              "count": 20,
+              "name": "FacetValue 2",
+            },
+          ],
+        }
+      }
+      updateFacets={[Function]}
+    />
+  </GridTile>
+  <GridTile
+    actionPosition="right"
+    cols={1}
+    containerElement="div"
+    key="Facet 2"
+    rows={1}
+    titleBackground="rgba(0, 0, 0, 0.4)"
+    titlePosition="bottom"
+  >
+    <FacetCard
+      facet={
+        Facet {
+          "name": "Facet 2",
+          "values": Array [
+            FacetValue {
+              "count": 10,
+              "name": "FacetValue 1",
+            },
+            FacetValue {
+              "count": 20,
+              "name": "FacetValue 2",
+            },
+          ],
+        }
+      }
+      updateFacets={[Function]}
+    />
+  </GridTile>
+</GridList>
+`;
