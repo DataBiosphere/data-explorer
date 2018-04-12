@@ -1,0 +1,8 @@
+version: 2
+jobs:
+  ui:
+    docker:
+      - image: circleci/classic:latest
+    steps:
+      - checkout
+      - run: echo "A first hello"
