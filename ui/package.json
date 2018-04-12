@@ -16,7 +16,7 @@
   "scripts": {
     "lint": "prettier **/*.js **/*.css",
     "fix": "prettier --write **/*.js **/*.css",
-    "precommit": "pretty-quick --staged",
+    "precommit": "pretty-quick",
     "start": "PORT=4400 react-scripts start",
     "build": "react-scripts build",
     "test": "jest",
