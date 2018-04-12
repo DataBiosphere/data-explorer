@@ -38,12 +38,20 @@
     "react-test-renderer": "^16.3.1"
   },
   "jest": {
-    "coveragePathIgnorePatterns": ["<rootDir>/src/api/"],
-    "modulePathIgnorePatterns": ["<rootDir>/src/api/"],
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/src/api/"
+    ],
+    "modulePathIgnorePatterns": [
+      "<rootDir>/src/api/"
+    ],
     "moduleNameMapper": {
       "^.+\\.(css|scss)$": "identity-obj-proxy"
     },
-    "setupFiles": ["./tests/jestsetup.js"],
-    "snapshotSerializers": ["enzyme-to-json/serializer"]
+    "setupFiles": [
+      "./tests/jestsetup.js"
+    ],
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ]
   }
 }
