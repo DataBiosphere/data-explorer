@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  ui:
+  build:
     docker:
       - image: circleci/classic:latest
     steps:
