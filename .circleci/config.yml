@@ -5,4 +5,24 @@ jobs:
       - image: node
     steps:
       - checkout
-      - run: echo "A first hello"
+      - restore_cache:
+          key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
+      - run:
+          name: nvm install node and UI dependencies
+          command: |
+            cd ui
+            npm install
+      - save_cache:
+          key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
+          paths:
+            - "ui/node_modules"
+      - run:
+          name: Running the linter
+          command: |
+              cd ui
+              npm run lint -- --list-different
+      - run:
+          name: Running ui unit tests
+          command: |
+              cd ui
+              npm test
