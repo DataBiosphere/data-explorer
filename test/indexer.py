@@ -23,7 +23,7 @@ from elasticsearch import Elasticsearch
 from elasticsearch import helpers
 
 
-INDEX_NAME = 'insurance_data'
+INDEX_NAME = 'test_data'
 
 
 def init_elasticsearch():
