@@ -6,23 +6,23 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
+          key: node-modules-{{ .Branch }}-{{ checksum "ui/package.json" }}
       - run:
           name: nvm install node and UI dependencies
           command: |
             cd ui
             npm install
       - save_cache:
-          key: node-modules-{{ .Branch }}--{{ checksum "ui/package.json" }}
+          key: node-modules-{{ .Branch }}-{{ checksum "ui/package.json" }}
           paths:
             - "ui/node_modules"
       - run:
-          name: Running the linter
+          name: Run the linter
           command: |
               cd ui
               npm run lint -- --list-different
       - run:
-          name: Running ui unit tests
+          name: Run unit tests
           command: |
               cd ui
               npm test
