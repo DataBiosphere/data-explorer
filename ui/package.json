@@ -20,8 +20,6 @@
     "start": "PORT=4400 react-scripts start",
     "build": "react-scripts build",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
     "eject": "react-scripts eject"
   },
   "devDependencies": {
@@ -35,6 +33,8 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^22.4.3",
     "jest-cli": "^22.4.3",
+    "jest-puppeteer": "^2.3.0",
+    "puppeteer": "^1.3.0",
     "react-test-renderer": "^16.3.1"
   },
   "jest": {
@@ -47,6 +47,7 @@
     "moduleNameMapper": {
       "^.+\\.(css|scss)$": "identity-obj-proxy"
     },
+    "preset": "jest-puppeteer",
     "setupFiles": [
       "./tests/jestsetup.js"
     ],
