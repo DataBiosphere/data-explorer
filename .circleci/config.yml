@@ -1,28 +1,46 @@
 version: 2
 jobs:
   build:
-    docker:
-      - image: node
+#    docker:
+#      - image: node
+# Use machine executor because docker executor does not support volumes and
+# ports in docker-compose.yml (https://circleci.com/docs/2.0/docker-compose/).
+    machine:
+      - image: circleci/classic:latest
     steps:
       - checkout
-      - restore_cache:
-          key: node-modules-{{ .Branch }}-{{ checksum "ui/package.json" }}
+
+#      - restore_cache:
+#          key: node-modules-{{ .Branch }}-{{ checksum "ui/package.json" }}
+#      - run:
+#          name: nvm install node and UI dependencies
+#          command: |
+#            cd ui
+#            npm install
+#      - save_cache:
+#          key: node-modules-{{ .Branch }}-{{ checksum "ui/package.json" }}
+#          paths:
+#            - "ui/node_modules"
+#      - run:
+#          name: Run the linter
+#          command: |
+#              cd ui
+#              npm run lint -- --list-different
+#      - run:
+#          name: Run UI unit tests
+#          command: |
+#              cd ui
+#              npm test
+#      - setup_remote_docker
+#      - run:
+#          name: Install docker-compose
+#          command: |
+#            set -x
+#            curl -L https://github.com/docker/compose/releases/download/1.11.2/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+#            chmod +x /usr/local/bin/docker-compose
       - run:
-          name: nvm install node and UI dependencies
+          name: Run docker-compose
           command: |
-            cd ui
-            npm install
-      - save_cache:
-          key: node-modules-{{ .Branch }}-{{ checksum "ui/package.json" }}
-          paths:
-            - "ui/node_modules"
-      - run:
-          name: Run the linter
-          command: |
-              cd ui
-              npm run lint -- --list-different
-      - run:
-          name: Run unit tests
-          command: |
-              cd ui
-              npm test
+              set -x
+              docker-compose up --build -d
+              curl localhost:4400
