@@ -6,7 +6,7 @@ jobs:
 # Use machine executor because docker executor does not support volumes and
 # ports in docker-compose.yml (https://circleci.com/docs/2.0/docker-compose/).
     machine:
-      - image: circleci/classic:latest
+      image: circleci/classic:latest
     steps:
       - checkout
 
@@ -41,6 +41,5 @@ jobs:
       - run:
           name: Run docker-compose
           command: |
-              set -x
               docker-compose up --build -d
               curl localhost:4400
