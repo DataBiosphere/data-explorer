@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "../../src/components/Header";
+import Header from "../../../src/components/Header";
 
 test("Renders correctly", () => {
   const tree = shallow(

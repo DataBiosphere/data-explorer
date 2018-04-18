@@ -1,5 +1,5 @@
-import Facet from "../src/api/src/model/Facet";
-import FacetValue from "../src/api/src/model/FacetValue";
+import Facet from "../../src/api/src/model/Facet";
+import FacetValue from "../../src/api/src/model/FacetValue";
 
 // Utilities for setting up test instances
 

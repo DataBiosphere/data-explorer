@@ -1,5 +1,5 @@
 import React from "react";
-import FacetCard from "../../src/components/facets/FacetCard";
+import FacetCard from "../../../src/components/facets/FacetCard";
 import { getFacet } from "../mockutils";
 import { Checkbox, MuiThemeProvider } from "material-ui";
 import { getMuiTheme } from "material-ui/styles";

@@ -1,5 +1,5 @@
 import React from "react";
-import FacetsGrid from "../../src/components/facets/FacetsGrid";
+import FacetsGrid from "../../../src/components/facets/FacetsGrid";
 import { getFacetsList } from "../mockutils";
 
 test("Renders correctly", () => {

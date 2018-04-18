@@ -37,6 +37,8 @@
     "puppeteer": "^1.3.0",
     "react-test-renderer": "^16.3.1"
   },
+  "//": "After https://github.com/facebook/jest/issues/6026 is fixed",
+  "//": "create jest unit and e2e projects.",
   "jest": {
     "coveragePathIgnorePatterns": [
       "<rootDir>/src/api/"
@@ -47,9 +49,8 @@
     "moduleNameMapper": {
       "^.+\\.(css|scss)$": "identity-obj-proxy"
     },
-    "preset": "jest-puppeteer",
     "setupFiles": [
-      "./tests/jestsetup.js"
+      "./tests/unit/jestsetup.js"
     ],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"

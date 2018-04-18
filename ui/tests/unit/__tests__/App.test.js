@@ -1,10 +1,10 @@
 import React from "react";
-import App from "../../src/App";
-import { mockFacetsGet } from "../../src/api/src/api/FacetsApi";
-import { mockDatasetGet } from "../../src/api/src/api/DatasetApi";
+import App from "../../../src/App";
+import { mockFacetsGet } from "../../../src/api/src/api/FacetsApi";
+import { mockDatasetGet } from "../../../src/api/src/api/DatasetApi";
 
-jest.mock("../../src/api/src/api/DatasetApi");
-jest.mock("../../src/api/src/api/FacetsApi");
+jest.mock("../../../src/api/src/api/DatasetApi");
+jest.mock("../../../src/api/src/api/FacetsApi");
 ("use strict");
 
 beforeEach(() => {

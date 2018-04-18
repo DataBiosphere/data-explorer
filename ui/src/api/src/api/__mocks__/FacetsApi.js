@@ -1,5 +1,5 @@
 import FacetsResponse from "../../model/FacetsResponse";
-import { getFacetsList } from "../../../../../tests/mockutils";
+import { getFacetsList } from "../../../../../tests/unit/mockutils";
 
 export const mockFacetsGet = jest.fn((request, callback) => {
   let getFacetsResponse = new FacetsResponse();
