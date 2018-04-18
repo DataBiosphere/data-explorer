@@ -17,7 +17,7 @@ describe("End-to-end", () => {
     await page.click("input");
     await assertHeaderTotalCount("137");
     await assertFacet("Age", "137", "10-19", "137");
-    // Make second Age facet value is gray
+    // Make sure second Age facet value is gray
     const grayFacetValue = await page.$eval("div.grayText", e => e.innerText);
     await expect(grayFacetValue).toMatch("20-29"); // Facet value name
     await expect(grayFacetValue).toMatch("280"); // Facet value count
