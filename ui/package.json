@@ -20,6 +20,7 @@
     "start": "PORT=4400 react-scripts start",
     "build": "react-scripts build",
     "test": "jest tests/unit",
+    "test:e2e": "jest --config '{\"preset\":\"jest-puppeteer\"}' tests/e2e/",
     "eject": "react-scripts eject"
   },
   "devDependencies": {
@@ -38,10 +39,8 @@
     "react-test-renderer": "^16.3.1"
   },
   "//": ["After https://github.com/facebook/jest/issues/6026 is fixed",
-         "create jest unit and e2e projects. Until then, run unit tests with:",
-         "  jest tests/unit",
-         "and end-to-end tests with:",
-         "  jest --config '{\"preset\":\"jest-puppeteer\"}' tests/e2e" ],
+         "create jest unit and e2e projects and move preset=jest-puppeteer",
+         "setting to e2e project." ],
   "jest": {
     "coveragePathIgnorePatterns": [
       "<rootDir>/src/api/"

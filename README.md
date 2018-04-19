@@ -69,10 +69,17 @@ brew install swagger-codegen
 
 ### Testing
 
-Every git commit kicks off tests [on CircleCI](https://circleci.com/gh/DataBiosphere).
+Every commit on a remote branch kicks off all tests [on CircleCI](https://circleci.com/gh/DataBiosphere).
+
 UI unit tests uses [Jest](https://facebook.github.io/jest/) and [Enzyme](https://github.com/airbnb/enzyme).
+
 End-to-end tests use [Puppeteer](https://github.com/GoogleChrome/puppeteer) and
 [jest-puppeteer](https://github.com/smooth-code/jest-puppeteer).
+These tests use the [test dataset in test/](https://github.com/DataBiosphere/data-explorer/tree/master/test).
+To run locally:
+* `ln -s test config`
+* `docker-compose up --build`
+* `npm run test:e2e`
 
 ### Formatting
 
