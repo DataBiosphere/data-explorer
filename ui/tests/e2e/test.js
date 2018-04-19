@@ -13,16 +13,19 @@ describe("End-to-end", () => {
   });
 
   test("Faceted search", async () => {
-    // Click first checkbox in Age facet
-    await page.click("input");
+    // Click first Age facet value
+    let facetValueRow = await getFacetValueRow("Age", "10-19")
+    await facetValueRow.click("input");
+
+    // Assert page updated correctly
     await assertHeaderTotalCount("137");
     await assertFacet("Age", "137", "10-19", "137");
-    // Make sure second Age facet value is gray
-    const grayFacetValue = await page.$eval("div.grayText", e => e.innerText);
-    await expect(grayFacetValue).toMatch("20-29"); // Facet value name
-    await expect(grayFacetValue).toMatch("280"); // Facet value count
-    // Make sure Gender facet was updated correctly
     await assertFacet("Gender", "137", "male", "71");
+
+    // Make sure second Age facet value is gray
+    facetValueRow = await getFacetValueRow("Age", "20-29")
+    const grayDiv = await facetValueRow.$("div.grayText");
+    expect(grayDiv).toBeTruthy();
   });
 
   async function assertHeaderTotalCount(count) {
@@ -36,31 +39,55 @@ describe("End-to-end", () => {
     firstValueName,
     firstValueCount
   ) {
-    const facetCard = (await page.evaluateHandle(facetName => {
-      const divs = document.querySelectorAll("div.facetCard");
-      for (const div of divs) {
+    let facetCard = await getFacetCard(facetName)
+
+    // TODO: Simplify after
+    // https://github.com/GoogleChrome/puppeteer/issues/2401 is fixed.
+    expect(
+      await page.evaluate(facetCard => {
+        return facetCard.querySelector("span.totalFacetValueCount").innerText;
+      }, facetCard)
+    ).toBe(totalCount);
+    expect(
+      await page.evaluate(facetCard => {
+        return facetCard.querySelector("div.facetValueName").innerText;
+      }, facetCard)
+    ).toBe(firstValueName);
+    expect(
+      await page.evaluate(facetCard => {
+        return facetCard.querySelector("div.facetValueCount").innerText;
+      }, facetCard)
+    ).toBe(firstValueCount);
+  }
+
+  /**
+   * Returns Promise of JSHandle of facetValueRow label.
+   */
+  async function getFacetValueRow(facetName, valueName) {
+    let facetCard = await getFacetCard(facetName)
+    let facetValueRow = (await page.evaluateHandle((facetCard, valueName) => {
+      let divs = facetCard.querySelectorAll("label.listItem");
+      for (let div of divs) {
+        if (div.innerText.match(valueName)) return div;
+      }
+      return null;
+    }, facetCard, valueName)).asElement();
+    expect(facetValueRow).toBeTruthy();
+    return facetValueRow
+  }
+
+  /**
+   * Returns Promise of JSHandle of facetCard div.
+   */
+  async function getFacetCard(facetName) {
+    let facetCard = (await page.evaluateHandle(facetName => {
+      let divs = document.querySelectorAll("div.facetCard");
+      for (let div of divs) {
         if (div.innerText.match(facetName)) return div;
       }
       return null;
     }, facetName)).asElement();
     expect(facetCard).toBeTruthy();
-
-    // TODO: Simplify after
-    // https://github.com/GoogleChrome/puppeteer/issues/2401 is fixed.
-    expect(
-      await page.evaluate(card => {
-        return card.querySelector("span.totalFacetValueCount").innerText;
-      }, facetCard)
-    ).toBe(totalCount);
-    expect(
-      await page.evaluate(card => {
-        return card.querySelector("div.facetValueName").innerText;
-      }, facetCard)
-    ).toBe(firstValueName);
-    expect(
-      await page.evaluate(card => {
-        return card.querySelector("div.facetValueCount").innerText;
-      }, facetCard)
-    ).toBe(firstValueCount);
+    return facetCard
   }
 });
