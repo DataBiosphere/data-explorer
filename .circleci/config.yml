@@ -7,21 +7,21 @@ jobs:
 # ports in docker-compose.yml (https://circleci.com/docs/2.0/docker-compose/).
     machine:
       image: circleci/classic:latest
-#      docker_layer_caching: true
+      docker_layer_caching: true
     steps:
       - checkout
 
-#      - restore_cache:
-#          key: node-modules-{{ .Branch }}-{{ checksum "ui/package.json" }}
-#      - run:
-#          name: nvm install node and UI dependencies
-#          command: |
-#            cd ui
-#            npm install
-#      - save_cache:
-#          key: node-modules-{{ .Branch }}-{{ checksum "ui/package.json" }}
-#          paths:
-#            - "ui/node_modules"
+      - restore_cache:
+          key: node-modules-{{ .Branch }}-{{ checksum "ui/package.json" }}
+      - run:
+          name: nvm install node and UI dependencies
+          command: |
+            cd ui
+            npm install
+      - save_cache:
+          key: node-modules-{{ .Branch }}-{{ checksum "ui/package.json" }}
+          paths:
+            - "ui/node_modules"
 #      - run:
 #          name: Run the linter
 #          command: |
