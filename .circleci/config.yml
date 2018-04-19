@@ -44,4 +44,7 @@ jobs:
           command: |
               ln -s test config
               docker-compose up --build -d
-              curl localhost:4400
+      - run:
+          name: Run e2e tests
+          command: |
+              cd ui && jest --config '{"preset":"jest-puppeteer"}' tests/e2e
