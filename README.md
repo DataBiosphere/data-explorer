@@ -67,6 +67,13 @@ brew install swagger-codegen
   such as formatting tools.
 * [Set up git secrets.](https://github.com/DataBiosphere/data-explorer/tree/master/hooks)
 
+### Testing
+
+Every git commit kicks off tests [on CircleCI](https://circleci.com/gh/DataBiosphere).
+UI unit tests uses [Jest](https://facebook.github.io/jest/) and [Enzyme](https://github.com/airbnb/enzyme).
+End-to-end tests use [Puppeteer](https://github.com/GoogleChrome/puppeteer) and
+[jest-puppeteer](https://github.com/smooth-code/jest-puppeteer).
+
 ### Formatting
 
 `ui/` is formatted via [Prettier](https://prettier.io/). husky is used to automatically format files upon commit.
