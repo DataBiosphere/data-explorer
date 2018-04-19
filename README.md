@@ -67,6 +67,21 @@ brew install swagger-codegen
   such as formatting tools.
 * [Set up git secrets.](https://github.com/DataBiosphere/data-explorer/tree/master/hooks)
 
+### Testing
+
+Every commit on a remote branch kicks off all tests [on CircleCI](https://circleci.com/gh/DataBiosphere).
+
+UI unit tests uses [Jest](https://facebook.github.io/jest/) and [Enzyme](https://github.com/airbnb/enzyme). To run locally: `npm test`
+
+End-to-end tests use [Puppeteer](https://github.com/GoogleChrome/puppeteer) and
+[jest-puppeteer](https://github.com/smooth-code/jest-puppeteer).
+These tests use the [test dataset in test/](https://github.com/DataBiosphere/data-explorer/tree/master/test).
+To run locally:
+
+* `ln -s test config`
+* `docker-compose up --build`
+* `npm run test:e2e`
+
 ### Formatting
 
 `ui/` is formatted via [Prettier](https://prettier.io/). husky is used to automatically format files upon commit.

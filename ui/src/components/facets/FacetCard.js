@@ -34,7 +34,6 @@ class FacetCard extends Component {
   render() {
     const facetValues = this.props.facet.values.map(facetValue => (
       <ListItem
-        className="listItem"
         key={facetValue.name}
         leftCheckbox={
           <Checkbox
