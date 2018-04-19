@@ -7,7 +7,7 @@ jobs:
 # ports in docker-compose.yml (https://circleci.com/docs/2.0/docker-compose/).
     machine:
       image: circleci/classic:latest
-      docker_layer_caching: true
+#      docker_layer_caching: true
     steps:
       - checkout
 
@@ -47,4 +47,4 @@ jobs:
       - run:
           name: Run e2e tests
           command: |
-              cd ui && jest --config '{"preset":"jest-puppeteer"}' tests/e2e
+              cd ui && npm run test:e2e
