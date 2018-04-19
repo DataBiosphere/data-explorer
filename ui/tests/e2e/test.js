@@ -14,7 +14,7 @@ describe("End-to-end", () => {
 
   test("Faceted search", async () => {
     // Click first Age facet value
-    let facetValueRow = await getFacetValueRow("Age", "10-19")
+    let facetValueRow = await getFacetValueRow("Age", "10-19");
     await facetValueRow.click("input");
 
     // Assert page updated correctly
@@ -23,7 +23,7 @@ describe("End-to-end", () => {
     await assertFacet("Gender", "137", "male", "71");
 
     // Make sure second Age facet value is gray
-    facetValueRow = await getFacetValueRow("Age", "20-29")
+    facetValueRow = await getFacetValueRow("Age", "20-29");
     const grayDiv = await facetValueRow.$("div.grayText");
     expect(grayDiv).toBeTruthy();
   });
@@ -39,7 +39,7 @@ describe("End-to-end", () => {
     firstValueName,
     firstValueCount
   ) {
-    let facetCard = await getFacetCard(facetName)
+    let facetCard = await getFacetCard(facetName);
 
     // TODO: Simplify after
     // https://github.com/GoogleChrome/puppeteer/issues/2401 is fixed.
@@ -64,16 +64,20 @@ describe("End-to-end", () => {
    * Returns Promise of JSHandle of facetValueRow label.
    */
   async function getFacetValueRow(facetName, valueName) {
-    let facetCard = await getFacetCard(facetName)
-    let facetValueRow = (await page.evaluateHandle((facetCard, valueName) => {
-      let divs = facetCard.querySelectorAll("label.listItem");
-      for (let div of divs) {
-        if (div.innerText.match(valueName)) return div;
-      }
-      return null;
-    }, facetCard, valueName)).asElement();
+    let facetCard = await getFacetCard(facetName);
+    let facetValueRow = (await page.evaluateHandle(
+      (facetCard, valueName) => {
+        let divs = facetCard.querySelectorAll("label");
+        for (let div of divs) {
+          if (div.innerText.match(valueName)) return div;
+        }
+        return null;
+      },
+      facetCard,
+      valueName
+    )).asElement();
     expect(facetValueRow).toBeTruthy();
-    return facetValueRow
+    return facetValueRow;
   }
 
   /**
@@ -88,6 +92,6 @@ describe("End-to-end", () => {
       return null;
     }, facetName)).asElement();
     expect(facetCard).toBeTruthy();
-    return facetCard
+    return facetCard;
   }
 });
