@@ -5,8 +5,9 @@ jobs:
 #      - image: node
 # Use machine executor because docker executor does not support volumes and
 # ports in docker-compose.yml (https://circleci.com/docs/2.0/docker-compose/).
-    machine: true
+    machine:
 #      image: circleci/classic:latest
+      image: circleci/classic:edge
     steps:
       - checkout
 
