@@ -16,8 +16,8 @@ jobs:
           name: nvm install node and UI dependencies
           command: |
             cd ui
-            # As of 4/20/18, circleci/classic:latest has npm 5.4.2. "npm
-            # install" fails with optionalDependencies bug.
+            # As of 4/20/18, circleci/classic:latest has npm 5.4.2. With 5.4.2,
+            # "npm install" fails with optionalDependencies bug.
             npm install npm@5.6.0 -g
             npm install
       - save_cache:
