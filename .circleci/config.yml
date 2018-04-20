@@ -6,8 +6,7 @@ jobs:
 # Use machine executor because docker executor does not support volumes and
 # ports in docker-compose.yml (https://circleci.com/docs/2.0/docker-compose/).
     machine:
-#      image: circleci/classic:latest
-      image: circleci/classic:edge
+      image: circleci/classic:latest
     steps:
       - checkout
 
@@ -17,6 +16,9 @@ jobs:
           name: nvm install node and UI dependencies
           command: |
             cd ui
+            # As of 4/20/18, circleci/classic:latest has npm 5.4.2. "npm
+            # install" fails with optionalDependencies bug.
+            npm install npm@5.6.0 -g
             npm install
       - save_cache:
           key: node-modules-{{ .Branch }}-{{ checksum "ui/package.json" }}
