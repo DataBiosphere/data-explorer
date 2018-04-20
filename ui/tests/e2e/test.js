@@ -19,7 +19,9 @@ describe("End-to-end", () => {
     await facetValueRow.click("input");
     // Wait for data to be returned from backend.
     // See #63 for why we can't wait for div.grayText.
-    await page.waitForXPath("//div[contains(@class, 'totalCountText') and text() = '137']");
+    await page.waitForXPath(
+      "//div[contains(@class, 'totalCountText') and text() = '137']"
+    );
 
     // Assert page updated correctly
     await assertHeaderTotalCount("137");
