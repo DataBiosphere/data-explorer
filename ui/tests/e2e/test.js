@@ -17,9 +17,9 @@ describe("End-to-end", () => {
     // Click first Age facet value
     let facetValueRow = await getFacetValueRow("Age", "10-19");
     await facetValueRow.click("input");
-    // After data is returned from backend, Smoker facet will have "107".
-    // See #63 for why we can't simply wait for div.grayText.
-    await page.waitForXPath("//text()[contains(.,'107')]");
+    // Wait for data to be returned from backend.
+    // See #63 for why we can't wait for div.grayText.
+    await page.waitForXPath("//div[contains(@class, 'totalCountText') and text() = '137']");
 
     // Assert page updated correctly
     await assertHeaderTotalCount("137");
