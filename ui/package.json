@@ -41,9 +41,11 @@
   "optionalDependencies": {
     "fsevents": "*"
   },
-  "//": ["After https://github.com/facebook/jest/issues/6026 is fixed",
-         "create jest unit and e2e projects and move preset=jest-puppeteer",
-         "setting to e2e project." ],
+  "//": [
+    "After https://github.com/facebook/jest/issues/6026 is fixed",
+    "create jest unit and e2e projects and move preset=jest-puppeteer",
+    "setting to e2e project."
+  ],
   "jest": {
     "coveragePathIgnorePatterns": [
       "<rootDir>/src/api/"
