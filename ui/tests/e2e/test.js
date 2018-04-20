@@ -1,7 +1,7 @@
 describe("End-to-end", () => {
   beforeAll(async () => {
-  await page.goto("http://localhost:4400");
-  await page.waitForSelector("span.datasetName")
+    await page.goto("http://localhost:4400");
+    await page.waitForSelector("span.datasetName");
   });
 
   test("Header", async () => {
@@ -19,7 +19,7 @@ describe("End-to-end", () => {
     await facetValueRow.click("input");
     // After data is returned from backend, Smoker facet will have "107".
     // See #63 for why we can't simply wait for div.grayText.
-    await page.waitForXPath("//text()[contains(.,'107')]")
+    await page.waitForXPath("//text()[contains(.,'107')]");
 
     // Assert page updated correctly
     await assertHeaderTotalCount("137");
