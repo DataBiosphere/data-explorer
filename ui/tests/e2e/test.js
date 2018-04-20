@@ -1,6 +1,7 @@
 describe("End-to-end", () => {
   beforeAll(async () => {
     await page.goto("http://localhost:4400");
+    await page.waitForSelector("span.datasetName");
   });
 
   test("Header", async () => {
@@ -16,6 +17,11 @@ describe("End-to-end", () => {
     // Click first Age facet value
     let facetValueRow = await getFacetValueRow("Age", "10-19");
     await facetValueRow.click("input");
+    // Wait for data to be returned from backend.
+    // See #63 for why we can't wait for div.grayText.
+    await page.waitForXPath(
+      "//div[contains(@class, 'totalCountText') and text() = '137']"
+    );
 
     // Assert page updated correctly
     await assertHeaderTotalCount("137");
