@@ -4,9 +4,7 @@ module.exports = {
     //    dumpio: true,
     //    Uncomment to see browser.
     //    headless: false,
-    //    Uncomment to slow down execution. Unit is ms. Note that until
-    //    https://github.com/smooth-code/jest-puppeteer/issues/36 is fixed,
-    //    tests will fail.
-    //    slowMo: 1000,
+    //    Uncomment to slow down execution. Unit is ms.
+    //    slowMo: 100,
   }
 };
