@@ -25,14 +25,15 @@ from elasticsearch.exceptions import ConnectionError
 
 
 INDEX_NAME = 'test_data'
+ES_TIMEOUT_SEC = 60
 
 
 def init_elasticsearch():
-  es = Elasticsearch(["elasticsearch:9200"], timeout=60)
+  es = Elasticsearch(["elasticsearch:9200"])
 
   # Wait for Elasticsearch to come up.
   start = time.time()
-  for _ in range(0,100):
+  for _ in range(0, ES_TIMEOUT_SEC):
     try:
       es.cluster.health(wait_for_status='yellow')
       print('Elasticsearch took %d seconds to come up.' % (time.time()-start))
