@@ -1,4 +1,4 @@
-"""For convenience, load test data into Elasticsearch index "insurance_data".
+"""For convenience, load test data into Elasticsearch index "test_data".
 
 For real datasets, one would use one of the indexers in
 https://github.com/DataBiosphere/data-explorer-indexers/, or from somewhere
@@ -21,20 +21,29 @@ import time
 
 from elasticsearch import Elasticsearch
 from elasticsearch import helpers
+from elasticsearch.exceptions import ConnectionError
 
 
 INDEX_NAME = 'test_data'
 
 
 def init_elasticsearch():
+  es = Elasticsearch(["elasticsearch:9200"], timeout=60)
+
   # Wait for Elasticsearch to come up.
-  # I had trouble getting wait_for_status to work, so just use sleep. See
-  # https://discuss.elastic.co/t/cant-get-python-client-wait-for-status-to-work/123163
-  time.sleep(15)
+  start = time.time()
+  for _ in range(0,100):
+    try:
+      es.cluster.health(wait_for_status='yellow')
+      print('Elasticsearch took %d seconds to come up.' % (time.time()-start))
+      break
+    except ConnectionError:
+      time.sleep(1)
+  else:
+    raise EnvironmentError("Elasticsearch failed to start.")
 
   # This script is invoked from docker-compose, so use service name.
   # If running this script directly on host, change to "localhost:9200".
-  es = Elasticsearch(["elasticsearch:9200"])
   print('Deleting %s index.' % INDEX_NAME)
   try:
     es.indices.delete(index=INDEX_NAME)
