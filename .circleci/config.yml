@@ -31,7 +31,7 @@ jobs:
               cd ui
               npm run lint -- --list-different
       - run:
-          name: Run UI unit tests
+          name: Run unit tests
           command: |
               cd ui
               npm test
