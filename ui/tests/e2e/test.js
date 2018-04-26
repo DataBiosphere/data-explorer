@@ -1,5 +1,8 @@
 describe("End-to-end", () => {
   beforeAll(async () => {
+    // It can take a while for servers to start up
+    jest.setTimeout(60 * 1000);
+    await waitForElasticsearchIndex();
     await page.goto("http://localhost:4400");
     await page.waitForSelector("span.datasetName");
   });
@@ -33,6 +36,41 @@ describe("End-to-end", () => {
     const grayDiv = await facetValueRow.$("div.grayText");
     expect(grayDiv).toBeTruthy();
   });
+
+  async function waitForElasticsearchIndex() {
+    var waitOneSec = function() {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve();
+        }, 1000);
+      });
+    };
+    const MAX_RETRIES = 60;
+    console.log("Waiting for servers to come up and test data to be indexed.");
+    for (let i = 0; i <= MAX_RETRIES; i++) {
+      try {
+        var result = await page.goto(
+          "http://localhost:9200/_cluster/health?wait_for_status=yellow"
+        );
+        // Elasticsearch has come up. Now wait for test data to be indexed.
+        await page.goto("http://localhost:9200/_stats/docs");
+        await page.waitForXPath("//*[contains(text(), '1338')]");
+        console.log(
+          "Servers up and test data indexed after " + i + " seconds."
+        );
+        return result;
+      } catch (err) {
+        await waitOneSec();
+      }
+    }
+    errorMsg =
+      "Servers failed to come up/test data failed to be " +
+      "indexed after " +
+      MAX_RETRIES +
+      " seconds.";
+    console.log(errorMsg);
+    return Promise.reject(errorMsg);
+  }
 
   async function assertHeaderTotalCount(count) {
     const totalCount = await page.$eval("div.totalCountText", e => e.innerText);
