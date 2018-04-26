@@ -35,7 +35,6 @@ jobs:
           command: |
               cd ui
               npm test
-      - setup_remote_docker
       - run:
           name: Run docker-compose
           command: |
