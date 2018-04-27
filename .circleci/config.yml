@@ -1,8 +1,11 @@
 version: 2
 jobs:
   build:
-    docker:
-      - image: node
+    # Use machine executor because docker executor does not support volumes and
+    # ports in docker-compose.yml
+    # (https://circleci.com/docs/2.0/docker-compose/).
+    machine:
+      image: circleci/classic:latest
     steps:
       - checkout
       - restore_cache:
@@ -11,7 +14,13 @@ jobs:
           name: nvm install node and UI dependencies
           command: |
             cd ui
+            # As of 4/20/18, circleci/classic:latest has npm 5.4.2. With 5.4.2,
+            # "npm install" fails with optionalDependencies bug.
+            npm install npm@5.6.0 -g
             npm install
+            # As of 4/20/18, circleci/classic:latest has node 6.1.0. async is
+            # not supported until node 7.6.0.
+            npm install node@8.11.1 -g
       - save_cache:
           key: node-modules-{{ .Branch }}-{{ checksum "ui/package.json" }}
           paths:
@@ -26,3 +35,14 @@ jobs:
           command: |
               cd ui
               npm test
+      - run:
+          name: Run docker-compose
+          command: |
+              # Needed for elasticsearch
+              sudo sysctl -w vm.max_map_count=262144
+              ln -s test config
+              docker-compose up --build -d
+      - run:
+          name: Run e2e tests
+          command: |
+              cd ui && npm run test:e2e
