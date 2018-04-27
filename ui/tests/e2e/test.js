@@ -1,7 +1,9 @@
+const JEST_TIMEOUT_MS = 60 * 1000;
+
 describe("End-to-end", () => {
   beforeAll(async () => {
     // It can take a while for servers to start up
-    jest.setTimeout(60 * 1000);
+    jest.setTimeout(JEST_TIMEOUT_MS);
     await waitForElasticsearchIndex();
     await page.goto("http://localhost:4400");
     await page.waitForSelector("span.datasetName");
