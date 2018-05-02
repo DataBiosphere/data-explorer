@@ -8,6 +8,7 @@ ADD api/requirements.txt /app
 RUN pip install -r requirements.txt
 
 ENV PATH_PREFIX /api
+ENV DATASET_CONFIG_DIR /app/config
 # Avoid writing .pyc files back to the volume. Files generated this way
 # have restricted permissions set which cause errors on subsequent docker
 # builds.

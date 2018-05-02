@@ -1,25 +1,36 @@
 # coding: utf-8
 
-from __future__ import absolute_import
+import connexion
+import logging
 
+from flask import Flask
 from flask import json
+from flask_testing import TestCase
 from six import BytesIO
 
+from data_explorer.encoder import JSONEncoder
 from data_explorer.models.dataset_response import DatasetResponse  # noqa: E501
 from data_explorer.test import BaseTestCase
 
 
-class TestDatasetController(BaseTestCase):
+class TestDatasetController(TestCase):
     """DatasetController integration test stubs"""
 
-    def test_dataset_get(self):
-        """Test case for dataset_get
+    def create_app(self):
+        logging.getLogger('connexion.operation').setLevel('ERROR')
+        app = connexion.App(__name__, specification_dir='../swagger/')
+        app.app.json_encoder = JSONEncoder
+        app.add_api('swagger.yaml')
+        app.app.config.update({
+            'DATASET_CONFIG_DIR': '../config',
+        })
+        return app.app
 
-        
-        """
-        response = self.client.open('/dataset', method='GET')
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+    def test_dataset_get(self):
+        """Test case for dataset_get"""
+        response = self.client.get('/dataset')
+        self.assert200(response)
+        self.assertEquals(dict(name='Test data'), response.json)
 
 
 if __name__ == '__main__':
