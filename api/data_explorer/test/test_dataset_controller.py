@@ -1,12 +1,4 @@
-# coding: utf-8
-
-import connexion
-import logging
-
-from flask import Flask
 from flask import json
-from flask_testing import TestCase
-from six import BytesIO
 
 from data_explorer.test.base_test_case import BaseTestCase
 
