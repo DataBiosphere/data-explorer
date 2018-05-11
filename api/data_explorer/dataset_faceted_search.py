@@ -41,7 +41,8 @@ def get_dataset_name():
 
     current_app.config['DATASET_CONFIG_DIR'] must be set before this is called.
     """
-    file_path = os.path.join(current_app.config['DATASET_CONFIG_DIR'], 'dataset.json')
+    file_path = os.path.join(current_app.config['DATASET_CONFIG_DIR'],
+                             'dataset.json')
     with open(file_path) as f:
         # Remove comments using jsmin, as recommended by JSON creator
         # (https://plus.google.com/+DouglasCrockfordEsq/posts/RK8qyGVaGSr).
@@ -55,7 +56,9 @@ def get_facets():
     current_app.config['ELASTICSEARCH_URL'], current_app.config['INDEX_NAME']
     current_app.config['DATASET_CONFIG_DIR'] must be set before this is called.
     """
-    f = open(os.path.join(current_app.config['DATASET_CONFIG_DIR'], 'facet_fields.csv'))
+    f = open(
+        os.path.join(current_app.config['DATASET_CONFIG_DIR'],
+                     'facet_fields.csv'))
     # Remove comments using jsmin.
     csv_str = jsmin.jsmin(f.read())
     facet_rows = csv.DictReader(

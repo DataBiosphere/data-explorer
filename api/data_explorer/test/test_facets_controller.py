@@ -8,8 +8,8 @@ from urllib3_mock import Responses
 
 from data_explorer.test.base_test_case import BaseTestCase
 
-
 responses = Responses('urllib3')
+
 
 class TestFacetsController(BaseTestCase):
     """ FacetsController integration test stubs """
@@ -86,11 +86,14 @@ class TestFacetsController(BaseTestCase):
    ]
 }
 """
+
     def create_app(self):
         app = super(TestFacetsController, self).create_app()
         app.config.update({
             'INDEX_NAME': 'index_name',
-            'ELASTICSEARCH_FACETS': {'Region': TermsFacet(field='Region.keyword')},
+            'ELASTICSEARCH_FACETS': {
+                'Region': TermsFacet(field='Region.keyword')
+            },
             'ELASTICSEARCH_URL': 'fakeurl:9200',
         })
         return app
@@ -98,13 +101,17 @@ class TestFacetsController(BaseTestCase):
     @responses.activate
     def test_facets_get(self):
         """Test case for facets_get"""
-        responses.add('GET', '/index_name/_search',
-                  body=self.es_faceted_search_response, status=200,
-                  content_type='application/json')
+        responses.add(
+            'GET',
+            '/index_name/_search',
+            body=self.es_faceted_search_response,
+            status=200,
+            content_type='application/json')
 
         response = self.client.get('/facets')
         self.assert200(response)
-        self.assertEquals(json.loads(self.data_explorer_facets_response), response.json)
+        self.assertEquals(
+            json.loads(self.data_explorer_facets_response), response.json)
 
 
 if __name__ == '__main__':
