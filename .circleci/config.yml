@@ -28,7 +28,7 @@ jobs:
       - run:
           name: Run the yapf python linter
           command: |
-            pip install tox yapf
+            pip install yapf
             yapf -dr .
       - run:
           name: Run the ui linter
