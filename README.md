@@ -1,5 +1,6 @@
 # Data explorer
 
+[![CircleCI](https://circleci.com/gh/DataBiosphere/data-explorer.svg?style=svg)](https://circleci.com/gh/DataBiosphere/data-explorer)
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 ## Quickstart
@@ -54,6 +55,8 @@ update the server implementations:
 
 ### One-time setup
 
+* Change `vm.max_map_count`. This is needed for running Elasticsearch locally.
+  Add `vm.max_map_count=262144` to `/etc/sysctl.conf`.
 * Install `swagger-codegen-cli.jar`.
 
 ```
