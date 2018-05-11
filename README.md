@@ -56,7 +56,7 @@ update the server implementations:
 ### One-time setup
 
 * Change `vm.max_map_count`. This is needed for running Elasticsearch locally.
-  Add `vm.max_map_count=262144` to `/etc/sysctl.conf`.
+  Add `vm.max_map_count=262144` to `/etc/sysctl.conf`. Then run `sysctl -p`.
 * Install `swagger-codegen-cli.jar`.
 
 ```
