@@ -32,9 +32,9 @@ def split_env_flag(name):
 parser = argparse.ArgumentParser()
 # ALLOW_ORIGINS is only set during AE deployment, not during local development.
 parser.add_argument(
-    '--allow_origins',
+    '--allow_origins'  ,
     type=str,
-    nargs='+',
+                 nargs='+',
     help='Origins to allow for CORS; defaults to CORS disabled',
     default=split_env_flag('ALLOW_ORIGINS'))
 parser.add_argument(
