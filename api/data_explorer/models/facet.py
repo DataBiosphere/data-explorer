@@ -24,15 +24,9 @@ class Facet(Model):
         :param values: The values of this Facet.  # noqa: E501
         :type values: List[FacetValue]
         """
-        self.swagger_types = {
-            'name': str,
-            'values': List[FacetValue]
-        }
+        self.swagger_types = {'name': str, 'values': List[FacetValue]}
 
-        self.attribute_map = {
-            'name': 'name',
-            'values': 'values'
-        }
+        self.attribute_map = {'name': 'name', 'values': 'values'}
 
         self._name = name
         self._values = values

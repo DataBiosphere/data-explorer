@@ -17,9 +17,7 @@ class TestDatasetController(BaseTestCase):
 
         
         """
-        response = self.client.open(
-            '/dataset',
-            method='GET')
+        response = self.client.open('/dataset', method='GET')
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))
 

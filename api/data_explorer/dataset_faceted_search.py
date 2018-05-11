@@ -16,23 +16,24 @@ from elasticsearch_dsl import TermsFacet
 
 # Keep in sync with convert_to_index_name() in data-explorer-indexers repo.
 def convert_to_index_name(s):
-  """Converts a string to an Elasticsearch index name."""
-  # For Elasticsearch index name restrictions, see
-  # https://github.com/DataBiosphere/data-explorer-indexers/issues/5#issue-308168951
-  prohibited_chars = [' ', '"', '*', '\\', '<', '|', ',', '>', '/', '?']
-  for char in prohibited_chars:
-    s = s.replace(char, '_');
-  s = s.lower()
-  # Remove leading underscore.
-  if s.find('_', 0, 1) == 0:
-    s = s.lstrip('_')
-  print('Index name: %s' % s)
-  return s
+    """Converts a string to an Elasticsearch index name."""
+    # For Elasticsearch index name restrictions, see
+    # https://github.com/DataBiosphere/data-explorer-indexers/issues/5#issue-308168951
+    prohibited_chars = [' ', '"', '*', '\\', '<', '|', ',', '>', '/', '?']
+    for char in prohibited_chars:
+        s = s.replace(char, '_')
+    s = s.lower()
+    # Remove leading underscore.
+    if s.find('_', 0, 1) == 0:
+        s = s.lstrip('_')
+    print('Index name: %s' % s)
+    return s
 
 
 def get_index_name():
     """Gets Elasticsearch index name."""
     return convert_to_index_name(get_dataset_name())
+
 
 def get_dataset_name():
     """Gets dataset name from dataset.json."""
@@ -52,11 +53,12 @@ def get_facets():
     f = open('/app/config/facet_fields.csv')
     # Remove comments using jsmin.
     csv_str = jsmin.jsmin(f.read())
-    facet_rows = csv.DictReader(iter(csv_str.splitlines()), skipinitialspace=True)
+    facet_rows = csv.DictReader(
+        iter(csv_str.splitlines()), skipinitialspace=True)
 
     using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
-    mapping = Mapping.from_es(current_app.config['INDEX_NAME'], 'type',
-            using=using).to_dict()
+    mapping = Mapping.from_es(
+        current_app.config['INDEX_NAME'], 'type', using=using).to_dict()
     # Preserve order, so facets are returned in the same order as facet_fields.csv
     facets = OrderedDict()
     for facet_row in facet_rows:
