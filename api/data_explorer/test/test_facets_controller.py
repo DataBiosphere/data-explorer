@@ -16,9 +16,9 @@ class TestFacetsController(BaseTestCase):
 
         
         """
-        response = self.client.open('/facets',
-                                    method='GET')
-        self.assert200(response, "Response body is : " + response.data.decode('utf-8'))
+        response = self.client.open('/facets', method='GET')
+        self.assert200(response,
+                       "Response body is : " + response.data.decode('utf-8'))
 
 
 if __name__ == '__main__':

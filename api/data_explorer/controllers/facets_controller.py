@@ -19,7 +19,7 @@ def facets_get(filter=None):  # noqa: E501
     :rtype: FacetsResponse
     """
     search = DatasetFacetedSearch(deserialize(filter))
-    es_response = search.execute();
+    es_response = search.execute()
     es_facets = es_response.facets.to_dict()
     facets = []
     for facet_name in current_app.config['ELASTICSEARCH_FACETS'].keys():
@@ -36,7 +36,8 @@ def facets_get(filter=None):  # noqa: E501
             else:
                 facet_values.append(FacetValue(name=name, count=count))
         facets.append(Facet(name=facet_name, values=facet_values))
-    return FacetsResponse(facets=facets, count=es_response._faceted_search.count())
+    return FacetsResponse(
+        facets=facets, count=es_response._faceted_search.count())
 
 
 def deserialize(filter_arr):
@@ -64,9 +65,11 @@ def deserialize(filter_arr):
                 parsed_filter[facet_name].append(facet_value)
     return parsed_filter
 
+
 def number_to_range(bucket_number, interval_size):
     """Converts "X" -> "X-Y"."""
     return '%d-%d' % (bucket_number, bucket_number + interval_size - 1)
+
 
 def range_to_number(bucket_string):
     """Converts "X-Y" -> "X"."""
