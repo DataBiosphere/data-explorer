@@ -29,7 +29,7 @@ jobs:
           name: Run the yapf python linter
           command: |
             pip install yapf
-            yapf -dr .
+            yapf -dr . --exclude ui/node_modules/
       - run:
           name: Run the ui linter
           command: |
