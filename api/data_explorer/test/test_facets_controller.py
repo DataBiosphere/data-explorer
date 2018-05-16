@@ -19,14 +19,17 @@ class TestFacetsController(BaseTestCase):
     @classmethod
     def setUpClass(self):
         responses_dir = 'data_explorer/test/mock_responses'
+
         def _open_resp_file(filename):
             with open(os.path.join(responses_dir, filename)) as f:
                 return f.read()
 
         self.es_basic = _open_resp_file('es_basic.txt')
-        self.api_server_facets_basic = _open_resp_file('api_server_facets_basic.txt')
+        self.api_server_facets_basic = _open_resp_file(
+            'api_server_facets_basic.txt')
         self.es_histogram = _open_resp_file('es_histogram.txt')
-        self.api_server_facets_histogram = _open_resp_file('api_server_facets_histogram.txt')
+        self.api_server_facets_histogram = _open_resp_file(
+            'api_server_facets_histogram.txt')
 
     def create_app(self):
         app = super(TestFacetsController, self).create_app()
@@ -78,7 +81,6 @@ class TestFacetsController(BaseTestCase):
         self.assert200(response)
         self.assertEquals(
             json.loads(self.api_server_facets_histogram), response.json)
-
 
 
 if __name__ == '__main__':
