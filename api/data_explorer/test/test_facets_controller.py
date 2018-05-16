@@ -1,5 +1,7 @@
 import json
+import os
 
+from elasticsearch_dsl import HistogramFacet
 from elasticsearch_dsl import TermsFacet
 from flask import json
 # Elasticsearch uses urllib3 by default, so use urllib3_mock instead of
@@ -14,78 +16,17 @@ responses = Responses('urllib3')
 class TestFacetsController(BaseTestCase):
     """ FacetsController integration test stubs """
 
-    es_faceted_search_response = """
-{
-  "took": 2,
-  "timed_out": false,
-  "_shards": {
-    "total": 5,
-    "successful": 5,
-    "skipped": 0,
-    "failed": 0
-  },
-  "hits": {
-    "total": 1338,
-    "max_score": 0,
-    "hits": []
-  },
-  "aggregations": {
-    "_filter_Region": {
-      "doc_count": 1338,
-      "Region": {
-        "doc_count_error_upper_bound": 0,
-        "sum_other_doc_count": 0,
-        "buckets": [
-          {
-            "key": "southeast",
-            "doc_count": 364
-          },
-          {
-            "key": "northwest",
-            "doc_count": 325
-          },
-          {
-            "key": "southwest",
-            "doc_count": 325
-          },
-          {
-            "key": "northeast",
-            "doc_count": 324
-          }
-        ]
-      }
-    }
-  }
-}
-    """
-    data_explorer_facets_response = """
-{  
-   "count":1338,
-   "facets":[  
-      {  
-         "name":"Region",
-         "values":[  
-            {  
-               "count":364,
-               "name":"southeast"
-            },
-            {  
-               "count":325,
-               "name":"northwest"
-            },
-            {  
-               "count":325,
-               "name":"southwest"
-            },
-            {  
-               "count":324,
-               "name":"northeast"
-            }
-         ]
-      }
-   ]
-}
-"""
+    @classmethod
+    def setUpClass(self):
+        responses_dir = 'data_explorer/test/mock_responses'
+        def _open_resp_file(filename):
+            with open(os.path.join(responses_dir, filename)) as f:
+                return f.read()
+
+        self.es_basic = _open_resp_file('es_basic.txt')
+        self.api_server_facets_basic = _open_resp_file('api_server_facets_basic.txt')
+        self.es_histogram = _open_resp_file('es_histogram.txt')
+        self.api_server_facets_histogram = _open_resp_file('api_server_facets_histogram.txt')
 
     def create_app(self):
         app = super(TestFacetsController, self).create_app()
@@ -100,18 +41,44 @@ class TestFacetsController(BaseTestCase):
 
     @responses.activate
     def test_facets_get(self):
-        """Test case for facets_get"""
+        """Test /facets with basic TermsFacet."""
         responses.add(
             'GET',
             '/index_name/_search',
-            body=self.es_faceted_search_response,
+            body=self.es_basic,
             status=200,
             content_type='application/json')
 
         response = self.client.get('/facets')
         self.assert200(response)
         self.assertEquals(
-            json.loads(self.data_explorer_facets_response), response.json)
+            json.loads(self.api_server_facets_basic), response.json)
+
+    @responses.activate
+    def test_facets_get_histogram(self):
+        """Test facets/ with HistogramFacet.
+
+        For HistogramFacet, Elasticsearch returns facet names "10", "20", etc.
+        Test that API server converts these to "10-19", "20-29", etc.
+        """
+        self.maxDiff = 2000
+        self.app.config.update({
+            'ELASTICSEARCH_FACETS': {
+                'Age': HistogramFacet(field='Age', interval=10),
+            },
+        })
+        responses.add(
+            'GET',
+            '/index_name/_search',
+            body=self.es_histogram,
+            status=200,
+            content_type='application/json')
+
+        response = self.client.get('/facets')
+        self.assert200(response)
+        self.assertEquals(
+            json.loads(self.api_server_facets_histogram), response.json)
+
 
 
 if __name__ == '__main__':
