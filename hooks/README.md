@@ -6,4 +6,7 @@
 	  git clone https://github.com/awslabs/git-secrets.git
 	  sudo make install
 	  
-* To ensure git secrets is run please copy or link this directory to .git/hooks/ locally.
+* Copy the files in this directory to `.git/hooks`. If you have previously run
+`npm install` in `ui/` directory, `.git/hooks/pre-commit` will contain husky
+section. Be sure to put git secrets section before husky section; otherwise git
+secrets section won't run.
