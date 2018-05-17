@@ -22,7 +22,8 @@ then
   git stash -q --keep-index
   readonly yapf_out=$(yapf -d $files_in_commit)
 
-  if ! [ -z "$yapf_out" ]; then
+  if ! [ -z "$yapf_out" ]
+  then
     echo "Reformatting staged files, please review them and stage the changes."
     yapf -i $files_in_commit --exclude ui/node_modules/
   fi
