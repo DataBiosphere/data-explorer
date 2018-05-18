@@ -33,10 +33,10 @@ parser = argparse.ArgumentParser()
 # ALLOW_ORIGINS is only set during AE deployment, not during local development.
 parser.add_argument(
     '--allow_origins',
-    type=str,
+    type=bool,
     nargs='+',
     help='Origins to allow for CORS; defaults to CORS disabled',
-    default=split_env_flag('ALLOW_ORIGINS'))
+    default=os.environ.get('ALLOW_ORIGINS'))
 parser.add_argument(
     '--path_prefix',
     type=str,
@@ -64,13 +64,7 @@ app = connexion.App(__name__, specification_dir='./swagger/', swagger_ui=True)
 app.app.config['ELASTICSEARCH_URL'] = args.elasticsearch_url
 if args.allow_origins:
     prefix = args.path_prefix or ''
-    CORS(
-        app.app,
-        resources={
-            prefix + '/*': {
-                'origins': args.allow_origins,
-            },
-        })
+    CORS(app.app)
 
 # Log to stderr.
 handler = logging.StreamHandler()
@@ -81,7 +75,6 @@ app.app.logger.setLevel(logging.INFO)
 app.app.json_encoder = JSONEncoder
 app.add_api('swagger.yaml', base_path=args.path_prefix)
 
-
 @app.app.before_first_request
 def init():
     # Read config files. Just do this once; don't need to read files on every
@@ -91,8 +84,7 @@ def init():
     # init(), Flask complains that we're working outside of application
     # context. @app.app.before_first_request guarantees that app context has
     # been set up.
-    app.app.config[
-        'ELASTICSEARCH_FACETS'] = dataset_faceted_search.get_facets()
+    app.app.config['ELASTICSEARCH_FACETS'] = dataset_faceted_search.get_facets()
 
 
 if __name__ == '__main__':
