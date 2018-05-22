@@ -1,0 +1,26 @@
+{  
+   "count":1338,
+   "facets":[  
+      {  
+         "name":"Region",
+         "values":[  
+            {  
+               "count":364,
+               "name":"southeast"
+            },
+            {  
+               "count":325,
+               "name":"northwest"
+            },
+            {  
+               "count":325,
+               "name":"southwest"
+            },
+            {  
+               "count":324,
+               "name":"northeast"
+            }
+         ]
+      }
+   ]
+}

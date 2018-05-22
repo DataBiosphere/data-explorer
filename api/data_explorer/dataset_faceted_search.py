@@ -3,6 +3,7 @@
 import csv
 import jsmin
 import json
+import os
 
 from flask import current_app
 
@@ -36,8 +37,13 @@ def get_index_name():
 
 
 def get_dataset_name():
-    """Gets dataset name from dataset.json."""
-    with open('/app/config/dataset.json') as f:
+    """Gets dataset name from dataset.json.
+
+    current_app.config['DATASET_CONFIG_DIR'] must be set before this is called.
+    """
+    file_path = os.path.join(current_app.config['DATASET_CONFIG_DIR'],
+                             'dataset.json')
+    with open(file_path) as f:
         # Remove comments using jsmin, as recommended by JSON creator
         # (https://plus.google.com/+DouglasCrockfordEsq/posts/RK8qyGVaGSr).
         dataset = json.loads(jsmin.jsmin(f.read()))
@@ -47,10 +53,12 @@ def get_dataset_name():
 def get_facets():
     """Gets facets from facet_fields.csv.
 
-    app.config['ELASTICSEARCH_URL'], app.config['INDEX_NAME'] must be set before
-    this is called.
+    current_app.config['ELASTICSEARCH_URL'], current_app.config['INDEX_NAME']
+    current_app.config['DATASET_CONFIG_DIR'] must be set before this is called.
     """
-    f = open('/app/config/facet_fields.csv')
+    f = open(
+        os.path.join(current_app.config['DATASET_CONFIG_DIR'],
+                     'facet_fields.csv'))
     # Remove comments using jsmin.
     csv_str = jsmin.jsmin(f.read())
     facet_rows = csv.DictReader(
@@ -84,8 +92,8 @@ def get_facets():
 class DatasetFacetedSearch(FacetedSearch):
     """Subclass of FacetedSearch for Datasets.
 
-    app.config['ELASTICSEARCH_URL'], app.config['INDEX_NAME'], and
-    app.config['ELASTICSEARCH_FACETS'] must be set before creating a
+    current_app.config['ELASTICSEARCH_URL'], current_app.config['INDEX_NAME'],
+    and current_app.config['ELASTICSEARCH_FACETS'] must be set before creating a
     DatasetFacetedSearch object.
     """
 

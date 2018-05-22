@@ -1,0 +1,42 @@
+{
+  "took": 2,
+  "timed_out": false,
+  "_shards": {
+    "total": 5,
+    "successful": 5,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": 1338,
+    "max_score": 0,
+    "hits": []
+  },
+  "aggregations": {
+    "_filter_Region": {
+      "doc_count": 1338,
+      "Region": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 0,
+        "buckets": [
+          {
+            "key": "southeast",
+            "doc_count": 364
+          },
+          {
+            "key": "northwest",
+            "doc_count": 325
+          },
+          {
+            "key": "southwest",
+            "doc_count": 325
+          },
+          {
+            "key": "northeast",
+            "doc_count": 324
+          }
+        ]
+      }
+    }
+  }
+}

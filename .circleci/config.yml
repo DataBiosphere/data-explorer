@@ -36,10 +36,17 @@ jobs:
               cd ui
               npm run lint -- --list-different
       - run:
-          name: Run unit tests
+          name: Run UI server unit tests
           command: |
               cd ui
               npm test
+      - run:
+          name: Run API server unit tests
+          command: |
+              pip install tox
+              ln -s test config
+              cd api
+              tox
       - run:
           name: Run docker-compose
           command: |
