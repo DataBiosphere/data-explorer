@@ -26,6 +26,9 @@ your project and index
 
 `cd ../api && gcloud app deploy && cd ../deploy`
 
+Note: App Engine services are not always available immediately after deploying.
+Allow a few minutes after deploy completes for the service to come up.
+
 ### Deploy the UI Server
 
 * Build the static ui with the appropriate API URL:
