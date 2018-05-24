@@ -17,6 +17,13 @@ instance.
 
 `gcloud app create`
 
+### Deploy the UI Server
+
+* Modify `ui/package.json` with the appropriate API URL
+
+* Deploy:
+`cd ../ui && gcloud app deploy && cd ../deploy`
+
 ### Deploy the API Server
 
 * Ensure that `api/config` contains the correct dataset and facet fields for 
@@ -30,13 +37,6 @@ your project and index
 
 Note: App Engine services are not always available immediately after deploying.
 Allow a few minutes after deploy completes for the service to come up.
-
-### Deploy the UI Server
-
-* Modify `ui/package.json` with the appropriate API URL
-
-* Deploy:
-`cd ../ui && gcloud app deploy && cd ../deploy`
 
 ### Enable IAP
 * [Set up IAP](https://cloud.google.com/iap/docs/app-engine-quickstart#iap-access) 
