@@ -22,6 +22,8 @@ instance.
 * Ensure that `api/config` contains the correct dataset and facet fields for 
 your project and index
 
+* Provide the `ELASTICSEARCH_URL` in `app.yaml`
+
 * Deploy:
 
 `cd ../api && gcloud app deploy && cd ../deploy`
@@ -31,18 +33,10 @@ Allow a few minutes after deploy completes for the service to come up.
 
 ### Deploy the UI Server
 
-* Build the static ui with the appropriate API URL:
-```
-rm -r build/
-cd ../ui
-REACT_APP_API_URL=https://api-dot-{PROJECT_NAME}.appspot.com/api npm run-script build
-mv build/ ../deploy
-cd ../deploy
-```
+* Modify `ui/package.json` with the appropriate API URL
 
 * Deploy:
-
-`gcloud app deploy ui-app.yaml`
+`cd ../ui && gcloud app deploy && cd ../deploy`
 
 ### Enable IAP
 * [Set up IAP](https://cloud.google.com/iap/docs/app-engine-quickstart#iap-access) 

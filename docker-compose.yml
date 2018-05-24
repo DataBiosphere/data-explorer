@@ -12,6 +12,7 @@ services:
   ui:
     build:
       context: ui
+      dockerfile: Dockerfile-dev
     volumes:
       - ./ui:/ui
       # See https://stackoverflow.com/a/32785014 for why this is needed.
