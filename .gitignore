@@ -6,6 +6,7 @@ api/config
 *$py.class
 build/
 dist/
+.pytest_cache/
 
 *.settings
 client_secrets.json

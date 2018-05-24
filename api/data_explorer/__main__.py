@@ -47,6 +47,11 @@ parser.add_argument(
     type=str,
     help='Elasticsearch url, e.g. elasticsearch:9200',
     default=os.environ.get('ELASTICSEARCH_URL'))
+parser.add_argument(
+    '--dataset_config_dir',
+    type=str,
+    help='Dataset config dir. Can be relative or absolute',
+    default=os.environ.get('DATASET_CONFIG_DIR'))
 
 if __name__ == '__main__':
     parser.add_argument(
@@ -62,6 +67,7 @@ else:
 
 app = connexion.App(__name__, specification_dir='./swagger/', swagger_ui=True)
 app.app.config['ELASTICSEARCH_URL'] = args.elasticsearch_url
+app.app.config['DATASET_CONFIG_DIR'] = args.dataset_config_dir
 if args.allow_origins:
     prefix = args.path_prefix or ''
     CORS(app.app)
