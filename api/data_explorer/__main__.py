@@ -33,10 +33,10 @@ parser = argparse.ArgumentParser()
 # ALLOW_ORIGINS is only set during AE deployment, not during local development.
 parser.add_argument(
     '--allow_origins',
-    type=str,
+    type=bool,
     nargs='+',
     help='Origins to allow for CORS; defaults to CORS disabled',
-    default=split_env_flag('ALLOW_ORIGINS'))
+    default=os.environ.get('ALLOW_ORIGINS'))
 parser.add_argument(
     '--path_prefix',
     type=str,
@@ -70,13 +70,7 @@ app.app.config['ELASTICSEARCH_URL'] = args.elasticsearch_url
 app.app.config['DATASET_CONFIG_DIR'] = args.dataset_config_dir
 if args.allow_origins:
     prefix = args.path_prefix or ''
-    CORS(
-        app.app,
-        resources={
-            prefix + '/*': {
-                'origins': args.allow_origins,
-            },
-        })
+    CORS(app.app)
 
 # Log to stderr.
 handler = logging.StreamHandler()
