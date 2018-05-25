@@ -17,6 +17,9 @@ instance.
 
 `gcloud app create`
 
+* Increase your project's IP address quota for GCE if necessary. We recommend having at
+least 12 IP addresses available to set up this app.
+
 ### Deploy the UI Server
 
 * Modify `ui/package.json` with the appropriate API URL
