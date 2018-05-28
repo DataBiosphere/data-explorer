@@ -14,7 +14,6 @@ COPY . /ui
 RUN npm run build:prod
 
 # production environment
-FROM nginx:1.13.9-alpine
-COPY --from=builder /ui/build /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+FROM nginx
+COPY --from=0 /ui/build /ui/build
+ADD nginx.prod.conf /etc/nginx/nginx.conf
