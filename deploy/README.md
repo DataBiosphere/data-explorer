@@ -1,24 +1,10 @@
 # Deploy on App Engine Flex
 
-### Whitelist your project
-
-In order to ensure that your indexed data stays safe and secure, we use 
-Identity-Aware Proxy (IAP) to authenticate all requests made against the UI 
-and API servers. However, IAP does not currently support OPTIONS headers, 
-including CORS which our servers use to communicate. In order to bypass this 
-restriction, your project must be whitelisted to allow unauthenticated 
-pre-flight CORS requests. Contact alanhwang@verily.com or somebody on the Data 
-Explorer team to obtain whitelist access before attempting to deploy your 
-instance.
-
 ### Setup
 
 * Create the App Engine application:
 
 `gcloud app create`
-
-* Increase your project's IP address quota for GCE if necessary. We recommend having at
-least 12 IP addresses available to set up this app.
 
 ### Deploy the UI Server
 
@@ -26,6 +12,9 @@ least 12 IP addresses available to set up this app.
 
 * Deploy:
 `cd ../ui && gcloud app deploy && cd ../deploy`
+
+* Navigating to the UI URL should display an empty page for now, as the API
+server has not yet been set up.
 
 ### Deploy the API Server
 
@@ -39,8 +28,8 @@ your project and index
 `cd ../api && gcloud app deploy && cd ../deploy`
 
 Note: App Engine services are not always available immediately after deploying.
-Allow a few minutes after deploy completes for the service to come up.
+Allow a few minutes after deployment finishes for the service to come up.
 
-### Enable IAP
-* [Set up IAP](https://cloud.google.com/iap/docs/app-engine-quickstart#iap-access) 
-including both the UI (default) and API (api-dot) URLs to be restricted.
+* Making requests to the API server (e.g. /api/facets or /api/datasets) should 
+return JSON responses if you have set up the elasticsearch server properly. 
+Navigating to the UI URL should return the full UI page.
