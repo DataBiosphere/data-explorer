@@ -1,0 +1,4 @@
+dispatch:
+  # Send all API traffic to the api service
+  - url: "*/api/*"
+    service: api

@@ -19,7 +19,6 @@
     "precommit": "pretty-quick --staged",
     "start": "PORT=4400 react-scripts start",
     "build": "react-scripts build",
-    "build:prod": "REACT_APP_API_URL=https://api-dot-PROJECT_ID.appspot.com/api react-scripts build",
     "test": "jest tests/unit",
     "test:e2e": "jest --config '{\"preset\":\"jest-puppeteer\"}' tests/e2e",
     "eject": "react-scripts eject"

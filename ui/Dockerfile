@@ -11,7 +11,7 @@ COPY src/api /ui/src/api
 RUN npm install
 RUN npm install react-scripts@1.1.1 -g
 COPY . /ui
-RUN npm run build:prod
+RUN npm run build
 
 # production environment
 FROM nginx

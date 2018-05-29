@@ -3,8 +3,7 @@ env: flex
 entrypoint: gunicorn -b ":$PORT" data_explorer.__main__:app
 
 env_variables:
-  ALLOW_ORIGINS: 'true'
   PATH_PREFIX: /api
-  ELASTICSEARCH_URL: http://ES_CLIENT_IP:9200/
+  ELASTICSEARCH_URL: http://10.128.0.5:9200/
   DATASET_CONFIG_DIR: /app/config
 service: api

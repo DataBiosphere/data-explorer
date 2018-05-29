@@ -6,9 +6,11 @@
 
 `gcloud app create`
 
-### Deploy the UI Server
+* Set up routing rules
 
-* Modify `ui/package.json` with the appropriate API URL
+`gcloud app deploy dispatch.yaml`
+
+### Deploy the UI Server
 
 * Deploy:
 `cd ../ui && gcloud app deploy && cd ../deploy`
@@ -18,10 +20,10 @@ server has not yet been set up.
 
 ### Deploy the API Server
 
-* Ensure that `api/config` contains the correct dataset and facet fields for 
+* Ensure that `api/config` contains the correct dataset and facet fields for
 your project and index
 
-* Provide the `ELASTICSEARCH_URL` in `app.yaml`
+* Provide the `ELASTICSEARCH_URL` in `api/app.yaml`
 
 * Deploy:
 
@@ -30,6 +32,8 @@ your project and index
 Note: App Engine services are not always available immediately after deploying.
 Allow a few minutes after deployment finishes for the service to come up.
 
-* Making requests to the API server (e.g. /api/facets or /api/datasets) should 
-return JSON responses if you have set up the elasticsearch server properly. 
-Navigating to the UI URL should return the full UI page.
+### Enable Access Control
+
+* Follow the [instructions for setting up IAP](https://cloud.google.com/iap/docs/app-engine-quickstart#enabling_iap)
+to restrict access to your app (and potentially sensitive elasticsearch data)
+to an approved set of users.

@@ -5,7 +5,6 @@ import logging
 import os
 
 import connexion
-from flask_cors import CORS
 
 from .encoder import JSONEncoder
 import dataset_faceted_search
@@ -30,13 +29,6 @@ def split_env_flag(name):
 # values. These arguments will rarely be specified as flags directly, aside from
 # occasional use during local debugging.
 parser = argparse.ArgumentParser()
-# ALLOW_ORIGINS is only set during AE deployment, not during local development.
-parser.add_argument(
-    '--allow_origins',
-    type=bool,
-    nargs='+',
-    help='Origins to allow for CORS; defaults to CORS disabled',
-    default=os.environ.get('ALLOW_ORIGINS'))
 parser.add_argument(
     '--path_prefix',
     type=str,
@@ -68,9 +60,6 @@ else:
 app = connexion.App(__name__, specification_dir='./swagger/', swagger_ui=True)
 app.app.config['ELASTICSEARCH_URL'] = args.elasticsearch_url
 app.app.config['DATASET_CONFIG_DIR'] = args.dataset_config_dir
-if args.allow_origins:
-    prefix = args.path_prefix or ''
-    CORS(app.app)
 
 # Log to stderr.
 handler = logging.StreamHandler()

@@ -17,9 +17,7 @@ class App extends Component {
     };
 
     this.apiClient = new ApiClient();
-    this.apiClient.basePath = process.env.REACT_APP_API_URL
-      ? process.env.REACT_APP_API_URL
-      : "/api";
+    this.apiClient.basePath = "/api";
     this.facetsApi = new FacetsApi(this.apiClient);
     this.facetsCallback = function(error, data) {
       if (error) {
