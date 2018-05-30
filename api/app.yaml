@@ -6,4 +6,4 @@ service: api
 env_variables:
   PATH_PREFIX: /api
   ELASTICSEARCH_URL: http://ELASTICSEARCH_URL:9200/
-  DATASET_CONFIG_DIR: /app/dataset-config
+  DATASET_CONFIG_DIR: /app/dataset_config

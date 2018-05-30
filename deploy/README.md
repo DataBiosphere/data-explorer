@@ -45,7 +45,7 @@ data once the API service is deployed.
 
 ### Deploy the API Server
 
-* Ensure that `api/dataset-config/` contains your config
+* Ensure that `api/dataset_config/` contains your config
 
 * Provide the `ELASTICSEARCH_URL` in `api/app.yaml`
 
