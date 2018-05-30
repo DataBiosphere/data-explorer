@@ -4,7 +4,7 @@ WORKDIR /app
 ADD requirements.txt /app
 RUN pip install -r requirements.txt
 
-COPY config /app/config
+COPY dataset-config /app/dataset-config
 COPY data_explorer /app/data_explorer
 
 ENTRYPOINT ["gunicorn", "data_explorer.__main__:app"]

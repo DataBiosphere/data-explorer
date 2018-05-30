@@ -40,7 +40,8 @@ for local development.)
 
 * Navigating to the UI URL should display an empty page for now, as the API
 server has not yet been set up. This is a good time to confirm that your IAP
-permissions are working as intended.
+permissions are working as intended to ensure you do not expose any sensitive
+data once the API service is deployed.
 
 ### Deploy the API Server
 

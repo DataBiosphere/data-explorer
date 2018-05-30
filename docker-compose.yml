@@ -33,7 +33,7 @@ services:
     environment:
       - ELASTICSEARCH_URL=elasticsearch:9200
       - PATH_PREFIX=/api
-      - DATASET_CONFIG_DIR=/app/config
+      - DATASET_CONFIG_DIR=/app/dataset-config
       # Avoid writing .pyc files back to the volume. Files generated this way
       # have restricted permissions set which cause errors on subsequent docker
       # builds.
