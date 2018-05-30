@@ -1,3 +1,6 @@
+# Production Dockerfile
+# App Engine requires "Dockerfile", so this can't be named "Dockerfile.prod".
+
 # build environment
 FROM node:9.6.1 as builder
 

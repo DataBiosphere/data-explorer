@@ -1,7 +1,7 @@
 # Deploy on Google Cloud Platform
 
 If your dataset is private, there must be a Google Group of users who have
-access to the data. [Identity-Aware Proxy](https://cloud.google.com/iap/docs/)
+access to the dataset. [Identity-Aware Proxy](https://cloud.google.com/iap/docs/)
 will be used to restrict Data Explorer to users in this Google Group.
 
 ### Setup
@@ -16,12 +16,23 @@ to bring up Elasticsearch in GKE and index dataset.
 * If you haven't done so already, create the App Engine application:
 
   `gcloud app create`
-  
+
+### Deploy the UI Server
+
+* Deploy:
+
+  `cd ui && gcloud app deploy`
+
+* Navigating to the UI URL should display an empty page for now, as the API
+server has not yet been set up. This is a good time to confirm that your IAP
+permissions are working as intended to ensure you do not expose any sensitive
+data once the API service is deployed.
+
 ### Enable Access Control
 
 * Follow the [instructions for setting up IAP](https://cloud.google.com/iap/docs/app-engine-quickstart#enabling_iap)
-to restrict access to your app (and potentially sensitive elasticsearch data)
-to an approved set of users. The URL you'll publish should be
+to restrict access to your app (and potentially sensitive Elasticsearch data)
+to an approved Google group. The URL you'll publish should be
 `https://PROJECT_ID.appspot.com`
 
 Note: [Identity-Aware Proxy](https://cloud.google.com/iap/docs/) is used to
@@ -35,22 +46,16 @@ to get around CORS. UI server calls /api on itself, so CORS does not come into
 play. (This is similar to our [nginx proxying](https://github.com/DataBiosphere/data-explorer/blob/master/nginx.conf)
 for local development.)
 
-### Deploy the UI Server
-
-* Deploy:
-
-  `cd ui && gcloud app deploy`
-
-* Navigating to the UI URL should display an empty page for now, as the API
-server has not yet been set up. This is a good time to confirm that your IAP
-permissions are working as intended to ensure you do not expose any sensitive
-data once the API service is deployed.
-
 ### Deploy the API Server
 
 * Ensure that `api/dataset_config/` contains your config
 
-* Provide the `ELASTICSEARCH_URL` in `api/app.yaml`
+* Find the `ELASTICSEARCH_URL`. Run `kubectl get svc`, look for `elasticsearch`
+row, `EXTERNAL-IP` column. Note that because the Elasticsearch deployment uses
+an [Internal Load Balancer](https://cloud.google.com/kubernetes-engine/docs/how-to/internal-load-balancing)
+, this IP is only accessible from the internal GCP network for this project.
+
+* Set the `ELASTICSEARCH_URL` in `api/app.yaml`
 
 * Deploy:
 

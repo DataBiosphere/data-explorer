@@ -9,5 +9,4 @@ COPY src/api /ui/src/api
 RUN npm install
 RUN npm install react-scripts@1.1.1 -g
 
-# local environment
 CMD ["npm", "start"]
