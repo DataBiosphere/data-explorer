@@ -1,5 +1,4 @@
 # Don't check in dataset config files. Dataset may be private.
-config
 api/config
 
 *.py[cod]

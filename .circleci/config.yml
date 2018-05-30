@@ -52,7 +52,7 @@ jobs:
           command: |
               # Needed for elasticsearch
               sudo sysctl -w vm.max_map_count=262144
-              rm -rf api/config && mkdir api/config && cp test/* api/config/
+              cd api && ln -s ../test config && cd ..
               docker-compose up --build -d
       - run:
           name: Run e2e tests
