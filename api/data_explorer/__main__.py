@@ -9,22 +9,6 @@ import connexion
 from .encoder import JSONEncoder
 import dataset_faceted_search
 
-
-def split_env_flag(name):
-    """Converts a comma-delimited env var into a list.
-
-    Args:
-      name: (str) the name of the environment variable
-
-    Returns:
-      (list<str>) the elements of the comma-delimited list, or an empty list if
-        the env variable is empty or unset
-    """
-    if name not in os.environ or os.environ[name] is '':
-        return []
-    return os.environ[name].split(',')
-
-
 # gunicorn flags are passed via env variables, so we use these as the default
 # values. These arguments will rarely be specified as flags directly, aside from
 # occasional use during local debugging.

@@ -1,9 +1,9 @@
 runtime: custom
 env: flex
 entrypoint: gunicorn -b ":$PORT" data_explorer.__main__:app
+service: api
 
 env_variables:
   PATH_PREFIX: /api
   ELASTICSEARCH_URL: http://ELASTICSEARCH_URL:9200/
   DATASET_CONFIG_DIR: /app/config
-service: api
