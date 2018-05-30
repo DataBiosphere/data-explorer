@@ -7,7 +7,7 @@
 
 Run Data explorer with a test dataset:
 
-* `cd api && ln -s ../test config && cd ..`
+* `rm -rf api/config && mkdir api/config && cp test/* api/config/`
 * `docker-compose up --build`
 * Navigate to `localhost:4400`
 
