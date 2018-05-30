@@ -1,7 +1,10 @@
 # Deploy on Google Cloud Platform
 
-### Setup
+If your dataset is private, there must be a Google Group of users who have
+access to the data. [Identity-Aware Proxy](https://cloud.google.com/iap/docs/)
+will be used to restrict Data Explorer to users in this Google Group.
 
+### Setup
 
 * [Follow these instructions](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery/deploy)
 to bring up Elasticsearch in GKE and index dataset.
