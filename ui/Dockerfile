@@ -16,4 +16,4 @@ RUN npm run build
 # production environment
 FROM nginx
 COPY --from=builder /ui/build /ui/build
-ADD nginx.prod.conf /etc/nginx/nginx.conf
+ADD nginx.conf.prod /etc/nginx/nginx.conf
