@@ -7,7 +7,7 @@
 
 Run Data explorer with a test dataset:
 
-* `rm -rf api/config && mkdir api/config && cp test/* api/config/`
+* `mkdir api/dataset-config && cp test/* api/dataset-config/`
 * `docker-compose up --build`
 * Navigate to `localhost:4400`
 
@@ -16,7 +16,7 @@ To use a different dataset:
 * Index your data into an Elasticsearch started by
   `docker run -p 9200:9200 docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.2`. You can use one of the indexers at
   https://github.com/DataBiosphere/data-explorer-indexers, or any other indexer.
-* Create a directory named `config` and copy over config files from above step.
+* Create `api/dataset-config` and copy over config files from above step.
   See [example](https://github.com/DataBiosphere/data-explorer-indexers/blob/master/bigquery/config/platinum_genomes)
   here. Specifically:
   * There must be a file named `dataset.json` that has a `name` field. This
