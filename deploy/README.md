@@ -57,14 +57,14 @@ an [Internal Load Balancer](https://cloud.google.com/kubernetes-engine/docs/how-
 
   `cd deploy && gcloud app deploy dispatch.yaml`
 
-  Note: UI server and API server are deployed as two App Engine services. Normally,
-CORS is used to allow UI server client Javascript to call API server domain:port.
-Identity-Aware Proxy doesn't work well with CORS. CORS can be enabled for UI
-server -> API server, but IAP introduces UI server -> accounts.google.com,
-which CORS cannot be enabled for. We use [App Engine routing](https://cloud.google.com/appengine/docs/standard/python/how-requests-are-routed#routing_with_a_dispatch_file)
-to get around CORS. UI server calls /api on itself, so CORS does not come into
-play. (This is similar to our [nginx proxying](https://github.com/DataBiosphere/data-explorer/blob/master/nginx.conf)
-for local development.)
+  Reason for routine rules: Normally, CORS is used to allow UI server client
+  Javascript to call API server domain:port. Identity-Aware Proxy doesn't work
+  well with CORS. CORS can be enabled for UI server -> API server, but IAP
+  introduces UI server -> accounts.google.com, which CORS cannot be enabled
+  for. We use [App Engine routing](https://cloud.google.com/appengine/docs/standard/python/how-requests-are-routed#routing_with_a_dispatch_file)
+  to get around CORS. UI server calls /api on itself, so CORS does not come
+  into play. (This is similar to our [nginx proxying](https://github.com/DataBiosphere/data-explorer/blob/master/nginx.conf)
+  for local development.)
 
 * Navigate to `https://PROJECT_ID.appspot.com`. Note: App Engine services are
 not always available immediately after deploying. Allow a few minutes after

@@ -13,9 +13,6 @@ http {
     access_log /var/log/app_engine/app.log;
     error_log /var/log/app_engine/app.log;
 
-    gzip on;
-    gzip_disable "msie6";
-
     server {
         # Google App Engine expects the runtime to serve HTTP traffic from
         # port 8080.
