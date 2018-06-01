@@ -57,7 +57,7 @@ an [Internal Load Balancer](https://cloud.google.com/kubernetes-engine/docs/how-
 
   `cd deploy && gcloud app deploy dispatch.yaml`
 
-  Reason for routine rules: Normally, CORS is used to allow UI server client
+  Reason for routing rules: Normally, CORS is used to allow UI server client
   Javascript to call API server domain:port. Identity-Aware Proxy doesn't work
   well with CORS. CORS can be enabled for UI server -> API server, but IAP
   introduces UI server -> accounts.google.com, which CORS cannot be enabled
