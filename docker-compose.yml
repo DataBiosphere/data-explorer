@@ -12,6 +12,7 @@ services:
   ui:
     build:
       context: ui
+      dockerfile: Dockerfile.local
     volumes:
       - ./ui:/ui
       # See https://stackoverflow.com/a/32785014 for why this is needed.
@@ -19,18 +20,24 @@ services:
   # Can't use "api" because it maps to something else on Google network.
   # Use "apise" for "api server". ("apis" is also taken.)
   apise:
-    # Build Dockerfile from repo root - not api/ - since config/ is in repo root
     build:
-      context: .
-      dockerfile: api/Dockerfile
+      context: api
     ports:
       - 127.0.0.1:8390:8390
     volumes:
       # Mount the python source so that code changes don't require rebuilding
       # the image. Changes to requirements.txt will still require rebuilds.
       - ./api/data_explorer:/app/data_explorer
+    # --reload will restart the server after code change
+    command: ["-b", ":8390", "--reload"]
     environment:
       - ELASTICSEARCH_URL=elasticsearch:9200
+      - PATH_PREFIX=/api
+      - DATASET_CONFIG_DIR=/app/dataset_config
+      # Avoid writing .pyc files back to the volume. Files generated this way
+      # have restricted permissions set which cause errors on subsequent docker
+      # builds.
+      - PYTHONDONTWRITEBYTECODE=1
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.2
     ports:
