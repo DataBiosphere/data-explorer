@@ -1,0 +1,17 @@
+FROM node as builder
+WORKDIR /ui
+COPY package.json package-lock.json /ui/
+# src/api contains Swagger-generated data_explorer_service. This is needed by
+# "npm install" beacuse package.json has a local dependency on
+# data_explorer_service.
+COPY src/api /ui/src/api
+RUN npm install
+RUN npm install react-scripts@1.1.1 -g
+COPY . /ui
+RUN npm run build
+
+ENV API_URL foo
+
+FROM nginx
+COPY --from=builder /ui/build /usr/share/nginx/html
+CMD sed -i "s/API_URL_REPLACE_ME/$API_URL/" /usr/share/nginx/html/env.js && nginx -g "daemon off;"

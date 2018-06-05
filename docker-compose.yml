@@ -17,6 +17,18 @@ services:
       - ./ui:/ui
       # See https://stackoverflow.com/a/32785014 for why this is needed.
       - /ui/node_modules
+  ui-prod:
+    build:
+      context: ui
+      dockerfile: Dockerfile.prod
+    ports:
+      - 127.0.0.1:80:80
+    volumes:
+      - ./ui:/ui
+      # See https://stackoverflow.com/a/32785014 for why this is needed.
+      - /ui/node_modules
+    environment:
+      - API_URL=bar
   # Can't use "api" because it maps to something else on Google network.
   # Use "apise" for "api server". ("apis" is also taken.)
   apise:
