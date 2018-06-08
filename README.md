@@ -7,18 +7,22 @@
 
 Run Data explorer with a test dataset:
 
-* `mkdir api/dataset_config && cp test/* api/dataset_config/`
+* `cd api/dataset_config && ln -s test_dataset current`
 * `docker-compose up --build`
 * Navigate to `localhost:4400`
 
 To use a different dataset:
 
+* For each dataset, there is a directory in `api/dataset_config`, e.g.
+  `api/dataset_config/amp_pd`. Create a directory for your dataset and create a
+  symlink to it: `cd api/dataset_config && ln -s MY_DATASET current`
 * Index your data into an Elasticsearch started by
   `docker run -p 9200:9200 docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.2`. You can use one of the indexers at
   https://github.com/DataBiosphere/data-explorer-indexers, or any other indexer.
-* Create `api/dataset_config` and copy over config files from above step.
-  See [example](https://github.com/DataBiosphere/data-explorer-indexers/blob/master/bigquery/config/platinum_genomes)
-  here. Specifically:
+  If you use https://github.com/DataBiosphere/data-explorer-indexers, just link
+  to api/dataset_config/MY_DATASET in this repo.
+  https://github.com/DataBiosphere/data-explorer-indexers explains how to
+  set up the config files. Specifically:
   * There must be a file named `dataset.json` that has a `name` field. This
     determines the name of the Elasticsearch index.
   * There must be a file named `facet_fields.csv` with the `readable_field_name`
@@ -30,7 +34,7 @@ To use a different dataset:
 
 For local development, an nginx reverse proxy is used to get around CORS.
 
-![Architecture overview](https://i.imgur.com/ilh7RF1.png)
+![Architecture overview](https://i.imgur.com/IZLbPx9.png)
 
 ## Development
 
