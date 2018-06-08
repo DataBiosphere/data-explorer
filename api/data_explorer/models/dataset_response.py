@@ -23,15 +23,9 @@ class DatasetResponse(Model):
         :param table_names: The table_names of this DatasetResponse.  # noqa: E501
         :type table_names: List[str]
         """
-        self.swagger_types = {
-            'name': str,
-            'table_names': List[str]
-        }
+        self.swagger_types = {'name': str, 'table_names': List[str]}
 
-        self.attribute_map = {
-            'name': 'name',
-            'table_names': 'tableNames'
-        }
+        self.attribute_map = {'name': 'name', 'table_names': 'tableNames'}
 
         self._name = name
         self._table_names = table_names
