@@ -1,5 +1,6 @@
 # Don't check in dataset config files. Dataset may be private.
-api/dataset_config
+api/dataset_config/*
+!api/dataset_config/test_dataset
 
 *.py[cod]
 *$py.class

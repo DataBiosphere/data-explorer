@@ -1,9 +1,5 @@
 # Deploy on Google Cloud Platform
 
-If your dataset is private, there must be a Google Group of users who have
-access to the dataset. [Identity-Aware Proxy](https://cloud.google.com/iap/docs/)
-will be used to restrict Data Explorer to users in this Google Group.
-
 ### Setup
 
 * [Follow these instructions](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery/deploy)
@@ -25,22 +21,33 @@ to bring up Elasticsearch in GKE and index dataset.
 
 ### Enable Access Control
 
+* If this Data Explorer deployment is private, work with the Dataset owner to
+identify a Google Group of users who who can access this deployment. This could
+be a pre-existing Google Group of users who have read-only access to the
+underlying data, or it could be a broader group.
+
 * Follow the [instructions for setting up IAP](https://cloud.google.com/iap/docs/app-engine-quickstart#enabling_iap)
-to restrict access to your app (and potentially sensitive Elasticsearch data)
-to an approved Google Group. Turn on IAP for one domain name:
-`https://PROJECT_ID.appspot.com`
+to restrict access to the aforementioned Google Group. Turn on IAP for one
+domain name: `https://PROJECT_ID.appspot.com`
 
 * Confirm IAP is working.
   * Navigate to `https://PROJECT_ID.appspot.com`. Login as a user who is in the
-  Google Group. You will see a blank page, since API server is not running yet.
+  Google Group. You will see a blank page, since the API server is not running
+  yet.
   * In an incognito window, navigate to `https://PROJECT_ID.appspot.com`. Login
   as a user who is not in the Google Group. You should see a "You don't have
   access" page.
 
 ### Deploy the API Server
 
-* Ensure that `api/dataset_config/` contains your config. If you are using the
-default platinum_genomes dataset, you can get config files [from here](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery/config/platinum_genomes).
+* Make sure that `api/dataset_config/current` contains your dataset config
+  files.
+  * If you are deploying the [default platinum_genomes dataset from the
+    data-explorer-indexers repo](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery/config/platinum_genomes),
+    please create `api/dataset_config/platinum_genomes`, copy over the
+    [config files](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery/config/platinum_genomes),
+    and make `api/dataset_config/current` a symlink to
+    `api/dataset_config/platinum_genomes`.
 
 * Find the `ELASTICSEARCH_URL`. Run `kubectl get svc`, look for `elasticsearch`
 row, `EXTERNAL-IP` column. Note that because the Elasticsearch deployment uses

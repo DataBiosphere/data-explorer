@@ -7,18 +7,25 @@
 
 Run Data explorer with a test dataset:
 
-* `mkdir api/dataset_config && cp test/* api/dataset_config/`
-* `docker-compose up --build`
+* `cd api/dataset_config && ln -s test_dataset current`
+* `cd ../.. && docker-compose up --build`
 * Navigate to `localhost:4400`
 
 To use a different dataset:
 
+* For each dataset, there is a directory in `api/dataset_config`, e.g.
+  `api/dataset_config/amp_pd`.
+    * If you used https://github.com/DataBiosphere/data-explorer-indexers to
+      index your dataset, we recommend moving your dataset config directory from
+      that repo to `api/dataset_config/MY_DATASET`. If you need to run
+      more commands in the `data-explorer-indexers` repo, you can simply refer
+      to `api/dataset_config/MY_DATASET` in this repo.
+* Create symlink: `cd api/dataset_config && ln -s MY_DATASET current`
 * Index your data into an Elasticsearch started by
   `docker run -p 9200:9200 docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.2`. You can use one of the indexers at
   https://github.com/DataBiosphere/data-explorer-indexers, or any other indexer.
-* Create `api/dataset_config` and copy over config files from above step.
-  See [example](https://github.com/DataBiosphere/data-explorer-indexers/blob/master/bigquery/config/platinum_genomes)
-  here. Specifically:
+  https://github.com/DataBiosphere/data-explorer-indexers explains how to
+  set up the config files. Specifically:
   * There must be a file named `dataset.json` that has a `name` field. This
     determines the name of the Elasticsearch index.
   * There must be a file named `facet_fields.csv` with the `readable_field_name`
@@ -30,7 +37,7 @@ To use a different dataset:
 
 For local development, an nginx reverse proxy is used to get around CORS.
 
-![Architecture overview](https://i.imgur.com/ilh7RF1.png)
+![Architecture overview](https://i.imgur.com/IZLbPx9.png)
 
 ## Development
 
@@ -88,6 +95,7 @@ API server unit tests use [pytest](https://docs.pytest.org/en/latest/) and
 ```
 virtualenv ~/virtualenv/tox
 source ~/virtualenv/tox/bin/activate
+pip install tox
 cd api && tox
 ```
 
@@ -97,11 +105,13 @@ These tests use the [test dataset in test/](https://github.com/DataBiosphere/dat
 To run locally:
 
 ```
-ln -s test dataset_config
-docker-compose up --build
+cd api/dataset_config && ln -s test_dataset current
+cd ../.. && docker-compose up --build
 cd ui && npm run test:e2e
 ```
 
 ### Formatting
 
-`ui/` is formatted via [Prettier](https://prettier.io/). husky is used to automatically format files upon commit.
+`ui/` is formatted with [Prettier](https://prettier.io/). husky is used to automatically format files upon commit.
+
+Python files are formatted with [YAPF](https://github.com/google/yapf).
