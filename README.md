@@ -14,14 +14,14 @@ Run Data explorer with a test dataset:
 To use a different dataset:
 
 * For each dataset, there is a directory in `api/dataset_config`, e.g.
-  `api/dataset_config/amp_pd`. Create a directory for your dataset and create a
-  symlink to it: `cd api/dataset_config && ln -s MY_DATASET current`
+  `api/dataset_config/amp_pd`.
     * If you used https://github.com/DataBiosphere/data-explorer-indexers to
       index your dataset, we recommend moving your dataset config directory from
       that repo to `api/dataset_config/MY_DATASET`; then run
       `cd api/dataset_config && ln -s MY_DATASET current`. If you need to run
       more commands in the `data-explorer-indexers` repo, you can simply refer
       to `api/dataset_config/MY_DATASET` in this repo.
+* Create symlink: `cd api/dataset_config && ln -s MY_DATASET current`
 * Index your data into an Elasticsearch started by
   `docker run -p 9200:9200 docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.2`. You can use one of the indexers at
   https://github.com/DataBiosphere/data-explorer-indexers, or any other indexer.
