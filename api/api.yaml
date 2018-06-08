@@ -49,7 +49,7 @@ definitions:
     properties:
       name:
         type: string
-      tableReferences:
+      tableNames:
         type: array
         items:
           type: string

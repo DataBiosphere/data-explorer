@@ -60,8 +60,8 @@ export default class DatasetResponse {
             if (data.hasOwnProperty('name')) {
                 obj['name'] = ApiClient.convertToType(data['name'], 'String');
             }
-            if (data.hasOwnProperty('tableReferences')) {
-                obj['tableReferences'] = ApiClient.convertToType(data['tableReferences'], ['String']);
+            if (data.hasOwnProperty('tableNames')) {
+                obj['tableNames'] = ApiClient.convertToType(data['tableNames'], ['String']);
             }
         }
         return obj;
@@ -72,9 +72,9 @@ export default class DatasetResponse {
     */
     name = undefined;
     /**
-    * @member {Array.<String>} tableReferences
+    * @member {Array.<String>} tableNames
     */
-    tableReferences = undefined;
+    tableNames = undefined;
 
 
 

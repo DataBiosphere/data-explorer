@@ -15,23 +15,26 @@ class DatasetResponse(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name=None, table_references=None):  # noqa: E501
+    def __init__(self, name=None, table_names=None):  # noqa: E501
         """DatasetResponse - a model defined in Swagger
 
         :param name: The name of this DatasetResponse.  # noqa: E501
         :type name: str
-        :param table_references: The table_references of this DatasetResponse.  # noqa: E501
-        :type table_references: List[str]
+        :param table_names: The table_names of this DatasetResponse.  # noqa: E501
+        :type table_names: List[str]
         """
-        self.swagger_types = {'name': str, 'table_references': List[str]}
+        self.swagger_types = {
+            'name': str,
+            'table_names': List[str]
+        }
 
         self.attribute_map = {
             'name': 'name',
-            'table_references': 'tableReferences'
+            'table_names': 'tableNames'
         }
 
         self._name = name
-        self._table_references = table_references
+        self._table_names = table_names
 
     @classmethod
     def from_dict(cls, dikt):
@@ -66,22 +69,22 @@ class DatasetResponse(Model):
         self._name = name
 
     @property
-    def table_references(self):
-        """Gets the table_references of this DatasetResponse.
+    def table_names(self):
+        """Gets the table_names of this DatasetResponse.
 
 
-        :return: The table_references of this DatasetResponse.
+        :return: The table_names of this DatasetResponse.
         :rtype: List[str]
         """
-        return self._table_references
+        return self._table_names
 
-    @table_references.setter
-    def table_references(self, table_references):
-        """Sets the table_references of this DatasetResponse.
+    @table_names.setter
+    def table_names(self, table_names):
+        """Sets the table_names of this DatasetResponse.
 
 
-        :param table_references: The table_references of this DatasetResponse.
-        :type table_references: List[str]
+        :param table_names: The table_names of this DatasetResponse.
+        :type table_names: List[str]
         """
 
-        self._table_references = table_references
+        self._table_names = table_names
