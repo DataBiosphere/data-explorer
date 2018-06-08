@@ -16,11 +16,13 @@ To use a different dataset:
 * For each dataset, there is a directory in `api/dataset_config`, e.g.
   `api/dataset_config/amp_pd`. Create a directory for your dataset and create a
   symlink to it: `cd api/dataset_config && ln -s MY_DATASET current`
+    * If you used https://github.com/DataBiosphere/data-explorer-indexers to
+      index your dataset, copy your dataset config directory from that repo to
+      `api/dataset_config/MY_DATASET`; then run `cd api/dataset_config &&
+      ln -s MY_DATASET current`.
 * Index your data into an Elasticsearch started by
   `docker run -p 9200:9200 docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.2`. You can use one of the indexers at
   https://github.com/DataBiosphere/data-explorer-indexers, or any other indexer.
-  If you use https://github.com/DataBiosphere/data-explorer-indexers, just link
-  to api/dataset_config/MY_DATASET in this repo.
   https://github.com/DataBiosphere/data-explorer-indexers explains how to
   set up the config files. Specifically:
   * There must be a file named `dataset.json` that has a `name` field. This
