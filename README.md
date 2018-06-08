@@ -47,10 +47,16 @@ update the server implementations:
   rm api/data_explorer/models/*
   ```
 * Regenerate Javascript and Python definitions.
-  ```
-  java -jar ~/swagger-codegen-cli.jar generate -i api/api.yaml -l python-flask -o api -DsupportPython2=true,packageName=data_explorer
-  java -jar ~/swagger-codegen-cli.jar generate -i api/api.yaml -l javascript -o ui/src/api -DuseES6=true
-  ```
+  * From the .jar (Linux):
+    ```
+    java -jar ~/swagger-codegen-cli.jar generate -i api/api.yaml -l python-flask -o api -DsupportPython2=true,packageName=data_explorer
+    java -jar ~/swagger-codegen-cli.jar generate -i api/api.yaml -l javascript -o ui/src/api -DuseES6=true
+    ```
+  * From the global script (macOS or other):
+    ```
+    swagger-codegen generate -i api/api.yaml -l python-flask -o api -DsupportPython2=true,packageName=data_explorer
+    swagger-codegen generate -i api/api.yaml -l javascript -o ui/src/api -DuseES6=true
+    ```
 * Update the server implementations to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
 
 ### One-time setup
