@@ -49,6 +49,10 @@ definitions:
     properties:
       name:
         type: string
+      tableNames:
+        type: array
+        items:
+          type: string
   FacetsResponse:
     description: "Results from a faceted search."
     properties:

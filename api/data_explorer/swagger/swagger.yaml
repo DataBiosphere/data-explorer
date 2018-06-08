@@ -49,8 +49,15 @@ definitions:
     properties:
       name:
         type: "string"
+      tableNames:
+        type: "array"
+        items:
+          type: "string"
     description: "Dataset information."
     example:
+      tableNames:
+      - "tableNames"
+      - "tableNames"
       name: "name"
   FacetsResponse:
     properties:
