@@ -1,0 +1,11 @@
+// Facet fields, one field per line
+// field_name: BigQuery field name
+// readable_field_name: Field will have this name in Elasticsearch index and
+//     Data explorer UI
+project_id, dataset_id, table_name, field_name, readable_field_name
+na, na, na, na, Age
+na, na, na, na, Gender
+na, na, na, na, BMI
+na, na, na, na, Children
+na, na, na, na, Smoker
+na, na, na, na, Region

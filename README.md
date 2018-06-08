@@ -8,7 +8,7 @@
 Run Data explorer with a test dataset:
 
 * `cd api/dataset_config && ln -s test_dataset current`
-* `docker-compose up --build`
+* `cd ../.. && docker-compose up --build`
 * Navigate to `localhost:4400`
 
 To use a different dataset:
@@ -92,6 +92,7 @@ API server unit tests use [pytest](https://docs.pytest.org/en/latest/) and
 ```
 virtualenv ~/virtualenv/tox
 source ~/virtualenv/tox/bin/activate
+pip install tox
 cd api && tox
 ```
 
@@ -101,11 +102,13 @@ These tests use the [test dataset in test/](https://github.com/DataBiosphere/dat
 To run locally:
 
 ```
-ln -s test dataset_config
-docker-compose up --build
+cd api/dataset_config && ln -s test_dataset current
+cd ../.. && docker-compose up --build
 cd ui && npm run test:e2e
 ```
 
 ### Formatting
 
-`ui/` is formatted via [Prettier](https://prettier.io/). husky is used to automatically format files upon commit.
+`ui/` is formatted with [Prettier](https://prettier.io/). husky is used to automatically format files upon commit.
+
+Python files are formatted with [YAPF](https://github.com/google/yapf).
