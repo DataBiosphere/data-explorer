@@ -76,7 +76,8 @@ def get_facets():
             # Use ".keyword" because we want aggregation on keyword field, not
             # term field. See
             # https://www.elastic.co/guide/en/elasticsearch/reference/6.2/fielddata.html#before-enabling-fielddata
-            facets[field_name] = TermsFacet(field=field_name + '.keyword')
+            facets[field_name] = TermsFacet(
+                field=field_name + '.keyword', size=20)
         else:
             # Assume numeric type.
             # TODO: Handle other types.
