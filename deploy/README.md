@@ -40,13 +40,11 @@ domain name: `https://PROJECT_ID.appspot.com`
 
 ### Deploy the API Server
 
-* Make sure that `api/dataset_config/MY_DATASET` contains your dataset config
-  files.
+* Set DATASET_CONFIG_DIR in `app.yaml`
   * If you are deploying the [default platinum_genomes dataset from the
     data-explorer-indexers repo](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery/config/platinum_genomes),
     please create `api/dataset_config/platinum_genomes` and copy over the
     [config files](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery/config/platinum_genomes).
-  * Change DATASET_CONFIG_DIR in `app.yaml`.
 
 * Find the `ELASTICSEARCH_URL`. Run `kubectl get svc`, look for `elasticsearch`
 row, `EXTERNAL-IP` column. Note that because the Elasticsearch deployment uses
