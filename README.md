@@ -26,7 +26,7 @@ To use a different dataset:
   * There must be a file named `dataset.json` that has a `name` field. This
     determines the name of the Elasticsearch index.
   * There must be a file named `facet_fields.csv` with the `readable_field_name`
-    column filled out.
+    column filled out.  
   To confirm that your dataset is indexed, navigate to `localhost:9200/_/indices?v`.
   You should see a line for your dataset.
 * `DATASET_CONFIG_DIR=/app/dataset_config/<my dataset> docker-compose up --build`
