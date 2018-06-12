@@ -44,14 +44,13 @@ jobs:
           name: Run API server unit tests
           command: |
               pip install tox
-              cd api/dataset_config && ln -s test_dataset current
-              cd .. && tox
+              cd api
+              tox
       - run:
           name: Run docker-compose
           command: |
               # Needed for elasticsearch
               sudo sysctl -w vm.max_map_count=262144
-              cd api/dataset_config && ln -s test_dataset current
               cd ../.. && docker-compose up --build -d
       - run:
           name: Run e2e tests
