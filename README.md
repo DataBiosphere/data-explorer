@@ -5,28 +5,29 @@
 
 ## Quickstart
 
-Run Data explorer with a test dataset:
+Run local Data explorer with a test dataset:
 
 * `docker-compose up --build`
 * Navigate to `localhost:4400`
 
-To use a different dataset:
+## Run local Data explorer with a specific dataset
 
-* For each dataset, there is a directory in `api/dataset_config`, e.g.
-  `api/dataset_config/amp_pd`.
-    * If you used https://github.com/DataBiosphere/data-explorer-indexers to
-      index your dataset, we recommend moving your dataset config directory from
-      that repo to `api/dataset_config/MY_DATASET`. If you need to run
-      more commands in the `data-explorer-indexers` repo, you can simply refer
-      to `api/dataset_config/MY_DATASET` in this repo.
-* Index your data into Elasticsearch. You can use one of the indexers at
-  https://github.com/DataBiosphere/data-explorer-indexers, or any other indexer.
-  https://github.com/DataBiosphere/data-explorer-indexers explains how to
-  set up the config files. Specifically:
-  * There must be a file named `dataset.json` that has a `name` field. This
-    determines the name of the Elasticsearch index.
-  * There must be a file named `facet_fields.csv` with the `readable_field_name`
-    column filled out.
+This repo contains an API server that reads from Elasticsearch, and a UI server
+that calls the API server. When running the UI and API servers, it is assumed
+that the dataset has already been indexed into Elasticsearch.
+
+To index your dataset into Elasticsearch, you can use one of the indexers at
+https://github.com/DataBiosphere/data-explorer-indexers, or any other indexer.
+
+* Index your data into Elasticsearch.
+* Create a directory in `api/dataset_config`, e.g. `api/dataset_config/amp_pd`.
+    * If you used https://github.com/DataBiosphere/data-explorer-indexers, copy
+    the config directory from there.
+    * If you used your own indexer, the config files must follow
+    this format ([see examples](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery/dataset_config/platinum_genomes)):
+      * `dataset.json` has a `name` field. This determines the name of the Elasticsearch index.
+      * `facet_fields.csv` has the `readable_field_name` column filled out.
+
 * `DATASET_CONFIG_DIR=/app/dataset_config/<my dataset> docker-compose up --build`
 * Navigate to `localhost:4400`
 
