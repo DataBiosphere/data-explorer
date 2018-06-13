@@ -40,7 +40,7 @@ domain name: `https://PROJECT_ID.appspot.com`
 
 ### Deploy the API Server
 
-* Set DATASET_CONFIG_DIR in `app.yaml`
+* Set MY_DATASET in `app.yaml`
   * If you are deploying the [default platinum_genomes dataset from the
     data-explorer-indexers repo](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery/config/platinum_genomes),
     please create `api/dataset_config/platinum_genomes` and copy over the
