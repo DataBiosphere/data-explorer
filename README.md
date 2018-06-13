@@ -20,7 +20,7 @@ To index your dataset into Elasticsearch, you can use one of the indexers at
 https://github.com/DataBiosphere/data-explorer-indexers, or any other indexer.
 
 * Index your data into Elasticsearch.
-* Create a directory in `api/dataset_config`, e.g. `api/dataset_config/amp_pd`.
+* Create `api/dataset_config/<my dataset>`.
     * If you used https://github.com/DataBiosphere/data-explorer-indexers, copy
     the config directory from there.
     * If you used your own indexer, the config files must follow
