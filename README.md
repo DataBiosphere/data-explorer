@@ -12,18 +12,18 @@ Run local Data Explorer with a test dataset:
 
 ## Run local Data Explorer with a custom dataset
 
-Before you can run the servers in this repo to display a Data Explorer UI,
+* Index your dataset into Elasticsearch.  
+  Before you can run the servers in this repo to display a Data Explorer UI,
 your dataset must be indexed into Elasticsearch.
-
-* Index your dataset into Elasticsearch. You can use one of the indexers at
+  You can use one of the indexers at
 https://github.com/DataBiosphere/data-explorer-indexers, or any other indexer.
 * Create `api/dataset_config/<my dataset>`
-    * If you used https://github.com/DataBiosphere/data-explorer-indexers, copy
+  * If you used https://github.com/DataBiosphere/data-explorer-indexers, copy
     the config directory from there.
-    * If you used your own indexer, the config files must follow
+  * If you used your own indexer, the config files must follow
     this format ([see examples](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery/dataset_config/platinum_genomes)). Specifically:
-      * `dataset.json` has a `name` field.
-      * `facet_fields.csv` has the `readable_field_name` column filled out.
+    * `dataset.json` has a `name` field.
+    * `facet_fields.csv` has the `readable_field_name` column filled out.
 
 * `DATASET_CONFIG_DIR=/app/dataset_config/<my dataset> docker-compose up --build`
 * Navigate to `localhost:4400`
