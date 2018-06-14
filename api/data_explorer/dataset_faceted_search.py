@@ -49,6 +49,7 @@ def get_dataset_name():
         dataset = json.loads(jsmin.jsmin(f.read()))
         return dataset['name']
 
+
 def get_facet_rows():
     """Parses facet_fields.csv as a list.
 
@@ -60,6 +61,7 @@ def get_facet_rows():
     # Remove comments using jsmin.
     csv_str = jsmin.jsmin(f.read())
     return csv.DictReader(iter(csv_str.splitlines()), skipinitialspace=True)
+
 
 def get_table_names():
     """Gets an alphabetically ordered list of table names from facet_fields.csv. Table names are fully qualified: <project id>:<dataset id>:<table name>
@@ -106,6 +108,7 @@ def get_facets():
             facets[field_name] = HistogramFacet(field=field_name, interval=10)
     current_app.logger.info('dataset_faceted_search facets: %s' % facets)
     return facets
+
 
 class DatasetFacetedSearch(FacetedSearch):
     """Subclass of FacetedSearch for Datasets.
