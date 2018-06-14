@@ -14,4 +14,5 @@ def dataset_get():  # noqa: E501
 
     :rtype: DatasetResponse
     """
-    return DatasetResponse(name=get_dataset_name(), table_names=get_table_names())
+    return DatasetResponse(
+        name=get_dataset_name(), table_names=get_table_names())

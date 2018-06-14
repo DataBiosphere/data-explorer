@@ -49,6 +49,7 @@ def get_dataset_name():
         dataset = json.loads(jsmin.jsmin(f.read()))
         return dataset['name']
 
+
 def get_table_names():
     """Gets a list of table names from facet_fields.csv.
 
@@ -56,10 +57,12 @@ def get_table_names():
     """
     table_names = set()
     for row in get_facet_rows():
-        table_names.add(row['project_id'] + '.' + row['dataset_id'] + '.' + row['table_name'])
+        table_names.add(row['project_id'] + '.' + row['dataset_id'] + '.' +
+                        row['table_name'])
     tables_list = list(table_names)
     tables_list.sort()
     return tables_list
+
 
 def get_facets():
     """Gets facets from facet_fields.csv.
@@ -93,6 +96,7 @@ def get_facets():
     current_app.logger.info('dataset_faceted_search facets: %s' % facets)
     return facets
 
+
 def get_facet_rows():
     """Parses facet_fields.csv as a list.
 
@@ -104,6 +108,7 @@ def get_facet_rows():
     # Remove comments using jsmin.
     csv_str = jsmin.jsmin(f.read())
     return csv.DictReader(iter(csv_str.splitlines()), skipinitialspace=True)
+
 
 class DatasetFacetedSearch(FacetedSearch):
     """Subclass of FacetedSearch for Datasets.
