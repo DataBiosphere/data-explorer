@@ -5,32 +5,27 @@
 
 ## Quickstart
 
-Run Data explorer with a test dataset:
+Run local Data Explorer with a test dataset:
 
-* `cd api/dataset_config && ln -s test_dataset current`
-* `cd ../.. && docker-compose up --build`
+* `docker-compose up --build`
 * Navigate to `localhost:4400`
 
-To use a different dataset:
+## Run local Data Explorer with a custom dataset
 
-* For each dataset, there is a directory in `api/dataset_config`, e.g.
-  `api/dataset_config/amp_pd`.
-    * If you used https://github.com/DataBiosphere/data-explorer-indexers to
-      index your dataset, we recommend moving your dataset config directory from
-      that repo to `api/dataset_config/MY_DATASET`. If you need to run
-      more commands in the `data-explorer-indexers` repo, you can simply refer
-      to `api/dataset_config/MY_DATASET` in this repo.
-* Create symlink: `cd api/dataset_config && ln -s MY_DATASET current`
-* Index your data into an Elasticsearch started by
-  `docker run -p 9200:9200 docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.2`. You can use one of the indexers at
-  https://github.com/DataBiosphere/data-explorer-indexers, or any other indexer.
-  https://github.com/DataBiosphere/data-explorer-indexers explains how to
-  set up the config files. Specifically:
-  * There must be a file named `dataset.json` that has a `name` field. This
-    determines the name of the Elasticsearch index.
-  * There must be a file named `facet_fields.csv` with the `readable_field_name`
-    column filled out.
-* `docker-compose up --build`
+* Index your dataset into Elasticsearch.  
+  Before you can run the servers in this repo to display a Data Explorer UI,
+your dataset must be indexed into Elasticsearch.
+  You can use one of the indexers at
+https://github.com/DataBiosphere/data-explorer-indexers, or any other indexer.
+* Create `api/dataset_config/<my dataset>`
+  * If you used https://github.com/DataBiosphere/data-explorer-indexers, copy
+    the config directory from there.
+  * If you used your own indexer, the config files must follow
+    this format ([see examples](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery/dataset_config/platinum_genomes)). Specifically:
+    * `dataset.json` has a `name` field.
+    * `facet_fields.csv` has the `readable_field_name` column filled out.
+
+* `DATASET_CONFIG_DIR=/app/dataset_config/<my dataset> docker-compose up --build`
 * Navigate to `localhost:4400`
 
 ## Architecture overview
@@ -105,8 +100,7 @@ These tests use the [test dataset in test/](https://github.com/DataBiosphere/dat
 To run locally:
 
 ```
-cd api/dataset_config && ln -s test_dataset current
-cd ../.. && docker-compose up --build
+docker-compose up --build
 cd ui && npm run test:e2e
 ```
 

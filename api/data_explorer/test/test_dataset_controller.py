@@ -9,7 +9,7 @@ class TestDatasetController(BaseTestCase):
     def create_app(self):
         app = super(TestDatasetController, self).create_app()
         app.config.update({
-            'DATASET_CONFIG_DIR': 'dataset_config/current',
+            'DATASET_CONFIG_DIR': 'dataset_config/test_dataset',
         })
         return app
 
