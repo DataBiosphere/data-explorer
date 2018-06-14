@@ -6,5 +6,4 @@ entrypoint: gunicorn -b ":$PORT" data_explorer.__main__:app
 env_variables:
   PATH_PREFIX: /api
   ELASTICSEARCH_URL: http://ELASTICSEARCH_URL:9200/
-  # Example: /app/dataset_config/platinum_genomes
   DATASET_CONFIG_DIR: /app/dataset_config/MY_DATASET
