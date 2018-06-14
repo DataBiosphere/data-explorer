@@ -10,7 +10,7 @@ Run local Data Explorer with a test dataset:
 * `docker-compose up --build`
 * Navigate to `localhost:4400`
 
-## Run local Data Explorer with a specific dataset
+## Run local Data Explorer with a custom dataset
 
 Before you can run the servers in this repo to display a Data Explorer UI,
 your dataset must be indexed into Elasticsearch.
