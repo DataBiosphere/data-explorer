@@ -50,6 +50,7 @@ definitions:
       name:
         type: string
       tableNames:
+        description: "Fully-qualified table name: <project id>.<dataset id>.<table name>"
         type: array
         items:
           type: string
