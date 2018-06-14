@@ -50,10 +50,9 @@ def get_dataset_name():
         return dataset['name']
 
 
-def get_facets():
-    """Gets facets from facet_fields.csv.
+def get_facet_rows():
+    """Parses facet_fields.csv as a list.
 
-    current_app.config['ELASTICSEARCH_URL'], current_app.config['INDEX_NAME']
     current_app.config['DATASET_CONFIG_DIR'] must be set before this is called.
     """
     f = open(
@@ -61,15 +60,36 @@ def get_facets():
                      'facet_fields.csv'))
     # Remove comments using jsmin.
     csv_str = jsmin.jsmin(f.read())
-    facet_rows = csv.DictReader(
-        iter(csv_str.splitlines()), skipinitialspace=True)
+    return csv.DictReader(iter(csv_str.splitlines()), skipinitialspace=True)
+
+
+def get_table_names():
+    """Gets an alphabetically ordered list of table names from facet_fields.csv. Table names are fully qualified: <project id>:<dataset id>:<table name>
+
+    current_app.config['DATASET_CONFIG_DIR'] must be set before this is called.
+    """
+    table_names = set()
+    for row in get_facet_rows():
+        table_names.add(row['project_id'] + '.' + row['dataset_id'] + '.' +
+                        row['table_name'])
+    tables_list = list(table_names)
+    tables_list.sort()
+    return tables_list
+
+
+def get_facets():
+    """Gets facets from facet_fields.csv.
+
+    current_app.config['ELASTICSEARCH_URL'], current_app.config['INDEX_NAME']
+    current_app.config['DATASET_CONFIG_DIR'] must be set before this is called.
+    """
 
     using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
     mapping = Mapping.from_es(
         current_app.config['INDEX_NAME'], 'type', using=using).to_dict()
     # Preserve order, so facets are returned in the same order as facet_fields.csv
     facets = OrderedDict()
-    for facet_row in facet_rows:
+    for facet_row in get_facet_rows():
         field_name = facet_row['readable_field_name']
         field_type = mapping['type']['properties'][field_name]['type']
         if field_type == 'text':

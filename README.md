@@ -23,7 +23,8 @@ https://github.com/DataBiosphere/data-explorer-indexers, or any other indexer.
   * If you used your own indexer, the config files must follow
     this format ([see examples](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery/dataset_config/platinum_genomes)). Specifically:
     * `dataset.json` has a `name` field.
-    * `facet_fields.csv` has the `readable_field_name` column filled out.
+    * `facet_fields.csv` has the `project_id, dataset_id, table_name, readable_field_name`
+    columns filled out.
 
 * `DATASET_CONFIG_DIR=/app/dataset_config/<my dataset> docker-compose up --build`
 * Navigate to `localhost:4400`

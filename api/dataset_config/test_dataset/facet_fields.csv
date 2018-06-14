@@ -3,9 +3,9 @@
 // readable_field_name: Field will have this name in Elasticsearch index and
 //     Data explorer UI
 project_id, dataset_id, table_name, field_name, readable_field_name
-na, na, na, na, Age
-na, na, na, na, Gender
-na, na, na, na, BMI
-na, na, na, na, Children
-na, na, na, na, Smoker
-na, na, na, na, Region
+test_project1, test_dataset1, test_table1, na, Age
+test_project1, test_dataset1, test_table1, na, Gender
+test_project1, test_dataset1, test_table2, na, BMI
+test_project2, test_dataset2, test_table3, na, Children
+test_project2, test_dataset2, test_table3, na, Smoker
+test_project2, test_dataset3, test_table4, na, Region
