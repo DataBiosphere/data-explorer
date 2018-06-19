@@ -87,23 +87,9 @@ describe("End-to-end", () => {
   ) {
     let facetCard = await getFacetCard(facetName);
 
-    // TODO: Simplify after
-    // https://github.com/GoogleChrome/puppeteer/issues/2401 is fixed.
-    expect(
-      await page.evaluate(facetCard => {
-        return facetCard.querySelector("span.totalFacetValueCount").innerText;
-      }, facetCard)
-    ).toBe(totalCount);
-    expect(
-      await page.evaluate(facetCard => {
-        return facetCard.querySelector("div.facetValueName").innerText;
-      }, facetCard)
-    ).toBe(firstValueName);
-    expect(
-      await page.evaluate(facetCard => {
-        return facetCard.querySelector("div.facetValueCount").innerText;
-      }, facetCard)
-    ).toBe(firstValueCount);
+    expect(await facetCard.$eval("span.totalFacetValueCount", node => node.innerText)).toBe(totalCount);
+    expect(await facetCard.$eval("div.facetValueName", node => node.innerText)).toBe(firstValueName);
+    expect(await facetCard.$eval("div.facetValueCount", node => node.innerText)).toBe(firstValueCount);
   }
 
   /**
