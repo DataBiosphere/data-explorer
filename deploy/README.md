@@ -8,6 +8,8 @@ to bring up Elasticsearch in GKE and index dataset.
 * Create `api/dataset_config/MY_DATASET` if it doesn't already exist. If you used
   https://github.com/DataBiosphere/data-explorer-indexers, you can copy the
   config directory from there.
+  * Make sure `api/dataset_config/MY_DATASET/deploy.json` is filled out.
+  * Note: You can't deploy `test_dataset`; that only works for local runs.
 
 * If you haven't done so already, set the default project:
 
@@ -46,7 +48,9 @@ domain name: `https://PROJECT_ID.appspot.com`
 
 * From the `deploy` directory, run `./deploy-api.sh MY_DATASET`, where MY_DATASET is
   the name of the config directory in `api/dataset_config`.
+  * This script assumes you deployed an indexer in https://github.com/DataBiosphere/data-explorer-indexers.
+  If you deployed a different indexer, edit elasticsearch_url in this script.
 
-* Navigate to `https://PROJECT_ID.appspot.com`. Note: App Engine services are
-not always available immediately after deploying. Allow a few minutes after
-deployment finishes for the service to come up.
+* Navigate to `https://PROJECT_ID.appspot.com`. Note: App Engine deployment is
+slow. You can use the [App Engine Versions page](https://console.cloud.google.com/appengine/versions)
+to see when your latest version is deployed.

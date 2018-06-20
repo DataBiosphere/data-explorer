@@ -9,6 +9,7 @@ from flask import current_app
 
 from collections import OrderedDict
 from elasticsearch import Elasticsearch
+from elasticsearch.exceptions import TransportError
 from elasticsearch_dsl import HistogramFacet
 from elasticsearch_dsl import FacetedSearch
 from elasticsearch_dsl import Mapping
@@ -85,8 +86,15 @@ def get_facets():
     """
 
     using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
-    mapping = Mapping.from_es(
+    try:
         current_app.config['INDEX_NAME'], 'type', using=using).to_dict()
+    except TransportError as e:
+        if 'index_not_found_exception' in e.error:
+            current_app.logger.error('Index %s not found at %s' %
+                                     (current_app.config['INDEX_NAME'],
+                                      current_app.config['ELASTICSEARCH_URL']))
+            return []
+
     # Preserve order, so facets are returned in the same order as facet_fields.csv
     facets = OrderedDict()
     for facet_row in get_facet_rows():
