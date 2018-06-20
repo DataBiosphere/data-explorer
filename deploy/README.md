@@ -53,5 +53,5 @@ domain name: `https://PROJECT_ID.appspot.com`
   If you deployed Elasticsearch differently, edit elasticsearch_url in this script.
 
 * Navigate to `https://PROJECT_ID.appspot.com`. Note: App Engine deployment is
-slow. You can use the [App Engine Versions page](https://console.cloud.google.com/appengine/versions)
-to see when your latest version is deployed.
+slow and can take up 10 minutes. When `deploy/deploy-api.sh` returns, that means
+deployment has completed.
