@@ -1,4 +1,5 @@
 dispatch:
-  # Send all API traffic to the api service
+  # Send all API traffic to the api service. See
+  # https://github.com/DataBiosphere/data-explorer/pull/76
   - url: "*/api/*"
     service: api
