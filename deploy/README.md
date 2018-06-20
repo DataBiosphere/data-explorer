@@ -46,7 +46,7 @@ domain name: `https://PROJECT_ID.appspot.com`
 
 ### Deploy the API Server
 
-* From project root run `deploy/deploy-api.sh MY_DATASET`, where MY_DATASET is
+* From project root run `deploy/deploy-api.sh MY_DATASET`, where `MY_DATASET` is
   the name of the config directory in `api/dataset_config`.
   * This script assumes you deployed Elasticsearch following the instructions in
   https://github.com/DataBiosphere/data-explorer-indexers.

@@ -1,4 +1,0 @@
-{
-  // GCP project to deploy to
-  "project_id": "test-data-explorer"
-}
