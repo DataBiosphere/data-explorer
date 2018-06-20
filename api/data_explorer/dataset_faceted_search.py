@@ -87,7 +87,8 @@ def get_facets():
 
     using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
     try:
-        current_app.config['INDEX_NAME'], 'type', using=using).to_dict()
+        mapping = Mapping.from_es(
+            current_app.config['INDEX_NAME'], 'type', using=using).to_dict()
     except TransportError as e:
         if 'index_not_found_exception' in e.error:
             current_app.logger.error('Index %s not found at %s' %

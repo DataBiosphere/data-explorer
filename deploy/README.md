@@ -46,10 +46,11 @@ domain name: `https://PROJECT_ID.appspot.com`
 
 ### Deploy the API Server
 
-* From the `deploy` directory, run `./deploy-api.sh MY_DATASET`, where MY_DATASET is
+* From project root run `deploy/deploy-api.sh MY_DATASET`, where MY_DATASET is
   the name of the config directory in `api/dataset_config`.
-  * This script assumes you deployed an indexer in https://github.com/DataBiosphere/data-explorer-indexers.
-  If you deployed a different indexer, edit elasticsearch_url in this script.
+  * This script assumes you deployed Elasticsearch following the instructions in
+  https://github.com/DataBiosphere/data-explorer-indexers.
+  If you deployed Elasticsearch differently, edit elasticsearch_url in this script.
 
 * Navigate to `https://PROJECT_ID.appspot.com`. Note: App Engine deployment is
 slow. You can use the [App Engine Versions page](https://console.cloud.google.com/appengine/versions)
