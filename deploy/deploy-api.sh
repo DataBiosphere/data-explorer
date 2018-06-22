@@ -1,6 +1,12 @@
 #!/bin/bash
 #
 # Deploy API Server on GCP.
+#
+# This script assumes Elasticsearch was deployed following the instructions in
+# https://github.com/DataBiosphere/data-explorer-indexers/. Specifically, there
+# must be a GKE cluster named "elasticsearch-cluster".
+#
+# jq, gcloud, and kubectl must be installed before running this script.
 
 if (( $# != 1 ))
 then
@@ -11,7 +17,7 @@ then
 fi
 
 dataset=$1
-project_id=$(grep -v "//" api/dataset_config/${dataset}/deploy.json | jq --raw-output '.project_id')
+project_id=$(jq --raw-output '.project_id' api/dataset_config/${dataset}/deploy.json)
 
 echo "Deploying ${dataset} API Server to project ${project_id}"
 echo

@@ -94,7 +94,7 @@ def get_facets():
             current_app.logger.error('Index %s not found at %s' %
                                      (current_app.config['INDEX_NAME'],
                                       current_app.config['ELASTICSEARCH_URL']))
-            return []
+            raise e
 
     # Preserve order, so facets are returned in the same order as facet_fields.csv
     facets = OrderedDict()
