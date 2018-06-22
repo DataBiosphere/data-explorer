@@ -5,6 +5,12 @@
 * [Follow these instructions](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery/deploy)
 to bring up Elasticsearch in GKE and index dataset.
 
+* Create `api/dataset_config/MY_DATASET` if it doesn't already exist. If you used
+  https://github.com/DataBiosphere/data-explorer-indexers, you can copy the
+  config directory from there.
+  * Make sure `api/dataset_config/MY_DATASET/deploy.json` is filled out.
+  * Note: You can't deploy `test_dataset`; that only works for local runs.
+
 * If you haven't done so already, set the default project:
 
   `gcloud config set project PROJECT_ID`
@@ -40,36 +46,12 @@ domain name: `https://PROJECT_ID.appspot.com`
 
 ### Deploy the API Server
 
-* Set MY_DATASET in `app.yaml`
-  * If you are deploying the [default platinum_genomes dataset from the
-    data-explorer-indexers repo](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery/config/platinum_genomes),
-    please create `api/dataset_config/platinum_genomes` and copy over the
-    [config files](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery/config/platinum_genomes).
+* From project root run `deploy/deploy-api.sh MY_DATASET`, where `MY_DATASET` is
+  the name of the config directory in `api/dataset_config`.
+  * This script assumes you deployed Elasticsearch following the instructions in
+  https://github.com/DataBiosphere/data-explorer-indexers.
+  If you deployed Elasticsearch differently, edit elasticsearch_url in this script.
 
-* Find the `ELASTICSEARCH_URL`. Run `kubectl get svc`, look for `elasticsearch`
-row, `EXTERNAL-IP` column. Note that because the Elasticsearch deployment uses
-an [Internal Load Balancer](https://cloud.google.com/kubernetes-engine/docs/how-to/internal-load-balancing)
-, this IP is only accessible from the internal GCP network for this project.
-
-* Set the `ELASTICSEARCH_URL` in `api/app.yaml`
-
-* Deploy:
-
-  `cd api && gcloud app deploy`
-
-* Set up routing rules:
-
-  `cd deploy && gcloud app deploy dispatch.yaml`
-
-  Reason for routing rules: Normally, CORS is used to allow UI server client
-  Javascript to call API server domain:port. Identity-Aware Proxy doesn't work
-  well with CORS. CORS can be enabled for UI server -> API server, but IAP
-  introduces UI server -> accounts.google.com, which CORS cannot be enabled
-  for. We use [App Engine routing](https://cloud.google.com/appengine/docs/standard/python/how-requests-are-routed#routing_with_a_dispatch_file)
-  to get around CORS. UI server calls /api on itself, so CORS does not come
-  into play. (This is similar to our [nginx proxying](https://github.com/DataBiosphere/data-explorer/blob/master/nginx.conf)
-  for local development.)
-
-* Navigate to `https://PROJECT_ID.appspot.com`. Note: App Engine services are
-not always available immediately after deploying. Allow a few minutes after
-deployment finishes for the service to come up.
+* Navigate to `https://PROJECT_ID.appspot.com`. Note: App Engine deployment is
+slow and can take up 10 minutes. When `deploy/deploy-api.sh` returns, that means
+deployment has completed.

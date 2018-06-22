@@ -1,6 +1,7 @@
-# Don't check in dataset config files. Dataset may be private.
+# Dataset-specific files
 api/dataset_config/*
 !api/dataset_config/test_dataset
+api/app.yaml
 
 *.py[cod]
 *$py.class
