@@ -21,7 +21,13 @@ def convert_to_index_name(s):
     """Converts a string to an Elasticsearch index name."""
     # For Elasticsearch index name restrictions, see
     # https://github.com/DataBiosphere/data-explorer-indexers/issues/5#issue-308168951
-    prohibited_chars = [' ', '"', '*', '\\', '<', '|', ',', '>', '/', '?']
+    # Elasticsearch allows single quote in index names. However, they cause other
+    # problems. For example,
+    # "curl -XDELETE http://localhost:9200/nurse's_health_study" doesn't work.
+    # So also remove single quotes.
+    prohibited_chars = [
+        ' ', '"', '*', '\\', '<', '|', ',', '>', '/', '?', '\''
+    ]
     for char in prohibited_chars:
         s = s.replace(char, '_')
     s = s.lower()
