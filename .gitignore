@@ -1,5 +1,6 @@
 # Dataset-specific files
 api/dataset_config/*
+!api/dataset_config/template
 !api/dataset_config/test_dataset
 api/app.yaml
 

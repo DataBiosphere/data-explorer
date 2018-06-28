@@ -1,0 +1,10 @@
+// Configuration for Data Explorer UI
+[
+  "facets": [
+    {
+      "elasticsearch_field_name": "",
+      // Name of facet in Data Explorer UI
+      "facet_name": ""
+    }
+  ]
+]
