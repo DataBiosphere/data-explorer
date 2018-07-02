@@ -21,8 +21,10 @@ https://github.com/DataBiosphere/data-explorer-indexers, or any other indexer.
   * If you used https://github.com/DataBiosphere/data-explorer-indexers, copy
     the config directory from there.
   * Copy and fill out [ui.json](https://github.com/DataBiosphere/data-explorer/tree/master/api/dataset_config/template/ui.json).
-  * If you used your own indexer, `dataset.json` and `ui.json` must be filled
-    out. [See examples here.](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery/dataset_config/platinum_genomes)
+    (`ui.json` is not in `data-explorer-indexers` [dataset config directory](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/dataset_config/template).)
+  * If you used your own indexer, all files except `gcs.json` must be filled
+    out. For examples of files other than `ui.json`, [see here](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery/dataset_config/platinum_genomes).
+    For an example `ui.json`, [see here](https://github.com/DataBiosphere/data-explorer/blob/master/api/dataset_config/test_dataset/ui.json).
 
 * `DATASET_CONFIG_DIR=/app/dataset_config/<my dataset> docker-compose up --build`
 * Navigate to `localhost:4400`
