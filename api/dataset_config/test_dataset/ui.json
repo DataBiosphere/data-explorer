@@ -1,0 +1,30 @@
+// Configuration for Data Explorer UI
+{
+  "facets": [
+    {
+      "elasticsearch_field_name": "Age",
+      // Name of facet in Data Explorer UI
+      "facet_name": "Age"
+    },
+    {
+      "elasticsearch_field_name": "Gender",
+      "facet_name": "Gender"
+    },
+    {
+      "elasticsearch_field_name": "BMI",
+      "facet_name": "BMI"
+    },
+    {
+      "elasticsearch_field_name": "Children",
+      "facet_name": "Children"
+    },
+    {
+      "elasticsearch_field_name": "Smoker",
+      "facet_name": "Smoker"
+    },
+    {
+      "elasticsearch_field_name": "Region",
+      "facet_name": "Region"
+    }
+  ]
+}

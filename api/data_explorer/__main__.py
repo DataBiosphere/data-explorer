@@ -65,6 +65,21 @@ app.app.json_encoder = JSONEncoder
 app.add_api('swagger.yaml', base_path=args.path_prefix)
 
 
+def _parse_json_file(json_path):
+    """Opens and returns JSON contents.
+  Args:
+    json_path: Relative or absolute path of JSON file
+  Returns:
+    Parsed JSON
+  """
+    app.app.logger.info('Reading JSON file %s' % json_path)
+    with open(json_path, 'r') as f:
+        # Remove comments using jsmin, as recommended by JSON creator
+        # (https://plus.google.com/+DouglasCrockfordEsq/posts/RK8qyGVaGSr).
+        jsonDict = json.loads(jsmin.jsmin(f.read()))
+        return jsonDict
+
+
 # Keep in sync with convert_to_index_name() in data-explorer-indexers repo.
 def _convert_to_index_name(s):
     """Converts a string to an Elasticsearch index name."""
@@ -89,22 +104,9 @@ def _convert_to_index_name(s):
 
 def _get_dataset_name():
     """Gets dataset name from dataset.json."""
-    file_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
-                             'dataset.json')
-    with open(file_path) as f:
-        # Remove comments using jsmin, as recommended by JSON creator
-        # (https://plus.google.com/+DouglasCrockfordEsq/posts/RK8qyGVaGSr).
-        dataset = json.loads(jsmin.jsmin(f.read()))
-        return dataset['name']
-
-
-def _get_facet_rows():
-    """Parses facet_fields.csv as a list."""
-    f = open(
-        os.path.join(app.app.config['DATASET_CONFIG_DIR'], 'facet_fields.csv'))
-    # Remove comments using jsmin.
-    csv_str = jsmin.jsmin(f.read())
-    return csv.DictReader(iter(csv_str.splitlines()), skipinitialspace=True)
+    config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
+                               'dataset.json')
+    return _parse_json_file(config_path)['name']
 
 
 def _get_table_names():
@@ -112,22 +114,20 @@ def _get_table_names():
 
     Table names are fully qualified: <project id>:<dataset id>:<table name>
     """
-    table_names = set()
-    for row in _get_facet_rows():
-        table_names.add(row['project_id'] + '.' + row['dataset_id'] + '.' +
-                        row['table_name'])
-    tables_list = list(table_names)
-    tables_list.sort()
-    return tables_list
+    config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
+                               'bigquery.json')
+    table_names = _parse_json_file(config_path)['table_names']
+    table_names.sort()
+    return table_names
 
 
 def _get_facets():
-    """Gets facets from facet_fields.csv.
+    """Gets Elasticsearch facets.
 
-    app.app.config['ELASTICSEARCH_URL'], app.app.config['INDEX_NAME']
-    app.app.config['DATASET_CONFIG_DIR'] must be set before this is called.
+    Returns:
+        A dict from facet name to Elasticsearch facet object. Facet name is the
+        facet name shown in the UI.
     """
-
     using = Elasticsearch(app.app.config['ELASTICSEARCH_URL'])
     try:
         mapping = Mapping.from_es(
@@ -139,11 +139,16 @@ def _get_facets():
                                   app.app.config['ELASTICSEARCH_URL']))
             raise e
 
-    # Preserve order, so facets are returned in the same order as facet_fields.csv
+    config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'], 'ui.json')
+    facets_config = _parse_json_file(config_path)['facets']
+
+    # Preserve order, so facets are returned in same order as the config file.
     facets = OrderedDict()
-    for facet_row in _get_facet_rows():
-        field_name = facet_row['readable_field_name']
+
+    for facet_config in facets_config:
+        field_name = facet_config['elasticsearch_field_name']
         field_type = mapping['type']['properties'][field_name]['type']
+        facet_name = facet_config['facet_name']
         if field_type == 'text':
             # Use ".keyword" because we want aggregation on keyword field, not
             # term field. See
