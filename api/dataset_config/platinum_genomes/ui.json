@@ -1,0 +1,18 @@
+// Configuration for Data Explorer UI
+{
+  "facets": [
+    {
+      "elasticsearch_field_name": "gender",
+      // Name of facet in Data Explorer UI
+      "facet_name": "Gender"
+    },
+    {
+      "elasticsearch_field_name": "race",
+      "facet_name": "Race"
+    },
+    {
+      "elasticsearch_field_name": "relationship_to_proband",
+      "facet_name": "Relationship"
+    }
+  ]
+}
