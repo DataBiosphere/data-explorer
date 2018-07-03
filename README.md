@@ -21,9 +21,9 @@ https://github.com/DataBiosphere/data-explorer-indexers, or any other indexer.
   * If you used https://github.com/DataBiosphere/data-explorer-indexers, copy
     the config directory from there.
   * Copy and fill out [ui.json](https://github.com/DataBiosphere/data-explorer/tree/master/api/dataset_config/template/ui.json).
-    (`ui.json` is not in `data-explorer-indexers` [dataset config directory](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/dataset_config/template).)
+    (`ui.json` is not in `data-explorer-indexers` repo.)
   * If you used your own indexer, copy the config files from [here](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/dataset_config/template)
-    and [here](https://github.com/DataBiosphere/data-explorer/tree/master/api/dataset_config/template)
+    and [here](https://github.com/DataBiosphere/data-explorer/tree/master/api/dataset_config/template).
     All files except `gcs.json` must be filled out.
 
 * `DATASET_CONFIG_DIR=/app/dataset_config/<my dataset> docker-compose up --build`
