@@ -1,5 +1,5 @@
 // Configuration for Data Explorer UI
-[
+{
   "facets": [
     {
       "elasticsearch_field_name": "",
@@ -7,4 +7,4 @@
       "facet_name": ""
     }
   ]
-]
+}
