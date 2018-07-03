@@ -2,17 +2,16 @@
 {
   "facets": [
     {
-      "elasticsearch_field_name": "gender",
-      // Name of facet in Data Explorer UI
-      "facet_name": "Gender"
+      "ui_facet_name": "Gender",
+      "elasticsearch_field_name": "gender"
     },
     {
-      "elasticsearch_field_name": "race",
-      "facet_name": "Race"
+      "ui_facet_name": "Race",
+      "elasticsearch_field_name": "race"
     },
     {
-      "elasticsearch_field_name": "relationship_to_proband",
-      "facet_name": "Relationship"
+      "ui_facet_name": "Relationship",
+      "elasticsearch_field_name": "relationship_to_proband"
     }
   ]
 }

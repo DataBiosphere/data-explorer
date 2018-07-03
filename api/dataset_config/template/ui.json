@@ -2,9 +2,8 @@
 {
   "facets": [
     {
-      "elasticsearch_field_name": "",
-      // Name of facet in Data Explorer UI
-      "facet_name": ""
+      "ui_facet_name": "",
+      "elasticsearch_field_name": ""
     }
   ]
 }

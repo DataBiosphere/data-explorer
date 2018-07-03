@@ -125,8 +125,7 @@ def _get_facets():
     """Gets Elasticsearch facets.
 
     Returns:
-        A dict from facet name to Elasticsearch facet object. Facet name is the
-        facet name shown in the UI.
+        A dict from UI facet name to Elasticsearch facet object
     """
     using = Elasticsearch(app.app.config['ELASTICSEARCH_URL'])
     try:
@@ -148,12 +147,12 @@ def _get_facets():
     for facet_config in facets_config:
         field_name = facet_config['elasticsearch_field_name']
         field_type = mapping['type']['properties'][field_name]['type']
-        facet_name = facet_config['facet_name']
+        ui_facet_name = facet_config['ui_facet_name']
         if field_type == 'text':
             # Use ".keyword" because we want aggregation on keyword field, not
             # term field. See
             # https://www.elastic.co/guide/en/elasticsearch/reference/6.2/fielddata.html#before-enabling-fielddata
-            facets[facet_name] = TermsFacet(
+            facets[ui_facet_name] = TermsFacet(
                 field=field_name + '.keyword', size=20)
         else:
             # Assume numeric type.
@@ -162,7 +161,8 @@ def _get_facets():
             # Elasticsearch won't do this for us
             # (https://github.com/elastic/elasticsearch/issues/9572). Make the
             # ranges easy to read (10-19,20-29 instead of 10-17,18-25).
-            facets[facet_name] = HistogramFacet(field=field_name, interval=10)
+            facets[ui_facet_name] = HistogramFacet(
+                field=field_name, interval=10)
     app.app.logger.info('dataset_faceted_search facets: %s' % facets)
     return facets
 

@@ -2,29 +2,28 @@
 {
   "facets": [
     {
-      "elasticsearch_field_name": "Age",
-      // Name of facet in Data Explorer UI
-      "facet_name": "Age"
+      "ui_facet_name": "Age",
+      "elasticsearch_field_name": "Age"
     },
     {
-      "elasticsearch_field_name": "Gender",
-      "facet_name": "Gender"
+      "ui_facet_name": "Gender",
+      "elasticsearch_field_name": "Gender"
     },
     {
-      "elasticsearch_field_name": "BMI",
-      "facet_name": "BMI"
+      "ui_facet_name": "BMI",
+      "elasticsearch_field_name": "BMI"
     },
     {
-      "elasticsearch_field_name": "Children",
-      "facet_name": "Children"
+      "ui_facet_name": "Children",
+      "elasticsearch_field_name": "Children"
     },
     {
-      "elasticsearch_field_name": "Smoker",
-      "facet_name": "Smoker"
+      "ui_facet_name": "Smoker",
+      "elasticsearch_field_name": "Smoker"
     },
     {
-      "elasticsearch_field_name": "Region",
-      "facet_name": "Region"
+      "ui_facet_name": "Region",
+      "elasticsearch_field_name": "Region"
     }
   ]
 }
