@@ -2,6 +2,7 @@
 api/dataset_config/*
 !api/dataset_config/template
 !api/dataset_config/test_dataset
+!api/dataset_config/platinum_genomes/ui.json
 api/app.yaml
 
 *.py[cod]
