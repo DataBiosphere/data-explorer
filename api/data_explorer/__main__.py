@@ -153,7 +153,7 @@ def _get_facets():
             # Use ".keyword" because we want aggregation on keyword field, not
             # term field. See
             # https://www.elastic.co/guide/en/elasticsearch/reference/6.2/fielddata.html#before-enabling-fielddata
-            facets[field_name] = TermsFacet(
+            facets[facet_name] = TermsFacet(
                 field=field_name + '.keyword', size=20)
         else:
             # Assume numeric type.
@@ -162,7 +162,7 @@ def _get_facets():
             # Elasticsearch won't do this for us
             # (https://github.com/elastic/elasticsearch/issues/9572). Make the
             # ranges easy to read (10-19,20-29 instead of 10-17,18-25).
-            facets[field_name] = HistogramFacet(field=field_name, interval=10)
+            facets[facet_name] = HistogramFacet(field=field_name, interval=10)
     app.app.logger.info('dataset_faceted_search facets: %s' % facets)
     return facets
 
