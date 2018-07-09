@@ -1,0 +1,29 @@
+// Configuration for Data Explorer UI
+{
+  "facets": [
+    {
+      "ui_facet_name": "Age",
+      "elasticsearch_field_name": "Age"
+    },
+    {
+      "ui_facet_name": "Gender",
+      "elasticsearch_field_name": "Gender"
+    },
+    {
+      "ui_facet_name": "BMI",
+      "elasticsearch_field_name": "BMI"
+    },
+    {
+      "ui_facet_name": "Children",
+      "elasticsearch_field_name": "Children"
+    },
+    {
+      "ui_facet_name": "Smoker",
+      "elasticsearch_field_name": "Smoker"
+    },
+    {
+      "ui_facet_name": "Region",
+      "elasticsearch_field_name": "Region"
+    }
+  ]
+}
