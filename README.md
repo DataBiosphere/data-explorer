@@ -5,6 +5,9 @@
 
 ## Quickstart
 
+View [Data Explorer](https://test-data-explorer.appspot.com/) for the public
+[Personal Genome Project](https://pgp.med.harvard.edu/) dataset.
+
 Run local Data Explorer with a test dataset:
 
 * `docker-compose up --build`
