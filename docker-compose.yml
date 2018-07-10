@@ -42,6 +42,12 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.2
     ports:
       - 127.0.0.1:9200:9200
+    environment:
+      # Disable bootstrap checks so users don't have to fiddle with
+      # vm.max_map_count. Note that this file is not used in production
+      # deployments; bootstrap checks are still enabled for production
+      # deployments.
+      - "transport.host=localhost"
   kibana:
     image: docker.elastic.co/kibana/kibana-oss:6.2.2
     ports:
