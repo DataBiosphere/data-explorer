@@ -1,5 +1,7 @@
 // Configuration for Data Explorer UI
 {
+  // Include facets you want in the UI
+  // Facets will appear in the order they are listed here
   "facets": [
     {
       "ui_facet_name": "",

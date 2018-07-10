@@ -146,6 +146,10 @@ def _get_facets():
 
     for facet_config in facets_config:
         field_name = facet_config['elasticsearch_field_name']
+        if not field_name in mapping['type']['properties']:
+            raise ValueError(
+                'elasticsearch_field_name %s not found in Elasticsearch index %s'
+                % (field_name, app.app.config['INDEX_NAME']))
         field_type = mapping['type']['properties'][field_name]['type']
         ui_facet_name = facet_config['ui_facet_name']
         if field_type == 'text':
