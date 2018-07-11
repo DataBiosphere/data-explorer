@@ -19,6 +19,7 @@ exports[`Renders correctly 1`] = `
     <FacetCard
       facet={
         Facet {
+          "description": undefined,
           "name": "Facet 1",
           "values": Array [
             FacetValue {
@@ -47,6 +48,7 @@ exports[`Renders correctly 1`] = `
     <FacetCard
       facet={
         Facet {
+          "description": undefined,
           "name": "Facet 2",
           "values": Array [
             FacetValue {

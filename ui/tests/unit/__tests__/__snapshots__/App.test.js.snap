@@ -15,6 +15,7 @@ exports[`Renders correctly after receiving all data 1`] = `
       facets={
         Array [
           Facet {
+            "description": undefined,
             "name": "Facet 1",
             "values": Array [
               FacetValue {
@@ -28,6 +29,7 @@ exports[`Renders correctly after receiving all data 1`] = `
             ],
           },
           Facet {
+            "description": undefined,
             "name": "Facet 2",
             "values": Array [
               FacetValue {
