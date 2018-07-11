@@ -54,16 +54,21 @@ def deserialize(filter_arr):
     for facet_filter in filter_arr:
         filter_str = urllib.unquote(facet_filter).decode('utf8')
         key_val = filter_str.split('=')
-        facet_name = key_val[0]
-        facet_value = key_val[1]
-        es_facet = current_app.config['ELASTICSEARCH_FACETS'][facet_name]
+        name = key_val[0]
+
+        for name_iter, _, es_facet_iter in current_app.config[
+                'ELASTICSEARCH_FACETS']:
+            if name_iter == name:
+                es_facet = es_facet_iter
         if isinstance(es_facet, HistogramFacet):
-            facet_value = _range_to_number(facet_value)
-        if len(key_val) == 2:
-            if not facet_name in parsed_filter:
-                parsed_filter[facet_name] = [facet_value]
-            else:
-                parsed_filter[facet_name].append(facet_value)
+            value = _range_to_number(key_val[1])
+        else:
+            value = key_val[1]
+
+        if not name in parsed_filter:
+            parsed_filter[name] = [value]
+        else:
+            parsed_filter[name].append(value)
     return parsed_filter
 
 

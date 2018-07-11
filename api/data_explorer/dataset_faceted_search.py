@@ -7,12 +7,7 @@ from elasticsearch_dsl import FacetedSearch
 
 
 class DatasetFacetedSearch(FacetedSearch):
-    """Subclass of FacetedSearch for Datasets.
-
-    current_app.config['ELASTICSEARCH_URL'], current_app.config['INDEX_NAME'],
-    and current_app.config['ELASTICSEARCH_FACETS'] must be set before creating a
-    DatasetFacetedSearch object.
-    """
+    """Subclass of FacetedSearch for Datasets."""
 
     def __init__(self, filters={}):
         """
