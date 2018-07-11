@@ -22,8 +22,8 @@ def facets_get(filter=None):  # noqa: E501
     es_response = search.execute()
     es_response_facets = es_response.facets.to_dict()
     facets = []
-    for name, description, es_facet in current_app.config[
-            'ELASTICSEARCH_FACETS']:
+    for name, description in current_app.config['UI_FACETS'].iteritems():
+        es_facet = current_app.config['ELASTICSEARCH_FACETS'][name]
         values = []
         for value_name, count, _ in es_response_facets[name]:
             if isinstance(es_facet, HistogramFacet):
@@ -56,10 +56,7 @@ def deserialize(filter_arr):
         key_val = filter_str.split('=')
         name = key_val[0]
 
-        for name_iter, _, es_facet_iter in current_app.config[
-                'ELASTICSEARCH_FACETS']:
-            if name_iter == name:
-                es_facet = es_facet_iter
+        es_facet = current_app.config['ELASTICSEARCH_FACETS'][name]
         if isinstance(es_facet, HistogramFacet):
             value = _range_to_number(key_val[1])
         else:

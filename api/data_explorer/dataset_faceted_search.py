@@ -16,15 +16,7 @@ class DatasetFacetedSearch(FacetedSearch):
         Ex: {'Region':['southeast', 'northwest'], 'Gender':['male']}.
         """
         self.index = current_app.config['INDEX_NAME']
-
-        # Elasticsearch expects self.facets to be a dict from facet name to
-        # Elasticsearch facet object.
-        facets_dict = {}
-        for facet_name, _, es_facet in current_app.config[
-                'ELASTICSEARCH_FACETS']:
-            facets_dict[facet_name] = es_facet
-        self.facets = facets_dict
-
+        self.facets = current_app.config['ELASTICSEARCH_FACETS']
         self.using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
         # Now that using is set, create _s.
         super(DatasetFacetedSearch, self).__init__(None, filters)
