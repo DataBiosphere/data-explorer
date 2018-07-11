@@ -34,11 +34,12 @@ class TestFacetsController(BaseTestCase):
     def create_app(self):
         app = super(TestFacetsController, self).create_app()
         app.config.update({
-            'INDEX_NAME': 'index_name',
-            'ELASTICSEARCH_FACETS': {
-                'Region': TermsFacet(field='Region.keyword')
-            },
-            'ELASTICSEARCH_URL': 'fakeurl:9200',
+            'INDEX_NAME':
+            'index_name',
+            'ELASTICSEARCH_FACETS': [('Region', None,
+                                      TermsFacet(field='Region.keyword'))],
+            'ELASTICSEARCH_URL':
+            'fakeurl:9200',
         })
         return app
 
@@ -66,9 +67,9 @@ class TestFacetsController(BaseTestCase):
         """
         self.maxDiff = 2000
         self.app.config.update({
-            'ELASTICSEARCH_FACETS': {
-                'Age': HistogramFacet(field='Age', interval=10),
-            },
+            'ELASTICSEARCH_FACETS': [('Age', None,
+                                      HistogramFacet(field='Age',
+                                                     interval=10))],
         })
         responses.add(
             'GET',
