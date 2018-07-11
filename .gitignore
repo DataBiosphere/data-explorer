@@ -1,20 +1,19 @@
 # Dataset-specific files
-api/dataset_config/**
-!api/dataset_config/test_dataset
+dataset_config/**
+!dataset_config/test_dataset
+!dataset_config/template
 api/app.yaml
-
-!api/dataset_config/template
 
 # Most Platinum Genomes config files are in data-explorer-indexers repo.
 # (ui.json is in this repo since it's only used by this repo.)
 # Only store ui.json; eg we don't want to maintain 2 copies of dataset.json.
 # Negating a previously excluded directory is tricky. See
 # https://stackoverflow.com/a/18702826. Specifically:
-# - Above must be api/dataset_config/** instead of api/dataset_config/*
-# - !api/dataset_config/platinum_genomes/ is needed
-!api/dataset_config/platinum_genomes/
-!api/dataset_config/platinum_genomes/ui.json
-!api/dataset_config/platinum_genomes/README.md
+# - Above must be dataset_config/** instead of dataset_config/*
+# - !dataset_config/platinum_genomes/ is needed
+!dataset_config/platinum_genomes/
+!dataset_config/platinum_genomes/ui.json
+!dataset_config/platinum_genomes/README.md
 
 *.py[cod]
 *$py.class
