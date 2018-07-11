@@ -3,6 +3,7 @@
    "facets":[  
       {  
          "name":"Region",
+         "description":"Region description",
          "values":[  
             {  
                "count":364,
