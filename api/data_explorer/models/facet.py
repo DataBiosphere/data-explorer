@@ -16,19 +16,30 @@ class Facet(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name=None, values=None):  # noqa: E501
+    def __init__(self, name=None, description=None, values=None):  # noqa: E501
         """Facet - a model defined in Swagger
 
         :param name: The name of this Facet.  # noqa: E501
         :type name: str
+        :param description: The description of this Facet.  # noqa: E501
+        :type description: str
         :param values: The values of this Facet.  # noqa: E501
         :type values: List[FacetValue]
         """
-        self.swagger_types = {'name': str, 'values': List[FacetValue]}
+        self.swagger_types = {
+            'name': str,
+            'description': str,
+            'values': List[FacetValue]
+        }
 
-        self.attribute_map = {'name': 'name', 'values': 'values'}
+        self.attribute_map = {
+            'name': 'name',
+            'description': 'description',
+            'values': 'values'
+        }
 
         self._name = name
+        self._description = description
         self._values = values
 
     @classmethod
@@ -64,6 +75,29 @@ class Facet(Model):
         """
 
         self._name = name
+
+    @property
+    def description(self):
+        """Gets the description of this Facet.
+
+        Optional facet description.  # noqa: E501
+
+        :return: The description of this Facet.
+        :rtype: str
+        """
+        return self._description
+
+    @description.setter
+    def description(self, description):
+        """Sets the description of this Facet.
+
+        Optional facet description.  # noqa: E501
+
+        :param description: The description of this Facet.
+        :type description: str
+        """
+
+        self._description = description
 
     @property
     def values(self):

@@ -10,14 +10,19 @@ exports[`Renders correctly 1`] = `
   <div
     className="cardHeader"
   >
-    <span>
-      Facet Name
-    </span>
+    <div>
+      <span>
+        Facet Name
+      </span>
+      <span
+        className="totalFacetValueCount"
+      >
+        60
+      </span>
+    </div>
     <span
-      className="totalFacetValueCount"
-    >
-      60
-    </span>
+      className="facetDescription"
+    />
   </div>
   <List>
     <ListItem

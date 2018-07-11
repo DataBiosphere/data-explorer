@@ -20,22 +20,23 @@ def facets_get(filter=None):  # noqa: E501
     """
     search = DatasetFacetedSearch(deserialize(filter))
     es_response = search.execute()
-    es_facets = es_response.facets.to_dict()
+    es_response_facets = es_response.facets.to_dict()
     facets = []
-    for facet_name in current_app.config['ELASTICSEARCH_FACETS'].keys():
-        facet_values = []
-        for name, count, _ in es_facets[facet_name]:
-            es_facet = current_app.config['ELASTICSEARCH_FACETS'][facet_name]
+    for name, description in current_app.config['UI_FACETS'].iteritems():
+        es_facet = current_app.config['ELASTICSEARCH_FACETS'][name]
+        values = []
+        for value_name, count, _ in es_response_facets[name]:
             if isinstance(es_facet, HistogramFacet):
                 # For histograms, Elasticsearch returns:
                 #   name 10: count 15     (There are 15 people aged 10-19)
                 #   name 20: count 33     (There are 33 people aged 20-29)
                 # Convert "10" -> "10-19".
-                range_str = number_to_range(name, es_facet._params['interval'])
-                facet_values.append(FacetValue(name=range_str, count=count))
+                range_str = _number_to_range(value_name,
+                                             es_facet._params['interval'])
+                values.append(FacetValue(name=range_str, count=count))
             else:
-                facet_values.append(FacetValue(name=name, count=count))
-        facets.append(Facet(name=facet_name, values=facet_values))
+                values.append(FacetValue(name=value_name, count=count))
+        facets.append(Facet(name=name, description=description, values=values))
     return FacetsResponse(
         facets=facets, count=es_response._faceted_search.count())
 
@@ -53,24 +54,26 @@ def deserialize(filter_arr):
     for facet_filter in filter_arr:
         filter_str = urllib.unquote(facet_filter).decode('utf8')
         key_val = filter_str.split('=')
-        facet_name = key_val[0]
-        facet_value = key_val[1]
-        es_facet = current_app.config['ELASTICSEARCH_FACETS'][facet_name]
+        name = key_val[0]
+
+        es_facet = current_app.config['ELASTICSEARCH_FACETS'][name]
         if isinstance(es_facet, HistogramFacet):
-            facet_value = range_to_number(facet_value)
-        if len(key_val) == 2:
-            if not facet_name in parsed_filter:
-                parsed_filter[facet_name] = [facet_value]
-            else:
-                parsed_filter[facet_name].append(facet_value)
+            value = _range_to_number(key_val[1])
+        else:
+            value = key_val[1]
+
+        if not name in parsed_filter:
+            parsed_filter[name] = [value]
+        else:
+            parsed_filter[name].append(value)
     return parsed_filter
 
 
-def number_to_range(bucket_number, interval_size):
+def _number_to_range(bucket_number, interval_size):
     """Converts "X" -> "X-Y"."""
     return '%d-%d' % (bucket_number, bucket_number + interval_size - 1)
 
 
-def range_to_number(bucket_string):
+def _range_to_number(bucket_string):
     """Converts "X-Y" -> "X"."""
     return int(bucket_string.split('-')[0])

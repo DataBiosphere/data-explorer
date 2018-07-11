@@ -74,6 +74,9 @@ definitions:
       name:
         type: string
         description: Facet name, for example, "Gender".
+      description:
+        type: string
+        description: Optional facet description.
       values:
         type: array
         items:

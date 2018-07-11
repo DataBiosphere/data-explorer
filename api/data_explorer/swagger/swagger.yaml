@@ -51,6 +51,8 @@ definitions:
         type: "string"
       tableNames:
         type: "array"
+        description: "Fully-qualified table name: <project id>.<dataset id>.<table\
+          \ name>"
         items:
           type: "string"
     description: "Dataset information."
@@ -79,17 +81,22 @@ definitions:
         - name: "name"
           count: 0
         name: "name"
+        description: "description"
       - values:
         - name: "name"
           count: 0
         - name: "name"
           count: 0
         name: "name"
+        description: "description"
   Facet:
     properties:
       name:
         type: "string"
         description: "Facet name, for example, \"Gender\"."
+      description:
+        type: "string"
+        description: "Optional facet description."
       values:
         type: "array"
         items:
@@ -103,6 +110,7 @@ definitions:
       - name: "name"
         count: 0
       name: "name"
+      description: "description"
   FacetValue:
     properties:
       name:

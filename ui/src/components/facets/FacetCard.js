@@ -53,9 +53,14 @@ class FacetCard extends Component {
     return (
       <Card className="facetCard">
         <div className="cardHeader">
-          <span>{this.props.facet.name}</span>
-          <span className="totalFacetValueCount">
-            {this.totalFacetValueCount}
+          <div>
+            <span>{this.props.facet.name}</span>
+            <span className="totalFacetValueCount">
+              {this.totalFacetValueCount}
+            </span>
+          </div>
+          <span className="facetDescription">
+            {this.props.facet.description}
           </span>
         </div>
         <List>{facetValues}</List>

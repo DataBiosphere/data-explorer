@@ -121,12 +121,30 @@ def _get_table_names():
     return table_names
 
 
-def _get_facets():
-    """Gets Elasticsearch facets.
+def _get_ui_facets():
+    """Returns a dict from UI facet name to UI facet description.
 
-    Returns:
-        A dict from UI facet name to Elasticsearch facet object
+    If there is no description for a facet, the value is None.
     """
+    config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'], 'ui.json')
+    facets_config = _parse_json_file(config_path)['facets']
+
+    # Preserve order, so facets are returned in same order as the config file.
+    facets = OrderedDict()
+
+    for facet_config in facets_config:
+        if 'ui_facet_description' in facet_config:
+            facets[facet_config['ui_facet_name']] = facet_config[
+                'ui_facet_description']
+        else:
+            facets[facet_config['ui_facet_name']] = None
+
+    app.app.logger.info('UI facets: %s' % facets)
+    return facets
+
+
+def _get_es_facets():
+    """Returns a dict from UI facet name to Elasticsearch facet object."""
     using = Elasticsearch(app.app.config['ELASTICSEARCH_URL'])
     try:
         mapping = Mapping.from_es(
@@ -167,7 +185,7 @@ def _get_facets():
             # ranges easy to read (10-19,20-29 instead of 10-17,18-25).
             facets[ui_facet_name] = HistogramFacet(
                 field=field_name, interval=10)
-    app.app.logger.info('dataset_faceted_search facets: %s' % facets)
+    app.app.logger.info('Elasticsearch facets: %s' % facets)
     return facets
 
 
@@ -181,7 +199,8 @@ def init():
     # been set up.
     app.app.config['DATASET_NAME'] = _get_dataset_name()
     app.app.config['INDEX_NAME'] = _convert_to_index_name(_get_dataset_name())
-    app.app.config['ELASTICSEARCH_FACETS'] = _get_facets()
+    app.app.config['UI_FACETS'] = _get_ui_facets()
+    app.app.config['ELASTICSEARCH_FACETS'] = _get_es_facets()
     app.app.config['TABLE_NAMES'] = _get_table_names()
 
 

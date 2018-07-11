@@ -72,6 +72,7 @@ export default class DatasetResponse {
     */
     name = undefined;
     /**
+    * Fully-qualified table name: <project id>.<dataset id>.<table name>
     * @member {Array.<String>} tableNames
     */
     tableNames = undefined;

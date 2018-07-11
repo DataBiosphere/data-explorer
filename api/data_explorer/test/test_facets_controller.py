@@ -35,6 +35,9 @@ class TestFacetsController(BaseTestCase):
         app = super(TestFacetsController, self).create_app()
         app.config.update({
             'INDEX_NAME': 'index_name',
+            'UI_FACETS': {
+                'Region': 'Region description'
+            },
             'ELASTICSEARCH_FACETS': {
                 'Region': TermsFacet(field='Region.keyword')
             },
@@ -66,8 +69,11 @@ class TestFacetsController(BaseTestCase):
         """
         self.maxDiff = 2000
         self.app.config.update({
+            'UI_FACETS': {
+                'Age': None
+            },
             'ELASTICSEARCH_FACETS': {
-                'Age': HistogramFacet(field='Age', interval=10),
+                'Age': HistogramFacet(field='Age', interval=10)
             },
         })
         responses.add(
