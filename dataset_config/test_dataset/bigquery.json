@@ -1,0 +1,11 @@
+{
+  // Name of BigQuery column that represents primary key. See
+  // https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery#overview
+  // for more information.
+  "primary_key": "n/a for test dataset",
+
+  "table_names": [
+    // Fully-qualified table name: <project id>.<dataset id>.<table name>
+    "project_id.dataset_id.table_name"
+  ]
+}
