@@ -5,6 +5,8 @@
   "facets": [
     {
       "ui_facet_name": "",
+      // Facet description is optional
+      "ui_facet_description": "",
       "elasticsearch_field_name": ""
     }
   ]
