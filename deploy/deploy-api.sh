@@ -11,13 +11,13 @@
 if (( $# != 1 ))
 then
   echo "Usage: deploy/deploy-api.sh <dataset>"
-  echo "  where <dataset> is the name of a directory in api/dataset_config/"
+  echo "  where <dataset> is the name of a directory in dataset_config/"
   echo "Run this script from project root"
   exit 1
 fi
 
 dataset=$1
-project_id=$(jq --raw-output '.project_id' api/dataset_config/${dataset}/deploy.json)
+project_id=$(jq --raw-output '.project_id' dataset_config/${dataset}/deploy.json)
 
 echo "Deploying ${dataset} API Server to project ${project_id}"
 echo
@@ -32,8 +32,15 @@ elasticsearch_url=$(kubectl get svc elasticsearch | grep elasticsearch | awk '{p
 sed -e "s/MY_DATASET/${dataset}/" api/app.yaml.templ > api/app.yaml
 sed -i -e "s/MY_ELASTICSEARCH_URL/${elasticsearch_url}/" api/app.yaml
 
+# Temporarily copy api/Dockerfile, api/app.yaml to project root.
+# Unlike docker-compose, App Engine Flexible requires that docker build context
+# be in same directory as Dockerfile. Build context must be project root in
+# order to pickup dataset_config/.
+cp api/Dockerfile api/app.yaml .
+
 # Deploy App Engine api service
-cd api && gcloud app deploy --quiet
+gcloud app deploy --quiet
+rm Dockerfile app.yaml
 
 # Set up routing rules
-cd ../deploy && gcloud app deploy --quiet dispatch.yaml
+cd deploy && gcloud app deploy --quiet dispatch.yaml

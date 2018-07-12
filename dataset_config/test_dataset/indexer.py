@@ -1,15 +1,12 @@
 """For convenience, load test data into Elasticsearch index "test_data".
-
 For real datasets, one would use one of the indexers in
 https://github.com/DataBiosphere/data-explorer-indexers/, or from somewhere
 else. The ElasticSearch index would exist before running the servers in this
 repo. For convenience, create a test index so one can easily try out Data
 explorer with test data.
-
 Input must be JSON, not CSV. Unlike JSON, CSV values don't have types, so
 numbers would be indexed as strings. (And there is no easy way in Python to
 detect the type of a string.)
-
 Unfortunately there's no easy way to index a JSON file using curl. (See
 https://stackoverflow.com/questions/23798433/json-bulk-import-to-elasticstearch.)
 So write a Python script.

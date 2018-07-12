@@ -13,17 +13,18 @@ Run local Data Explorer with a test dataset:
 ## Run local Data Explorer with a custom dataset
 
 * Index your dataset into Elasticsearch.  
-  Before you can run the servers in this repo to display a Data Explorer UI,
-your dataset must be indexed into Elasticsearch.
+   Before you can run the servers in this repo to display a Data Explorer UI,
+  your dataset must be indexed into Elasticsearch.
   You can use one of the indexers at
-https://github.com/DataBiosphere/data-explorer-indexers, or any other indexer.
-* Create `api/dataset_config/<my dataset>`
+  https://github.com/DataBiosphere/data-explorer-indexers, or any other indexer.
+* Create `dataset_config/<my dataset>`
+
   * If you used https://github.com/DataBiosphere/data-explorer-indexers, copy
     the config directory from there.
-  * Copy and fill out [ui.json](https://github.com/DataBiosphere/data-explorer/tree/master/api/dataset_config/template/ui.json).
+  * Copy and fill out [ui.json](https://github.com/DataBiosphere/data-explorer/tree/master/dataset_config/template/ui.json).
     (`ui.json` is not in `data-explorer-indexers` repo.)
   * If you used your own indexer, copy the config files from [here](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/dataset_config/template)
-    and [here](https://github.com/DataBiosphere/data-explorer/tree/master/api/dataset_config/template).
+    and [here](https://github.com/DataBiosphere/data-explorer/tree/master/dataset_config/template).
     All files except `gcs.json` must be filled out.
 
 * `DATASET_CONFIG_DIR=/app/dataset_config/<my dataset> docker-compose up --build`

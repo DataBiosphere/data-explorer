@@ -21,7 +21,9 @@ services:
   # Use "apise" for "api server". ("apis" is also taken.)
   apise:
     build:
-      context: api
+      # Run from project root to pick up dataset_config/.
+      context: .
+      dockerfile: api/Dockerfile
     ports:
       - 127.0.0.1:8390:8390
     volumes:
@@ -55,4 +57,4 @@ services:
   # For convenience, load test data into Elasticsearch.
   index_test_data:
     build:
-      context: api/dataset_config/test_dataset
+      context: dataset_config/test_dataset
