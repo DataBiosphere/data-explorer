@@ -2,6 +2,7 @@ import "./App.css";
 import { ApiClient, DatasetApi, FacetsApi } from "data_explorer_service";
 import ExportFab from "./components/ExportFab";
 import FacetsGrid from "./components/facets/FacetsGrid";
+import FacetsDropDown from "./components/facets/FacetsDropDown";
 import Header from "./components/Header";
 
 import React, { Component } from "react";
@@ -11,6 +12,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      value: 1,
       datasetName: "",
       facets: null,
       totalCount: null
@@ -34,7 +36,7 @@ class App extends Component {
     this.filterMap = new Map();
     this.updateFacets = this.updateFacets.bind(this);
   }
-
+  handleChange = (event, index, value) => this.setState({value});
   render() {
     if (this.state.facets == null || this.state.datasetName === "") {
       // Server has not yet responded or returned an error
@@ -47,9 +49,11 @@ class App extends Component {
               datasetName={this.state.datasetName}
               totalCount={this.state.totalCount}
             />
-            <FacetsGrid
+            <FacetsDropDown
               updateFacets={this.updateFacets}
               facets={this.state.facets}
+              handleChange={this.handleChange}
+              state={this.state}
             />
           </div>
         </MuiThemeProvider>
