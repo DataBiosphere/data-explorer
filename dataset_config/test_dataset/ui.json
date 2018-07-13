@@ -3,7 +3,7 @@
   "facets": [
     {
       "ui_facet_name": "Age",
-      "elasticsearch_field_name": "Agsdfsdfe"
+      "elasticsearch_field_name": "Age"
     },
     {
       "ui_facet_name": "Gender",
