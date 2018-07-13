@@ -111,7 +111,6 @@ def _get_dataset_name():
 
 def _get_table_names():
     """Gets an alphabetically ordered list of table names from facet_fields.csv.
-
     Table names are fully qualified: <project id>:<dataset id>:<table name>
     """
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
@@ -123,7 +122,6 @@ def _get_table_names():
 
 def _get_ui_facets():
     """Returns a dict from UI facet name to UI facet description.
-
     If there is no description for a facet, the value is None.
     """
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'], 'ui.json')
@@ -143,12 +141,26 @@ def _get_ui_facets():
     return facets
 
 
-def _get_es_facets():
-    """Returns a dict from UI facet name to Elasticsearch facet object."""
-    using = Elasticsearch(app.app.config['ELASTICSEARCH_URL'])
+def _get_field_type(es, field_name):
+    # elasticsearch_dsl.Mapping, which gets mappings for all fields, would be
+    # easier, but we can't use it.
+    # BigQuery indexer uses field names like "project.dataset.table.column".
+    # elasticsearch_dsl.Mapping corresponds to
+    # "curl /index/_mapping/doc_type". That returns a nested dict:
+    #   "project":
+    #     "dataset":
+    #       ...
+    # It's difficult to retrieve type from the nested dict.
+    # Instead, we get the type for one field:
+    # "curl /index/_mapping/doc_type/project.dataset.table.column".
+    # This has the benefit that we can support Elasticsearch documents that are
+    # truly nested, such as HCA Orange Box. elasticsearch_field_type in ui.json
+    # would be "parent.child".
     try:
-        mapping = Mapping.from_es(
-            app.app.config['INDEX_NAME'], 'type', using=using).to_dict()
+        mapping = es.indices.get_field_mapping(
+            fields=field_name,
+            index=app.app.config['INDEX_NAME'],
+            doc_type='type')
     except TransportError as e:
         if 'index_not_found_exception' in e.error:
             app.app.logger.error('Index %s not found at %s' %
@@ -156,6 +168,20 @@ def _get_es_facets():
                                   app.app.config['ELASTICSEARCH_URL']))
             raise e
 
+    if mapping == {}:
+        raise ValueError(
+            'elasticsearch_field_name %s not found in Elasticsearch index %s' %
+            (field_name, app.app.config['INDEX_NAME']))
+
+    # If field_name is "a.b.c", last_part is "c".
+    last_part = field_name.split('.')[len(field_name.split('.')) - 1]
+    return mapping[app.app.config['INDEX_NAME']]['mappings']['type'][
+        field_name]['mapping'][last_part]['type']
+
+
+def _get_es_facets():
+    """Returns a dict from UI facet name to Elasticsearch facet object."""
+    es = Elasticsearch(app.app.config['ELASTICSEARCH_URL'])
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'], 'ui.json')
     facets_config = _parse_json_file(config_path)['facets']
 
@@ -164,11 +190,7 @@ def _get_es_facets():
 
     for facet_config in facets_config:
         field_name = facet_config['elasticsearch_field_name']
-        if not field_name in mapping['type']['properties']:
-            raise ValueError(
-                'elasticsearch_field_name %s not found in Elasticsearch index %s'
-                % (field_name, app.app.config['INDEX_NAME']))
-        field_type = mapping['type']['properties'][field_name]['type']
+        field_type = _get_field_type(es, field_name)
         ui_facet_name = facet_config['ui_facet_name']
         if field_type == 'text':
             # Use ".keyword" because we want aggregation on keyword field, not
