@@ -1,20 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Renders correctly 1`] = `
-<GridList
+<WithStyles(GridList)
   cellHeight="auto"
   className="gridList"
   cols={3}
   padding={1}
 >
-  <GridTile
-    actionPosition="right"
-    cols={1}
-    containerElement="div"
+  <WithStyles(GridListTile)
     key="Facet 1"
-    rows={1}
-    titleBackground="rgba(0, 0, 0, 0.4)"
-    titlePosition="bottom"
   >
     <FacetCard
       facet={
@@ -35,15 +29,9 @@ exports[`Renders correctly 1`] = `
       }
       updateFacets={[Function]}
     />
-  </GridTile>
-  <GridTile
-    actionPosition="right"
-    cols={1}
-    containerElement="div"
+  </WithStyles(GridListTile)>
+  <WithStyles(GridListTile)
     key="Facet 2"
-    rows={1}
-    titleBackground="rgba(0, 0, 0, 0.4)"
-    titlePosition="bottom"
   >
     <FacetCard
       facet={
@@ -64,6 +52,6 @@ exports[`Renders correctly 1`] = `
       }
       updateFacets={[Function]}
     />
-  </GridTile>
-</GridList>
+  </WithStyles(GridListTile)>
+</WithStyles(GridList)>
 `;

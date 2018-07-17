@@ -2,16 +2,15 @@
 
 import "./ExportFab.css";
 
-import FileCloudUpload from "material-ui/svg-icons/file/cloud-upload";
-import { FloatingActionButton } from "material-ui";
+import CloudUpload from "@material-ui/icons/CloudUpload";
+import Button from "@material-ui/core/Button";
 import React from "react";
-import { white } from "material-ui/styles/colors";
 
 function ExportFab(props) {
   return (
-    <FloatingActionButton className="exportFab">
-      <FileCloudUpload color={white} />
-    </FloatingActionButton>
+    <Button variant="fab" className="exportFab">
+      <CloudUpload />
+    </Button>
   );
 }
 
