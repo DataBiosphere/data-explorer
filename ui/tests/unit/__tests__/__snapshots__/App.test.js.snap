@@ -46,6 +46,7 @@ exports[`Renders correctly after receiving all data 1`] = `
       }
       updateFacets={[Function]}
     />
+    <ExportFab />
   </div>
 </MuiThemeProvider>
 `;
