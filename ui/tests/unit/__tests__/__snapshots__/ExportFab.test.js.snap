@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Renders correctly 1`] = `
+<WithStyles(Button)
+  className="exportFab"
+  color="secondary"
+  variant="fab"
+>
+  <pure(CloudUpload) />
+</WithStyles(Button)>
+`;

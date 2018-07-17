@@ -8,7 +8,7 @@ import React from "react";
 
 function ExportFab(props) {
   return (
-    <Button variant="fab" className="exportFab">
+    <Button variant="fab" color="secondary" className="exportFab">
       <CloudUpload />
     </Button>
   );
