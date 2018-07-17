@@ -3,15 +3,15 @@
   "facets": [
     {
       "ui_facet_name": "Gender",
-      "elasticsearch_field_name": "gender"
+      "elasticsearch_field_name": "google.com:biggene.platinum_genomes.sample_info.gender"
     },
     {
       "ui_facet_name": "Race",
-      "elasticsearch_field_name": "race"
+      "elasticsearch_field_name": "google.com:biggene.platinum_genomes.sample_info.race"
     },
     {
       "ui_facet_name": "Relationship",
-      "elasticsearch_field_name": "relationship_to_proband"
+      "elasticsearch_field_name": "google.com:biggene.platinum_genomes.sample_info.relationship_to_proband"
     }
   ]
 }
