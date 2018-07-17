@@ -1,15 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Renders correctly 1`] = `
-<FloatingActionButton
+<WithStyles(Button)
   className="exportFab"
-  disabled={false}
-  mini={false}
-  secondary={false}
-  zDepth={2}
+  color="secondary"
+  variant="fab"
 >
-  <FileCloudUpload
-    color="#ffffff"
-  />
-</FloatingActionButton>
+  <pure(CloudUpload) />
+</WithStyles(Button)>
 `;
