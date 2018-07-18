@@ -15,18 +15,21 @@ class ExportForm extends React.Component {
         onClose={this.props.handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Export to FireCloud</DialogTitle>
+        <DialogTitle id="form-dialog-title">Export to Saturn</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Enter a workspace to continue in a FireCloud notebook.
-          </DialogContentText>
           <TextField
             autoFocus
             margin="dense"
+            id="workspace-namespace"
             label="Workspace Namespace"
             fullWidth
           />
-          <TextField margin="dense" label="Workspace Name" fullWidth />
+          <TextField
+            margin="dense"
+            id="workspace-name"
+            label="Workspace Name"
+            fullWidth
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={this.props.handleClose} color="primary">
