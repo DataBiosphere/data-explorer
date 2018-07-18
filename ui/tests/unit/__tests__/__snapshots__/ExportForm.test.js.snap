@@ -7,15 +7,13 @@ exports[`Renders correctly 1`] = `
   <WithStyles(DialogTitle)
     id="form-dialog-title"
   >
-    Export to FireCloud
+    Export to Saturn
   </WithStyles(DialogTitle)>
   <WithStyles(DialogContent)>
-    <WithStyles(DialogContentText)>
-      Enter a workspace to continue in a FireCloud notebook.
-    </WithStyles(DialogContentText)>
     <TextField
       autoFocus={true}
       fullWidth={true}
+      id="workspace-namespace"
       label="Workspace Namespace"
       margin="dense"
       required={false}
@@ -23,6 +21,7 @@ exports[`Renders correctly 1`] = `
     />
     <TextField
       fullWidth={true}
+      id="workspace-name"
       label="Workspace Name"
       margin="dense"
       required={false}
