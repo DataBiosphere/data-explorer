@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Renders correctly 1`] = `
+<WithStyles(Dialog)
+  aria-labelledby="form-dialog-title"
+>
+  <WithStyles(DialogTitle)
+    id="form-dialog-title"
+  >
+    Export to FireCloud
+  </WithStyles(DialogTitle)>
+  <WithStyles(DialogContent)>
+    <WithStyles(DialogContentText)>
+      Enter a workspace to continue in a FireCloud notebook.
+    </WithStyles(DialogContentText)>
+    <TextField
+      autoFocus={true}
+      fullWidth={true}
+      id="name"
+      label="Workspace Namespace"
+      margin="dense"
+      required={false}
+      select={false}
+      type="email"
+    />
+    <TextField
+      fullWidth={true}
+      id="name"
+      label="Workspace Name"
+      margin="dense"
+      required={false}
+      select={false}
+      type="email"
+    />
+  </WithStyles(DialogContent)>
+  <WithStyles(DialogActions)>
+    <WithStyles(Button)
+      color="primary"
+    >
+      Cancel
+    </WithStyles(Button)>
+    <WithStyles(Button)
+      color="primary"
+      disabled={true}
+    >
+      Export
+    </WithStyles(Button)>
+  </WithStyles(DialogActions)>
+</WithStyles(Dialog)>
+`;
