@@ -33,7 +33,7 @@ services:
     # --reload will restart the server after code change
     command: ["-b", ":8390", "--reload"]
     environment:
-      - ELASTICSEARCH_URL=elasticsearch:9200
+      - ELASTICSEARCH_URL=${ELASTICSEARCH_URL:-elasticsearch:9200}
       - PATH_PREFIX=/api
       - DATASET_CONFIG_DIR=${DATASET_CONFIG_DIR:-/app/dataset_config/test_dataset}
       # Avoid writing .pyc files back to the volume. Files generated this way
