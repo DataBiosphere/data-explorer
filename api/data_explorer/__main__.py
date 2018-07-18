@@ -110,13 +110,17 @@ def _get_dataset_name():
 
 
 def _get_table_names():
-    """Gets an alphabetically ordered list of table names from facet_fields.csv.
+    """Gets an alphabetically ordered list of table names from bigquery.json.
     Table names are fully qualified: <project id>:<dataset id>:<table name>
+
+    If bigquery.json doesn't exist, this returns an empty list.
     """
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                'bigquery.json')
-    table_names = _parse_json_file(config_path)['table_names']
-    table_names.sort()
+    table_names = []
+    if os.path.isfile(config_path):
+        table_names = _parse_json_file(config_path)['table_names']
+        table_names.sort()
     return table_names
 
 
@@ -154,7 +158,7 @@ def _get_field_type(es, field_name):
     # Instead, we get the type for one field:
     # "curl /index/_mapping/doc_type/project.dataset.table.column".
     # This has the benefit that we can support Elasticsearch documents that are
-    # truly nested, such as HCA Orange Box. elasticsearch_field_type in ui.json
+    # truly nested, such as HCA Orange Box. elasticsearch_field_name in ui.json
     # would be "parent.child".
     try:
         mapping = es.indices.get_field_mapping(
