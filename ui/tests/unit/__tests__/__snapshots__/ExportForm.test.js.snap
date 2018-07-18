@@ -16,21 +16,17 @@ exports[`Renders correctly 1`] = `
     <TextField
       autoFocus={true}
       fullWidth={true}
-      id="name"
       label="Workspace Namespace"
       margin="dense"
       required={false}
       select={false}
-      type="email"
     />
     <TextField
       fullWidth={true}
-      id="name"
       label="Workspace Name"
       margin="dense"
       required={false}
       select={false}
-      type="email"
     />
   </WithStyles(DialogContent)>
   <WithStyles(DialogActions)>
