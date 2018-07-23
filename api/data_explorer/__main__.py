@@ -6,10 +6,12 @@ import jsmin
 import json
 import logging
 import os
+import time
 
 from collections import OrderedDict
 import connexion
 from elasticsearch import Elasticsearch
+from elasticsearch.exceptions import ConnectionError
 from elasticsearch.exceptions import TransportError
 from elasticsearch_dsl import HistogramFacet
 from elasticsearch_dsl import FacetedSearch
@@ -145,6 +147,21 @@ def _get_ui_facets():
     return facets
 
 
+def _wait_elasticsearch_healthy(es):
+    start = time.time()
+    for _ in range(0, 120):
+        try:
+            es.cluster.health(wait_for_status='yellow')
+            app.app.logger.info('Elasticsearch took %d seconds to come up.' %
+                                (time.time() - start))
+            break
+        except ConnectionError:
+            app.app.logger.info('Elasticsearch not up yet, will try again.')
+            time.sleep(1)
+    else:
+        raise EnvironmentError("Elasticsearch failed to start.")
+
+
 def _get_field_type(es, field_name):
     # elasticsearch_dsl.Mapping, which gets mappings for all fields, would be
     # easier, but we can't use it.
@@ -189,6 +206,8 @@ def _get_field_type(es, field_name):
 def _get_es_facets():
     """Returns a dict from UI facet name to Elasticsearch facet object."""
     es = Elasticsearch(app.app.config['ELASTICSEARCH_URL'])
+    _wait_elasticsearch_healthy(es)
+
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'], 'ui.json')
     facets_config = _parse_json_file(config_path)['facets']
 
