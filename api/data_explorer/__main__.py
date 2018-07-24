@@ -232,7 +232,6 @@ def _get_es_facets():
             # TODO: When https://github.com/elastic/elasticsearch/issues/31828
             # is fixed, use AutoHistogramFacet instead. Will no longer need 2
             # steps.
-            # Step 1: Get max value
             response = Search(
                 using=es, index=app.app.config['INDEX_NAME']
             ).aggs.metric(
