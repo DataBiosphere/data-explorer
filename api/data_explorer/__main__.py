@@ -67,6 +67,22 @@ app.app.json_encoder = JSONEncoder
 app.add_api('swagger.yaml', base_path=args.path_prefix)
 
 
+def _wait_elasticsearch_healthy():
+    es = Elasticsearch(app.app.config['ELASTICSEARCH_URL'])
+    start = time.time()
+    for _ in range(0, 120):
+        try:
+            es.cluster.health(wait_for_status='yellow')
+            app.app.logger.info('Elasticsearch took %d seconds to come up.' %
+                                (time.time() - start))
+            break
+        except ConnectionError:
+            app.app.logger.info('Elasticsearch not up yet, will try again.')
+            time.sleep(1)
+    else:
+        raise EnvironmentError("Elasticsearch failed to start.")
+
+
 def _parse_json_file(json_path):
     """Opens and returns JSON contents.
   Args:
@@ -147,21 +163,6 @@ def _get_ui_facets():
     return facets
 
 
-def _wait_elasticsearch_healthy(es):
-    start = time.time()
-    for _ in range(0, 120):
-        try:
-            es.cluster.health(wait_for_status='yellow')
-            app.app.logger.info('Elasticsearch took %d seconds to come up.' %
-                                (time.time() - start))
-            break
-        except ConnectionError:
-            app.app.logger.info('Elasticsearch not up yet, will try again.')
-            time.sleep(1)
-    else:
-        raise EnvironmentError("Elasticsearch failed to start.")
-
-
 def _get_field_type(es, field_name):
     # elasticsearch_dsl.Mapping, which gets mappings for all fields, would be
     # easier, but we can't use it.
@@ -206,8 +207,6 @@ def _get_field_type(es, field_name):
 def _get_es_facets():
     """Returns a dict from UI facet name to Elasticsearch facet object."""
     es = Elasticsearch(app.app.config['ELASTICSEARCH_URL'])
-    _wait_elasticsearch_healthy(es)
-
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'], 'ui.json')
     facets_config = _parse_json_file(config_path)['facets']
 
@@ -240,10 +239,12 @@ def _get_es_facets():
 # request.
 @app.app.before_first_request
 def init():
-    # get_dataset_name() reads from app.app.config. If we move this outside
-    # of init(), Flask complains that we're working outside of application
-    # context. @app.app.before_first_request guarantees that app context has
-    # been set up.
+    # _wait_elasticsearch_healthy() reads from app.app.config. If we move this
+    # outside of init(), Flask complains that we're working outside of
+    # application context. @app.app.before_first_request guarantees that app
+    # context has been set up.
+    _wait_elasticsearch_healthy()
+
     app.app.config['DATASET_NAME'] = _get_dataset_name()
     app.app.config['INDEX_NAME'] = _convert_to_index_name(_get_dataset_name())
     app.app.config['UI_FACETS'] = _get_ui_facets()
