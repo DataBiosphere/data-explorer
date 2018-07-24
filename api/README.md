@@ -34,5 +34,5 @@ responses:
   return resp
   ```
 * Load http://localhost:4400/ in browser
-* Copy/paste is easier with `docker logs dataexplorer_apise_1`, versus
+* Copy/paste is easier with `docker logs data-explorer_apise_1`, versus
   `docker-compose logs apise`
