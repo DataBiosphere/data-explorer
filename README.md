@@ -5,6 +5,9 @@
 
 ## Quickstart
 
+View [Data Explorer](https://test-data-explorer.appspot.com/) for the public
+[Personal Genome Project](https://pgp.med.harvard.edu/) dataset.
+
 Run local Data Explorer with a test dataset:
 
 * `docker-compose up --build`
@@ -65,15 +68,21 @@ update the server implementations:
 
 ### One-time setup
 
-* Install `swagger-codegen-cli.jar`.
+* `docker-compose` should be at least [1.21.0](https://github.com/docker/compose/releases/tag/1.21.0).
+The data-explorer-indexer repo
+[refers to the network](https://github.com/DataBiosphere/data-explorer-indexers/blob/master/bigquery/docker-compose.yml#L34)
+created by `docker-compose` in this repo. Prior to 1.21.0, the network name was
+`dataexplorer_default`. Starting with 1.21.0, the network name is
+`data-explorer_default`.
+* Install `swagger-codegen-cli.jar`. This is only needed if you modify
+[api.yaml](https://github.com/DataBiosphere/data-explorer/blob/master/api/api.yaml)
 
-```
-# Linux
-wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.3.1/swagger-codegen-cli-2.3.1.jar -O ~/swagger-codegen-cli.jar
-# macOS
-brew install swagger-codegen
-```
-
+  ```
+  # Linux
+  wget http://central.maven.org/maven2/io/swagger/swagger-codegen-cli/2.3.1/swagger-codegen-cli-2.3.1.jar -O ~/swagger-codegen-cli.jar
+  # macOS
+  brew install swagger-codegen
+  ```
 * In `ui/` run `npm install`. This will install tools used during git precommit,
   such as formatting tools.
 * [Set up git secrets.](https://github.com/DataBiosphere/data-explorer/tree/master/hooks)
