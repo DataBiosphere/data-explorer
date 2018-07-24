@@ -1,5 +1,5 @@
 import React from "react";
-import ExportFab from "../../../src/components/export/ExportFab";
+import ExportFab from "../../../src/components/ExportFab";
 
 test("Renders correctly", () => {
   const tree = shallow(<ExportFab />);

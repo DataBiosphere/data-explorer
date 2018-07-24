@@ -1,18 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Renders correctly 1`] = `
-<div>
-  <WithStyles(Button)
-    className="exportFab"
-    color="secondary"
-    onClick={[Function]}
-    variant="fab"
-  >
-    <pure(CloudUpload) />
-  </WithStyles(Button)>
-  <ExportForm
-    handleClose={[Function]}
-    open={false}
-  />
-</div>
+<WithStyles(Button)
+  className="exportFab"
+  color="secondary"
+  variant="fab"
+>
+  <pure(CloudUpload) />
+</WithStyles(Button)>
 `;
