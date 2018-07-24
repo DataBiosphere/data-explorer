@@ -33,6 +33,10 @@ paths:
             Example url /facets?filter=Gender=female,Region=northwest,Region=southwest
           in: query
           type: array
+          # Default collectionFormat is csv. With csv, faceted search doesn't
+          # work when facet value has a comma. So switch to pipes; pipe in facet
+          # value is much more rare.
+          collectionFormat: pipes
           items:
             type: string
       responses:

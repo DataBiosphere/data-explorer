@@ -57,7 +57,7 @@ export default class FacetsApi {
       let pathParams = {
       };
       let queryParams = {
-        'filter': this.apiClient.buildCollectionParam(opts['filter'], 'csv')
+        'filter': this.apiClient.buildCollectionParam(opts['filter'], 'pipes')
       };
       let headerParams = {
       };
