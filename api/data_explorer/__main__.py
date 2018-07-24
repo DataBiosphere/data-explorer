@@ -16,6 +16,7 @@ from elasticsearch.exceptions import TransportError
 from elasticsearch_dsl import HistogramFacet
 from elasticsearch_dsl import FacetedSearch
 from elasticsearch_dsl import Mapping
+from elasticsearch_dsl import Search
 from elasticsearch_dsl import TermsFacet
 
 from .encoder import JSONEncoder
@@ -204,6 +205,26 @@ def _get_field_type(es, field_name):
         field_name]['mapping'][last_part]['type']
 
 
+def _get_max_field_value(es, field_name):
+    response = Search(
+        using=es, index=app.app.config['INDEX_NAME']
+    ).aggs.metric(
+        'max',
+        'max',
+        # Don't execute query; we only care about aggregations. See
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/returning-only-agg-results.html
+        field=field_name).params(size=0).execute()
+    return response.aggregations['max']['value']
+
+
+def _get_bucket_size(max_field_value):
+    if max_field_value < 20:
+        return 2
+    else:
+        # Make the ranges easy to read (10-19,20-29 instead of 10-17,18-25).
+        return 10
+
+
 def _get_es_facets():
     """Returns a dict from UI facet name to Elasticsearch facet object."""
     es = Elasticsearch(app.app.config['ELASTICSEARCH_URL'])
@@ -224,13 +245,16 @@ def _get_es_facets():
             facets[ui_facet_name] = TermsFacet(field=field_name + '.keyword')
         else:
             # Assume numeric type.
-            # TODO: Handle other types.
-            # TODO: Automatically figure out bucket intervals. Unfortunately
-            # Elasticsearch won't do this for us
-            # (https://github.com/elastic/elasticsearch/issues/9572). Make the
-            # ranges easy to read (10-19,20-29 instead of 10-17,18-25).
+            # Creating this facet is a two-step process.
+            # 1) Get max value
+            # 2) Based on max value, determine bucket size. Create
+            #    HistogramFacet with this bucket size.
+            # TODO: When https://github.com/elastic/elasticsearch/issues/31828
+            # is fixed, use AutoHistogramFacet instead. Will no longer need 2
+            # steps.
+            max_field_value = _get_max_field_value(es, field_name)
             facets[ui_facet_name] = HistogramFacet(
-                field=field_name, interval=10)
+                field=field_name, interval=_get_bucket_size(max_field_value))
     app.app.logger.info('Elasticsearch facets: %s' % facets)
     return facets
 
