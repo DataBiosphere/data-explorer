@@ -38,6 +38,7 @@ paths:
         type: "array"
         items:
           type: "string"
+        collectionFormat: "pipes"
       responses:
         200:
           description: "Success"
