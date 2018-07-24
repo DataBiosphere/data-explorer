@@ -205,6 +205,26 @@ def _get_field_type(es, field_name):
         field_name]['mapping'][last_part]['type']
 
 
+def _get_max_field_value(es, field_name):
+    response = Search(
+        using=es, index=app.app.config['INDEX_NAME']
+    ).aggs.metric(
+        'max',
+        'max',
+        # Don't execute query; we only care about aggregations. See
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/returning-only-agg-results.html
+        field=field_name).params(size=0).execute()
+    return response.aggregations['max']['value']
+
+
+def _get_bucket_size(max_field_value):
+    if max_field_value < 20:
+        return 2
+    else:
+        # Make the ranges easy to read (10-19,20-29 instead of 10-17,18-25).
+        return 10
+
+
 def _get_es_facets():
     """Returns a dict from UI facet name to Elasticsearch facet object."""
     es = Elasticsearch(app.app.config['ELASTICSEARCH_URL'])
@@ -232,23 +252,9 @@ def _get_es_facets():
             # TODO: When https://github.com/elastic/elasticsearch/issues/31828
             # is fixed, use AutoHistogramFacet instead. Will no longer need 2
             # steps.
-            response = Search(
-                using=es, index=app.app.config['INDEX_NAME']
-            ).aggs.metric(
-                'max',
-                'max',
-                # Don't execute query; we only care about aggregations. See
-                # https://www.elastic.co/guide/en/elasticsearch/reference/current/returning-only-agg-results.html
-                field=field_name).params(size=0).execute()
-            max_value = response.aggregations['max']['value']
-            if max_value < 20:
-                interval = 2
-            else:
-                # Make the ranges easy to read (10-19,20-29 instead of
-                # 10-17,18-25).
-                interval = 10
+            max_field_value = _get_max_field_value(es, field_name)
             facets[ui_facet_name] = HistogramFacet(
-                field=field_name, interval=interval)
+                field=field_name, interval=_get_bucket_size(max_field_value))
     app.app.logger.info('Elasticsearch facets: %s' % facets)
     return facets
 
