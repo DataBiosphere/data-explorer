@@ -217,7 +217,7 @@ def _get_max_field_value(es, field_name):
     return response.aggregations['max']['value']
 
 
-def _get_bucket_size(max_field_value):
+def _get_interval(max_field_value):
     if max_field_value <= 1:
         return .1
     if max_field_value < 8:
@@ -282,7 +282,7 @@ def _get_es_facets():
             # steps.
             max_field_value = _get_max_field_value(es, field_name)
             facets[ui_facet_name] = HistogramFacet(
-                field=field_name, interval=_get_bucket_size(max_field_value))
+                field=field_name, interval=_get_interval(max_field_value))
     app.app.logger.info('Elasticsearch facets: %s' % facets)
     return facets
 

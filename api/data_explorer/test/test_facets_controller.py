@@ -8,14 +8,13 @@ from flask import json
 # requests_mock.
 from urllib3_mock import Responses
 
+from data_explorer.controllers import facets_controller
 from data_explorer.test.base_test_case import BaseTestCase
 
 responses = Responses('urllib3')
 
 
 class TestFacetsController(BaseTestCase):
-    """ FacetsController integration test stubs """
-
     @classmethod
     def setUpClass(self):
         responses_dir = 'data_explorer/test/mock_responses'
@@ -87,6 +86,36 @@ class TestFacetsController(BaseTestCase):
         self.assert200(response)
         self.assertEquals(
             json.loads(self.api_server_facets_histogram), response.json)
+
+    def test_number_to_range(self):
+        expected = "10 - 19"
+        actual = facets_controller._number_to_range(10, 10)
+        self.assertEquals(actual, expected)
+
+    def test_number_to_range_less_than_1(self):
+        expected = "0.1 - 0.2"
+        actual = facets_controller._number_to_range(.1, .1)
+        self.assertEquals(actual, expected)
+
+    def test_number_to_range_million(self):
+        expected = "10M - 20M"
+        actual = facets_controller._number_to_range(10000000, 10000000)
+        self.assertEquals(actual, expected)
+
+    def test_range_to_number(self):
+        expected = 10
+        actual = facets_controller._range_to_number("10 - 19")
+        self.assertEquals(actual, expected)
+
+    def test_range_to_number_less_than_1(self):
+        expected = 0.1
+        actual = facets_controller._range_to_number("0.1 - 0.2")
+        self.assertEquals(actual, expected)
+
+    def test_range_to_number_million(self):
+        expected = 10000000
+        actual = facets_controller._range_to_number("10M - 20M")
+        self.assertEquals(actual, expected)
 
 
 if __name__ == '__main__':
