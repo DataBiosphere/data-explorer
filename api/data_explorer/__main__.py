@@ -128,21 +128,6 @@ def _get_dataset_name():
     return _parse_json_file(config_path)['name']
 
 
-def _get_table_names():
-    """Gets an alphabetically ordered list of table names from bigquery.json.
-    Table names are fully qualified: <project id>:<dataset id>:<table name>
-
-    If bigquery.json doesn't exist, this returns an empty list.
-    """
-    config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
-                               'bigquery.json')
-    table_names = []
-    if os.path.isfile(config_path):
-        table_names = _parse_json_file(config_path)['table_names']
-        table_names.sort()
-    return table_names
-
-
 def _get_ui_facets():
     """Returns a dict from UI facet name to UI facet description.
     If there is no description for a facet, the value is None.
@@ -301,7 +286,6 @@ def init():
     app.app.config['INDEX_NAME'] = _convert_to_index_name(_get_dataset_name())
     app.app.config['UI_FACETS'] = _get_ui_facets()
     app.app.config['ELASTICSEARCH_FACETS'] = _get_es_facets()
-    app.app.config['TABLE_NAMES'] = _get_table_names()
 
 
 if __name__ == '__main__':
