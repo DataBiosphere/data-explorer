@@ -93,7 +93,7 @@ created by `docker-compose` in this repo. Prior to 1.21.0, the network name was
 
 Every commit on a remote branch kicks off all tests [on CircleCI](https://circleci.com/gh/DataBiosphere).
 
-UI unit tests use [Jest](https://facebook.github.io/jest/) and [Enzyme](https://github.com/airbnb/enzyme). To run locally: `cd ui && npm test`
+UI unit tests use [Jest](https://facebook.github.io/jest/) and [Enzyme](https://github.com/airbnb/enzyme). To run locally: `cd ui && npm install && npm test`
 
 API server unit tests use [pytest](https://docs.pytest.org/en/latest/) and
 [tox](https://tox.readthedocs.io/en/latest/). To run locally:
