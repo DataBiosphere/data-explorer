@@ -60,9 +60,6 @@ export default class DatasetResponse {
             if (data.hasOwnProperty('name')) {
                 obj['name'] = ApiClient.convertToType(data['name'], 'String');
             }
-            if (data.hasOwnProperty('tableNames')) {
-                obj['tableNames'] = ApiClient.convertToType(data['tableNames'], ['String']);
-            }
         }
         return obj;
     }
@@ -71,11 +68,6 @@ export default class DatasetResponse {
     * @member {String} name
     */
     name = undefined;
-    /**
-    * Fully-qualified table name: <project id>.<dataset id>.<table name>
-    * @member {Array.<String>} tableNames
-    */
-    tableNames = undefined;
 
 
 
