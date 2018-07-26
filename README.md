@@ -58,11 +58,13 @@ update the server implementations:
     ```
     java -jar ~/swagger-codegen-cli.jar generate -i api/api.yaml -l python-flask -o api -DsupportPython2=true,packageName=data_explorer
     java -jar ~/swagger-codegen-cli.jar generate -i api/api.yaml -l javascript -o ui/src/api -DuseES6=true
+    yapf -ir . --exclude ui/node_modules
     ```
   * From the global script (macOS or other):
     ```
     swagger-codegen generate -i api/api.yaml -l python-flask -o api -DsupportPython2=true,packageName=data_explorer
     swagger-codegen generate -i api/api.yaml -l javascript -o ui/src/api -DuseES6=true
+    yapf -ir . --exclude ui/node_modules
     ```
 * Update the server implementations to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
 
