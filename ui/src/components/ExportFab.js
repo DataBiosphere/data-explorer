@@ -10,7 +10,8 @@ import React from "react";
 function ExportFab(props) {
   return (
     <Tooltip title="Export to Saturn">
-      <Button variant="fab" color="secondary" className="exportFab">
+      <Button variant="fab" color="secondary" className="exportFab"
+           href="https://bvdp-saturn-prod.appspot.com/#import-data">
         <CloudUpload />
       </Button>
     </Tooltip>

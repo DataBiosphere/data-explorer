@@ -50,17 +50,8 @@ definitions:
     properties:
       name:
         type: "string"
-      tableNames:
-        type: "array"
-        description: "Fully-qualified table name: <project id>.<dataset id>.<table\
-          \ name>"
-        items:
-          type: "string"
     description: "Dataset information."
     example:
-      tableNames:
-      - "tableNames"
-      - "tableNames"
       name: "name"
   FacetsResponse:
     properties:

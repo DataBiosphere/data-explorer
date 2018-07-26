@@ -58,11 +58,13 @@ update the server implementations:
     ```
     java -jar ~/swagger-codegen-cli.jar generate -i api/api.yaml -l python-flask -o api -DsupportPython2=true,packageName=data_explorer
     java -jar ~/swagger-codegen-cli.jar generate -i api/api.yaml -l javascript -o ui/src/api -DuseES6=true
+    yapf -ir . --exclude ui/node_modules
     ```
   * From the global script (macOS or other):
     ```
     swagger-codegen generate -i api/api.yaml -l python-flask -o api -DsupportPython2=true,packageName=data_explorer
     swagger-codegen generate -i api/api.yaml -l javascript -o ui/src/api -DuseES6=true
+    yapf -ir . --exclude ui/node_modules
     ```
 * Update the server implementations to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
 
@@ -91,7 +93,7 @@ created by `docker-compose` in this repo. Prior to 1.21.0, the network name was
 
 Every commit on a remote branch kicks off all tests [on CircleCI](https://circleci.com/gh/DataBiosphere).
 
-UI unit tests use [Jest](https://facebook.github.io/jest/) and [Enzyme](https://github.com/airbnb/enzyme). To run locally: `cd ui && npm test`
+UI unit tests use [Jest](https://facebook.github.io/jest/) and [Enzyme](https://github.com/airbnb/enzyme). To run locally: `cd ui && npm install && npm test`
 
 API server unit tests use [pytest](https://docs.pytest.org/en/latest/) and
 [tox](https://tox.readthedocs.io/en/latest/). To run locally:
