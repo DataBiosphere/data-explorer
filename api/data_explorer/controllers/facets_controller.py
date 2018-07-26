@@ -74,32 +74,32 @@ def deserialize(filter_arr):
 
 
 def _number_to_range(interval_start, interval):
-    """Converts "X" -> "X - Y"."""
+    """Converts "X" -> "X-Y"."""
     if interval < 1:
         # Return something like "0.1-0.2"
-        return '%s - %s' % (interval_start, interval_start + interval)
+        return '%s-%s' % (interval_start, interval_start + interval)
     elif interval == 1:
         # Return something like "5"
         return '%d' % interval_start
     if interval < 1000000:
         # Return something like "10-19"
-        return '%d - %d' % (interval_start, interval_start + interval - 1)
+        return '%d-%d' % (interval_start, interval_start + interval - 1)
     elif interval < 1000000000:
         # Return something like "10M-20M"
-        return '%dM - %dM' % (interval_start / 1000000,
-                              (interval_start + interval) / 1000000)
+        return '%dM-%dM' % (interval_start / 1000000,
+                            (interval_start + interval) / 1000000)
     else:
         # Return something like "10B-20B"
-        return '%dB - %dB' % (interval_start / 1000000000,
-                              (interval_start + interval) / 1000000000)
+        return '%dB-%dB' % (interval_start / 1000000000,
+                            (interval_start + interval) / 1000000000)
 
 
 def _range_to_number(interval_str):
-    """Converts "X - Y" -> "X"."""
+    """Converts "X-Y" -> "X"."""
     if not '-' in interval_str:
         return int(interval_str)
 
-    number = interval_str.split(' ')[0]
+    number = interval_str.split('-')[0]
     number = number.replace('M', '000000')
     number = number.replace('B', '000000000')
     if '.' in number:
