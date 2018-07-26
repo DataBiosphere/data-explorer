@@ -88,34 +88,25 @@ class TestFacetsController(BaseTestCase):
             json.loads(self.api_server_facets_histogram), response.json)
 
     def test_number_to_range(self):
-        expected = "10 - 19"
-        actual = facets_controller._number_to_range(10, 10)
-        self.assertEquals(actual, expected)
+        def _inner(interval_start, interval, expected_range):
+            actual_range = facets_controller._number_to_range(
+                interval_start, interval)
+            self.assertEquals(actual_range, expected_range)
 
-    def test_number_to_range_less_than_1(self):
-        expected = "0.1 - 0.2"
-        actual = facets_controller._number_to_range(.1, .1)
-        self.assertEquals(actual, expected)
-
-    def test_number_to_range_million(self):
-        expected = "10M - 20M"
-        actual = facets_controller._number_to_range(10000000, 10000000)
-        self.assertEquals(actual, expected)
+        _inner(.1, .1, '0.1 - 0.2')
+        _inner(1, 1, '1')
+        _inner(10, 10, '10 - 19')
+        _inner(10000000, 10000000, '10M - 20M')
 
     def test_range_to_number(self):
-        expected = 10
-        actual = facets_controller._range_to_number("10 - 19")
-        self.assertEquals(actual, expected)
+        def _inner(range_str, expected_number):
+            actual_number = facets_controller._range_to_number(range_str)
+            self.assertEquals(actual_number, expected_number)
 
-    def test_range_to_number_less_than_1(self):
-        expected = 0.1
-        actual = facets_controller._range_to_number("0.1 - 0.2")
-        self.assertEquals(actual, expected)
-
-    def test_range_to_number_million(self):
-        expected = 10000000
-        actual = facets_controller._range_to_number("10M - 20M")
-        self.assertEquals(actual, expected)
+        _inner('0.1 - 0.2', 0.1)
+        _inner('1', 1)
+        _inner('10 - 19', 10)
+        _inner('10M - 20M', 10000000)
 
 
 if __name__ == '__main__':

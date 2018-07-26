@@ -78,6 +78,9 @@ def _number_to_range(interval_start, interval):
     if interval < 1:
         # Return something like "0.1-0.2"
         return '%s - %s' % (interval_start, interval_start + interval)
+    elif interval == 1:
+        # Return something like "5"
+        return '%d' % interval_start
     if interval < 1000000:
         # Return something like "10-19"
         return '%d - %d' % (interval_start, interval_start + interval - 1)
@@ -91,12 +94,15 @@ def _number_to_range(interval_start, interval):
                               (interval_start + interval) / 1000000000)
 
 
-def _range_to_number(interval_string):
+def _range_to_number(interval_str):
     """Converts "X - Y" -> "X"."""
-    number = interval_string.split(' ')[0]
+    if not '-' in interval_str:
+        return int(interval_str)
+
+    number = interval_str.split(' ')[0]
     number = number.replace('M', '000000')
     number = number.replace('B', '000000000')
-    if number.find('.') != -1:
+    if '.' in number:
         return float(number)
     else:
         return int(number)
