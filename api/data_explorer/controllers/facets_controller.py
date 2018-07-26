@@ -1,3 +1,5 @@
+import pprint
+
 from data_explorer.models.facet import Facet
 from data_explorer.models.facet_value import FacetValue
 from data_explorer.models.facets_response import FacetsResponse
@@ -21,6 +23,8 @@ def facets_get(filter=None):  # noqa: E501
     search = DatasetFacetedSearch(deserialize(filter))
     es_response = search.execute()
     es_response_facets = es_response.facets.to_dict()
+    # Uncomment to print facets
+    # current_app.logger.info(pprint.pformat(es_response_facets))
     facets = []
     for name, description in current_app.config['UI_FACETS'].iteritems():
         es_facet = current_app.config['ELASTICSEARCH_FACETS'][name]
@@ -69,11 +73,36 @@ def deserialize(filter_arr):
     return parsed_filter
 
 
-def _number_to_range(bucket_number, interval_size):
+def _number_to_range(interval_start, interval):
     """Converts "X" -> "X-Y"."""
-    return '%d-%d' % (bucket_number, bucket_number + interval_size - 1)
+    if interval < 1:
+        # Return something like "0.1-0.2"
+        return '%s-%s' % (interval_start, interval_start + interval)
+    elif interval == 1:
+        # Return something like "5"
+        return '%d' % interval_start
+    if interval < 1000000:
+        # Return something like "10-19"
+        return '%d-%d' % (interval_start, interval_start + interval - 1)
+    elif interval < 1000000000:
+        # Return something like "10M-20M"
+        return '%dM-%dM' % (interval_start / 1000000,
+                            (interval_start + interval) / 1000000)
+    else:
+        # Return something like "10B-20B"
+        return '%dB-%dB' % (interval_start / 1000000000,
+                            (interval_start + interval) / 1000000000)
 
 
-def _range_to_number(bucket_string):
+def _range_to_number(interval_str):
     """Converts "X-Y" -> "X"."""
-    return int(bucket_string.split('-')[0])
+    if not '-' in interval_str:
+        return int(interval_str)
+
+    number = interval_str.split('-')[0]
+    number = number.replace('M', '000000')
+    number = number.replace('B', '000000000')
+    if '.' in number:
+        return float(number)
+    else:
+        return int(number)

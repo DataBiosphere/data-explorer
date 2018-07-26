@@ -6,7 +6,7 @@
 ## Quickstart
 
 View [Data Explorer](https://test-data-explorer.appspot.com/) for the public
-[Personal Genome Project](https://pgp.med.harvard.edu/) dataset.
+[1000 Genomes](http://www.internationalgenome.org/about) dataset.
 
 Run local Data Explorer with a test dataset:
 

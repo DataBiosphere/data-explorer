@@ -8,14 +8,13 @@ from flask import json
 # requests_mock.
 from urllib3_mock import Responses
 
+from data_explorer.controllers import facets_controller
 from data_explorer.test.base_test_case import BaseTestCase
 
 responses = Responses('urllib3')
 
 
 class TestFacetsController(BaseTestCase):
-    """ FacetsController integration test stubs """
-
     @classmethod
     def setUpClass(self):
         responses_dir = 'data_explorer/test/mock_responses'
@@ -87,6 +86,27 @@ class TestFacetsController(BaseTestCase):
         self.assert200(response)
         self.assertEquals(
             json.loads(self.api_server_facets_histogram), response.json)
+
+    def test_number_to_range(self):
+        def _inner(interval_start, interval, expected_range):
+            actual_range = facets_controller._number_to_range(
+                interval_start, interval)
+            self.assertEquals(actual_range, expected_range)
+
+        _inner(.1, .1, '0.1-0.2')
+        _inner(1, 1, '1')
+        _inner(10, 10, '10-19')
+        _inner(10000000, 10000000, '10M-20M')
+
+    def test_range_to_number(self):
+        def _inner(range_str, expected_number):
+            actual_number = facets_controller._range_to_number(range_str)
+            self.assertEquals(actual_number, expected_number)
+
+        _inner('0.1-0.2', 0.1)
+        _inner('1', 1)
+        _inner('10-19', 10)
+        _inner('10M-20M', 10000000)
 
 
 if __name__ == '__main__':
