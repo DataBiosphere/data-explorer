@@ -14,10 +14,12 @@
 
 import ApiClient from './ApiClient';
 import DatasetResponse from './model/DatasetResponse';
+import ExportUrlResponse from './model/ExportUrlResponse';
 import Facet from './model/Facet';
 import FacetValue from './model/FacetValue';
 import FacetsResponse from './model/FacetsResponse';
 import DatasetApi from './api/DatasetApi';
+import ExportUrlApi from './api/ExportUrlApi';
 import FacetsApi from './api/FacetsApi';
 
 
@@ -66,6 +68,12 @@ export {
     DatasetResponse,
 
     /**
+     * The ExportUrlResponse model constructor.
+     * @property {module:model/ExportUrlResponse}
+     */
+    ExportUrlResponse,
+
+    /**
      * The Facet model constructor.
      * @property {module:model/Facet}
      */
@@ -88,6 +96,12 @@ export {
     * @property {module:api/DatasetApi}
     */
     DatasetApi,
+
+    /**
+    * The ExportUrlApi service constructor.
+    * @property {module:api/ExportUrlApi}
+    */
+    ExportUrlApi,
 
     /**
     * The FacetsApi service constructor.
