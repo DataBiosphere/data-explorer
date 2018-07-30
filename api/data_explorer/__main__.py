@@ -274,8 +274,8 @@ def _get_es_facets():
 
 def _get_table_names():
     """Gets an alphabetically ordered list of table names from bigquery.json.
-    Table names are fully qualified: <project id>:<dataset id>:<table name>
-     If bigquery.json doesn't exist, this returns an empty list.
+    Table names are fully qualified: <project id>.<dataset id>.<table name>
+    If bigquery.json doesn't exist, this returns an empty list.
     """
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                'bigquery.json')
