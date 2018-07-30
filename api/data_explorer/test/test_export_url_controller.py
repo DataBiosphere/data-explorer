@@ -2,8 +2,6 @@ import json
 
 from data_explorer.test.base_test_case import BaseTestCase
 
-dataset_name = 'Test data'
-
 
 class TestExportUrlController(BaseTestCase):
     """ExportUrlController integration test stubs"""
