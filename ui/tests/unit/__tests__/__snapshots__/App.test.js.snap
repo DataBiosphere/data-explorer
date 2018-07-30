@@ -46,7 +46,21 @@ exports[`Renders correctly after receiving all data 1`] = `
       }
       updateFacets={[Function]}
     />
-    <ExportFab />
+    <ExportFab
+      exportUrlApi={
+        ExportUrlApi {
+          "apiClient": ApiClient {
+            "authentications": Object {},
+            "basePath": "/api",
+            "cache": true,
+            "defaultHeaders": Object {},
+            "enableCookies": false,
+            "requestAgent": null,
+            "timeout": 60000,
+          },
+        }
+      }
+    />
   </div>
 </MuiThemeProvider>
 `;

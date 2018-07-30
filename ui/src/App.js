@@ -6,6 +6,7 @@ import Header from "./components/Header";
 
 import React, { Component } from "react";
 import { MuiThemeProvider } from "material-ui";
+import ExportUrlApi from "./api/src/api/ExportUrlApi";
 
 class App extends Component {
   constructor(props) {
@@ -51,7 +52,7 @@ class App extends Component {
               updateFacets={this.updateFacets}
               facets={this.state.facets}
             />
-            <ExportFab />
+            <ExportFab exportUrlApi={new ExportUrlApi(this.apiClient)} />
           </div>
         </MuiThemeProvider>
       );

@@ -7,15 +7,40 @@ import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
 import React from "react";
 
-function ExportFab(props) {
-  return (
-    <Tooltip title="Export to Saturn">
-      <Button variant="fab" color="secondary" className="exportFab"
-           href="https://bvdp-saturn-prod.appspot.com/#import-data">
-        <CloudUpload />
-      </Button>
-    </Tooltip>
-  );
+class ExportFab extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  render() {
+    return (
+      <Tooltip title="Export to Saturn">
+        <Button
+          variant="fab"
+          color="secondary"
+          className="exportFab"
+          onClick={() => this.handleClick()}
+        >
+          <CloudUpload />
+        </Button>
+      </Tooltip>
+    );
+  }
+
+  handleClick() {
+    let exportUrlCallback = function(error, data) {
+      if (error) {
+        console.error(error);
+        // TODO(alanhwang): Redirect to an error page
+      } else {
+        window.location.assign(
+          "https://bvdp-saturn-prod.appspot.com/#import-data?url=" + data.url
+        );
+      }
+    }.bind(this);
+    this.props.exportUrlApi.exportUrlPost(exportUrlCallback);
+  }
 }
 
 export default ExportFab;
