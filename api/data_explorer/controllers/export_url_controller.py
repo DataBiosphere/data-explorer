@@ -15,9 +15,9 @@ def export_url_post():  # noqa: E501
             requests.append(
                 json.dumps({
                     "name": table_name.split(".")[2],
-                    "entityType": "BigQueryTables",
+                    "entityType": "BigQuery tables",
                     "attributes": {
-                        "TableID": table_name
+                        "table_name": table_name
                     }
                 }))
     # TODO: Create a signed URL using the output of this request
