@@ -20,7 +20,7 @@ class TestExportUrlController(BaseTestCase):
         self.assert200(response)
         expected_json = {
             "name": 'table_name',
-            "entityType": "BigQuery tables",
+            "entityType": "BigQuery table",
             "attributes": {
                 "table_name": 'project_id.dataset_id.table_name'
             }
