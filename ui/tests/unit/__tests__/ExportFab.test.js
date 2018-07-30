@@ -31,8 +31,8 @@ test("Calls API and redirects on click", () => {
       childContextTypes: { muiTheme: PropTypes.object }
     }
   );
-  let button = tree.find(Button);
-  button
+  let exportButton = tree.find(Button);
+  exportButton
     .first()
     .props()
     .onClick();
