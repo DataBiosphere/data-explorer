@@ -15,7 +15,7 @@ def export_url_post():  # noqa: E501
             requests.append(
                 json.dumps({
                     "name": table_name.split(".")[2],
-                    "entityType": "BigQuery tables",
+                    "entityType": "BigQuery table",
                     "attributes": {
                         "table_name": table_name
                     }
