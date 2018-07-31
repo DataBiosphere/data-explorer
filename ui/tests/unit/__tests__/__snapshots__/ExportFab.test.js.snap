@@ -7,7 +7,7 @@ exports[`Renders correctly 1`] = `
   <WithStyles(Button)
     className="exportFab"
     color="secondary"
-    href="https://bvdp-saturn-prod.appspot.com/#import-data"
+    onClick={[Function]}
     variant="fab"
   >
     <pure(CloudUpload) />
