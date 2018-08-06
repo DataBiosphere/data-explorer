@@ -31,8 +31,7 @@ class ExportFab extends React.Component {
   handleClick() {
     let exportUrlCallback = function(error, data) {
       if (error) {
-        console.error(error);
-        // TODO(alanhwang): Redirect to an error page
+        alert(error.response.body.detail);
       } else {
         window.location.assign(
           "https://bvdp-saturn-prod.appspot.com/#import-data?url=" + data.url

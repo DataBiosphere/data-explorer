@@ -287,6 +287,21 @@ def _get_table_names():
     return table_names
 
 
+def _get_export_url_gcs_bucket():
+    config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
+                               'deploy.json')
+    if not os.path.isfile(config_path):
+        app.app.logger.warning(
+            'deploy.json not found. Export to Saturn feature will not work. '
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
+        )
+        return ''
+
+    _parse_json_file(config_path)
+    app.app.logger.info('yo')
+    return 'yo'
+
+
 # Read config files. Just do this once; don't need to read files on every
 # request.
 @app.app.before_first_request
@@ -302,6 +317,7 @@ def init():
     app.app.config['UI_FACETS'] = _get_ui_facets()
     app.app.config['ELASTICSEARCH_FACETS'] = _get_es_facets()
     app.app.config['TABLE_NAMES'] = _get_table_names()
+    app.app.config['EXPORT_URL_GCS_BUCKET'] = _get_export_url_gcs_bucket()
 
 
 if __name__ == '__main__':

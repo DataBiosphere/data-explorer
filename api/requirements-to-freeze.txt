@@ -4,3 +4,4 @@ elasticsearch-dsl==6.1.0
 flask-cors==3.0.3
 gunicorn==19.7.1
 jsmin==2.2.2
+Werkzeug==0.14.1
