@@ -19,7 +19,7 @@
     "lint": "prettier **/*.js **/*.css",
     "fix": "prettier --write **/*.js **/*.css",
     "precommit": "pretty-quick --staged",
-    "start": "PORT=4400 react-scripts start",
+    "start": "PORT=80 react-scripts start",
     "build": "react-scripts build",
     "test": "jest tests/unit",
     "test:e2e": "jest --config '{\"preset\":\"jest-puppeteer\"}' tests/e2e",
