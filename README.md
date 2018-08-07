@@ -9,9 +9,9 @@ Data Explorer lets you explore a dataset. The code (in this repo and
 [data-explorer-indexers repo](https://github.com/DataBiosphere/data-explorer-indexers))
 is dataset-agnostic. All dataset configuration happens in config files.
 
-For example, [here's Data Explorer](https://test-data-explorer.appspot.com/)
+For example, [here's the Data Explorer](https://test-data-explorer.appspot.com/)
 for the public [1000 Genomes](http://www.internationalgenome.org/about) dataset.
-The config files for this dataset live [here](https://github.com/DataBiosphere/data-explorer/tree/master/dataset_config/1000_genomes)
+The config files for this dataset are [here](https://github.com/DataBiosphere/data-explorer/tree/master/dataset_config/1000_genomes)
 and [here](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/dataset_config/1000_genomes).
 
 ## Quickstart
