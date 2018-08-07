@@ -11,6 +11,7 @@ import time
 from collections import OrderedDict
 import connexion
 from elasticsearch import Elasticsearch
+from elasticsearch.client.cat import CatClient
 from elasticsearch.exceptions import ConnectionError
 from elasticsearch.exceptions import TransportError
 from elasticsearch_dsl import HistogramFacet
@@ -68,7 +69,8 @@ app.app.json_encoder = JSONEncoder
 app.add_api('swagger.yaml', base_path=args.path_prefix)
 
 
-def _wait_elasticsearch_healthy():
+def init_elasticsearch():
+    # Wait for Elasticsearch to be healthy.
     es = Elasticsearch(app.app.config['ELASTICSEARCH_URL'])
     start = time.time()
     for _ in range(0, 120):
@@ -81,7 +83,18 @@ def _wait_elasticsearch_healthy():
             app.app.logger.info('Elasticsearch not up yet, will try again.')
             time.sleep(1)
     else:
-        raise EnvironmentError("Elasticsearch failed to start.")
+        raise EnvironmentError('Elasticsearch failed to start.')
+
+    if not es.indices.exists(app.app.config['INDEX_NAME']):
+        raise EnvironmentError(
+            'Index %s not found at %s' % (app.app.config['INDEX_NAME'],
+                                          app.app.config['ELASTICSEARCH_URL']))
+
+    document_count = CatClient(es).count(
+        app.app.config['INDEX_NAME'], format='json')[0]['count']
+    if document_count == '0':
+        raise EnvironmentError('Index %s at %s has 0 documents' % (
+            app.app.config['INDEX_NAME'], app.app.config['ELASTICSEARCH_URL']))
 
 
 def _parse_json_file(json_path):
@@ -164,20 +177,8 @@ def _get_field_type(es, field_name):
     # This has the benefit that we can support Elasticsearch documents that are
     # truly nested, such as HCA Orange Box. elasticsearch_field_name in ui.json
     # would be "parent.child".
-    try:
-        mapping = es.indices.get_field_mapping(
-            fields=field_name,
-            index=app.app.config['INDEX_NAME'],
-            doc_type='type')
-    except TransportError as e:
-        if 'index_not_found_exception' in e.error:
-            app.app.logger.error('Index %s not found at %s' %
-                                 (app.app.config['INDEX_NAME'],
-                                  app.app.config['ELASTICSEARCH_URL']))
-            raise e
-    except Exception as e:
-        app.app.logger.error('Problem getting mappings: %s' % str(e))
-        raise e
+    mapping = es.indices.get_field_mapping(
+        fields=field_name, index=app.app.config['INDEX_NAME'], doc_type='type')
 
     if mapping == {}:
         raise ValueError(
@@ -290,14 +291,14 @@ def _get_table_names():
 # request.
 @app.app.before_first_request
 def init():
-    # _wait_elasticsearch_healthy() reads from app.app.config. If we move this
+    # _get_dataset_name() reads from app.app.config. If we move this
     # outside of init(), Flask complains that we're working outside of
     # application context. @app.app.before_first_request guarantees that app
     # context has been set up.
-    _wait_elasticsearch_healthy()
 
     app.app.config['DATASET_NAME'] = _get_dataset_name()
     app.app.config['INDEX_NAME'] = _convert_to_index_name(_get_dataset_name())
+    init_elasticsearch()
     app.app.config['UI_FACETS'] = _get_ui_facets()
     app.app.config['ELASTICSEARCH_FACETS'] = _get_es_facets()
     app.app.config['TABLE_NAMES'] = _get_table_names()
