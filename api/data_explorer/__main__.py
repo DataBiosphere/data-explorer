@@ -289,13 +289,16 @@ def _get_table_names():
 
 
 def _get_export_url_gcs_bucket():
-    """Returns export URL bucket, with no gs:// prefix"""
+    """Returns export URL bucket, with no gs:// prefix.
+
+    If bucket doesn't exist, returns an empty string.
+    """
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                'deploy.json')
     if not os.path.isfile(config_path):
         app.app.logger.warning(
             'deploy.json not found. Export to Saturn feature will not work. '
-            'See https://github.com/DataBiosphere/data-explorer#one-time-setup'
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
         )
         return ''
 
@@ -307,7 +310,7 @@ def _get_export_url_gcs_bucket():
     else:
         app.app.logger.warning(
             'Bucket %s not found. Export to Saturn feature will not work. '
-            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature-for-export-to-saturn-feature'
             % bucket)
         return ''
 

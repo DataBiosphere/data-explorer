@@ -20,7 +20,7 @@ Run local Data Explorer with a test dataset:
 
 * `docker-compose up --build`
 * Navigate to `localhost:4400`
-* If you want to use Export to Saturn feature, [do this one-time setup](https://github.com/DataBiosphere/data-explorer#one-time-setup).
+* If you want to use Export to Saturn feature, [do this one-time setup](https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature).
 
 ## Run local Data Explorer with a custom dataset
 
@@ -39,7 +39,7 @@ Run local Data Explorer with a test dataset:
     and [here](https://github.com/DataBiosphere/data-explorer/tree/master/dataset_config/template).
     All files except `gcs.json` must be filled out.
 
-* If you want to use Export to Saturn feature, [do this one-time setup](https://github.com/DataBiosphere/data-explorer#one-time-setup).
+* If you want to use Export to Saturn feature, [do this one-time setup](https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature).
 * `DATASET_CONFIG_DIR=/app/dataset_config/<my dataset> docker-compose up --build`
 * Navigate to `localhost:4400`
 
@@ -99,7 +99,7 @@ created by `docker-compose` in this repo. Prior to 1.21.0, the network name was
   such as formatting tools.
 * [Set up git secrets.](https://github.com/DataBiosphere/data-explorer/tree/master/hooks)
 
-#### One-time step for Export to Saturn feature
+#### One-time setup for Export to Saturn feature
 
 The Export to Saturn feature temporarily stores data in a GCS bucket.
 

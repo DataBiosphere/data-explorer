@@ -15,7 +15,7 @@ def export_url_post():  # noqa: E501
     if not os.path.isfile(config_path):
         raise BadRequest(
             'deploy.json not found. Export to Saturn feature will not work. '
-            'See https://github.com/DataBiosphere/data-explorer#one-time-setup'
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
         )
 
     if not current_app.config['EXPORT_URL_GCS_BUCKET']:
