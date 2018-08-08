@@ -9,6 +9,10 @@ class TestExportUrlController(BaseTestCase):
     def create_app(self):
         app = super(TestExportUrlController, self).create_app()
         app.config.update({
+            'DATASET_CONFIG_DIR':
+            '../dataset_config/1000_genomes',
+            'EXPORT_URL_GCS_BUCKET':
+            'bucket',
             'TABLE_NAMES': ['project_id.dataset_id.table_name']
         })
         return app

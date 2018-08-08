@@ -9,7 +9,6 @@ dataset_config/*
 dataset_config/1000_genomes/*
 !dataset_config/1000_genomes/ui.json
 !dataset_config/1000_genomes/README.md
-api/data_explorer/private-key.txt
 
 api/app.yaml
 

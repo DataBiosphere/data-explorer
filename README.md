@@ -107,14 +107,12 @@ The Export to Saturn feature temporarily stores data in a GCS bucket.
 create it by running `gcloud auth application-default login`.
 * If you haven't already, fill out [deploy.json](https://github.com/DataBiosphere/data-explorer-indexers/blob/master/dataset_config/template/deploy.json)
 for your dataset.
+  * Even if you don't plan on deploying Data Explorer to GCP,
+`deploy.json` will still need to be filled out. A temporary file will be written to a
+GCS bucket in the project in `deploy.json`, even for local deployment of Data
+Explorer. Choose a project where you have at least Project Editor permissions.
 * TODO(melissachang): Add instructions for creating bucket in the project
 specified in `deploy.json`.
-* Choose a service account who has write access to the bucket from the previous
-step. This can be any service account that is Project Editor, such as the App
-Engine default service account. Follow [these instructions](https://cloud.google.com/storage/docs/access-control/create-signed-urls-program#signing-language)
-(see "Generate a new private key") to download a private key. Store the private
-key at `api/data_explorer/private-key.txt`. The key must have that
-exact name so it will be ignored by `.gitignore`.
 
 ### Testing
 

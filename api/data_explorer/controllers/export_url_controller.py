@@ -9,13 +9,6 @@ from werkzeug.exceptions import BadRequest
 from data_explorer.models.export_url_response import ExportUrlResponse  # noqa: E501
 
 
-def write_gcs_file():
-    """Writes entity JSON to a GCS file."""
-
-    # Get bucket name. Bucket name is project name from deploy.json, plus
-    # "-export".
-
-
 def export_url_post():  # noqa: E501
     config_path = os.path.join(current_app.config['DATASET_CONFIG_DIR'],
                                'deploy.json')

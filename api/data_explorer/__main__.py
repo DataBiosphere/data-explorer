@@ -301,7 +301,7 @@ def _get_export_url_gcs_bucket():
 
     app.app.logger.info('yo')
     project = _parse_json_file(config_path)['project_id']
-    bucket = project + '-expor'
+    bucket = project + '-export'
     app.app.logger.info('yo bucket %s' % bucket)
     client = storage.Client(project=project)
     app.app.logger.info('yo 2')
