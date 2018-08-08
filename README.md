@@ -103,12 +103,12 @@ created by `docker-compose` in this repo. Prior to 1.21.0, the network name was
 
 The Export to Saturn feature temporarily stores data in a GCS bucket.
 
+* If `~/.config/gcloud/application_default_credentials.json` doesn't exist,
+create it by running `gcloud auth application-default login`.
 * If you haven't already, fill out [deploy.json](https://github.com/DataBiosphere/data-explorer-indexers/blob/master/dataset_config/template/deploy.json)
 for your dataset.
-
 * TODO(melissachang): Add instructions for creating bucket in the project
 specified in `deploy.json`.
-
 * Choose a service account who has write access to the bucket from the previous
 step. This can be any service account that is Project Editor, such as the App
 Engine default service account. Follow [these instructions](https://cloud.google.com/storage/docs/access-control/create-signed-urls-program#signing-language)

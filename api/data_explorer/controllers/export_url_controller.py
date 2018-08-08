@@ -25,6 +25,12 @@ def export_url_post():  # noqa: E501
             'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
         )
 
+    if not current_app.config['EXPORT_URL_GCS_BUCKET']:
+        raise BadRequest(
+            'Export URL GCS bucket not found. Export to Saturn feature will not work. '
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
+        )
+
     requests = []
     for table_name in current_app.config['TABLE_NAMES']:
         # Treat table names as BigQuery tables if they conform to project_id.dataset.table_id

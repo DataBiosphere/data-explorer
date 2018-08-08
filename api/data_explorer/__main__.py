@@ -19,6 +19,7 @@ from elasticsearch_dsl import FacetedSearch
 from elasticsearch_dsl import Mapping
 from elasticsearch_dsl import Search
 from elasticsearch_dsl import TermsFacet
+from google.cloud import storage
 
 from .encoder import JSONEncoder
 import dataset_faceted_search
@@ -288,6 +289,7 @@ def _get_table_names():
 
 
 def _get_export_url_gcs_bucket():
+    """Returns export URL bucket of the form gs://bucket"""
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                'deploy.json')
     if not os.path.isfile(config_path):
@@ -297,9 +299,22 @@ def _get_export_url_gcs_bucket():
         )
         return ''
 
-    _parse_json_file(config_path)
     app.app.logger.info('yo')
-    return 'yo'
+    project = _parse_json_file(config_path)['project_id']
+    bucket = project + '-expor'
+    app.app.logger.info('yo bucket %s' % bucket)
+    client = storage.Client(project=project)
+    app.app.logger.info('yo 2')
+    if client.lookup_bucket(bucket):
+        app.app.logger.info('yo 3')
+        return 'gs://' + bucket
+    else:
+        app.app.logger.info('yo 4')
+        app.app.logger.warning(
+            'Bucket gs://%s not found. Export to Saturn feature will not work. '
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
+            % bucket)
+        return ''
 
 
 # Read config files. Just do this once; don't need to read files on every
