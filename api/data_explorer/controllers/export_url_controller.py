@@ -13,16 +13,21 @@ def export_url_post():  # noqa: E501
     config_path = os.path.join(current_app.config['DATASET_CONFIG_DIR'],
                                'deploy.json')
     if not os.path.isfile(config_path):
-        raise BadRequest(
+        error_msg = (
             'deploy.json not found. Export to Saturn feature will not work. '
             'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
         )
+        current_app.logger.error(error_msg)
+        raise BadRequest(error_msg)
 
     if not current_app.config['EXPORT_URL_GCS_BUCKET']:
-        raise BadRequest(
-            'Export URL GCS bucket not found. Export to Saturn feature will not work. '
+        error_msg = (
+            'Project not set in deploy.json or export URL GCS bucket not '
+            'found. Export to Saturn feature will not work. '
             'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
         )
+        current_app.logger.error(error_msg)
+        raise BadRequest(error_msg)
 
     requests = []
     for table_name in current_app.config['TABLE_NAMES']:

@@ -293,10 +293,9 @@ def _get_export_url_gcs_bucket():
 
     If bucket doesn't exist, returns an empty string.
     """
-    # Check for two preconditions: 1) deploy.json exists, 2) export bucket
-    # exists. If either precondition fails, print a warning but allow app to
-    # continue. Someone may want to run Data Explorer UI locally and not use
-    # export to Saturn feature.
+    # Check preconditions for Export to Saturn feature. If a precondition fails,
+    # print a warning but allow app to continue. Someone may want to run Data
+    # Explorer UI locally and not use export to Saturn feature.
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                'deploy.json')
     if not os.path.isfile(config_path):
@@ -306,9 +305,16 @@ def _get_export_url_gcs_bucket():
         )
         return ''
 
-    project = _parse_json_file(config_path)['project_id']
-    bucket = project + '-export'
-    client = storage.Client(project=project)
+    project_id = _parse_json_file(config_path)['project_id']
+    if project_id == 'PROJECT_ID_TO_DEPLOY_TO':
+        app.app.logger.warning(
+            'Project not set in deploy.json. Export to Saturn feature will not work. '
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature-for-export-to-saturn-feature'
+        )
+        return ''
+
+    bucket = project_id + '-export'
+    client = storage.Client(project=project_id)
     if client.lookup_bucket(bucket):
         return bucket
     else:
