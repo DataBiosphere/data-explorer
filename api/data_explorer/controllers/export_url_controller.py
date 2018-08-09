@@ -2,9 +2,12 @@ import connexion
 import six
 import json
 import os
+import random
+import string
 
 from flask import current_app
 from werkzeug.exceptions import BadRequest
+from google.cloud import storage
 
 from data_explorer.models.export_url_response import ExportUrlResponse  # noqa: E501
 
@@ -22,13 +25,21 @@ from data_explorer.models.export_url_response import ExportUrlResponse  # noqa: 
 #   entities.
 
 
-def export_url_post():  # noqa: E501
+def _check_preconditions():
     config_path = os.path.join(current_app.config['DATASET_CONFIG_DIR'],
                                'deploy.json')
     if not os.path.isfile(config_path):
         error_msg = (
             'deploy.json not found. Export to Saturn feature will not work. '
             'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
+        )
+        current_app.logger.error(error_msg)
+        raise BadRequest(error_msg)
+
+    if not current_app.config['DEPLOY_PROJECT_ID']:
+        error_msg = (
+            'Project not set in deploy.json. Export to Saturn feature will not work. '
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature-for-export-to-saturn-feature'
         )
         current_app.logger.error(error_msg)
         raise BadRequest(error_msg)
@@ -42,6 +53,9 @@ def export_url_post():  # noqa: E501
         current_app.logger.error(error_msg)
         raise BadRequest(error_msg)
 
+
+def _get_entities_dict():
+    """Returns a dict representing the JSON list of entities."""
     # Saturn add-import expects a JSON list of entities, where each entity is
     # the entity JSON passed into
     # https://rawls.dsde-prod.broadinstitute.org/#!/entities/create_entity
@@ -65,7 +79,29 @@ def export_url_post():  # noqa: E501
                 'table_name': table_name
             }
         })
+    return entities
+
+
+def _write_gcs_file(entities):
+    """Returns GCS file path."""
+    client = storage.Client(project=current_app.config['DEPLOY_PROJECT_ID'])
+    bucket = client.get_bucket(current_app.config['EXPORT_URL_GCS_BUCKET'])
+    # Random 10 character string
+    random_str = ''.join(
+        random.choice(string.ascii_uppercase + string.digits)
+        for _ in range(10))
+    blob = bucket.blob(random_str)
+    blob.upload_from_string(json.dumps(entities))
+    current_app.logger.info(
+        'Wrote gs://%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'],
+                              random_str))
+
+
+def export_url_post():  # noqa: E501
+    _check_preconditions()
+    entities = _get_entities_dict()
     current_app.logger.info('Export URL file: %s' % json.dumps(entities))
+    _write_gcs_file(entities)
 
     # TODO: Create a signed URL using the output of this request
     return ExportUrlResponse(url='format=entitiesJson&url=Coming soon')
