@@ -43,6 +43,8 @@ jobs:
       - run:
           name: Run API server unit tests
           command: |
+              # deploy.json is missing because of .gitignore
+              touch dataset_config/1000_genomes/deploy.json
               pip install tox
               cd api
               tox

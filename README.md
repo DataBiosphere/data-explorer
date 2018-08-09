@@ -20,6 +20,7 @@ Run local Data Explorer with a test dataset:
 
 * `docker-compose up --build`
 * Navigate to `localhost:4400`
+* If you want to use Export to Saturn feature, [do this one-time setup](https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature).
 
 ## Run local Data Explorer with a custom dataset
 
@@ -38,6 +39,7 @@ Run local Data Explorer with a test dataset:
     and [here](https://github.com/DataBiosphere/data-explorer/tree/master/dataset_config/template).
     All files except `gcs.json` must be filled out.
 
+* If you want to use Export to Saturn feature, [do this one-time setup](https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature).
 * `DATASET_CONFIG_DIR=/app/dataset_config/<my dataset> docker-compose up --build`
 * Navigate to `localhost:4400`
 
@@ -96,6 +98,21 @@ created by `docker-compose` in this repo. Prior to 1.21.0, the network name was
 * In `ui/` run `npm install`. This will install tools used during git precommit,
   such as formatting tools.
 * [Set up git secrets.](https://github.com/DataBiosphere/data-explorer/tree/master/hooks)
+
+#### One-time setup for Export to Saturn feature
+
+The Export to Saturn feature temporarily stores data in a GCS bucket.
+
+* If `~/.config/gcloud/application_default_credentials.json` doesn't exist,
+create it by running `gcloud auth application-default login`.
+* If you haven't already, fill out [deploy.json](https://github.com/DataBiosphere/data-explorer-indexers/blob/master/dataset_config/template/deploy.json)
+for your dataset.
+  * Even if you don't plan on deploying Data Explorer to GCP,
+`deploy.json` will still need to be filled out. A temporary file will be written to a
+GCS bucket in the project in `deploy.json`, even for local deployment of Data
+Explorer. Choose a project where you have at least Project Editor permissions.
+* TODO(melissachang): Add instructions for creating bucket in the project
+specified in `deploy.json`.
 
 ### Testing
 

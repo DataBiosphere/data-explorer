@@ -19,6 +19,7 @@ from elasticsearch_dsl import FacetedSearch
 from elasticsearch_dsl import Mapping
 from elasticsearch_dsl import Search
 from elasticsearch_dsl import TermsFacet
+from google.cloud import storage
 
 from .encoder import JSONEncoder
 import dataset_faceted_search
@@ -287,6 +288,43 @@ def _get_table_names():
     return table_names
 
 
+def _get_export_url_gcs_bucket():
+    """Returns export URL bucket, with no gs:// prefix.
+
+    If bucket doesn't exist, returns an empty string.
+    """
+    # Check preconditions for Export to Saturn feature. If a precondition fails,
+    # print a warning but allow app to continue. Someone may want to run Data
+    # Explorer UI locally and not use export to Saturn feature.
+    config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
+                               'deploy.json')
+    if not os.path.isfile(config_path):
+        app.app.logger.warning(
+            'deploy.json not found. Export to Saturn feature will not work. '
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
+        )
+        return ''
+
+    project_id = _parse_json_file(config_path)['project_id']
+    if project_id == 'PROJECT_ID_TO_DEPLOY_TO':
+        app.app.logger.warning(
+            'Project not set in deploy.json. Export to Saturn feature will not work. '
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature-for-export-to-saturn-feature'
+        )
+        return ''
+
+    bucket = project_id + '-export'
+    client = storage.Client(project=project_id)
+    if client.lookup_bucket(bucket):
+        return bucket
+    else:
+        app.app.logger.warning(
+            'Bucket %s not found. Export to Saturn feature will not work. '
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature-for-export-to-saturn-feature'
+            % bucket)
+        return ''
+
+
 # Read config files. Just do this once; don't need to read files on every
 # request.
 @app.app.before_first_request
@@ -302,6 +340,7 @@ def init():
     app.app.config['UI_FACETS'] = _get_ui_facets()
     app.app.config['ELASTICSEARCH_FACETS'] = _get_es_facets()
     app.app.config['TABLE_NAMES'] = _get_table_names()
+    app.app.config['EXPORT_URL_GCS_BUCKET'] = _get_export_url_gcs_bucket()
 
 
 if __name__ == '__main__':

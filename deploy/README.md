@@ -49,11 +49,6 @@
 
 * From project root run `deploy/deploy-api.sh MY_DATASET`, where `MY_DATASET` is
   the name of the config directory in `dataset_config`.
-
-  * This script assumes you deployed Elasticsearch following the instructions in
-    https://github.com/DataBiosphere/data-explorer-indexers.
-    If you deployed Elasticsearch differently, edit elasticsearch_url in this script.
-
 * Navigate to `https://PROJECT_ID.appspot.com`. Note: App Engine deployment is
   slow and can take up 10 minutes. When `deploy/deploy-api.sh` returns, that means
   deployment has completed.
