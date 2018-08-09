@@ -20,14 +20,6 @@ class TestExportUrlController(BaseTestCase):
     def test_export_url_post(self):
         response = self.client.post('/exportUrl')
         self.assert200(response)
-        expected_json = {
-            "name": 'table_name',
-            "entityType": "BigQuery table",
-            "attributes": {
-                "table_name": 'project_id.dataset_id.table_name'
-            }
-        }
-        self.assertEquals(expected_json, json.loads(response.json['url']))
 
 
 if __name__ == '__main__':
