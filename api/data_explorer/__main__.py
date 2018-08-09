@@ -293,6 +293,10 @@ def _get_export_url_gcs_bucket():
 
     If bucket doesn't exist, returns an empty string.
     """
+    # Check for two preconditions: 1) deploy.json exists, 2) export bucket
+    # exists. If either precondition fails, print a warning but allow app to
+    # continue. Someone may want to run Data Explorer UI locally and not use
+    # export to Saturn feature.
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                'deploy.json')
     if not os.path.isfile(config_path):
