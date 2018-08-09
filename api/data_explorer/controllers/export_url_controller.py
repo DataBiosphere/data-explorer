@@ -100,7 +100,7 @@ def _write_gcs_file(entities):
 def export_url_post():  # noqa: E501
     _check_preconditions()
     entities = _get_entities_dict()
-    current_app.logger.info('Export URL file: %s' % json.dumps(entities))
+    current_app.logger.info('Entity JSON: %s' % json.dumps(entities))
     _write_gcs_file(entities)
 
     # TODO: Create a signed URL using the output of this request
