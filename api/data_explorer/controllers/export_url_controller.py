@@ -4,6 +4,7 @@ import json
 import os
 import random
 import string
+import sys
 
 from flask import current_app
 from werkzeug.exceptions import BadRequest
@@ -101,6 +102,13 @@ def export_url_post():  # noqa: E501
     _check_preconditions()
     entities = _get_entities_dict()
     current_app.logger.info('Entity JSON: %s' % json.dumps(entities))
+
+    # Don't actually write GCS file during unit test. If we wrote a file during
+    # unit test, in order to make it easy for anyone to run this test, we would
+    # have to create a world-readable bucket.
+    if 'pytest' in sys.modules:
+        return 'foo'
+
     _write_gcs_file(entities)
 
     # TODO: Create a signed URL using the output of this request
