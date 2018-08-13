@@ -11,6 +11,8 @@ class TestExportUrlController(BaseTestCase):
         app.config.update({
             'DATASET_CONFIG_DIR':
             '../dataset_config/1000_genomes',
+            'DEPLOY_PROJECT_ID':
+            'project_id',
             'EXPORT_URL_GCS_BUCKET':
             'bucket',
             'TABLE_NAMES': ['project_id.dataset_id.table_name']
