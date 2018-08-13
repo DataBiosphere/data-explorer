@@ -89,8 +89,7 @@ def _write_gcs_file(entities):
     bucket = client.get_bucket(current_app.config['EXPORT_URL_GCS_BUCKET'])
     # Random 10 character string
     random_str = ''.join(
-        random.choice(string.ascii_uppercase + string.digits)
-        for _ in range(10))
+        random.choice(string.ascii_letters + string.digits) for _ in range(10))
     blob = bucket.blob(random_str)
     blob.upload_from_string(json.dumps(entities))
     current_app.logger.info(
