@@ -108,7 +108,7 @@ definitions:
         type: integer
         description: Facet value count.
   ExportUrlResponse:
-    description: "Signed URL of GCS file representing entities to export."
+    description: "URL-encoded signed URL of GCS file representing entities to export."
     properties:
       url:
         type: string

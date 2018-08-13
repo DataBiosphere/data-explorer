@@ -34,7 +34,7 @@ class ExportFab extends React.Component {
         alert(error.response.body.detail);
       } else {
         window.location.assign(
-          "https://bvdp-saturn-prod.appspot.com/#import-data?url=" + data.url
+          "https://bvdp-saturn-prod.appspot.com/#import-data?format=entitiesJson&url=" + data.url
         );
       }
     }.bind(this);

@@ -289,7 +289,7 @@ def _get_table_names():
 
 
 def _get_export_url_info():
-    """Returns deploy project id and export URL bucket, with no gs:// prefix.
+    """Returns deploy project id and export URL bucket (with no gs:// prefix).
 
     If deploy project isn't set, return an empty string.
     If bucket doesn't exist, return an empty string.
@@ -306,7 +306,8 @@ def _get_export_url_info():
         )
         return '', ''
 
-    project_id = _parse_json_file(config_path)['project_id']
+    deploy_config = _parse_json_file(config_path)
+    project_id = deploy_config['project_id']
     if project_id == 'PROJECT_ID_TO_DEPLOY_TO':
         app.app.logger.warning(
             'Project not set in deploy.json. Export to Saturn feature will not work. '

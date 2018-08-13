@@ -111,8 +111,15 @@ for your dataset.
 `deploy.json` will still need to be filled out. A temporary file will be written to a
 GCS bucket in the project in `deploy.json`, even for local deployment of Data
 Explorer. Choose a project where you have at least Project Editor permissions.
+If you are not deploying to GCP, we recommend setting `service_account` to the
+Compute Engine default service account for the specified project.
 * TODO(melissachang): Add instructions for creating bucket in the project
 specified in `deploy.json`.
+* The Export to Saturn feature creates a signed URL, which requires a service
+account private key. Follow these instructions (["Generate a new private key"](https://cloud.google.com/storage/docs/access-control/create-signed-urls-program#signing-language)
+to create the private key. Select the App Engine default service account.
+Store the key in `api/data_explorer/private-key.json`. Do not
+share this key with anyone.
 
 ### Testing
 
