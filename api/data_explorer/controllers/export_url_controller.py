@@ -118,11 +118,15 @@ def _create_signed_url(gcs_path):
     service_account_email = current_app.config['DEPLOY_PROJECT_ID'] + '@appspot.gserviceaccount.com'
     # Signed URL will be valid for 5 minutes
     timestamp = str(int(time.time()) + 5 * 60)
-    str_to_sign = '\n'.join(['GET', '', '', timestamp, gcs_path])
+    str_to_sign = '''GET
+
+''' + timestamp + '''
+''' + gcs_path
     signature = base64.b64encode(creds.sign_blob(str_to_sign)[1])
     signed_url = ('https://storage.googleapis.com' + gcs_path +
                   '?GoogleAccessId=' + service_account_email + '&Expires=' +
                   timestamp + '&Signature=' + signature)
+    current_app.logger.info('str_to_sign: %s' % str_to_sign)
     current_app.logger.info('Signed URL before encoding: ' + signed_url)
     signed_url = urllib.quote(signed_url, safe='')
     current_app.logger.info('Signed URL: ' + signed_url)
