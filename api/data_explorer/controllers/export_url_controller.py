@@ -1,3 +1,4 @@
+import base64
 import connexion
 import six
 import json
@@ -5,10 +6,13 @@ import os
 import random
 import string
 import sys
+import time
+import urllib
 
 from flask import current_app
 from werkzeug.exceptions import BadRequest
 from google.cloud import storage
+from oauth2client.service_account import ServiceAccountCredentials
 
 from data_explorer.models.export_url_response import ExportUrlResponse  # noqa: E501
 
@@ -24,6 +28,8 @@ from data_explorer.models.export_url_response import ExportUrlResponse  # noqa: 
 # - On add-import page, user selects Workspace. User clicks Import button.
 # - User is redirected to selected workspace Data tab, showing newly imported
 #   entities.
+
+PRIVATE_KEY_PATH = os.path.join(os.getcwd(), 'data_explorer/private-key.json')
 
 
 def _check_preconditions():
@@ -49,6 +55,14 @@ def _check_preconditions():
         error_msg = (
             'Project not set in deploy.json or export URL GCS bucket not '
             'found. Export to Saturn feature will not work. '
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
+        )
+        current_app.logger.error(error_msg)
+        raise BadRequest(error_msg)
+
+    if not os.path.isfile(PRIVATE_KEY_PATH):
+        error_msg = (
+            'Private key not found. Export to Saturn feature will not work. '
             'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
         )
         current_app.logger.error(error_msg)
@@ -84,7 +98,7 @@ def _get_entities_dict():
 
 
 def _write_gcs_file(entities):
-    """Returns GCS file path."""
+    """Returns GCS file path of the format /bucket/object."""
     client = storage.Client(project=current_app.config['DEPLOY_PROJECT_ID'])
     bucket = client.get_bucket(current_app.config['EXPORT_URL_GCS_BUCKET'])
     # Random 10 character string
@@ -95,6 +109,25 @@ def _write_gcs_file(entities):
     current_app.logger.info(
         'Wrote gs://%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'],
                               random_str))
+    # Return in the format that signing a URL needs.
+    return '/%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'], random_str)
+
+
+def _create_signed_url(gcs_path):
+    creds = ServiceAccountCredentials.from_json_keyfile_name(PRIVATE_KEY_PATH)
+    service_account_email = current_app.config['DEPLOY_PROJECT_ID'] + '@appspot.gserviceaccount.com'
+    # Signed URL will be valid for 5 minutes
+    timestamp = str(int(time.time()) + 5 * 60)
+    file_metadata = '\n'.join(['GET', '', '', timestamp, gcs_path])
+    signature = base64.b64encode(creds.sign_blob(file_metadata)[1])
+    signature = urllib.quote(signature, safe='')
+    signed_url = ('https://storage.googleapis.com%s?GoogleAccessId=%s'
+                  '&Expires=%s&Signature=%s') % (
+                      gcs_path, service_account_email, timestamp, signature)
+    # import-data expects url to be url encoded
+    signed_url = urllib.quote(signed_url, safe='')
+    current_app.logger.info('Signed URL: ' + signed_url)
+    return signed_url
 
 
 def export_url_post():  # noqa: E501
@@ -108,7 +141,6 @@ def export_url_post():  # noqa: E501
     if 'pytest' in sys.modules:
         return 'foo'
 
-    _write_gcs_file(entities)
-
-    # TODO: Create a signed URL using the output of this request
-    return ExportUrlResponse(url='format=entitiesJson&url=Coming soon')
+    gcs_path = _write_gcs_file(entities)
+    signed_url = _create_signed_url(gcs_path)
+    return ExportUrlResponse(url=signed_url)
