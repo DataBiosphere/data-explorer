@@ -22,6 +22,7 @@
     "start": "PORT=4400 react-scripts start",
     "build": "react-scripts build",
     "test": "jest tests/unit",
+    "update": "jest tests/unit --updateSnapshot",
     "test:e2e": "jest --config '{\"preset\":\"jest-puppeteer\"}' tests/e2e",
     "eject": "react-scripts eject"
   },

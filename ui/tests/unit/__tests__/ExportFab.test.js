@@ -38,6 +38,6 @@ test("Calls API and redirects on click", () => {
     .onClick();
   expect(mockExportUrlPost).toHaveBeenCalledTimes(1);
   expect(window.location.assign).toBeCalledWith(
-    "https://bvdp-saturn-prod.appspot.com/#import-data?url=exportUrl"
+    "https://bvdp-saturn-prod.appspot.com/#import-data?format=entitiesJson&url=exportUrl"
   );
 });

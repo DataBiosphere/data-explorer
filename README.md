@@ -111,8 +111,6 @@ for your dataset.
 `deploy.json` will still need to be filled out. A temporary file will be written to a
 GCS bucket in the project in `deploy.json`, even for local deployment of Data
 Explorer. Choose a project where you have at least Project Editor permissions.
-If you are not deploying to GCP, we recommend setting `service_account` to the
-Compute Engine default service account for the specified project.
 * TODO(melissachang): Add instructions for creating bucket in the project
 specified in `deploy.json`.
 * The Export to Saturn feature creates a signed URL, which requires a service
