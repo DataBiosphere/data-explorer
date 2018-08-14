@@ -110,7 +110,7 @@ def _write_gcs_file(entities):
         'Wrote gs://%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'],
                               random_str))
     # Return in the format that signing a URL needs.
-    return '/' + current_app.config['EXPORT_URL_GCS_BUCKET'] + '/' + random_str
+    return '/%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'], random_str)
 
 
 def _create_signed_url(gcs_path):
@@ -118,12 +118,12 @@ def _create_signed_url(gcs_path):
     service_account_email = current_app.config['DEPLOY_PROJECT_ID'] + '@appspot.gserviceaccount.com'
     # Signed URL will be valid for 5 minutes
     timestamp = str(int(time.time()) + 5 * 60)
-    str_to_sign = '\n'.join(['GET', '', '', timestamp, gcs_path])
-    signature = base64.b64encode(creds.sign_blob(str_to_sign)[1])
+    file_metadata = '\n'.join(['GET', '', '', timestamp, gcs_path])
+    signature = base64.b64encode(creds.sign_blob(file_metadata)[1])
     signature = urllib.quote(signature, safe='')
-    signed_url = ('https://storage.googleapis.com' + gcs_path +
-                  '?GoogleAccessId=' + service_account_email + '&Expires=' +
-                  timestamp + '&Signature=' + signature)
+    signed_url = ('https://storage.googleapis.com%s?GoogleAccessId=%s'
+                  '&Expires=%s&Signature=%s') % (
+                      gcs_path, service_account_email, timestamp, signature)
     # import-data expects url to be url encoded
     signed_url = urllib.quote(signed_url, safe='')
     current_app.logger.info('Signed URL: ' + signed_url)
