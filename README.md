@@ -40,7 +40,8 @@ Run local Data Explorer with a test dataset:
     All files except `gcs.json` must be filled out.
 
 * If you want to use Export to Saturn feature, [do this one-time setup](https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature).
-* `DATASET_CONFIG_DIR=/app/dataset_config/<my dataset> docker-compose up --build`
+* `DATASET_CONFIG_DIR=/app/dataset_config/<my dataset> docker-compose up --build -t 0`
+  * The `-t 0` makes Kibana stop more quickly after `Ctrl-C`
 * Navigate to `localhost:4400`
 
 ## Architecture overview
