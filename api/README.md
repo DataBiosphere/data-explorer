@@ -6,6 +6,9 @@ latter lists only direct dependencies. To regenerate, in `api` directory run:
 ```
 virtualenv ~/virtualenv/data-explorer-api
 source ~/virtualenv/data-explorer-api/bin/activate
+# Find out latest version of package
+pip install PACKAGE==foobar
+# Now put PACKAGE==VERSION in requirements-to-freeze.txt
 pip install -r requirements-to-freeze.txt
 pip freeze | sort -f > requirements.txt
 deactivate
