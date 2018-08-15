@@ -18,13 +18,8 @@ class ExportFab extends React.Component {
     super(props);
     this.state = {open: false};
     this.handleClick = this.handleClick.bind(this);     
-    this.handleCancel = this.handleCancel.bind(this);    
     this.handleSave = this.handleSave.bind(this);    
   }
-
-  state = {
-    open: false,
-  };
 
   render() {
     return (
