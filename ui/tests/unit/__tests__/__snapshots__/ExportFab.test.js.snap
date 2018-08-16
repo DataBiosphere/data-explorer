@@ -1,16 +1,52 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Renders correctly 1`] = `
-<WithStyles(Tooltip)
-  title="Export to Saturn"
->
-  <WithStyles(Button)
-    className="exportFab"
-    color="secondary"
-    onClick={[Function]}
-    variant="fab"
+<div>
+  <WithStyles(Tooltip)
+    title="Export to Saturn"
   >
-    <pure(CloudUpload) />
-  </WithStyles(Button)>
-</WithStyles(Tooltip)>
+    <WithStyles(Button)
+      className="exportFab"
+      color="secondary"
+      onClick={[Function]}
+      variant="fab"
+    >
+      <pure(CloudUpload) />
+    </WithStyles(Button)>
+  </WithStyles(Tooltip)>
+  <div>
+    <WithStyles(Dialog)
+      aria-labelledby="form-dialog-title"
+      open={false}
+    >
+      <WithStyles(DialogContent)>
+        <TextField
+          autoFocus={true}
+          fullWidth={true}
+          helperText="A cohort with this name will be created in Saturn"
+          id="name"
+          label="Cohort Name"
+          margin="dense"
+          required={false}
+          select={false}
+          type="text"
+        />
+      </WithStyles(DialogContent)>
+      <WithStyles(DialogActions)>
+        <WithStyles(Button)
+          color="primary"
+          onClick={[Function]}
+        >
+          Export
+        </WithStyles(Button)>
+        <WithStyles(Button)
+          color="primary"
+          onClick={[Function]}
+        >
+          Cancel
+        </WithStyles(Button)>
+      </WithStyles(DialogActions)>
+    </WithStyles(Dialog)>
+  </div>
+</div>
 `;
