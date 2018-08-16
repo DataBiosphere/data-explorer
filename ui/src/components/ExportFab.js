@@ -34,22 +34,19 @@ class ExportFab extends React.Component {
           <CloudUpload />
         </Button>
       </Tooltip>
-       <div>
+      <div>
         <Dialog
           open={this.state.open}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">Cohort Name</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              Enter the cohort name
-            </DialogContentText>
             <TextField
               autoFocus
               margin="dense"
               id="name"
               label="Cohort Name"
+              helperText="A cohort with this name will be created in Saturn"
               type="text"
               fullWidth
             />
