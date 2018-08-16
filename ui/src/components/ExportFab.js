@@ -25,40 +25,43 @@ class ExportFab extends React.Component {
   render() {
     return (
       <div>
-      <Tooltip title="Export to Saturn">
-        <Button
-          variant="fab"
-          color="secondary"
-          className="exportFab"
-          onClick={() => this.handleClick()}
-        >
-          <CloudUpload />
-        </Button>
-      </Tooltip>
-      <div>
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Cohort Name"
-              helperText="A cohort with this name will be created in Saturn"
-              type="text"
-              fullWidth
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleSave} color="primary">
-              Export
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
+        <Tooltip title="Export to Saturn">
+          <Button
+            variant="fab"
+            color="secondary"
+            className="exportFab"
+            onClick={() => this.handleClick()}
+          >
+            <CloudUpload />
+          </Button>
+        </Tooltip>
+        <div>
+          <Dialog
+            open={this.state.open}
+            onClose={this.handleClose}
+            aria-labelledby="form-dialog-title"
+          >
+            <DialogContent>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Cohort Name"
+                helperText="A cohort with this name will be created in Saturn"
+                type="text"
+                fullWidth
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={this.handleSave} color="primary">
+                Export
+              </Button>
+              <Button onClick={this.handleCancel} color="primary">
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
       </div>
     );
   }
@@ -77,7 +80,8 @@ class ExportFab extends React.Component {
         alert(error.response.body.detail);
       } else {
         window.location.assign(
-          "https://bvdp-saturn-prod.appspot.com/#import-data?format=entitiesJson&url=" + data.url
+          "https://bvdp-saturn-prod.appspot.com/#import-data?format=entitiesJson&url=" +
+            data.url
         );
       }
     }.bind(this);
