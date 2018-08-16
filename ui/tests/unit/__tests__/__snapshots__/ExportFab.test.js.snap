@@ -39,12 +39,6 @@ exports[`Renders correctly 1`] = `
         >
           Export
         </WithStyles(Button)>
-        <WithStyles(Button)
-          color="primary"
-          onClick={[Function]}
-        >
-          Cancel
-        </WithStyles(Button)>
       </WithStyles(DialogActions)>
     </WithStyles(Dialog)>
   </div>

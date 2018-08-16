@@ -20,24 +20,3 @@ test("Renders correctly", () => {
   );
   expect(tree).toMatchSnapshot();
 });
-
-test("Calls API and redirects on click", () => {
-  window.location.assign = jest.fn();
-  let muiTheme = getMuiTheme();
-  const tree = mount(
-    <ExportFab exportUrlApi={new ExportUrlApi(new ApiClient())} />,
-    {
-      context: { muiTheme },
-      childContextTypes: { muiTheme: PropTypes.object }
-    }
-  );
-  let exportButton = tree.find(Button);
-  exportButton
-    .first()
-    .props()
-    .onClick();
-  expect(mockExportUrlPost).toHaveBeenCalledTimes(1);
-  expect(window.location.assign).toBeCalledWith(
-    "https://bvdp-saturn-prod.appspot.com/#import-data?format=entitiesJson&url=exportUrl"
-  );
-});
