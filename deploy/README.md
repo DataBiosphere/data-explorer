@@ -20,6 +20,8 @@
 
   `gcloud app create`
 
+  Choose the same region that your Elasticsearch cluster is in.
+
 ### Deploy the UI Server
 
 * Deploy:
