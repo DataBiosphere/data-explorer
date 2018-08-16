@@ -37,13 +37,13 @@ exports[`Renders correctly 1`] = `
           color="primary"
           onClick={[Function]}
         >
-          Export
+          Cancel
         </WithStyles(Button)>
         <WithStyles(Button)
           color="primary"
           onClick={[Function]}
         >
-          Cancel
+          Export
         </WithStyles(Button)>
       </WithStyles(DialogActions)>
     </WithStyles(Dialog)>
