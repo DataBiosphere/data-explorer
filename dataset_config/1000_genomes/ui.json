@@ -50,6 +50,18 @@
       "ui_facet_name": "Low Coverage Platform",
       "ui_facet_description": "Low coverage sequencing platform for final sequencing round",
       "elasticsearch_field_name": "genomics-public-data.1000_genomes.sample_info.Main_project_LC_platform"
+    },
+    {
+      "ui_facet_name": "Bam Files",
+      "elasticsearch_field_name": "bam.count"
+    },
+    {
+      "ui_facet_name": "CRAM Files",
+      "elasticsearch_field_name": "cram.count"
+    },
+    {
+      "ui_facet_name": "FASTQ Files",
+      "elasticsearch_field_name": "fastq.count"
     }
   ]
 }
