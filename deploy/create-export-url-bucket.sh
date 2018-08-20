@@ -1,4 +1,4 @@
-  #!/bin/bash -xb
+#!/bin/bash
 #
 # Creates GCS bucket for Export to Saturn feature.
 #
