@@ -68,7 +68,7 @@ class ExportFab extends React.Component {
 
   handleClick() {
     var filter = this.props.filter;
-    if (filter.length > 0) {
+    if (filter != null && filter.length > 0) {
       this.setState(state => ({ open: true }));
     } else {
       this.handleSave();
