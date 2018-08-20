@@ -15,7 +15,7 @@ class App extends Component {
       datasetName: "",
       facets: null,
       totalCount: null,
-      filter: ""
+      filter: null
     };
 
     this.apiClient = new ApiClient();
