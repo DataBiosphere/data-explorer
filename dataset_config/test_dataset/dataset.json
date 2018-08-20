@@ -1,5 +1,0 @@
-{
-  // Dataset name. This name will be displayed in the Data Explorer UI. Also,
-  // the Elasticsearch index will be given this name.
-  "name": "Test data"
-}

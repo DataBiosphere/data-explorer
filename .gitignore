@@ -1,12 +1,15 @@
 # Dataset-specific files
 dataset_config/*
-!dataset_config/test_dataset
 !dataset_config/template
 # Most 1000 Genomes config files are in data-explorer-indexers repo.
 # (ui.json is in this repo since it's only used by this repo.)
 # Only store ui.json; eg we don't want to maintain 2 copies of dataset.json.
 !dataset_config/1000_genomes
 dataset_config/1000_genomes/*
+!dataset_config/1000_genomes/Dockerfile
+!dataset_config/1000_genomes/index.json
+!dataset_config/1000_genomes/load_index.py
+!dataset_config/1000_genomes/dump_index.py
 !dataset_config/1000_genomes/ui.json
 !dataset_config/1000_genomes/README.md
 api/data_explorer/private-key.json
