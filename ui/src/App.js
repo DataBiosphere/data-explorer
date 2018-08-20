@@ -14,7 +14,8 @@ class App extends Component {
     this.state = {
       datasetName: "",
       facets: null,
-      totalCount: null
+      totalCount: null,
+      filter: ""
     };
 
     this.apiClient = new ApiClient();
@@ -52,7 +53,10 @@ class App extends Component {
               updateFacets={this.updateFacets}
               facets={this.state.facets}
             />
-            <ExportFab exportUrlApi={new ExportUrlApi(this.apiClient)} />
+            <ExportFab
+              exportUrlApi={new ExportUrlApi(this.apiClient)}
+              filter={this.state.filter}
+            />
           </div>
         </MuiThemeProvider>
       );
@@ -100,8 +104,10 @@ class App extends Component {
 
     let filterArray = this.filterMapToArray(this.filterMap);
     if (filterArray.length > 0) {
+      this.setState({ filter: filterArray });
       this.facetsApi.facetsGet({ filter: filterArray }, this.facetsCallback);
     } else {
+      this.setState({ filter: filterArray });
       this.facetsApi.facetsGet({}, this.facetsCallback);
     }
   }

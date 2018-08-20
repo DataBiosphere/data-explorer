@@ -67,7 +67,12 @@ class ExportFab extends React.Component {
   }
 
   handleClick() {
-    this.setState(state => ({ open: true }));
+    var filter = this.props.filter;
+    if (filter.length > 0) {
+      this.setState(state => ({ open: true }));
+    } else {
+      this.handleSave();
+    }
   }
 
   handleCancel() {
@@ -75,6 +80,7 @@ class ExportFab extends React.Component {
   }
 
   handleSave() {
+    this.setState(state => ({ open: false }));
     let exportUrlCallback = function(error, data) {
       if (error) {
         alert(error.response.body.detail);
@@ -85,7 +91,6 @@ class ExportFab extends React.Component {
         );
       }
     }.bind(this);
-    this.setState(state => ({ open: false }));
     this.props.exportUrlApi.exportUrlPost(exportUrlCallback);
   }
 }
