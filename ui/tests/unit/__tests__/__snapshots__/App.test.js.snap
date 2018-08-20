@@ -60,6 +60,7 @@ exports[`Renders correctly after receiving all data 1`] = `
           },
         }
       }
+      filter={null}
     />
   </div>
 </MuiThemeProvider>
