@@ -25,9 +25,11 @@ class ExportFab extends React.Component {
   render() {
     return (
       <div>
-        // Style div instead of button itself, to prevent button from moving
-        // when cohort dialog is shown. See
-        // https://github.com/mui-org/material-ui/issues/9275#issuecomment-350479467
+        {/*
+          Style div instead of button itself, to prevent button from moving
+          when cohort dialog is shown. See
+          https://github.com/mui-org/material-ui/issues/9275#issuecomment-350479467
+        */}
         <div className="mui-fixed exportFab">
           <Tooltip title="Export to Saturn">
             <Button
