@@ -11,8 +11,13 @@ quickly try out Data Explorer without having to set up and run any
 of the [data explorer indexers](https://github.com/DataBiosphere/data-explorer-indexers).
 
 ### Update index JSON
+
 Ensure the elastic search index is already running at `http://localhost:9200`.
+
 ```
+virtualenv ~/virtualenv/elasticsearch
+source ~/virtualenv/elasticsearch/bin/activate
 pip install elasticsearch
 python dataset_config/1000_genomes/dump_index.py
+deactivate
 ```
