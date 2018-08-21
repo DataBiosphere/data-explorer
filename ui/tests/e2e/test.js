@@ -56,7 +56,7 @@ describe("End-to-end", () => {
         );
         // Elasticsearch has come up. Now wait for test data to be indexed.
         await page.goto("http://localhost:9200/_stats/docs");
-        await page.waitForXPath("//*[contains(text(), '1338')]");
+        await page.waitForXPath("//*[contains(text(), '3500')]");
         console.log(
           "Servers up and test data indexed after " + i + " seconds."
         );
