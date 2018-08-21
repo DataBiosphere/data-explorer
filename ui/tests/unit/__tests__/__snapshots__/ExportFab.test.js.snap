@@ -6,7 +6,7 @@ exports[`Renders correctly 1`] = `
     className="mui-fixed exportFab"
   >
     <WithStyles(Tooltip)
-      title="Export to Saturn"
+      title="Send to Saturn"
     >
       <WithStyles(Button)
         color="secondary"
