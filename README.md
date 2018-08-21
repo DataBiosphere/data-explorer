@@ -16,7 +16,7 @@ and [here](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/d
 
 ## Quickstart
 
-Run local Data Explorer with a test dataset:
+Run local Data Explorer with the 1000 Genomes dataset:
 
 * `docker-compose up --build`
 * Navigate to `localhost:4400`
@@ -137,7 +137,6 @@ cd api && tox
 
 End-to-end tests use [Puppeteer](https://github.com/GoogleChrome/puppeteer) and
 [jest-puppeteer](https://github.com/smooth-code/jest-puppeteer).
-These tests use the [test dataset in test/](https://github.com/DataBiosphere/data-explorer/tree/master/test).
 To run locally:
 
 ```

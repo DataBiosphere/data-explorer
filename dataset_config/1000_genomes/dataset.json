@@ -1,0 +1,6 @@
+{
+  // Dataset name. For Project Baseline (https://www.projectbaseline.com/),
+  // this could be "Project Baseline". This name will be displayed in the Data
+  // Explorer UI. Also, the Elasticsearch index will be given this name.
+  "name": "1000 Genomes"
+}
