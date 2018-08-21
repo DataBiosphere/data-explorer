@@ -1,0 +1,12 @@
+// Configuration for BigQuery indexer
+{
+  // Name of BigQuery column that represents primary key. See
+  // https://github.com/DataBiosphere/data-explorer-indexers#overview
+  // for more information.
+  "primary_key": "Sample",
+
+  "table_names": [
+    // Fully-qualified table name: <project id>.<dataset id>.<table name>
+    "genomics-public-data.1000_genomes.sample_info"
+  ]
+}
