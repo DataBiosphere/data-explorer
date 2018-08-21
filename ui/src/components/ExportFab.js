@@ -31,7 +31,7 @@ class ExportFab extends React.Component {
           https://github.com/mui-org/material-ui/issues/9275#issuecomment-350479467
         */}
         <div className="mui-fixed exportFab">
-          <Tooltip title="Export to Saturn">
+          <Tooltip title="Send to Saturn">
             <Button
               variant="fab"
               color="secondary"
