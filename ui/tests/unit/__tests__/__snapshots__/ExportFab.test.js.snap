@@ -2,7 +2,6 @@
 
 exports[`Renders correctly 1`] = `
 <div>
-  // Style div instead of button itself, to prevent button from moving // when cohort dialog is shown. See // https://github.com/mui-org/material-ui/issues/9275#issuecomment-350479467
   <div
     className="mui-fixed exportFab"
   >
