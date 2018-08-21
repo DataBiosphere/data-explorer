@@ -45,10 +45,10 @@ export default class ExportUrlApi {
    * data is of type: {@link module:model/ExportUrlResponse}
    */
   exportUrlPost(callback, params) {
-    let postBody = null;
+    let postBody = params;
 
     let pathParams = {};
-    let queryParams = params;
+    let queryParams = {};
     let headerParams = {};
     let formParams = {};
 

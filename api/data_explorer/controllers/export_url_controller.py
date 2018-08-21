@@ -9,6 +9,7 @@ import sys
 import time
 import urllib
 
+from flask import request
 from flask import current_app
 from werkzeug.exceptions import BadRequest
 from google.cloud import storage
@@ -136,7 +137,7 @@ def export_url_post():  # noqa: E501
     _check_preconditions()
     entities = _get_entities_dict()
     current_app.logger.info('Entity JSON: %s' % json.dumps(entities))
-
+    current_app.logger.info('Request data %s' % request.data)
     # Don't actually write GCS file during unit test. If we wrote a file during
     # unit test, in order to make it easy for anyone to run this test, we would
     # have to create a world-readable bucket.
