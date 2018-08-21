@@ -50,6 +50,7 @@ class ExportFab extends React.Component {
             <DialogContent>
               <TextField
                 autoFocus
+                onChange={this.setTextValue}
                 margin="dense"
                 id="name"
                 label="Cohort Name"
@@ -71,6 +72,10 @@ class ExportFab extends React.Component {
       </div>
     );
   }
+
+  setTextValue = event => {
+    this.setState({ cohortName: event.target.value });
+  };
 
   handleClick() {
     var filter = this.props.filter;
@@ -99,7 +104,14 @@ class ExportFab extends React.Component {
         window.location.assign(importUrl);
       }
     }.bind(this);
-    this.props.exportUrlApi.exportUrlPost(exportUrlCallback);
+    let cohortName = this.state.cohortName;
+    let filter = this.props.filters;
+    let params = new Object();
+    params.cohortName = cohortName;
+    params.filter = filter;
+    console.log("in export fab");
+    console.log(params);
+    this.props.exportUrlApi.exportUrlPost(exportUrlCallback, params);
   }
 }
 
