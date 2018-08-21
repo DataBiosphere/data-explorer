@@ -105,10 +105,8 @@ class App extends Component {
     let filterArray = this.filterMapToArray(this.filterMap);
     this.setState({ filter: filterArray });
     if (filterArray.length > 0) {
-      this.setState({ filter: filterArray });
       this.facetsApi.facetsGet({ filter: filterArray }, this.facetsCallback);
     } else {
-      this.setState({ filter: filterArray });
       this.facetsApi.facetsGet({}, this.facetsCallback);
     }
   }
