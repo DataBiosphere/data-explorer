@@ -24,7 +24,7 @@ if gsutil ls ${bucket} > /dev/null; then
 fi
 
 echo "Creating ${bucket}"
-gsutil mb ${bucket}
+gsutil mb -p ${project_id} ${bucket}
 
 echo "Setting bucket TTL to 1 day"
 gsutil lifecycle set deploy/export-url-bucket-lifecycle.json ${bucket}
