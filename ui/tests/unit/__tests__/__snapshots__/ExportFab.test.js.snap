@@ -2,18 +2,22 @@
 
 exports[`Renders correctly 1`] = `
 <div>
-  <WithStyles(Tooltip)
-    title="Export to Saturn"
+  // Style div instead of button itself, to prevent button from moving // when cohort dialog is shown. See // https://github.com/mui-org/material-ui/issues/9275#issuecomment-350479467
+  <div
+    className="mui-fixed exportFab"
   >
-    <WithStyles(Button)
-      className="exportFab"
-      color="secondary"
-      onClick={[Function]}
-      variant="fab"
+    <WithStyles(Tooltip)
+      title="Export to Saturn"
     >
-      <pure(CloudUpload) />
-    </WithStyles(Button)>
-  </WithStyles(Tooltip)>
+      <WithStyles(Button)
+        color="secondary"
+        onClick={[Function]}
+        variant="fab"
+      >
+        <pure(CloudUpload) />
+      </WithStyles(Button)>
+    </WithStyles(Tooltip)>
+  </div>
   <div>
     <WithStyles(Dialog)
       aria-labelledby="form-dialog-title"
