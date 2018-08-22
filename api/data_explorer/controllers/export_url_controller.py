@@ -133,11 +133,26 @@ def _create_signed_url(gcs_path):
     return signed_url
 
 
+def _get_filter_query(filter):
+    current_app.logger.info("in get filter %s" % filter)
+    facets = current_app.config['UI_FACETS']
+    for f in filter:
+        arr = f.split('=')
+        key = arr[0]
+        val = arr[1]
+        current_app.logger.info("query %s = %s" % (key, val))
+        facet = facets[key]
+        current_app.logger.info("facet %s" % facet['name'])
+
+
 def export_url_post():  # noqa: E501
     _check_preconditions()
     entities = _get_entities_dict()
     current_app.logger.info('Entity JSON: %s' % json.dumps(entities))
     current_app.logger.info('Request data %s' % request.data)
+    data = json.loads(request.data)
+    current_app.logger.info("data %s" % data)
+    _get_filter_query(data['filter'])
     # Don't actually write GCS file during unit test. If we wrote a file during
     # unit test, in order to make it easy for anyone to run this test, we would
     # have to create a world-readable bucket.

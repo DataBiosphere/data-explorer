@@ -26,7 +26,10 @@ def facets_get(filter=None):  # noqa: E501
     # Uncomment to print facets
     # current_app.logger.info(pprint.pformat(es_response_facets))
     facets = []
-    for name, description in current_app.config['UI_FACETS'].iteritems():
+    for name, field in current_app.config['UI_FACETS'].iteritems():
+        description = None
+        if 'description' in field:
+            description = field['description']
         es_facet = current_app.config['ELASTICSEARCH_FACETS'][name]
         values = []
         for value_name, count, _ in es_response_facets[name]:
