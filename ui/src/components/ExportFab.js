@@ -91,10 +91,12 @@ class ExportFab extends React.Component {
       if (error) {
         alert(error.response.body.detail);
       } else {
-        window.location.assign(
-          "https://bvdp-saturn-prod.appspot.com/#import-data?format=entitiesJson&url=" +
-            data.url
-        );
+        let importUrl = "https://bvdp-saturn-prod.appspot.com/#import-data?format=entitiesJson";
+        if (data.authorization_domain) {
+          importUrl += "&ad=" + data.authorization_domain;
+        }
+        importUrl += "&url=" + data.url
+        window.location.assign(importUrl);
       }
     }.bind(this);
     this.props.exportUrlApi.exportUrlPost(exportUrlCallback);

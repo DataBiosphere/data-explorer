@@ -15,17 +15,23 @@ class ExportUrlResponse(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, url=None):  # noqa: E501
+    def __init__(self, url=None, authorization_domain=None):  # noqa: E501
         """ExportUrlResponse - a model defined in Swagger
 
         :param url: The url of this ExportUrlResponse.  # noqa: E501
         :type url: str
+        :param authorization_domain: The authorization_domain of this ExportUrlResponse.  # noqa: E501
+        :type authorization_domain: str
         """
-        self.swagger_types = {'url': str}
+        self.swagger_types = {'url': str, 'authorization_domain': str}
 
-        self.attribute_map = {'url': 'url'}
+        self.attribute_map = {
+            'url': 'url',
+            'authorization_domain': 'authorization_domain'
+        }
 
         self._url = url
+        self._authorization_domain = authorization_domain
 
     @classmethod
     def from_dict(cls, dikt):
@@ -42,6 +48,7 @@ class ExportUrlResponse(Model):
     def url(self):
         """Gets the url of this ExportUrlResponse.
 
+        URL-encoded signed URL of GCS file containing entities to export.  # noqa: E501
 
         :return: The url of this ExportUrlResponse.
         :rtype: str
@@ -52,9 +59,33 @@ class ExportUrlResponse(Model):
     def url(self, url):
         """Sets the url of this ExportUrlResponse.
 
+        URL-encoded signed URL of GCS file containing entities to export.  # noqa: E501
 
         :param url: The url of this ExportUrlResponse.
         :type url: str
         """
 
         self._url = url
+
+    @property
+    def authorization_domain(self):
+        """Gets the authorization_domain of this ExportUrlResponse.
+
+        Optional FireCloud authorization domain  # noqa: E501
+
+        :return: The authorization_domain of this ExportUrlResponse.
+        :rtype: str
+        """
+        return self._authorization_domain
+
+    @authorization_domain.setter
+    def authorization_domain(self, authorization_domain):
+        """Sets the authorization_domain of this ExportUrlResponse.
+
+        Optional FireCloud authorization domain  # noqa: E501
+
+        :param authorization_domain: The authorization_domain of this ExportUrlResponse.
+        :type authorization_domain: str
+        """
+
+        self._authorization_domain = authorization_domain

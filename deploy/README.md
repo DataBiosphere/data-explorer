@@ -42,7 +42,9 @@
     - User U clicks on Send to Saturn button. Because `authorization_domain` was
       set in `dataset.json`, only workspaces with Authorization Domain G are
       listed. If `authorization_domain` wasn't set in `dataset.json`, U could
-      send data to 
+      send data to a workspace whose users aren't authorized to see the dataset.
+    So the same group will be used for Authorization Domain (FireCloud group)
+    and IAP (Google Group corresponding to FireCloud group).
 
 - Follow the [instructions for setting up IAP](https://cloud.google.com/iap/docs/app-engine-quickstart#enabling_iap)
   to restrict access to the aforementioned Google Group. Turn on IAP for one

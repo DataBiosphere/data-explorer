@@ -108,7 +108,11 @@ definitions:
         type: integer
         description: Facet value count.
   ExportUrlResponse:
-    description: "URL-encoded signed URL of GCS file representing entities to export."
+    description: "Information for sending data to Saturn"
     properties:
       url:
         type: string
+        description: "URL-encoded signed URL of GCS file containing entities to export."
+      authorization_domain:
+        type: string
+        description: "Optional FireCloud authorization domain"
