@@ -454,8 +454,6 @@ export default class ApiClient {
         }
       }
     } else if (bodyParam) {
-      console.log("sending body");
-      console.log(bodyParam);
       request.send(bodyParam);
     }
 
