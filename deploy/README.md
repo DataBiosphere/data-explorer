@@ -11,21 +11,18 @@
 
   - Make sure `dataset_config/MY_DATASET/deploy.json` is filled out.
 
-- If you haven't done so already, set the default project:
+- Set gcloud project: `gcloud config set project PROJECT_ID`
 
-  `gcloud config set project PROJECT_ID`
-
-- If you haven't done so already, create the App Engine application:
-
-  `gcloud app create`
-
+- Create the App Engine application: `gcloud app create`  
   Choose the same region that your Elasticsearch cluster is in.
 
 ### Deploy the UI Server
 
 - Deploy:
-
-  `cd ui && gcloud app deploy`
+  ```
+  gcloud config set project PROJECT_ID
+  cd ui && gcloud app deploy
+  ```
 
 ### Enable Access Control
 
