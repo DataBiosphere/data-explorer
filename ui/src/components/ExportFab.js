@@ -25,16 +25,22 @@ class ExportFab extends React.Component {
   render() {
     return (
       <div>
-        <Tooltip title="Export to Saturn">
-          <Button
-            variant="fab"
-            color="secondary"
-            className="exportFab"
-            onClick={() => this.handleClick()}
-          >
-            <CloudUpload />
-          </Button>
-        </Tooltip>
+        {/*
+          Style div instead of button itself, to prevent button from moving
+          when cohort dialog is shown. See
+          https://github.com/mui-org/material-ui/issues/9275#issuecomment-350479467
+        */}
+        <div className="mui-fixed exportFab">
+          <Tooltip title="Send to Saturn">
+            <Button
+              variant="fab"
+              color="secondary"
+              onClick={() => this.handleClick()}
+            >
+              <CloudUpload />
+            </Button>
+          </Tooltip>
+        </div>
         <div>
           <Dialog
             open={this.state.open}

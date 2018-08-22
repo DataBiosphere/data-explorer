@@ -2,18 +2,21 @@
 
 exports[`Renders correctly 1`] = `
 <div>
-  <WithStyles(Tooltip)
-    title="Export to Saturn"
+  <div
+    className="mui-fixed exportFab"
   >
-    <WithStyles(Button)
-      className="exportFab"
-      color="secondary"
-      onClick={[Function]}
-      variant="fab"
+    <WithStyles(Tooltip)
+      title="Send to Saturn"
     >
-      <pure(CloudUpload) />
-    </WithStyles(Button)>
-  </WithStyles(Tooltip)>
+      <WithStyles(Button)
+        color="secondary"
+        onClick={[Function]}
+        variant="fab"
+      >
+        <pure(CloudUpload) />
+      </WithStyles(Button)>
+    </WithStyles(Tooltip)>
+  </div>
   <div>
     <WithStyles(Dialog)
       aria-labelledby="form-dialog-title"

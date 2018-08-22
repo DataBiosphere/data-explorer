@@ -40,7 +40,7 @@ services:
     environment:
       - ELASTICSEARCH_URL=${ELASTICSEARCH_URL:-elasticsearch:9200}
       - PATH_PREFIX=/api
-      - DATASET_CONFIG_DIR=${DATASET_CONFIG_DIR:-/app/dataset_config/test_dataset}
+      - DATASET_CONFIG_DIR=${DATASET_CONFIG_DIR:-/app/dataset_config/1000_genomes}
       # Avoid writing .pyc files back to the volume. Files generated this way
       # have restricted permissions set which cause errors on subsequent docker
       # builds.
@@ -59,7 +59,7 @@ services:
     image: docker.elastic.co/kibana/kibana-oss:6.2.2
     ports:
       - 127.0.0.1:5601:5601
-  # For convenience, load test data into Elasticsearch.
-  index_test_data:
+  # For convenience, load 1000 Genomes into Elasticsearch.
+  load_test_index:
     build:
-      context: dataset_config/test_dataset
+      context: dataset_config/1000_genomes
