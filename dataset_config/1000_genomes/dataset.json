@@ -1,6 +1,15 @@
+// name:
+//   Dataset name. This name will be displayed in the Data Explorer UI. Also,
+//   the Elasticsearch index will be given this name.
+// authorization_domain:
+//   FireCloud Authorization Domain. This must be set for access-controlled
+//   datasets. This is used to restrict which Saturn workspaces data can be sen
+t
+//   to. See
+//   https://gatkforums.broadinstitute.org/firecloud/discussion/9524/authorizat
+ion-domains
+
 {
-  // Dataset name. For Project Baseline (https://www.projectbaseline.com/),
-  // this could be "Project Baseline". This name will be displayed in the Data
-  // Explorer UI. Also, the Elasticsearch index will be given this name.
-  "name": "1000 Genomes"
+  "name": "1000 Genomes",
+  "authorization_domain": ""
 }
