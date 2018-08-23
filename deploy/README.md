@@ -26,25 +26,10 @@
 
 ### Enable Access Control
 
-- If this Data Explorer deployment is private, work with the Dataset owner to
-  identify a Google Group of users who who can access this deployment.
-  - If your users will send data to Saturn, this group must be a FireCloud
-    group. The reason is, FireCloud Authorization Domains will be used to
-    ensure that only approved people can see data in Saturn. For example:
-    - For a given dataset, only people in FireCloud group G/Google Group
-      G@firecloud.org, are allowed to see this dataset.
-    - In `dataset.json`, `authorization_domain` is set to G.
-    - User U is in FireCloud group G/Google group G@firecloud.org.
-    - User U can see Data Explorer, which is acled to G@firecloud.org.
-    - User U clicks on Send to Saturn button. Because `authorization_domain` was
-      set in `dataset.json`, only workspaces with Authorization Domain G are
-      listed. If `authorization_domain` wasn't set in `dataset.json`, U could
-      send data to a workspace whose users aren't authorized to see the dataset.
-    So the same group will be used for Authorization Domain (FireCloud group)
-    and IAP (Google Group corresponding to FireCloud group).
+For private datasets, restrict who can see Data Explorer.
 
 - Follow the [instructions for setting up IAP](https://cloud.google.com/iap/docs/app-engine-quickstart#enabling_iap)
-  to restrict access to the aforementioned Google Group. Turn on IAP for one
+  to restrict access to the readers Google Group. Turn on IAP for one
   domain name: `https://PROJECT_ID.appspot.com`
 
 - Confirm IAP is working.
