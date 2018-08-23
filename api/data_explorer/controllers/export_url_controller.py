@@ -143,4 +143,6 @@ def export_url_post():  # noqa: E501
 
     gcs_path = _write_gcs_file(entities)
     signed_url = _create_signed_url(gcs_path)
-    return ExportUrlResponse(url=signed_url)
+    return ExportUrlResponse(
+        url=signed_url,
+        authorization_domain=current_app.config['AUTHORIZATION_DOMAIN'])

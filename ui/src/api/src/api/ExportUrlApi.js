@@ -43,7 +43,7 @@ export default class ExportUrlApi {
      */
 
     /**
-     * Gets a signed URL to a GCS zip file of JSON files. The JSON files represent entites to be exported to a Saturn workspace. https://bvdp-saturn-prod.appspot.com/#import-data will be called with the url parameter set to this url. For each JSON file, https://rawls.dsde-prod.broadinstitute.org/#!/entities/create_entity will be called with the JSON as the POST body. 
+     * Creates and returns a signed URL to a GCS zip file of JSON files. The JSON files represent entities to be exported to a Saturn workspace. https://bvdp-saturn-prod.appspot.com/#import-data may be called with the url parameter set to this url. For each JSON file, https://rawls.dsde-prod.broadinstitute.org/#!/entities/create_entity may be called with the JSON as the POST body. 
      * @param {module:api/ExportUrlApi~exportUrlPostCallback} callback The callback function, accepting three arguments: error, data, response
      * data is of type: {@link module:model/ExportUrlResponse}
      */

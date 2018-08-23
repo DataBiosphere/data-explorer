@@ -26,7 +26,7 @@ import ApiClient from '../ApiClient';
 export default class ExportUrlResponse {
     /**
     * Constructs a new <code>ExportUrlResponse</code>.
-    * Signed URL of GCS file representing entities to export.
+    * Information for sending data to Saturn
     * @alias module:model/ExportUrlResponse
     * @class
     */
@@ -60,14 +60,23 @@ export default class ExportUrlResponse {
             if (data.hasOwnProperty('url')) {
                 obj['url'] = ApiClient.convertToType(data['url'], 'String');
             }
+            if (data.hasOwnProperty('authorization_domain')) {
+                obj['authorization_domain'] = ApiClient.convertToType(data['authorization_domain'], 'String');
+            }
         }
         return obj;
     }
 
     /**
+    * URL-encoded signed URL of GCS file containing entities to export.
     * @member {String} url
     */
     url = undefined;
+    /**
+    * Optional FireCloud authorization domain
+    * @member {String} authorization_domain
+    */
+    authorization_domain = undefined;
 
 
 
