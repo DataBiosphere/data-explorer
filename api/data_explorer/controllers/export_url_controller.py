@@ -101,9 +101,7 @@ def _get_entities_dict(cohortName, query):
         'attributes': {
             'query': query
         }
-    }
-
-    )
+    })
     return entities
 
 
@@ -183,9 +181,12 @@ def _get_filter_query(filter):
         table_name = arr[0]
         column = arr[1]
         if table_name in table_clauses:
-            table_clauses[table_name].append(_get_clause(column, facet['type'], filter_value))
+            table_clauses[table_name].append(
+                _get_clause(column, facet['type'], filter_value))
         else:
-            table_clauses[table_name] = [_get_clause(column, facet['type'], filter_value)]
+            table_clauses[table_name] = [
+                _get_clause(column, facet['type'], filter_value)
+            ]
 
     table_selects = list()
     primary_key = current_app.config['PRIMARY_KEY']
@@ -196,7 +197,8 @@ def _get_filter_query(filter):
             if len(where_clause) > 0:
                 where_clause = where_clause + " AND "
             where_clause = where_clause + c
-        table_selects.append(table_select % (primary_key, table_name, where_clause))
+        table_selects.append(
+            table_select % (primary_key, table_name, where_clause))
 
     query = "SELECT DISTINCT t1.%s FROM " % primary_key
     cnt = 1
@@ -204,7 +206,8 @@ def _get_filter_query(filter):
         table = "%s t%d" % (table_select, cnt)
         join = " INNER_JOIN %s ON t%d.%s = t%d.%s"
         if cnt > 1:
-            query = query + join % (table, cnt-1, primary_key, cnt, primary_key)
+            query = query + join % (table, cnt - 1, primary_key, cnt,
+                                    primary_key)
         else:
             query = query + table
     current_app.logger.info("Final query %s" % query)
