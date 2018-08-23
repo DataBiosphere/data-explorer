@@ -20,6 +20,7 @@ class ExportFab extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
+    this.setTextValue = this.setTextValue.bind(this);
   }
 
   render() {
@@ -73,9 +74,9 @@ class ExportFab extends React.Component {
     );
   }
 
-  setTextValue = event => {
+  setTextValue(event) {
     this.setState({ cohortName: event.target.value });
-  };
+  }
 
   handleClick() {
     var filter = this.props.filter;
