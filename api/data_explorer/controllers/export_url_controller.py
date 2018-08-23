@@ -70,7 +70,7 @@ def _check_preconditions():
         raise BadRequest(error_msg)
 
 
-def _get_entities_dict():
+def _get_entities_dict(cohortName, query):
     """Returns a dict representing the JSON list of entities."""
     # Saturn add-import expects a JSON list of entities, where each entity is
     # the entity JSON passed into
@@ -95,6 +95,15 @@ def _get_entities_dict():
                 'table_name': table_name
             }
         })
+    entities.append({
+        'entityType': 'Cohort',
+        'name': cohortName,
+        'attributes': {
+            'query': query
+        }
+    }
+
+    )
     return entities
 
 
@@ -133,33 +142,82 @@ def _create_signed_url(gcs_path):
     return signed_url
 
 
+def _get_clause(column, type, value):
+    if type == 'text':
+        clause = column + ' = "' + value + '"'
+    elif type == 'boolean':
+        clause = column + ' =' + value
+    else:
+        clause = _get_range_clause(column, value)
+    return clause
+
+
+def _get_range_clause(column, value):
+    arr = value.split('-')
+    if len(arr) > 1:
+        low = arr[0]
+        high = arr[1]
+    else:
+        return column + " = " + value
+    if low.endswith('M'):
+        low = int(low[:-1])
+        high = int(high[:-1])
+        low = low * 1000000
+        high = high * 1000000
+    elif low.endswith('B'):
+        low = int(low[:-1])
+        high = int(high[:-1])
+        low = low * 1000000000
+        high = high * 1000000000
+    return column + " >= " + str(low) + " AND " + column + " < " + str(high)
+
+
 def _get_filter_query(filter):
     facets = current_app.config['UI_FACETS']
-    table_fields = {}
+    table_clauses = dict()
     for f in filter:
         arr = f.split('=')
-        ui_facet_name = arr[0]
+        facet = facets[arr[0]]
         filter_value = arr[1]
-        facet = facets[ui_facet_name]
-        current_app.logger.info("facet %s" % facet['name'])
-        es_field_name = facet['name']
-        arr = es_field_name.rsplit('.', 1)
+        arr = facet['name'].rsplit('.', 1)
         table_name = arr[0]
         column = arr[1]
-        if table_name in table_fields:
-            table_fields[table_name].append(column)
+        if table_name in table_clauses:
+            table_clauses[table_name].append(_get_clause(column, facet['type'], filter_value))
         else:
-            table_fields[table_name] = [column]
-    current_app.logger.info("table fields %s" % table_fields)
+            table_clauses[table_name] = [_get_clause(column, facet['type'], filter_value)]
+
+    table_selects = list()
+    primary_key = current_app.config['PRIMARY_KEY']
+    for table_name, clauses in table_clauses.iteritems():
+        table_select = "(SELECT %s FROM `%s` WHERE %s)"
+        where_clause = ""
+        for c in clauses:
+            if len(where_clause) > 0:
+                where_clause = where_clause + " AND "
+            where_clause = where_clause + c
+        table_selects.append(table_select % (primary_key, table_name, where_clause))
+
+    query = "SELECT DISTINCT t1.%s FROM " % primary_key
+    cnt = 1
+    for table_select in table_selects:
+        table = "%s t%d" % (table_select, cnt)
+        join = " INNER_JOIN %s ON t%d.%s = t%d.%s"
+        if cnt > 1:
+            query = query + join % (table, cnt-1, primary_key, cnt, primary_key)
+        else:
+            query = query + table
+    current_app.logger.info("Final query %s" % query)
+    return query
 
 
 def export_url_post():  # noqa: E501
     _check_preconditions()
-    entities = _get_entities_dict()
-    current_app.logger.info('Entity JSON: %s' % json.dumps(entities))
     data = json.loads(request.data)
     query = _get_filter_query(data['filter'])
     cohortname = data['cohortName']
+    entities = _get_entities_dict(cohortname, query)
+    current_app.logger.info('Entity JSON: %s' % json.dumps(entities))
     # Don't actually write GCS file during unit test. If we wrote a file during
     # unit test, in order to make it easy for anyone to run this test, we would
     # have to create a world-readable bucket.

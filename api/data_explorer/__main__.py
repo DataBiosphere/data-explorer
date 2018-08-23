@@ -236,15 +236,17 @@ def _process_facets():
         field_type = _get_field_type(es, field_name)
         ui_facet_name = facet_config['ui_facet_name']
 
-        ui_facets[ui_facet_name] = {'name' : field_name}
+        ui_facets[ui_facet_name] = {'name': field_name, 'type': field_type}
         if 'ui_facet_description' in facet_config:
-            ui_facets[ui_facet_name]['description'] = facet_config['ui_facet_description']
+            ui_facets[ui_facet_name]['description'] = facet_config[
+                'ui_facet_description']
 
         if field_type == 'text':
             # Use ".keyword" because we want aggregation on keyword field, not
             # term field. See
             # https://www.elastic.co/guide/en/elasticsearch/reference/6.2/fielddata.html#before-enabling-fielddata
-            es_facets[ui_facet_name] = TermsFacet(field=field_name + '.keyword')
+            es_facets[ui_facet_name] = TermsFacet(field=field_name +
+                                                  '.keyword')
         elif field_type == 'boolean':
             es_facets[ui_facet_name] = TermsFacet(field=field_name)
         else:
@@ -266,7 +268,7 @@ def _process_facets():
     app.app.config['UI_FACETS'] = ui_facets
 
 
-def _get_table_names():
+def _process_bigquery_data():
     """Gets an alphabetically ordered list of table names from bigquery.json.
     Table names are fully qualified: <project id>.<dataset id>.<table name>
     If bigquery.json doesn't exist, this returns an empty list.
@@ -274,10 +276,14 @@ def _get_table_names():
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                'bigquery.json')
     table_names = []
+    primary_key = ""
     if os.path.isfile(config_path):
-        table_names = _parse_json_file(config_path)['table_names']
+        bigquery_data = _parse_json_file(config_path)
+        table_names = bigquery_data['table_names']
+        primary_key = bigquery_data['primary_key']
         table_names.sort()
-    return table_names
+    app.app.config['TABLE_NAMES'] = table_names
+    app.app.config['PRIMARY_KEY'] = primary_key
 
 
 def _get_export_url_info():
@@ -341,7 +347,7 @@ def init():
     app.app.config['INDEX_NAME'] = _convert_to_index_name(_get_dataset_name())
     init_elasticsearch()
     _process_facets()
-    app.app.config['TABLE_NAMES'] = _get_table_names()
+    _process_bigquery_data()
     app.app.config['AUTHORIZATION_DOMAIN'], app.app.config[
         'DEPLOY_PROJECT_ID'], app.app.config[
             'EXPORT_URL_GCS_BUCKET'] = _get_export_url_info()
