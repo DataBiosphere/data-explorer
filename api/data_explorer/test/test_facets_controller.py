@@ -35,7 +35,10 @@ class TestFacetsController(BaseTestCase):
         app.config.update({
             'INDEX_NAME': 'index_name',
             'UI_FACETS': {
-                'Region': {'description' : 'Region description', 'name' : 'Region name'}
+                'Region': {
+                    'description': 'Region description',
+                    'name': 'Region name'
+                }
             },
             'ELASTICSEARCH_FACETS': {
                 'Region': TermsFacet(field='Region.keyword')
