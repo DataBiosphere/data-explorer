@@ -45,7 +45,7 @@ jobs:
           command: |
               # Some files are missing because of .gitignore
               touch dataset_config/1000_genomes/deploy.json
-              touch api/data_explorer/private-key.json
+              touch dataset_config/1000_genomes/private-key.json
               pip install tox
               cd api
               tox

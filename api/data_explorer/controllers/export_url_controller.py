@@ -29,8 +29,6 @@ from data_explorer.models.export_url_response import ExportUrlResponse  # noqa: 
 # - User is redirected to selected workspace Data tab, showing newly imported
 #   entities.
 
-PRIVATE_KEY_PATH = os.path.join(os.getcwd(), 'data_explorer/private-key.json')
-
 
 def _check_preconditions():
     config_path = os.path.join(current_app.config['DATASET_CONFIG_DIR'],
@@ -60,7 +58,9 @@ def _check_preconditions():
         current_app.logger.error(error_msg)
         raise BadRequest(error_msg)
 
-    if not os.path.isfile(PRIVATE_KEY_PATH):
+    private_key_path = os.path.join(current_app.config['DATASET_CONFIG_DIR'],
+                                    'private-key.json')
+    if not os.path.isfile(private_key_path):
         error_msg = (
             'Private key not found. Export to Saturn feature will not work. '
             'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
@@ -114,7 +114,9 @@ def _write_gcs_file(entities):
 
 
 def _create_signed_url(gcs_path):
-    creds = ServiceAccountCredentials.from_json_keyfile_name(PRIVATE_KEY_PATH)
+    private_key_path = os.path.join(current_app.config['DATASET_CONFIG_DIR'],
+                                    'private-key.json')
+    creds = ServiceAccountCredentials.from_json_keyfile_name(private_key_path)
     service_account_email = current_app.config['DEPLOY_PROJECT_ID'] + '@appspot.gserviceaccount.com'
     # Signed URL will be valid for 5 minutes
     timestamp = str(int(time.time()) + 5 * 60)

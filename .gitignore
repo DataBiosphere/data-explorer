@@ -3,7 +3,7 @@ dataset_config/*
 !dataset_config/template
 !dataset_config/1000_genomes
 dataset_config/1000_genomes/deploy.json
-api/data_explorer/private-key.json
+dataset_config/1000_genomes/private-key.json
 
 api/app.yaml
 
