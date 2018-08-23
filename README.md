@@ -117,7 +117,7 @@ the directory in `dataset_config`.
 * The Export to Saturn feature creates a signed URL, which requires a service
 account private key. Follow these instructions (["Generate a new private key"](https://cloud.google.com/storage/docs/access-control/create-signed-urls-program#signing-language))
 to create the private key. Select the App Engine default service account.
-Store the key in `api/data_explorer/private-key.json`.
+Store the key in `dataset_config/DATASET/private-key.json`.
 
 ### Testing
 
