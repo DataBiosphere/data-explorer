@@ -110,8 +110,6 @@ class ExportFab extends React.Component {
     let params = new Object();
     params.cohortName = cohortName;
     params.filter = filter;
-    console.log("in export fab");
-    console.log(params);
     this.props.exportUrlApi.exportUrlPost(exportUrlCallback, params);
   }
 }
