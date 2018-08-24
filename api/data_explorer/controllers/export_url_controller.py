@@ -61,6 +61,7 @@ def _check_preconditions():
 
     private_key_path = os.path.join(current_app.config['DATASET_CONFIG_DIR'],
                                     'private-key.json')
+    current_app.logger.info(private_key_path)
     if not os.path.isfile(private_key_path):
         error_msg = (
             'Private key not found. Export to Saturn feature will not work. '

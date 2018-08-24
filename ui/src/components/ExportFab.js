@@ -97,11 +97,12 @@ class ExportFab extends React.Component {
       if (error) {
         alert(error.response.body.detail);
       } else {
-        let importUrl = "https://bvdp-saturn-prod.appspot.com/#import-data?format=entitiesJson";
+        let importUrl =
+          "https://bvdp-saturn-prod.appspot.com/#import-data?format=entitiesJson";
         if (data.authorization_domain) {
           importUrl += "&ad=" + data.authorization_domain;
         }
-        importUrl += "&url=" + data.url
+        importUrl += "&url=" + data.url;
         window.location.assign(importUrl);
       }
     }.bind(this);
@@ -110,7 +111,10 @@ class ExportFab extends React.Component {
     let params = new Object();
     params.cohortName = cohortName;
     params.filter = filter;
-    this.props.exportUrlApi.exportUrlPost(exportUrlCallback, params);
+    this.props.exportUrlApi.exportUrlPost(
+      { cohortname: params },
+      exportUrlCallback
+    );
   }
 }
 

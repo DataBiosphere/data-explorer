@@ -220,8 +220,7 @@ export default class ApiClient {
         }
       }
     }
-    console.log("newparams");
-    console.log(newParams);
+
     return newParams;
   }
 
@@ -415,8 +414,6 @@ export default class ApiClient {
     }
 
     request.query(this.normalizeParams(queryParams));
-    console.log("query");
-    console.log(request.query);
 
     // set header parameters
     request.set(this.defaultHeaders).set(this.normalizeParams(headerParams));

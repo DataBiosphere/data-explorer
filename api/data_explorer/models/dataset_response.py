@@ -21,9 +21,13 @@ class DatasetResponse(Model):
         :param name: The name of this DatasetResponse.  # noqa: E501
         :type name: str
         """
-        self.swagger_types = {'name': str}
+        self.swagger_types = {
+            'name': str
+        }
 
-        self.attribute_map = {'name': 'name'}
+        self.attribute_map = {
+            'name': 'name'
+        }
 
         self._name = name
 

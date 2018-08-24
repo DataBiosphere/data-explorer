@@ -56,14 +56,11 @@ paths:
         \ may be called with the JSON as the POST body.\n"
       operationId: "export_url_post"
       parameters:
-      - name: "cohortname"
-        in: "query"
-        type: "string"
+      - in: "body"
+        name: "cohortname"
         required: false
-      - name: "filter"
-        in: "query"
-        type: "string"
-        required: false
+        schema:
+          $ref: "#/definitions/cohortname"
       responses:
         200:
           description: "Success"
@@ -152,3 +149,12 @@ definitions:
     example:
       authorization_domain: "authorization_domain"
       url: "url"
+  cohortname:
+    type: "object"
+    properties:
+      cohortname:
+        type: "string"
+      filter:
+        type: "array"
+        items:
+          type: "string"
