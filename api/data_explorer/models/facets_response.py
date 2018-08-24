@@ -24,15 +24,9 @@ class FacetsResponse(Model):
         :param count: The count of this FacetsResponse.  # noqa: E501
         :type count: int
         """
-        self.swagger_types = {
-            'facets': List[Facet],
-            'count': int
-        }
+        self.swagger_types = {'facets': List[Facet], 'count': int}
 
-        self.attribute_map = {
-            'facets': 'facets',
-            'count': 'count'
-        }
+        self.attribute_map = {'facets': 'facets', 'count': 'count'}
 
         self._facets = facets
         self._count = count

@@ -23,15 +23,9 @@ class Cohortname(Model):
         :param filter: The filter of this Cohortname.  # noqa: E501
         :type filter: List[str]
         """
-        self.swagger_types = {
-            'cohortname': str,
-            'filter': List[str]
-        }
+        self.swagger_types = {'cohortname': str, 'filter': List[str]}
 
-        self.attribute_map = {
-            'cohortname': 'cohortname',
-            'filter': 'filter'
-        }
+        self.attribute_map = {'cohortname': 'cohortname', 'filter': 'filter'}
 
         self._cohortname = cohortname
         self._filter = filter
