@@ -38,9 +38,9 @@ export default class Cohortname {
     if (data) {
       obj = obj || new Cohortname();
 
-      if (data.hasOwnProperty("cohortname")) {
-        obj["cohortname"] = ApiClient.convertToType(
-          data["cohortname"],
+      if (data.hasOwnProperty("cohortName")) {
+        obj["cohortName"] = ApiClient.convertToType(
+          data["cohortName"],
           "String"
         );
       }
@@ -52,9 +52,9 @@ export default class Cohortname {
   }
 
   /**
-   * @member {String} cohortname
+   * @member {String} cohortName
    */
-  cohortname = undefined;
+  cohortName = undefined;
   /**
    * @member {Array.<String>} filter
    */

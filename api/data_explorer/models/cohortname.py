@@ -15,19 +15,19 @@ class Cohortname(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, cohortname=None, filter=None):  # noqa: E501
+    def __init__(self, cohort_name=None, filter=None):  # noqa: E501
         """Cohortname - a model defined in Swagger
 
-        :param cohortname: The cohortname of this Cohortname.  # noqa: E501
-        :type cohortname: str
+        :param cohort_name: The cohort_name of this Cohortname.  # noqa: E501
+        :type cohort_name: str
         :param filter: The filter of this Cohortname.  # noqa: E501
         :type filter: List[str]
         """
-        self.swagger_types = {'cohortname': str, 'filter': List[str]}
+        self.swagger_types = {'cohort_name': str, 'filter': List[str]}
 
-        self.attribute_map = {'cohortname': 'cohortname', 'filter': 'filter'}
+        self.attribute_map = {'cohort_name': 'cohortName', 'filter': 'filter'}
 
-        self._cohortname = cohortname
+        self._cohort_name = cohort_name
         self._filter = filter
 
     @classmethod
@@ -42,25 +42,25 @@ class Cohortname(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def cohortname(self):
-        """Gets the cohortname of this Cohortname.
+    def cohort_name(self):
+        """Gets the cohort_name of this Cohortname.
 
 
-        :return: The cohortname of this Cohortname.
+        :return: The cohort_name of this Cohortname.
         :rtype: str
         """
-        return self._cohortname
+        return self._cohort_name
 
-    @cohortname.setter
-    def cohortname(self, cohortname):
-        """Sets the cohortname of this Cohortname.
+    @cohort_name.setter
+    def cohort_name(self, cohort_name):
+        """Sets the cohort_name of this Cohortname.
 
 
-        :param cohortname: The cohortname of this Cohortname.
-        :type cohortname: str
+        :param cohort_name: The cohort_name of this Cohortname.
+        :type cohort_name: str
         """
 
-        self._cohortname = cohortname
+        self._cohort_name = cohort_name
 
     @property
     def filter(self):

@@ -37,6 +37,7 @@ class TestFacetsController(BaseTestCase):
             'UI_FACETS': {
                 'Region': {
                     'description': 'Region description',
+                    'type': 'text',
                     'name': 'Region name'
                 }
             },
@@ -72,7 +73,10 @@ class TestFacetsController(BaseTestCase):
         self.maxDiff = 2000
         self.app.config.update({
             'UI_FACETS': {
-                'Age': None
+                'Age': {
+                    'type': 'text',
+                    'name': 'Age name'
+                }
             },
             'ELASTICSEARCH_FACETS': {
                 'Age': HistogramFacet(field='Age', interval=10)

@@ -15,12 +15,26 @@ class TestExportUrlController(BaseTestCase):
             'project_id',
             'EXPORT_URL_GCS_BUCKET':
             'bucket',
-            'TABLE_NAMES': ['project_id.dataset_id.table_name']
+            'TABLE_NAMES': ['project_id.dataset_id.table_name'],
+            'PRIMARY_KEY':
+            "primary_key",
+            'UI_FACETS': {
+                'Age': {
+                    'type': 'text',
+                    'name': 'project_id.dataset_id.table_name.Age'
+                }
+            }
         })
         return app
 
     def test_export_url_post(self):
-        response = self.client.post('/exportUrl')
+        response = self.client.post(
+            '/exportUrl',
+            data=json.dumps({
+                'cohortName': 'test',
+                'filter': ['Age=34']
+            }),
+            content_type='application/json')
         self.assert200(response)
 
 

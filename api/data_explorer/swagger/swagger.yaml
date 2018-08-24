@@ -152,7 +152,7 @@ definitions:
   cohortname:
     type: "object"
     properties:
-      cohortname:
+      cohortName:
         type: "string"
       filter:
         type: "array"
