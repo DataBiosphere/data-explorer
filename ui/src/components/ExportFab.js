@@ -108,6 +108,12 @@ class ExportFab extends React.Component {
     }.bind(this);
     let cohortName = this.state.cohortName;
     let filter = this.props.filter;
+    if (filter == null) {
+      filter = [];
+    }
+    if (cohortName == null) {
+      cohortName = "";
+    }
     let params = new Object();
     params.cohortName = cohortName;
     params.filter = filter;

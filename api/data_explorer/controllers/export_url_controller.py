@@ -96,13 +96,14 @@ def _get_entities_dict(cohortName, query):
                 'table_name': table_name
             }
         })
-    entities.append({
-        'entityType': 'Cohort',
-        'name': cohortName,
-        'attributes': {
-            'query': query
-        }
-    })
+    if query != "" and cohortName != "":
+        entities.append({
+            'entityType': 'Cohort',
+            'name': cohortName,
+            'attributes': {
+                'query': query
+            }
+        })
     return entities
 
 
@@ -172,6 +173,8 @@ def _get_range_clause(column, value):
 
 
 def _get_filter_query(filter):
+    if filter is None or len(filter) == 0:
+        return ""
     facets = current_app.config['UI_FACETS']
     table_clauses = dict()
     for f in filter:
@@ -218,6 +221,7 @@ def _get_filter_query(filter):
 def export_url_post():  # noqa: E501
     _check_preconditions()
     data = json.loads(request.data)
+    current_app.logger.info('Request data %s' % request.data)
     query = _get_filter_query(data['filter'])
     cohortname = data['cohortName']
     entities = _get_entities_dict(cohortname, query)
