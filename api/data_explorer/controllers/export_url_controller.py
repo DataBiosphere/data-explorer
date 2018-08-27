@@ -164,12 +164,19 @@ def _get_range_clause(column, value):
         high = int(high[:-1])
         low = low * 1000000
         high = high * 1000000
+        # For the million and billion ranges, there is overlap between the ranges.
+        # So we don't include the upper end of the range.
+        return column + " >= " + str(low) + " AND " + column + " < " + str(high)
     elif low.endswith('B'):
         low = int(low[:-1])
         high = int(high[:-1])
         low = low * 1000000000
         high = high * 1000000000
-    return column + " >= " + str(low) + " AND " + column + " < " + str(high)
+        return column + " >= " + str(low) + " AND " + column + " < " + str(high)
+
+    # For the ordinary ranges, there is no overlap between the ranges.
+    # So we include the upper end of the range. 
+    return column + " >= " + str(low) + " AND " + column + " <= " + str(high)
 
 
 def _get_filter_query(filter):
@@ -208,12 +215,13 @@ def _get_filter_query(filter):
     cnt = 1
     for table_select in table_selects:
         table = "%s t%d" % (table_select, cnt)
-        join = " INNER_JOIN %s ON t%d.%s = t%d.%s"
+        join = " INNER JOIN %s ON t%d.%s = t%d.%s"
         if cnt > 1:
             query = query + join % (table, cnt - 1, primary_key, cnt,
                                     primary_key)
         else:
             query = query + table
+        cnt = cnt + 1
     current_app.logger.info("Final query %s" % query)
     return query
 
