@@ -63,6 +63,7 @@ def main():
             # https://github.com/taskrabbit/elasticsearch-dump#dump-format
             record = json.loads(line)
             action = {
+                '_id': record['_id'],
                 '_index': INDEX_NAME,
                 '_type': 'type',
                 '_source': record['_source'],
