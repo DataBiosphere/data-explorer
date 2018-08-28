@@ -165,7 +165,9 @@ def _get_range_clause(column, value):
 
 
 def _get_clause(column, type, value):
-    """Returns a single condition of a WHERE clause, eg "gender = female, male"."""
+    """Returns a single condition of a WHERE clause,
+    eg "((age76 >= 20 AND age76 < 30) OR (age76 >= 30 AND age76 < 40))".
+    """
     if type == 'text':
         clause = column + ' = "' + value + '"'
     elif type == 'boolean':
