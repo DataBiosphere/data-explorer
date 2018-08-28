@@ -102,7 +102,7 @@ class TestFacetsController(BaseTestCase):
 
         _inner(.1, .1, '0.1-0.2')
         _inner(1, 1, '1')
-        _inner(10, 10, '10-19')
+        _inner(10, 10, '10-20')
         _inner(10000000, 10000000, '10M-20M')
 
     def test_range_to_number(self):
@@ -112,7 +112,7 @@ class TestFacetsController(BaseTestCase):
 
         _inner('0.1-0.2', 0.1)
         _inner('1', 1)
-        _inner('10-19', 10)
+        _inner('10-20', 10)
         _inner('10M-20M', 10000000)
 
 
