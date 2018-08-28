@@ -20,8 +20,10 @@ class TestExportUrlController(BaseTestCase):
             "primary_key",
             'UI_FACETS': {
                 'Age': {
-                    'type': 'text',
-                    'elasticsearch_field_name': 'project_id.dataset_id.table_name.Age'
+                    'type':
+                    'text',
+                    'elasticsearch_field_name':
+                    'project_id.dataset_id.table_name.Age'
                 }
             }
         })
