@@ -13,6 +13,6 @@ client = Elasticsearch([ES_URL])
 fp = open(OUTPUT_FILE, 'w')
 for row in scan(client, query={}, index=INDEX, doc_type=DOC_TYPE):
     json.dump(row, fp)
-    fp.write("\n")
+    fp.write('\n')
 
 fp.close()
