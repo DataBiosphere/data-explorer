@@ -142,27 +142,6 @@ def _get_dataset_name():
     return _parse_json_file(config_path)['name']
 
 
-def _get_ui_facets():
-    """Returns a dict from UI facet name to UI facet description.
-    If there is no description for a facet, the value is None.
-    """
-    config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'], 'ui.json')
-    facets_config = _parse_json_file(config_path)['facets']
-
-    # Preserve order, so facets are returned in same order as the config file.
-    facets = OrderedDict()
-
-    for facet_config in facets_config:
-        if 'ui_facet_description' in facet_config:
-            facets[facet_config['ui_facet_name']] = facet_config[
-                'ui_facet_description']
-        else:
-            facets[facet_config['ui_facet_name']] = None
-
-    app.app.logger.info('UI facets: %s' % facets)
-    return facets
-
-
 def _get_field_type(es, field_name):
     # elasticsearch_dsl.Mapping, which gets mappings for all fields, would be
     # easier, but we can't use it.
@@ -238,26 +217,43 @@ def _get_interval(max_field_value):
         return 1000000000000
 
 
-def _get_es_facets():
-    """Returns a dict from UI facet name to Elasticsearch facet object."""
+def _process_facets():
+    """Process facets to store a dict from UI facet name to UI facet description
+    ,Elasticsearch field name, and field type, and a dict of UI facet name to
+    Elasticsearch facet object. If there is no description for a facet,
+    the value is None.
+    """
+
     es = Elasticsearch(app.app.config['ELASTICSEARCH_URL'])
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'], 'ui.json')
     facets_config = _parse_json_file(config_path)['facets']
 
     # Preserve order, so facets are returned in same order as the config file.
-    facets = OrderedDict()
+    es_facets = OrderedDict()
+    ui_facets = OrderedDict()
 
     for facet_config in facets_config:
-        field_name = facet_config['elasticsearch_field_name']
-        field_type = _get_field_type(es, field_name)
+        elasticsearch_field_name = facet_config['elasticsearch_field_name']
+        field_type = _get_field_type(es, elasticsearch_field_name)
         ui_facet_name = facet_config['ui_facet_name']
+
+        ui_facets[ui_facet_name] = {
+            'elasticsearch_field_name': elasticsearch_field_name,
+            'type': field_type
+        }
+        if 'ui_facet_description' in facet_config:
+            ui_facets[ui_facet_name]['description'] = facet_config[
+                'ui_facet_description']
+
         if field_type == 'text':
             # Use ".keyword" because we want aggregation on keyword field, not
             # term field. See
             # https://www.elastic.co/guide/en/elasticsearch/reference/6.2/fielddata.html#before-enabling-fielddata
-            facets[ui_facet_name] = TermsFacet(field=field_name + '.keyword')
+            es_facets[ui_facet_name] = TermsFacet(
+                field=elasticsearch_field_name + '.keyword')
         elif field_type == 'boolean':
-            facets[ui_facet_name] = TermsFacet(field=field_name)
+            es_facets[ui_facet_name] = TermsFacet(
+                field=elasticsearch_field_name)
         else:
             # Assume numeric type.
             # Creating this facet is a two-step process.
@@ -267,14 +263,19 @@ def _get_es_facets():
             # TODO: When https://github.com/elastic/elasticsearch/issues/31828
             # is fixed, use AutoHistogramFacet instead. Will no longer need 2
             # steps.
-            max_field_value = _get_max_field_value(es, field_name)
-            facets[ui_facet_name] = HistogramFacet(
-                field=field_name, interval=_get_interval(max_field_value))
-    app.app.logger.info('Elasticsearch facets: %s' % facets)
-    return facets
+            max_field_value = _get_max_field_value(es,
+                                                   elasticsearch_field_name)
+            es_facets[ui_facet_name] = HistogramFacet(
+                field=elasticsearch_field_name,
+                interval=_get_interval(max_field_value))
+
+    app.app.logger.info('Elasticsearch facets: %s' % es_facets)
+    app.app.config['ELASTICSEARCH_FACETS'] = es_facets
+    app.app.logger.info('UI facets: %s' % ui_facets)
+    app.app.config['UI_FACETS'] = ui_facets
 
 
-def _get_table_names():
+def _process_bigquery_config():
     """Gets an alphabetically ordered list of table names from bigquery.json.
     Table names are fully qualified: <project id>.<dataset id>.<table name>
     If bigquery.json doesn't exist, this returns an empty list.
@@ -282,10 +283,14 @@ def _get_table_names():
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                'bigquery.json')
     table_names = []
+    primary_key = ""
     if os.path.isfile(config_path):
-        table_names = _parse_json_file(config_path)['table_names']
+        bigquery_config = _parse_json_file(config_path)
+        table_names = bigquery_config['table_names']
+        primary_key = bigquery_config['primary_key']
         table_names.sort()
-    return table_names
+    app.app.config['TABLE_NAMES'] = table_names
+    app.app.config['PRIMARY_KEY'] = primary_key
 
 
 def _get_export_url_info():
@@ -348,9 +353,8 @@ def init():
     app.app.config['DATASET_NAME'] = _get_dataset_name()
     app.app.config['INDEX_NAME'] = _convert_to_index_name(_get_dataset_name())
     init_elasticsearch()
-    app.app.config['UI_FACETS'] = _get_ui_facets()
-    app.app.config['ELASTICSEARCH_FACETS'] = _get_es_facets()
-    app.app.config['TABLE_NAMES'] = _get_table_names()
+    _process_facets()
+    _process_bigquery_config()
     app.app.config['AUTHORIZATION_DOMAIN'], app.app.config[
         'DEPLOY_PROJECT_ID'], app.app.config[
             'EXPORT_URL_GCS_BUCKET'] = _get_export_url_info()

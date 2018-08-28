@@ -20,6 +20,7 @@ class ExportFab extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
+    this.setTextValue = this.setTextValue.bind(this);
   }
 
   render() {
@@ -50,6 +51,7 @@ class ExportFab extends React.Component {
             <DialogContent>
               <TextField
                 autoFocus
+                onChange={this.setTextValue}
                 margin="dense"
                 id="name"
                 label="Cohort Name"
@@ -72,6 +74,10 @@ class ExportFab extends React.Component {
     );
   }
 
+  setTextValue(event) {
+    this.setState({ cohortName: event.target.value });
+  }
+
   handleClick() {
     var filter = this.props.filter;
     if (filter != null && filter.length > 0) {
@@ -91,15 +97,30 @@ class ExportFab extends React.Component {
       if (error) {
         alert(error.response.body.detail);
       } else {
-        let importUrl = "https://bvdp-saturn-prod.appspot.com/#import-data?format=entitiesJson";
+        let importUrl =
+          "https://bvdp-saturn-prod.appspot.com/#import-data?format=entitiesJson";
         if (data.authorization_domain) {
           importUrl += "&ad=" + data.authorization_domain;
         }
-        importUrl += "&url=" + data.url
+        importUrl += "&url=" + data.url;
         window.location.assign(importUrl);
       }
     }.bind(this);
-    this.props.exportUrlApi.exportUrlPost(exportUrlCallback);
+    let cohortName = this.state.cohortName;
+    let filter = this.props.filter;
+    if (filter == null) {
+      filter = [];
+    }
+    if (cohortName == null) {
+      cohortName = "";
+    }
+    let params = new Object();
+    params.cohortName = cohortName;
+    params.filter = filter;
+    this.props.exportUrlApi.exportUrlPost(
+      { exportUrlRequest: params },
+      exportUrlCallback
+    );
   }
 }
 

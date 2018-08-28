@@ -35,7 +35,11 @@ class TestFacetsController(BaseTestCase):
         app.config.update({
             'INDEX_NAME': 'index_name',
             'UI_FACETS': {
-                'Region': 'Region description'
+                'Region': {
+                    'description': 'Region description',
+                    'type': 'text',
+                    'elasticsearch_field_name': 'Region name'
+                }
             },
             'ELASTICSEARCH_FACETS': {
                 'Region': TermsFacet(field='Region.keyword')
@@ -69,7 +73,10 @@ class TestFacetsController(BaseTestCase):
         self.maxDiff = 2000
         self.app.config.update({
             'UI_FACETS': {
-                'Age': None
+                'Age': {
+                    'type': 'text',
+                    'elasticsearch_field_name': 'Age name'
+                }
             },
             'ELASTICSEARCH_FACETS': {
                 'Age': HistogramFacet(field='Age', interval=10)
@@ -95,7 +102,7 @@ class TestFacetsController(BaseTestCase):
 
         _inner(.1, .1, '0.1-0.2')
         _inner(1, 1, '1')
-        _inner(10, 10, '10-19')
+        _inner(10, 10, '10-20')
         _inner(10000000, 10000000, '10M-20M')
 
     def test_range_to_number(self):
@@ -105,7 +112,7 @@ class TestFacetsController(BaseTestCase):
 
         _inner('0.1-0.2', 0.1)
         _inner('1', 1)
-        _inner('10-19', 10)
+        _inner('10-20', 10)
         _inner('10M-20M', 10000000)
 
 

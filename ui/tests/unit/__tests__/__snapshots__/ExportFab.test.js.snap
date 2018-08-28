@@ -30,6 +30,7 @@ exports[`Renders correctly 1`] = `
           id="name"
           label="Cohort Name"
           margin="dense"
+          onChange={[Function]}
           required={false}
           select={false}
           type="text"

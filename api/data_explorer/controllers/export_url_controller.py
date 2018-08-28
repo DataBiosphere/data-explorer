@@ -9,6 +9,7 @@ import sys
 import time
 import urllib
 
+from flask import request
 from flask import current_app
 from werkzeug.exceptions import BadRequest
 from google.cloud import storage
@@ -69,7 +70,7 @@ def _check_preconditions():
         raise BadRequest(error_msg)
 
 
-def _get_entities_dict():
+def _get_entities_dict(cohort_name, query):
     """Returns a dict representing the JSON list of entities."""
     # Saturn add-import expects a JSON list of entities, where each entity is
     # the entity JSON passed into
@@ -92,6 +93,14 @@ def _get_entities_dict():
             'name': table_name.replace('.', '_'),
             'attributes': {
                 'table_name': table_name
+            }
+        })
+    if query and cohort_name:
+        entities.append({
+            'entityType': 'cohort',
+            'name': cohort_name,
+            'attributes': {
+                'query': query
             }
         })
     return entities
@@ -132,11 +141,103 @@ def _create_signed_url(gcs_path):
     return signed_url
 
 
+def _get_range_clause(column, value):
+    arr = value.split('-')
+    if len(arr) > 1:
+        low = arr[0]
+        high = arr[1]
+    else:
+        return column + " = " + value
+    if low.endswith('M'):
+        low = int(low[:-1])
+        high = int(high[:-1])
+        low = low * 1000000
+        high = high * 1000000
+    elif low.endswith('B'):
+        low = int(low[:-1])
+        high = int(high[:-1])
+        low = low * 1000000000
+        high = high * 1000000000
+
+    # low is inclusive, high is exclusive
+    # See https://github.com/elastic/elasticsearch-dsl-py/blob/master/elasticsearch_dsl/faceted_search.py#L125
+    return column + " >= " + str(low) + " AND " + column + " < " + str(high)
+
+
+def _get_clause(column, type, value):
+    """Returns a single condition of a WHERE clause,
+    eg "((age76 >= 20 AND age76 < 30) OR (age76 >= 30 AND age76 < 40))".
+    """
+    if type == 'text':
+        clause = column + ' = "' + value + '"'
+    elif type == 'boolean':
+        clause = column + ' =' + value
+    else:
+        clause = _get_range_clause(column, value)
+    return clause
+
+
+def _get_filter_query(filters):
+    if not filters or not len(filters):
+        return ""
+    facets = current_app.config['UI_FACETS']
+    table_columns = dict()
+    for filter in filters:
+        arr = filter.split('=')
+        facet = facets[arr[0]]
+        filter_value = arr[1]
+        arr = facet['elasticsearch_field_name'].rsplit('.', 1)
+        table_name = arr[0]
+        column = arr[1]
+        clause = _get_clause(column, facet['type'], filter_value)
+        if table_name in table_columns:
+            if column in table_columns[table_name]:
+                table_columns[table_name][column].append(clause)
+            else:
+                table_columns[table_name][column] = [clause]
+        else:
+            table_columns[table_name] = {column: [clause]}
+
+    table_selects = list()
+    primary_key = current_app.config['PRIMARY_KEY']
+    for table_name, columns in table_columns.iteritems():
+        table_select = "(SELECT %s FROM `%s` WHERE %s)"
+        where_clause = ""
+        for column, clauses in columns.iteritems():
+            column_clause = ""
+            for clause in clauses:
+                if len(column_clause) > 0:
+                    column_clause = column_clause + " OR "
+                column_clause = column_clause + "(" + clause + ")"
+            if len(where_clause) > 0:
+                where_clause = where_clause + " AND "
+            where_clause = where_clause + "(" + column_clause + ")"
+        table_selects.append(
+            table_select % (primary_key, table_name, where_clause))
+
+    query = "SELECT DISTINCT t1.%s FROM " % primary_key
+    cnt = 1
+    for table_select in table_selects:
+        table = "%s t%d" % (table_select, cnt)
+        join = " INNER JOIN %s ON t%d.%s = t%d.%s"
+        if cnt > 1:
+            query = query + join % (table, cnt - 1, primary_key, cnt,
+                                    primary_key)
+        else:
+            query = query + table
+        cnt = cnt + 1
+    return query
+
+
 def export_url_post():  # noqa: E501
     _check_preconditions()
-    entities = _get_entities_dict()
+    data = json.loads(request.data)
+    current_app.logger.info('Export URL request data %s' % request.data)
+    query = _get_filter_query(data['filter'])
+    cohortname = data['cohortName']
+    cohortname = cohortname.replace(" ", "_")
+    entities = _get_entities_dict(cohortname, query)
     current_app.logger.info('Entity JSON: %s' % json.dumps(entities))
-
     # Don't actually write GCS file during unit test. If we wrote a file during
     # unit test, in order to make it easy for anyone to run this test, we would
     # have to create a world-readable bucket.
