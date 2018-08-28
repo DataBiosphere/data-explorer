@@ -165,7 +165,7 @@ def _get_range_clause(column, value):
 
 
 def _get_clause(column, type, value):
-    """Returns a single condition of a WHERE clause, eg "gender = female"."""
+    """Returns a single condition of a WHERE clause, eg "gender = female, male"."""
     if type == 'text':
         clause = column + ' = "' + value + '"'
     elif type == 'boolean':
@@ -179,7 +179,7 @@ def _get_filter_query(filters):
     if not filters or not len(filters):
         return ""
     facets = current_app.config['UI_FACETS']
-    table_clauses = dict()
+    table_columns = dict()
     for filter in filters:
         arr = filter.split('=')
         facet = facets[arr[0]]
@@ -187,23 +187,29 @@ def _get_filter_query(filters):
         arr = facet['elasticsearch_field_name'].rsplit('.', 1)
         table_name = arr[0]
         column = arr[1]
-        if table_name in table_clauses:
-            table_clauses[table_name].append(
-                _get_clause(column, facet['type'], filter_value))
+        clause = _get_clause(column, facet['type'], filter_value)
+        if table_name in table_columns:
+            if column in table_columns[table_name]:
+                table_columns[table_name][column].append(clause)
+            else:
+                table_columns[table_name][column] = [clause]
         else:
-            table_clauses[table_name] = [
-                _get_clause(column, facet['type'], filter_value)
-            ]
+            table_columns[table_name] = {column: [clause]}
 
     table_selects = list()
     primary_key = current_app.config['PRIMARY_KEY']
-    for table_name, clauses in table_clauses.iteritems():
+    for table_name, columns in table_columns.iteritems():
         table_select = "(SELECT %s FROM `%s` WHERE %s)"
         where_clause = ""
-        for clause in clauses:
+        for column, clauses in columns.iteritems():
+            column_clause = ""
+            for clause in clauses:
+                if len(column_clause) > 0:
+                    column_clause = column_clause + " OR "
+                column_clause = column_clause + "(" + clause + ")"
             if len(where_clause) > 0:
                 where_clause = where_clause + " AND "
-            where_clause = where_clause + clause
+            where_clause = where_clause + "(" + column_clause + ")"
         table_selects.append(
             table_select % (primary_key, table_name, where_clause))
 
