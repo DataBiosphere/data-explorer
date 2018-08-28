@@ -21,7 +21,7 @@ class TestExportUrlController(BaseTestCase):
             'UI_FACETS': {
                 'Age': {
                     'type': 'text',
-                    'name': 'project_id.dataset_id.table_name.Age'
+                    'elasticsearch_field_name': 'project_id.dataset_id.table_name.Age'
                 }
             }
         })

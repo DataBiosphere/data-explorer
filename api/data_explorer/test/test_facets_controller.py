@@ -38,7 +38,7 @@ class TestFacetsController(BaseTestCase):
                 'Region': {
                     'description': 'Region description',
                     'type': 'text',
-                    'name': 'Region name'
+                    'elasticsearch_field_name': 'Region name'
                 }
             },
             'ELASTICSEARCH_FACETS': {
@@ -75,7 +75,7 @@ class TestFacetsController(BaseTestCase):
             'UI_FACETS': {
                 'Age': {
                     'type': 'text',
-                    'name': 'Age name'
+                    'elasticsearch_field_name': 'Age name'
                 }
             },
             'ELASTICSEARCH_FACETS': {
