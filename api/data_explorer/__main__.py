@@ -218,8 +218,8 @@ def _get_interval(max_field_value):
 
 
 def _process_facets():
-    """Returns a dict from UI facet name to Elasticsearch facet object."""
-    """Returns a dict from UI facet name to UI facet description.
+    """Process facets to store a dict from UI facet name to UI facet description
+    and a dict of UI facet name to Elasticsearch facet object.
     If there is no description for a facet, the value is None.
     """
 
@@ -268,7 +268,7 @@ def _process_facets():
     app.app.config['UI_FACETS'] = ui_facets
 
 
-def _process_bigquery_data():
+def _process_bigquery_config():
     """Gets an alphabetically ordered list of table names from bigquery.json.
     Table names are fully qualified: <project id>.<dataset id>.<table name>
     If bigquery.json doesn't exist, this returns an empty list.
@@ -347,7 +347,7 @@ def init():
     app.app.config['INDEX_NAME'] = _convert_to_index_name(_get_dataset_name())
     init_elasticsearch()
     _process_facets()
-    _process_bigquery_data()
+    _process_bigquery_config()
     app.app.config['AUTHORIZATION_DOMAIN'], app.app.config[
         'DEPLOY_PROJECT_ID'], app.app.config[
             'EXPORT_URL_GCS_BUCKET'] = _get_export_url_info()
