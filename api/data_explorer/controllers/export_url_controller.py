@@ -61,7 +61,6 @@ def _check_preconditions():
 
     private_key_path = os.path.join(current_app.config['DATASET_CONFIG_DIR'],
                                     'private-key.json')
-    current_app.logger.info(private_key_path)
     if not os.path.isfile(private_key_path):
         error_msg = (
             'Private key not found. Export to Saturn feature will not work. '
@@ -71,7 +70,7 @@ def _check_preconditions():
         raise BadRequest(error_msg)
 
 
-def _get_entities_dict(cohortName, query):
+def _get_entities_dict(cohort_name, query):
     """Returns a dict representing the JSON list of entities."""
     # Saturn add-import expects a JSON list of entities, where each entity is
     # the entity JSON passed into
@@ -96,10 +95,10 @@ def _get_entities_dict(cohortName, query):
                 'table_name': table_name
             }
         })
-    if query != "" and cohortName != "":
+    if query and cohort_name:
         entities.append({
-            'entityType': 'Cohort',
-            'name': cohortName,
+            'entityType': 'cohort',
+            'name': cohort_name,
             'attributes': {
                 'query': query
             }
@@ -142,16 +141,6 @@ def _create_signed_url(gcs_path):
     return signed_url
 
 
-def _get_clause(column, type, value):
-    if type == 'text':
-        clause = column + ' = "' + value + '"'
-    elif type == 'boolean':
-        clause = column + ' =' + value
-    else:
-        clause = _get_range_clause(column, value)
-    return clause
-
-
 def _get_range_clause(column, value):
     arr = value.split('-')
     if len(arr) > 1:
@@ -164,28 +153,33 @@ def _get_range_clause(column, value):
         high = int(high[:-1])
         low = low * 1000000
         high = high * 1000000
-        # For the million and billion ranges, there is overlap between the ranges.
-        # So we don't include the upper end of the range.
-        return column + " >= " + str(low) + " AND " + column + " < " + str(high)
     elif low.endswith('B'):
         low = int(low[:-1])
         high = int(high[:-1])
         low = low * 1000000000
         high = high * 1000000000
-        return column + " >= " + str(low) + " AND " + column + " < " + str(high)
 
-    # For the ordinary ranges, there is no overlap between the ranges.
-    # So we include the upper end of the range. 
-    return column + " >= " + str(low) + " AND " + column + " <= " + str(high)
+    return column + " >= " + str(low) + " AND " + column + " < " + str(high)
 
 
-def _get_filter_query(filter):
-    if filter is None or len(filter) == 0:
+def _get_clause(column, type, value):
+    """Returns a single condition of a WHERE clause, eg "gender = female"."""
+    if type == 'text':
+        clause = column + ' = "' + value + '"'
+    elif type == 'boolean':
+        clause = column + ' =' + value
+    else:
+        clause = _get_range_clause(column, value)
+    return clause
+
+
+def _get_filter_query(filters):
+    if not filters or not len(filters):
         return ""
     facets = current_app.config['UI_FACETS']
     table_clauses = dict()
-    for f in filter:
-        arr = f.split('=')
+    for filter in filters:
+        arr = filter.split('=')
         facet = facets[arr[0]]
         filter_value = arr[1]
         arr = facet['name'].rsplit('.', 1)
@@ -204,10 +198,10 @@ def _get_filter_query(filter):
     for table_name, clauses in table_clauses.iteritems():
         table_select = "(SELECT %s FROM `%s` WHERE %s)"
         where_clause = ""
-        for c in clauses:
+        for clause in clauses:
             if len(where_clause) > 0:
                 where_clause = where_clause + " AND "
-            where_clause = where_clause + c
+            where_clause = where_clause + clause
         table_selects.append(
             table_select % (primary_key, table_name, where_clause))
 
@@ -222,7 +216,6 @@ def _get_filter_query(filter):
         else:
             query = query + table
         cnt = cnt + 1
-    current_app.logger.info("Final query %s" % query)
     return query
 
 
@@ -232,6 +225,7 @@ def export_url_post():  # noqa: E501
     current_app.logger.info('Request data %s' % request.data)
     query = _get_filter_query(data['filter'])
     cohortname = data['cohortName']
+    cohortname = cohortname.replace(" ", "_")
     entities = _get_entities_dict(cohortname, query)
     current_app.logger.info('Entity JSON: %s' % json.dumps(entities))
     # Don't actually write GCS file during unit test. If we wrote a file during
