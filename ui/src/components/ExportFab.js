@@ -118,7 +118,7 @@ class ExportFab extends React.Component {
     params.cohortName = cohortName;
     params.filter = filter;
     this.props.exportUrlApi.exportUrlPost(
-      { cohortname: params },
+      { exportUrlRequest: params },
       exportUrlCallback
     );
   }
