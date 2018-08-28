@@ -14,29 +14,29 @@
 import ApiClient from "../ApiClient";
 
 /**
- * The Cohortname model module.
- * @module model/Cohortname
+ * The ExportUrlRequest model module.
+ * @module model/ExportUrlRequest
  * @version 0.0.1
  */
-export default class Cohortname {
+export default class ExportUrlRequest {
   /**
-   * Constructs a new <code>Cohortname</code>.
-   * @alias module:model/Cohortname
+   * Constructs a new <code>ExportUrlRequest</code>.
+   * @alias module:model/ExportUrlRequest
    * @class
    */
 
   constructor() {}
 
   /**
-   * Constructs a <code>Cohortname</code> from a plain JavaScript object, optionally creating a new instance.
+   * Constructs a <code>ExportUrlRequest</code> from a plain JavaScript object, optionally creating a new instance.
    * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
    * @param {Object} data The plain JavaScript object bearing properties of interest.
-   * @param {module:model/Cohortname} obj Optional instance to populate.
-   * @return {module:model/Cohortname} The populated <code>Cohortname</code> instance.
+   * @param {module:model/ExportUrlRequest} obj Optional instance to populate.
+   * @return {module:model/ExportUrlRequest} The populated <code>ExportUrlRequest</code> instance.
    */
   static constructFromObject(data, obj) {
     if (data) {
-      obj = obj || new Cohortname();
+      obj = obj || new ExportUrlRequest();
 
       if (data.hasOwnProperty("cohortName")) {
         obj["cohortName"] = ApiClient.convertToType(

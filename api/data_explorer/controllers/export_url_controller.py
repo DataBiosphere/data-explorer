@@ -159,6 +159,8 @@ def _get_range_clause(column, value):
         low = low * 1000000000
         high = high * 1000000000
 
+    # low is inclusive, high is exclusive
+    # See https://github.com/elastic/elasticsearch-dsl-py/blob/master/elasticsearch_dsl/faceted_search.py#L125
     return column + " >= " + str(low) + " AND " + column + " < " + str(high)
 
 
@@ -182,7 +184,7 @@ def _get_filter_query(filters):
         arr = filter.split('=')
         facet = facets[arr[0]]
         filter_value = arr[1]
-        arr = facet['name'].rsplit('.', 1)
+        arr = facet['elasticsearch_field_name'].rsplit('.', 1)
         table_name = arr[0]
         column = arr[1]
         if table_name in table_clauses:
@@ -222,7 +224,7 @@ def _get_filter_query(filters):
 def export_url_post():  # noqa: E501
     _check_preconditions()
     data = json.loads(request.data)
-    current_app.logger.info('Request data %s' % request.data)
+    current_app.logger.info('Export URL request data %s' % request.data)
     query = _get_filter_query(data['filter'])
     cohortname = data['cohortName']
     cohortname = cohortname.replace(" ", "_")

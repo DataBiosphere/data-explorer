@@ -219,8 +219,9 @@ def _get_interval(max_field_value):
 
 def _process_facets():
     """Process facets to store a dict from UI facet name to UI facet description
-    and a dict of UI facet name to Elasticsearch facet object.
-    If there is no description for a facet, the value is None.
+    ,Elasticsearch field name, and field type, and a dict of UI facet name to
+    Elasticsearch facet object. If there is no description for a facet,
+    the value is None.
     """
 
     es = Elasticsearch(app.app.config['ELASTICSEARCH_URL'])
@@ -232,11 +233,14 @@ def _process_facets():
     ui_facets = OrderedDict()
 
     for facet_config in facets_config:
-        field_name = facet_config['elasticsearch_field_name']
-        field_type = _get_field_type(es, field_name)
+        elasticsearch_field_name = facet_config['elasticsearch_field_name']
+        field_type = _get_field_type(es, elasticsearch_field_name)
         ui_facet_name = facet_config['ui_facet_name']
 
-        ui_facets[ui_facet_name] = {'name': field_name, 'type': field_type}
+        ui_facets[ui_facet_name] = {
+            'elasticsearch_field_name': elasticsearch_field_name,
+            'type': field_type
+        }
         if 'ui_facet_description' in facet_config:
             ui_facets[ui_facet_name]['description'] = facet_config[
                 'ui_facet_description']
@@ -245,10 +249,11 @@ def _process_facets():
             # Use ".keyword" because we want aggregation on keyword field, not
             # term field. See
             # https://www.elastic.co/guide/en/elasticsearch/reference/6.2/fielddata.html#before-enabling-fielddata
-            es_facets[ui_facet_name] = TermsFacet(field=field_name +
-                                                  '.keyword')
+            es_facets[ui_facet_name] = TermsFacet(
+                field=elasticsearch_field_name + '.keyword')
         elif field_type == 'boolean':
-            es_facets[ui_facet_name] = TermsFacet(field=field_name)
+            es_facets[ui_facet_name] = TermsFacet(
+                field=elasticsearch_field_name)
         else:
             # Assume numeric type.
             # Creating this facet is a two-step process.
@@ -258,9 +263,11 @@ def _process_facets():
             # TODO: When https://github.com/elastic/elasticsearch/issues/31828
             # is fixed, use AutoHistogramFacet instead. Will no longer need 2
             # steps.
-            max_field_value = _get_max_field_value(es, field_name)
+            max_field_value = _get_max_field_value(es,
+                                                   elasticsearch_field_name)
             es_facets[ui_facet_name] = HistogramFacet(
-                field=field_name, interval=_get_interval(max_field_value))
+                field=elasticsearch_field_name,
+                interval=_get_interval(max_field_value))
 
     app.app.logger.info('Elasticsearch facets: %s' % es_facets)
     app.app.config['ELASTICSEARCH_FACETS'] = es_facets
@@ -278,9 +285,9 @@ def _process_bigquery_config():
     table_names = []
     primary_key = ""
     if os.path.isfile(config_path):
-        bigquery_data = _parse_json_file(config_path)
-        table_names = bigquery_data['table_names']
-        primary_key = bigquery_data['primary_key']
+        bigquery_config = _parse_json_file(config_path)
+        table_names = bigquery_config['table_names']
+        primary_key = bigquery_config['primary_key']
         table_names.sort()
     app.app.config['TABLE_NAMES'] = table_names
     app.app.config['PRIMARY_KEY'] = primary_key

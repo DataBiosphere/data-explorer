@@ -12,8 +12,8 @@
  */
 
 import ApiClient from "./ApiClient";
-import Cohortname from "./model/Cohortname";
 import DatasetResponse from "./model/DatasetResponse";
+import ExportUrlRequest from "./model/ExportUrlRequest";
 import ExportUrlResponse from "./model/ExportUrlResponse";
 import Facet from "./model/Facet";
 import FacetValue from "./model/FacetValue";
@@ -60,15 +60,15 @@ export {
    */
   ApiClient,
   /**
-   * The Cohortname model constructor.
-   * @property {module:model/Cohortname}
-   */
-  Cohortname,
-  /**
    * The DatasetResponse model constructor.
    * @property {module:model/DatasetResponse}
    */
   DatasetResponse,
+  /**
+   * The ExportUrlRequest model constructor.
+   * @property {module:model/ExportUrlRequest}
+   */
+  ExportUrlRequest,
   /**
    * The ExportUrlResponse model constructor.
    * @property {module:model/ExportUrlResponse}

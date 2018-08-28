@@ -96,8 +96,8 @@ All URIs are relative to _https://localhost_
 
 ## Documentation for Models
 
-- [DataExplorerService.Cohortname](docs/Cohortname.md)
 - [DataExplorerService.DatasetResponse](docs/DatasetResponse.md)
+- [DataExplorerService.ExportUrlRequest](docs/ExportUrlRequest.md)
 - [DataExplorerService.ExportUrlResponse](docs/ExportUrlResponse.md)
 - [DataExplorerService.Facet](docs/Facet.md)
 - [DataExplorerService.FacetValue](docs/FacetValue.md)
