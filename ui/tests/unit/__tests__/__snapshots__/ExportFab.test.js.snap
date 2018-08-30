@@ -46,6 +46,7 @@ exports[`Renders correctly 1`] = `
         </WithStyles(Button)>
         <WithStyles(Button)
           color="primary"
+          id="save"
           onClick={[Function]}
         >
           Send
