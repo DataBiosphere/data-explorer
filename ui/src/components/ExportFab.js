@@ -69,8 +69,8 @@ class ExportFab extends React.Component {
               <Button onClick={this.handleCancel} color="primary">
                 Cancel
               </Button>
-              <Button onClick={this.handleSave} color="primary">
-                Send
+              <Button id="save" onClick={this.handleSave} color="primary">
+                Export
               </Button>
             </DialogActions>
           </Dialog>
