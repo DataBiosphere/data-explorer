@@ -140,11 +140,12 @@ End-to-end tests use [Puppeteer](https://github.com/GoogleChrome/puppeteer) and
 To run locally:
 
 ```
-# Ensure the elasticsearch index is clean
+# Optional: ensure the elasticsearch index is clean
 docker-compose up --build -d elasticsearch
 curl -XDELETE localhost:9200/_all
 # Start the rest of the services
 docker-compose up --build
+cd ui && npm run test:e2e
 ```
 
 ### Formatting
