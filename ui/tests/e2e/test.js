@@ -44,7 +44,7 @@ describe("End-to-end", () => {
     await page.waitForSelector("span.datasetName");
     await page.click("button", { title: "Send to Saturn" });
     await page.waitForNavigation();
-    expect(page.url()).toBe("https://bvdp-saturn-prod.appspot.com/");
+    expect(await page.url()).toBe("https://bvdp-saturn-prod.appspot.com/");
   });
 
   test("Export to Saturn With Facet", async () => {
@@ -66,7 +66,7 @@ describe("End-to-end", () => {
     await page.click("#save");
 
     await page.waitForNavigation();
-    expect(page.url()).toBe("https://bvdp-saturn-prod.appspot.com/");
+    expect(await page.url()).toBe("https://bvdp-saturn-prod.appspot.com/");
   });
 
   async function waitForElasticsearchIndex() {
