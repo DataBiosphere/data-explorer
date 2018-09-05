@@ -4,7 +4,7 @@ from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan
 
 ES_URL = 'http://localhost:9200'
-OUTPUT_FILE = './index.json'
+OUTPUT_FILE = 'dataset_config/1000_genomes/index.json'
 INDEX = '1000_genomes'
 DOC_TYPE = 'type'
 
