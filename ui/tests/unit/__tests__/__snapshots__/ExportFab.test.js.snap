@@ -31,6 +31,7 @@ exports[`Renders correctly 1`] = `
           label="Cohort Name"
           margin="dense"
           onChange={[Function]}
+          onKeyPress={[Function]}
           required={false}
           select={false}
           type="text"
@@ -47,7 +48,7 @@ exports[`Renders correctly 1`] = `
           color="primary"
           onClick={[Function]}
         >
-          Export
+          Send
         </WithStyles(Button)>
       </WithStyles(DialogActions)>
     </WithStyles(Dialog)>
