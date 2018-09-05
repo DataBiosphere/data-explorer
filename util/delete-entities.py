@@ -3,32 +3,36 @@
 This is useful when working on Export to Saturn feature.
 
 To run:
-- virtualenv ~/virtualenv/firecloud
-- source ~/virtualenv/firecloud/bin/activate
-- pip install firecloud
-- python util/delete-entities.py WORKSPACE_NAMESPACE WORKSPACE_NAME
+
+virtualenv ~/virtualenv/firecloud
+source ~/virtualenv/firecloud/bin/activate
+pip install firecloud
+python util/delete-entities.py WORKSPACE_NAMESPACE WORKSPACE_NAME
 """
 
+import argparse
+import collections
 import sys
 
 from firecloud import fiss
 
 
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--workspace-namespace', required=True)
+    parser.add_argument('--workspace-name', required=True)
+    return parser.parse_args()
+
+
 def main():
-    if len(sys.argv) != 3:
-        raise ValueError(
-            'Usage: python util/delete-entities.py WORKSPACE_NAMESPACE WORKSPACE_NAME'
-        )
+    args = parse_args()
 
-    workspace_namespace = sys.argv[1]
-    workspace_name = sys.argv[2]
+    FissArgs = collections.namedtuple('FissArgs', ['project', 'workspace'])
+    fiss_args = FissArgs(args.workspace_namespace, args.workspace_name)
+    entities = fiss.entity_list(fiss_args)
 
-    args = type('obj', (object, ), {
-        'project': workspace_namespace,
-        'workspace': workspace_name
-    })
-    entities = fiss.entity_list(args)
-
+    FissArgs = collections.namedtuple(
+        'FissArgs', ['yes', 'project', 'workspace', 'entity_type', 'entity'])
     # entities are sorted by type: participant, participant_set, sample,
     # sample_set. FireCloud complains if we delete a participant before deleting
     # associated participant_set/sample/sample_set. By reversing the list, we
@@ -36,15 +40,11 @@ def main():
     # participant_set, participant.
     for entity in reversed(entities):
         print('Deleting ' + entity)
-        args = type(
-            'obj', (object, ), {
-                'yes': True,
-                'project': workspace_namespace,
-                'workspace': workspace_name,
-                'entity_type': entity.split('\t')[0],
-                'entity': entity.split('\t')[1],
-            })
-        fiss.entity_delete(args)
+        entity_splits = entity.split('\t')
+        fiss_args = FissArgs(True, args.workspace_namespace,
+                             args.workspace_name, entity_splits[0],
+                             entity_splits[1])
+        fiss.entity_delete(fiss_args)
 
 
 if __name__ == '__main__':
