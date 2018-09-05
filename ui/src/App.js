@@ -51,9 +51,7 @@ class App extends Component {
               datasetName={this.state.datasetName}
               totalCount={this.state.totalCount}
             />
-            {this.state.enableFieldSearch &&
-              <FieldSearchTextField />
-            }
+            {this.state.enableFieldSearch && <FieldSearchTextField />}
             <FacetsGrid
               updateFacets={this.updateFacets}
               facets={this.state.facets}
@@ -79,7 +77,7 @@ class App extends Component {
       } else {
         this.setState({
           datasetName: data.name,
-          enableFieldSearch: data.enableFieldSearch,
+          enableFieldSearch: data.enableFieldSearch
         });
       }
     }.bind(this);
