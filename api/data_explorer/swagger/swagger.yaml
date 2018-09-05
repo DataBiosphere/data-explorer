@@ -72,8 +72,11 @@ definitions:
     properties:
       name:
         type: "string"
+      enableFieldSearch:
+        type: "boolean"
     description: "Dataset information."
     example:
+      enableFieldSearch: true
       name: "name"
   FacetsResponse:
     properties:

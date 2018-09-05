@@ -87,6 +87,8 @@ definitions:
     properties:
       name:
         type: string
+      enableFieldSearch:
+        type: boolean
   FacetsResponse:
     description: "Results from a faceted search."
     properties:

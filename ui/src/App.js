@@ -3,6 +3,7 @@ import { ApiClient, DatasetApi, FacetsApi } from "data_explorer_service";
 import ExportFab from "./components/ExportFab";
 import FacetsGrid from "./components/facets/FacetsGrid";
 import Header from "./components/Header";
+import FieldSearchTextField from "./components/FieldSearchTextField";
 
 import React, { Component } from "react";
 import { MuiThemeProvider } from "material-ui";
@@ -13,6 +14,7 @@ class App extends Component {
     super(props);
     this.state = {
       datasetName: "",
+      enableFieldSearch: false,
       facets: null,
       totalCount: null,
       filter: null
@@ -49,6 +51,9 @@ class App extends Component {
               datasetName={this.state.datasetName}
               totalCount={this.state.totalCount}
             />
+            {this.state.enableFieldSearch &&
+              <FieldSearchTextField />
+            }
             <FacetsGrid
               updateFacets={this.updateFacets}
               facets={this.state.facets}
@@ -71,9 +76,11 @@ class App extends Component {
     let datasetCallback = function(error, data) {
       if (error) {
         console.error(error);
-        // TODO(alanhwang): Redirect to an error page
       } else {
-        this.setState({ datasetName: data.name });
+        this.setState({
+          datasetName: data.name,
+          enableFieldSearch: data.enableFieldSearch,
+        });
       }
     }.bind(this);
     datasetApi.datasetGet(datasetCallback);
