@@ -135,11 +135,20 @@ def _convert_to_index_name(s):
     return s
 
 
-def _get_dataset_name():
-    """Gets dataset name from dataset.json."""
+def _process_dataset():
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                'dataset.json')
-    return _parse_json_file(config_path)['name']
+    app.app.config['DATASET_NAME'] = _parse_json_file(config_path)['name']
+    app.app.config['INDEX_NAME'] = _convert_to_index_name(
+        app.app.config['DATASET_NAME'])
+
+
+def _process_ui():
+    config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'], 'ui.json')
+    config = _parse_json_file(config_path)
+    app.app.config['ENABLE_FIELD_SEARCH'] = False
+    if 'enable_field_search' in config and config['enable_field_search']:
+        app.app.config['ENABLE_FIELD_SEARCH'] = True
 
 
 def _get_field_type(es, field_name):
@@ -275,7 +284,7 @@ def _process_facets():
     app.app.config['UI_FACETS'] = ui_facets
 
 
-def _process_bigquery_config():
+def _process_bigquery():
     """Gets an alphabetically ordered list of table names from bigquery.json.
     Table names are fully qualified: <project id>.<dataset id>.<table name>
     If bigquery.json doesn't exist, this returns an empty list.
@@ -293,21 +302,18 @@ def _process_bigquery_config():
     app.app.config['PRIMARY_KEY'] = primary_key
 
 
-def _get_export_url_info():
-    """Returns auth domain, deploy project id, and export URL bucket (no
-    gs:// prefix).
+def _process_export_url():
+    """Sets config variables related to /exportUrl endpoint."""
+    app.app.config['AUTHORIZATION_DOMAIN'] = ''
+    app.app.config['DEPLOY_PROJECT_ID'] = ''
+    app.app.config['EXPORT_URL_GCS_BUCKET'] = ''
 
-    If deploy project isn't set, return an empty string.
-    Export URL bucket does not have gs:// prefix.
-    If bucket doesn't exist, return an empty string.
-    If auth domain isn't set, return an empty string.
-    """
     dataset_config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                        'dataset.json')
     dataset_config = _parse_json_file(dataset_config_path)
-    authorization_domain = ''
     if 'authorization_domain' in dataset_config:
-        authorization_domain = dataset_config['authorization_domain']
+        app.app.config['AUTHORIZATION_DOMAIN'] = dataset_config[
+            'authorization_domain']
 
     # Check preconditions for Export to Saturn feature. If a precondition fails,
     # print a warning but allow app to continue. Someone may want to run Data
@@ -319,7 +325,7 @@ def _get_export_url_info():
             'deploy.json not found. Export to Saturn feature will not work. '
             'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
         )
-        return authorization_domain, '', ''
+        return
 
     project_id = _parse_json_file(deploy_config_path)['project_id']
     if project_id == 'PROJECT_ID_TO_DEPLOY_TO':
@@ -327,18 +333,17 @@ def _get_export_url_info():
             'Project not set in deploy.json. Export to Saturn feature will not work. '
             'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature-for-export-to-saturn-feature'
         )
-        return authorization_domain, '', ''
+        return
+    else:
+        app.app.config['DEPLOY_PROJECT_ID'] = project_id
 
-    bucket = project_id + '-export'
+    app.app.config['EXPORT_URL_GCS_BUCKET'] = project_id + '-export'
     client = storage.Client(project=project_id)
-    if not client.lookup_bucket(bucket):
+    if not client.lookup_bucket(app.app.config['EXPORT_URL_GCS_BUCKET']):
         app.app.logger.warning(
             'Bucket %s not found. Export to Saturn feature will not work. '
             'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature-for-export-to-saturn-feature'
-            % bucket)
-        return authorization_domain, project_id, ''
-
-    return authorization_domain, project_id, bucket
+            % app.app.config['EXPORT_URL_GCS_BUCKET'])
 
 
 # Read config files. Just do this once; don't need to read files on every
@@ -350,14 +355,12 @@ def init():
     # application context. @app.app.before_first_request guarantees that app
     # context has been set up.
 
-    app.app.config['DATASET_NAME'] = _get_dataset_name()
-    app.app.config['INDEX_NAME'] = _convert_to_index_name(_get_dataset_name())
+    _process_dataset()
+    _process_ui()
     init_elasticsearch()
     _process_facets()
-    _process_bigquery_config()
-    app.app.config['AUTHORIZATION_DOMAIN'], app.app.config[
-        'DEPLOY_PROJECT_ID'], app.app.config[
-            'EXPORT_URL_GCS_BUCKET'] = _get_export_url_info()
+    _process_bigquery()
+    _process_export_url()
 
 
 if __name__ == '__main__':

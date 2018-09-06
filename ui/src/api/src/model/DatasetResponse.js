@@ -60,6 +60,9 @@ export default class DatasetResponse {
             if (data.hasOwnProperty('name')) {
                 obj['name'] = ApiClient.convertToType(data['name'], 'String');
             }
+            if (data.hasOwnProperty('enableFieldSearch')) {
+                obj['enableFieldSearch'] = ApiClient.convertToType(data['enableFieldSearch'], 'Boolean');
+            }
         }
         return obj;
     }
@@ -68,6 +71,10 @@ export default class DatasetResponse {
     * @member {String} name
     */
     name = undefined;
+    /**
+    * @member {Boolean} enableFieldSearch
+    */
+    enableFieldSearch = undefined;
 
 
 

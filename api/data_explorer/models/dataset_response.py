@@ -15,17 +15,23 @@ class DatasetResponse(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name=None):  # noqa: E501
+    def __init__(self, name=None, enable_field_search=None):  # noqa: E501
         """DatasetResponse - a model defined in Swagger
 
         :param name: The name of this DatasetResponse.  # noqa: E501
         :type name: str
+        :param enable_field_search: The enable_field_search of this DatasetResponse.  # noqa: E501
+        :type enable_field_search: bool
         """
-        self.swagger_types = {'name': str}
+        self.swagger_types = {'name': str, 'enable_field_search': bool}
 
-        self.attribute_map = {'name': 'name'}
+        self.attribute_map = {
+            'name': 'name',
+            'enable_field_search': 'enableFieldSearch'
+        }
 
         self._name = name
+        self._enable_field_search = enable_field_search
 
     @classmethod
     def from_dict(cls, dikt):
@@ -58,3 +64,24 @@ class DatasetResponse(Model):
         """
 
         self._name = name
+
+    @property
+    def enable_field_search(self):
+        """Gets the enable_field_search of this DatasetResponse.
+
+
+        :return: The enable_field_search of this DatasetResponse.
+        :rtype: bool
+        """
+        return self._enable_field_search
+
+    @enable_field_search.setter
+    def enable_field_search(self, enable_field_search):
+        """Sets the enable_field_search of this DatasetResponse.
+
+
+        :param enable_field_search: The enable_field_search of this DatasetResponse.
+        :type enable_field_search: bool
+        """
+
+        self._enable_field_search = enable_field_search

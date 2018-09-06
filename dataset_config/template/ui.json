@@ -5,6 +5,10 @@
 //   listed here
 // ui_facet_description:
 //   Optional facet description
+// enable_field_search:
+//   Field search is opt-in while it's under development. After this
+//   feature is done, this flag will be removed and the feature will be enabled
+//   for all Data Explorers.
 {
   "facets": [
     {
@@ -12,5 +16,6 @@
       "ui_facet_description": "",
       "elasticsearch_field_name": ""
     }
-  ]
+  ],
+  "enable_field_search": false
 }
