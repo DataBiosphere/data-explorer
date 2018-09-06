@@ -14,8 +14,10 @@ class FieldSearchTextField extends React.Component {
         className="fieldSearchTextField"
         label="Explore facets"
         placeholder= "e.g. age, exome"
-        // margin doesn't work if in fieldSearchTextField css, so put here.
-        style={{'margin': '0px 0px 40px 8px'}}
+        // If margin were in fieldSearchTextField css, it would overridden by
+        // margin from a different class (MuiFormControl-root-1). So margin
+        // needs to be set here.
+        style={{'margin': '0px 0px 40px 12px'}}
       />
     )
   }

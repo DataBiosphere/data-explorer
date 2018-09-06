@@ -139,6 +139,8 @@ def _process_dataset():
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                'dataset.json')
     app.app.config['DATASET_NAME'] = _parse_json_file(config_path)['name']
+    app.app.config['INDEX_NAME'] = _convert_to_index_name(
+        app.app.config['DATASET_NAME'])
 
 
 def _process_ui():
@@ -282,7 +284,7 @@ def _process_facets():
     app.app.config['UI_FACETS'] = ui_facets
 
 
-def _process_bigquery_config():
+def _process_bigquery():
     """Gets an alphabetically ordered list of table names from bigquery.json.
     Table names are fully qualified: <project id>.<dataset id>.<table name>
     If bigquery.json doesn't exist, this returns an empty list.
@@ -343,8 +345,6 @@ def _process_export_url():
             'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature-for-export-to-saturn-feature'
             % app.app.config['EXPORT_URL_GCS_BUCKET'])
 
-    return
-
 
 # Read config files. Just do this once; don't need to read files on every
 # request.
@@ -357,11 +357,9 @@ def init():
 
     _process_dataset()
     _process_ui()
-    app.app.config['INDEX_NAME'] = _convert_to_index_name(
-        app.app.config['DATASET_NAME'])
     init_elasticsearch()
     _process_facets()
-    _process_bigquery_config()
+    _process_bigquery()
     _process_export_url()
 
 

@@ -73,6 +73,7 @@ class App extends Component {
     let datasetApi = new DatasetApi(this.apiClient);
     let datasetCallback = function(error, data) {
       if (error) {
+        // TODO: Show error in snackbar.
         console.error(error);
       } else {
         this.setState({
