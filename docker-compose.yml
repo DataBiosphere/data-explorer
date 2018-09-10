@@ -38,6 +38,7 @@ services:
     # --reload will restart the server after code change
     command: ["-b", ":8390", "--reload"]
     environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=${CREDENTIALS}
       - ELASTICSEARCH_URL=${ELASTICSEARCH_URL:-elasticsearch:9200}
       - PATH_PREFIX=/api
       - DATASET_CONFIG_DIR=${DATASET_CONFIG_DIR:-/app/dataset_config/1000_genomes}
