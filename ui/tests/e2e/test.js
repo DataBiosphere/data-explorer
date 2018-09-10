@@ -56,8 +56,8 @@ describe("End-to-end", () => {
     await page.waitForXPath(
       "//div[contains(@class, 'totalCountText') and text() = '1018']"
     );
-    await page.click("button[title='Send to Saturn']"),
-      await page.waitForSelector("#name");
+    await page.click("button[title='Send to Saturn']");
+    await page.waitForSelector("#name");
 
     await page.type("#name", "test-cohort");
     await Promise.all([page.click("#save"), page.waitFor(15000)]);
