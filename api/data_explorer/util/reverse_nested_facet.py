@@ -14,14 +14,13 @@ class ReverseNestedFacet(Facet):
     """
     agg_type = 'nested'
 
-
     def __init__(self, path, nested_facet):
         self._path = path
         self._inner = nested_facet
         nested_agg = nested_facet.get_aggregation()
         nested_agg['outer'] = ReverseNested()
-        super(ReverseNestedFacet, self).__init__(path=path, aggs={'inner': nested_agg})
-
+        super(ReverseNestedFacet, self).__init__(
+            path=path, aggs={'inner': nested_agg})
 
     def get_values(self, data, filter_values):
         """
@@ -31,13 +30,9 @@ class ReverseNestedFacet(Facet):
         out = []
         for bucket in data.inner.buckets:
             key = self.get_value(bucket)
-            out.append((
-                key,
-                bucket.outer['doc_count'],
-                self.is_filtered(key, filter_values)
-            ))
+            out.append((key, bucket.outer['doc_count'],
+                        self.is_filtered(key, filter_values)))
         return out
-
 
     def add_filter(self, filter_values):
         inner_q = self._inner.add_filter(filter_values)

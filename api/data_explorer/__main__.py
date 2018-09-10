@@ -24,7 +24,6 @@ from google.cloud import storage
 from .encoder import JSONEncoder
 from util.reverse_nested_facet import ReverseNestedFacet
 
-
 # gunicorn flags are passed via env variables, so we use these as the default
 # values. These arguments will rarely be specified as flags directly, aside from
 # occasional use during local debugging.
@@ -288,7 +287,8 @@ def _process_facets():
         # Handle sample facets in a special way since they are nested objects.
         if elasticsearch_field_name.startswith('samples.'):
             app.app.logger.info('Nesting facet: %s' % es_facets[ui_facet_name])
-            es_facets[ui_facet_name] = ReverseNestedFacet('samples', es_facets[ui_facet_name])
+            es_facets[ui_facet_name] = ReverseNestedFacet(
+                'samples', es_facets[ui_facet_name])
 
     app.app.logger.info('Elasticsearch facets: %s' % es_facets)
     app.app.config['ELASTICSEARCH_FACETS'] = es_facets
