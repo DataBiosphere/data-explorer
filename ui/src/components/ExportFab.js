@@ -70,7 +70,7 @@ class ExportFab extends React.Component {
                 Cancel
               </Button>
               <Button id="save" onClick={this.handleSave} color="primary">
-                Save
+                Send
               </Button>
             </DialogActions>
           </Dialog>
