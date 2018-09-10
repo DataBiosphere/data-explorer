@@ -44,13 +44,14 @@ jobs:
           name: Run API server unit tests
           command: |
               # Some files are missing because of .gitignore
+              echo "{ \"project_id\": \"ci-test-data-explorer\"}" > dataset_config/1000_genomes/deploy.json
+              echo ${GOOGLE_SERVICE_KEY} | base64 --decode > dataset_config/1000_genomes/private-key.json
               pip install tox
               cd api
               tox
       - run:
           name: Run docker-compose
           command: |
-              echo ${GOOGLE_SERVICE_KEY} | base64 --decode > dataset_config/1000_genomes/private-key.json
               docker-compose up -e GOOGLE_APPLICATION_CREDENTIALS="dataset_config/1000_genomes/private-key.json" --build -d
       - run:
           name: Run e2e tests
