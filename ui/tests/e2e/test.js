@@ -80,8 +80,10 @@ describe("End-to-end", () => {
           "http://localhost:9200/_cluster/health?wait_for_status=yellow"
         );
         // Elasticsearch has come up. Now wait for test data to be indexed.
+        // There are 7000 docs because each nested sample is stored as a 
+        // separate document.
         await page.goto("http://localhost:9200/_stats/docs");
-        await page.waitForXPath("//*[contains(text(), '3500')]");
+        await page.waitForXPath("//*[contains(text(), '7000')]");
         console.log(
           "Servers up and test data indexed after " + i + " seconds."
         );
