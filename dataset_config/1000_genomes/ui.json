@@ -50,6 +50,16 @@
       "ui_facet_name": "Low Coverage Platform",
       "ui_facet_description": "Low coverage sequencing platform for final sequencing round",
       "elasticsearch_field_name": "bryancrampton-testing.data_explorer.1000_genomes_sample_info.Main_project_LC_platform"
+    },
+    {
+      "ui_facet_name": "Has Mapped Bam",
+      "ui_facet_description": "Whether or not there is a sample with a mapped BAM file",
+      "elasticsearch_field_name": "samples._has_mapped_bam"
+    },
+    {
+      "ui_facet_name": "Has Mapped Cram",
+      "ui_facet_description": "Whether or not there is a sample with a mapped CRAM file",
+      "elasticsearch_field_name": "samples._has_mapped_cram"
     }
   ]
 }

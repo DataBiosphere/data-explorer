@@ -22,7 +22,8 @@ from elasticsearch_dsl import TermsFacet
 from google.cloud import storage
 
 from .encoder import JSONEncoder
-import dataset_faceted_search
+from util.reverse_nested_facet import ReverseNestedFacet
+
 
 # gunicorn flags are passed via env variables, so we use these as the default
 # values. These arguments will rarely be specified as flags directly, aside from
@@ -284,6 +285,11 @@ def _process_facets():
                 field=elasticsearch_field_name,
                 interval=_get_bucket_interval(field_range))
 
+        # Handle sample facets in a special way since they are nested objects.
+        if elasticsearch_field_name.startswith('samples.'):
+            app.app.logger.info('Nesting facet: %s' % es_facets[ui_facet_name])
+            es_facets[ui_facet_name] = ReverseNestedFacet('samples', es_facets[ui_facet_name])
+
     app.app.logger.info('Elasticsearch facets: %s' % es_facets)
     app.app.config['ELASTICSEARCH_FACETS'] = es_facets
     app.app.logger.info('UI facets: %s' % ui_facets)
@@ -293,19 +299,26 @@ def _process_facets():
 def _process_bigquery():
     """Gets an alphabetically ordered list of table names from bigquery.json.
     Table names are fully qualified: <project id>.<dataset id>.<table name>
-    If bigquery.json doesn't exist, this returns an empty list.
+    If bigquery.json doesn't exist, no configuration paramters are set.
     """
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                'bigquery.json')
     table_names = []
-    primary_key = ""
+    participant_id_col = ''
+    sample_id_col = ''
+    sample_file_cols = []
     if os.path.isfile(config_path):
         bigquery_config = _parse_json_file(config_path)
         table_names = bigquery_config['table_names']
-        primary_key = bigquery_config['primary_key']
+        participant_id_col = bigquery_config['participant_id_column']
+        sample_id_col = bigquery_config['sample_id_column']
+        samle_file_cols = bigquery_config.get('sample_file_columns', [])
         table_names.sort()
+
     app.app.config['TABLE_NAMES'] = table_names
-    app.app.config['PRIMARY_KEY'] = primary_key
+    app.app.config['PARTICIPANT_ID_COL'] = participant_id_col
+    app.app.config['SAMPLE_ID_COL'] = sample_id_col
+    app.app.config['SAMPLE_FILE_COLS'] = samle_file_cols
 
 
 def _process_export_url():

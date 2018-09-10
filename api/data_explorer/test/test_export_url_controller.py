@@ -16,7 +16,7 @@ class TestExportUrlController(BaseTestCase):
             'EXPORT_URL_GCS_BUCKET':
             'bucket',
             'TABLE_NAMES': ['project_id.dataset_id.table_name'],
-            'PRIMARY_KEY':
+            'PARTICIPANT_ID_COL':
             "primary_key",
             'UI_FACETS': {
                 'Age': {

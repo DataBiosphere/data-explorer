@@ -1,4 +1,4 @@
-"""Subclass of FacetedSearch for Data explorer datasets."""
+"""Subclass of FacetedSearch for Data Explorer datasets."""
 
 from flask import current_app
 
