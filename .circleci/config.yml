@@ -44,7 +44,7 @@ jobs:
           name: Run API server unit tests
           command: |
               # Some files are missing because of .gitignore
-              echo "{ \"project_id\": \"ci-test-data-explorer\"}" > dataset_config/1000_genomes/deploy.json
+              echo '{"project_id": "ci-test-data-explorer"}' > dataset_config/1000_genomes/deploy.json
               echo ${GOOGLE_SERVICE_KEY} > dataset_config/1000_genomes/private-key.json
               pip install tox
               cd api
@@ -52,6 +52,7 @@ jobs:
       - run:
           name: Run docker-compose
           command: |
+              # Set GOOGLE_APPLICATION_CREDENTIALS so GCP client libraries (such as reading export bucket) work.
               GOOGLE_APPLICATION_CREDENTIALS="dataset_config/1000_genomes/private-key.json" docker-compose up --build -d
       - run:
           name: Run e2e tests

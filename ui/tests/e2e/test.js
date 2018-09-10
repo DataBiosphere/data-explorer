@@ -39,9 +39,7 @@ describe("End-to-end", () => {
     expect(grayDiv).toBeTruthy();
   });
 
-  test("Export to Saturn", async () => {
-    await page.goto("http://localhost:4400");
-    await page.waitForSelector("span.datasetName");
+  test("Export to Saturn - no selected cohort", async () => {
     await Promise.all([
       page.click("button[title='Send to Saturn']"),
       page.waitFor(15000)
@@ -49,10 +47,7 @@ describe("End-to-end", () => {
     expect(await page.url()).toBe("https://bvdp-saturn-prod.appspot.com/");
   });
 
-  test("Export to Saturn With Facet", async () => {
-    await page.goto("http://localhost:4400");
-    await page.waitForSelector("span.datasetName");
-
+  test("Export to Saturn - selected cohort", async () => {
     // Click first Super Population facet value.
     let facetValueRow = await getFacetValueRow("Super Population", "African");
     await facetValueRow.click("input");
@@ -61,8 +56,8 @@ describe("End-to-end", () => {
     await page.waitForXPath(
       "//div[contains(@class, 'totalCountText') and text() = '1018']"
     );
-    await page.click("button", { title: "Send to Saturn" });
-    await page.waitForSelector("#name");
+    await page.click("button[title='Send to Saturn']"),
+      await page.waitForSelector("#name");
 
     await page.type("#name", "test-cohort");
     await Promise.all([page.click("#save"), page.waitFor(15000)]);
