@@ -55,7 +55,6 @@ jobs:
               # Remove deploy.json since it doesn't contain project_id.
               # With no deploy.json, API server will print a warning but will
               # otherwise run normally.
-              rm dataset_config/1000_genomes/deploy.json
               docker-compose up --build -d
       - run:
           name: Run e2e tests
