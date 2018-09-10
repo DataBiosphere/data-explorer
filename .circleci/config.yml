@@ -52,7 +52,7 @@ jobs:
       - run:
           name: Run docker-compose
           command: |
-              CREDENTIALS="dataset_config/1000_genomes/private-key.json" docker-compose up --build -d
+              GOOGLE_APPLICATION_CREDENTIALS="dataset_config/1000_genomes/private-key.json" docker-compose up --build -d
       - run:
           name: Run e2e tests
           command: |
