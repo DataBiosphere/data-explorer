@@ -17,6 +17,7 @@ from elasticsearch.exceptions import ConnectionError
 
 INDEX_NAME = '1000_genomes'
 INDEX_JSON = 'index.json'
+MAPPINGS_JSON = 'mappings.json'
 ES_TIMEOUT_SEC = 60
 
 
@@ -50,7 +51,9 @@ def init_elasticsearch():
         print('es.indices.get(index=%s): %s' % (INDEX_NAME, index))
         pass
     print('Creating %s index.' % INDEX_NAME)
-    es.indices.create(index=INDEX_NAME, body={})
+    with open(MAPPINGS_JSON) as f:
+        mappings = json.loads(f.next())
+    es.indices.create(index=INDEX_NAME, body=mappings)
     return es
 
 
