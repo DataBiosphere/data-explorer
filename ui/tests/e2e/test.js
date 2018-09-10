@@ -1,7 +1,7 @@
 const JEST_TIMEOUT_MS = 60 * 1000;
 
 describe("End-to-end", () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     // It can take a while for servers to start up
     jest.setTimeout(JEST_TIMEOUT_MS);
     await waitForElasticsearchIndex();
