@@ -49,7 +49,7 @@ exports[`Renders correctly 1`] = `
           id="save"
           onClick={[Function]}
         >
-          Export
+          Save
         </WithStyles(Button)>
       </WithStyles(DialogActions)>
     </WithStyles(Dialog)>
