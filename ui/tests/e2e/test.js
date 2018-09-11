@@ -1,7 +1,7 @@
 const JEST_TIMEOUT_MS = 60 * 1000;
 
 describe("End-to-end", () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     // It can take a while for servers to start up
     jest.setTimeout(JEST_TIMEOUT_MS);
     await waitForElasticsearchIndex();
@@ -37,6 +37,31 @@ describe("End-to-end", () => {
     facetValueRow = await getFacetValueRow("Super Population", "European");
     const grayDiv = await facetValueRow.$("div.grayText");
     expect(grayDiv).toBeTruthy();
+  });
+
+  test("Export to Saturn - no selected cohort", async () => {
+    await Promise.all([
+      page.click("button[title='Send to Saturn']"),
+      page.waitFor(15000)
+    ]);
+    expect(await page.url()).toBe("https://bvdp-saturn-prod.appspot.com/");
+  });
+
+  test("Export to Saturn - selected cohort", async () => {
+    // Click first Super Population facet value.
+    let facetValueRow = await getFacetValueRow("Super Population", "African");
+    await facetValueRow.click("input");
+    // Wait for data to be returned from backend.
+    // See #63 for why we can't wait for div.grayText.
+    await page.waitForXPath(
+      "//div[contains(@class, 'totalCountText') and text() = '1018']"
+    );
+    await page.click("button[title='Send to Saturn']");
+    await page.waitForSelector("#name");
+
+    await page.type("#name", "test-cohort");
+    await Promise.all([page.click("#save"), page.waitFor(15000)]);
+    expect(await page.url()).toBe("https://bvdp-saturn-prod.appspot.com/");
   });
 
   async function waitForElasticsearchIndex() {

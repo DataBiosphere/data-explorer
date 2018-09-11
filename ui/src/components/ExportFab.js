@@ -58,9 +58,9 @@ class ExportFab extends React.Component {
                 helperText="A cohort with this name will be created in Saturn"
                 type="text"
                 fullWidth
-                onKeyPress={(ev) => {
-                  if (ev.key === 'Enter') {
-                    this.handleSave()
+                onKeyPress={ev => {
+                  if (ev.key === "Enter") {
+                    this.handleSave();
                   }
                 }}
               />
@@ -69,7 +69,7 @@ class ExportFab extends React.Component {
               <Button onClick={this.handleCancel} color="primary">
                 Cancel
               </Button>
-              <Button onClick={this.handleSave} color="primary">
+              <Button id="save" onClick={this.handleSave} color="primary">
                 Send
               </Button>
             </DialogActions>
