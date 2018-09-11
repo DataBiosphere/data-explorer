@@ -39,6 +39,13 @@ paths:
           collectionFormat: pipes
           items:
             type: string
+        - name: extraFacets
+          description: The additional facets selected from the UI
+          in: query
+          type: array
+          collectionFormat: pipes
+          items:
+            type: string
       responses:
         200:
           description: Success

@@ -10,13 +10,15 @@ from ..dataset_faceted_search import DatasetFacetedSearch
 import urllib
 
 
-def facets_get(filter=None):  # noqa: E501
+def facets_get(filter=None,extra_facets=None):  # noqa: E501
     """facets_get
 
     Returns facets. # noqa: E501
 
     :param filter: filter represents selected facet values. Elasticsearch query will be run only over selected facet values. filter is an array of strings, where each string has the format \&quot;facetName&#x3D;facetValue\&quot;. Example url /facets?filter&#x3D;Gender&#x3D;female,Region&#x3D;northwest,Region&#x3D;southwest
     :type filter: List[str]
+
+    :param extra_facets: extra_facets represents the additional facets selected by the user from the UI.
 
     :rtype: FacetsResponse
     """
