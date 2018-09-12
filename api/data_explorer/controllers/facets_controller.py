@@ -3,6 +3,8 @@ import pprint
 from data_explorer.models.facet import Facet
 from data_explorer.models.facet_value import FacetValue
 from data_explorer.models.facets_response import FacetsResponse
+from data_explorer.models.field import Field
+from data_explorer.models.fields_response import FieldsResponse
 from elasticsearch_dsl import HistogramFacet
 from flask import current_app
 
@@ -10,7 +12,59 @@ from ..dataset_faceted_search import DatasetFacetedSearch
 import urllib
 
 
-def facets_get(filter=None,extra_facets=None):  # noqa: E501
+def fields_get():
+    """fields_get
+
+    Returns fields.
+
+    rtype: FieldsResponse
+    """
+    # Return a static set of fields for now. When the indexer is ready call that to get the list of fields.
+    fields = []
+    fields.append(
+        Field(
+            name="Age",
+            description="Age of participant",
+            elasticsearch_name="project.dataset.table.Age"))
+    fields.append(
+        Field(
+            name="RNA name",
+            description="RNA sequence",
+            elasticsearch_name="project.dataset.table.RNA"))
+    fields.append(
+        Field(
+            name="DNA name",
+            description="DNA sequence",
+            elasticsearch_name="project.dataset.table.DNA"))
+    fields.append(
+        Field(
+            name="Address",
+            description="Mailing address",
+            elasticsearch_name="project.dataset.table.Address"))
+    fields.append(
+        Field(
+            name="Phone",
+            description="Contact number",
+            elasticsearch_name="project.dataset.table.Phone"))
+    fields.append(
+        Field(
+            name="Smoking",
+            description="How often person smokes",
+            elasticsearch_name="project.dataset.table.Smoke"))
+    fields.append(
+        Field(
+            name="Drinking",
+            description="How often person drinks",
+            elasticsearch_name="project.dataset.table.Drink"))
+    fields.append(
+        Field(
+            name="Exercise",
+            description="Exercise the participant does",
+            elasticsearch_name="project.dataset.table.Exercise"))
+    return FieldsResponse(fields=fields)
+
+
+def facets_get(filter=None):  # noqa: E501
     """facets_get
 
     Returns facets. # noqa: E501

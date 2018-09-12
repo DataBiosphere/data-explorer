@@ -39,18 +39,22 @@ paths:
           collectionFormat: pipes
           items:
             type: string
-        - name: extraFacets
-          description: The additional facets selected from the UI
-          in: query
-          type: array
-          collectionFormat: pipes
-          items:
-            type: string
       responses:
         200:
           description: Success
           schema:
             $ref: '#/definitions/FacetsResponse'
+      tags:
+        # Put in facets_controller.py instead of default_controller.py.
+        - Facets
+  /fields:
+    get:
+      description: Returns all the fields.
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/FieldsResponse'
       tags:
         # Put in facets_controller.py instead of default_controller.py.
         - Facets
@@ -141,3 +145,25 @@ definitions:
       authorization_domain:
         type: string
         description: "Optional FireCloud authorization domain"
+  FieldsResponse:
+    description: "Information for field exploration."
+    properties:
+      fields:
+        type: array
+        items:
+          $ref: '#/definitions/Field'
+  Field:
+    description: >
+      A field. For example, the Gender field would include the field name
+      "Gender", description "Gender of participant" and elasticsearch field name
+      "bigquery_project.dataset.table.Gender".
+    properties:
+    name:
+      type: string
+      description: Field name, for example, "Gender".
+    description:
+      type: string
+      description: Optional field description.
+    elasticsearch_name:
+      type: string
+      description: The elasticsearch field name.

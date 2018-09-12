@@ -45,6 +45,19 @@ paths:
           schema:
             $ref: "#/definitions/FacetsResponse"
       x-swagger-router-controller: "data_explorer.controllers.facets_controller"
+  /fields:
+    get:
+      tags:
+      - "Facets"
+      description: "Returns all the fields."
+      operationId: "fields_get"
+      parameters: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/FieldsResponse"
+      x-swagger-router-controller: "data_explorer.controllers.facets_controller"
   /exportUrl:
     post:
       tags:
@@ -152,6 +165,18 @@ definitions:
     example:
       authorization_domain: "authorization_domain"
       url: "url"
+  FieldsResponse:
+    properties:
+      fields:
+        type: "array"
+        items:
+          $ref: "#/definitions/Field"
+    description: "Information for field exploration."
+    example:
+      fields:
+      - {}
+      - {}
+  Field: {}
   exportUrlRequest:
     type: "object"
     properties:
