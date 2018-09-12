@@ -188,14 +188,15 @@ def _get_field_value_range(es, field_name):
         'max',
         # Don't execute query; we only care about aggregations. See
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/returning-only-agg-results.html
-        field=field_name).params(size=0).aggs.metric(
+        field=field_name
+    ).params(size=0).aggs.metric(
         'min',
         'min',
         # Don't execute query; we only care about aggregations. See
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/returning-only-agg-results.html
         field=field_name).params(size=0).execute()
     return (response.aggregations['max']['value'] -
-        response.aggregations['min']['value'])
+            response.aggregations['min']['value'])
 
 
 def _get_interval(field_value_range):
@@ -278,8 +279,8 @@ def _process_facets():
             # TODO: When https://github.com/elastic/elasticsearch/issues/31828
             # is fixed, use AutoHistogramFacet instead. Will no longer need 2
             # steps.
-            field_value_range = _get_field_value_range(es,
-                                                       elasticsearch_field_name)
+            field_value_range = _get_field_value_range(
+                es, elasticsearch_field_name)
             es_facets[ui_facet_name] = HistogramFacet(
                 field=elasticsearch_field_name,
                 interval=_get_interval(field_value_range))
