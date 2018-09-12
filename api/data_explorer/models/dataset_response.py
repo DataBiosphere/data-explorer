@@ -23,10 +23,7 @@ class DatasetResponse(Model):
         :param enable_field_search: The enable_field_search of this DatasetResponse.  # noqa: E501
         :type enable_field_search: bool
         """
-        self.swagger_types = {
-            'name': str,
-            'enable_field_search': bool
-        }
+        self.swagger_types = {'name': str, 'enable_field_search': bool}
 
         self.attribute_map = {
             'name': 'name',

@@ -15,7 +15,8 @@ class Field(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name=None, description=None, elasticsearch_name=None):  # noqa: E501
+    def __init__(self, name=None, description=None,
+                 elasticsearch_name=None):  # noqa: E501
         """Field - a model defined in Swagger
 
         :param name: The name of this Field.  # noqa: E501
