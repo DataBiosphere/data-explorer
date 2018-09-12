@@ -13,7 +13,8 @@
     "pretty-quick": "^1.6.0",
     "react": "^16.3.0",
     "react-dom": "^16.3.0",
-    "react-scripts": "^1.1.4"
+    "react-scripts": "^1.1.4",
+    "react-select": "^2.0.0"
   },
   "scripts": {
     "lint": "prettier **/*.js **/*.css",

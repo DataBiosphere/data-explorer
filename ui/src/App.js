@@ -3,11 +3,17 @@ import { ApiClient, DatasetApi, FacetsApi } from "data_explorer_service";
 import ExportFab from "./components/ExportFab";
 import FacetsGrid from "./components/facets/FacetsGrid";
 import Header from "./components/Header";
-import FieldSearchTextField from "./components/FieldSearchTextField";
 
 import React, { Component } from "react";
+import Select from "react-select";
 import { MuiThemeProvider } from "material-ui";
 import ExportUrlApi from "./api/src/api/ExportUrlApi";
+
+const options = [
+  { value: "chocolate", label: "Chocolate" },
+  { value: "strawberry", label: "Strawberry" },
+  { value: "vanilla", label: "Vanilla" }
+];
 
 class App extends Component {
   constructor(props) {
@@ -18,7 +24,8 @@ class App extends Component {
       facets: null,
       totalCount: null,
       filter: null,
-      fields: null
+      fields: null,
+      selectedOption: null
     };
 
     this.apiClient = new ApiClient();
@@ -51,6 +58,11 @@ class App extends Component {
     this.updateFacets = this.updateFacets.bind(this);
   }
 
+  handleChange = selectedOption => {
+    this.setState({ selectedOption });
+    console.log(`Option selected:`, selectedOption);
+  };
+
   render() {
     if (this.state.facets == null || this.state.datasetName === "") {
       // Server has not yet responded or returned an error
@@ -63,7 +75,13 @@ class App extends Component {
               datasetName={this.state.datasetName}
               totalCount={this.state.totalCount}
             />
-            {this.state.enableFieldSearch && <FieldSearchTextField />}
+            {this.state.enableFieldSearch && (
+              <Select
+                isMulti="true"
+                onChange={this.handleChange}
+                options={options}
+              />
+            )}
             <FacetsGrid
               updateFacets={this.updateFacets}
               facets={this.state.facets}
