@@ -17,7 +17,8 @@ class App extends Component {
       enableFieldSearch: false,
       facets: null,
       totalCount: null,
-      filter: null
+      filter: null,
+      fields: null
     };
 
     this.apiClient = new ApiClient();
@@ -34,6 +35,17 @@ class App extends Component {
         });
       }
     }.bind(this);
+
+    this.fieldsCallBack = function(error, data) {
+      if (error) {
+        console.error(error);
+      } else {
+        this.setState({
+          fields: data.fields
+        });
+      }
+    }.bind(this);
+
     // Map from facet name to a list of facet values.
     this.filterMap = new Map();
     this.updateFacets = this.updateFacets.bind(this);
@@ -68,6 +80,7 @@ class App extends Component {
 
   componentDidMount() {
     this.facetsApi.facetsGet({}, this.facetsCallback);
+    this.facetsApi.fieldsGet(this.fieldsCallBack);
 
     // Call /api/dataset
     let datasetApi = new DatasetApi(this.apiClient);

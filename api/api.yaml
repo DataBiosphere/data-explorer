@@ -158,12 +158,12 @@ definitions:
       "Gender", description "Gender of participant" and elasticsearch field name
       "bigquery_project.dataset.table.Gender".
     properties:
-    name:
-      type: string
-      description: Field name, for example, "Gender".
-    description:
-      type: string
-      description: Optional field description.
-    elasticsearch_name:
-      type: string
-      description: The elasticsearch field name.
+      name:
+        type: string
+        description: Field name, for example, "Gender".
+      description:
+        type: string
+        description: Optional field description.
+      elasticsearch_name:
+        type: string
+        description: The elasticsearch field name.
