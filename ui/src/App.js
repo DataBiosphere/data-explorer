@@ -65,9 +65,9 @@ class App extends Component {
     this.updateFacets = this.updateFacets.bind(this);
   }
 
-  handleChange = selectedOption => {
+  handleChange(selectedOption) {
     console.log(`Option selected:`, selectedOption);
-  };
+  }
 
   render() {
     if (this.state.facets == null || this.state.datasetName === "") {
