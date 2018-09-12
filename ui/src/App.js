@@ -47,8 +47,15 @@ class App extends Component {
       if (error) {
         console.error(error);
       } else {
+        let selectFields = [];
+        data.fields.forEach(field =>
+          selectFields.push({
+            label: field.name + " - " + field.description,
+            value: field.elasticsearch_name
+          })
+        );
         this.setState({
-          fields: data.fields
+          fields: selectFields
         });
       }
     }.bind(this);
@@ -59,7 +66,6 @@ class App extends Component {
   }
 
   handleChange = selectedOption => {
-    this.setState({ selectedOption });
     console.log(`Option selected:`, selectedOption);
   };
 
@@ -79,7 +85,7 @@ class App extends Component {
               <Select
                 isMulti="true"
                 onChange={this.handleChange}
-                options={options}
+                options={this.state.fields}
               />
             )}
             <FacetsGrid
