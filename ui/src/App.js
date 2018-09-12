@@ -9,12 +9,6 @@ import Select from "react-select";
 import { MuiThemeProvider } from "material-ui";
 import ExportUrlApi from "./api/src/api/ExportUrlApi";
 
-const options = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" }
-];
-
 class App extends Component {
   constructor(props) {
     super(props);
