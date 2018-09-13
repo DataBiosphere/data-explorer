@@ -1,9 +1,14 @@
 import "./App.css";
-import { ApiClient, DatasetApi, FacetsApi } from "data_explorer_service";
+import {
+  ApiClient,
+  DatasetApi,
+  FacetsApi,
+  FieldsApi
+} from "data_explorer_service";
 import ExportFab from "./components/ExportFab";
 import FacetsGrid from "./components/facets/FacetsGrid";
+import FieldSearch from "./components/FieldSearch";
 import Header from "./components/Header";
-import FieldSearchTextField from "./components/FieldSearchTextField";
 
 import React, { Component } from "react";
 import { MuiThemeProvider } from "material-ui";
@@ -34,6 +39,23 @@ class App extends Component {
         });
       }
     }.bind(this);
+
+    this.fieldsApi = new FieldsApi(this.apiClient);
+    this.fieldsCallback = function(error, data) {
+      if (error) {
+        console.error(error);
+      } else {
+        this.setState({
+          fields: data.fields.map(field => {
+            return {
+              label: field.name + " - " + field.description,
+              value: field.elasticsearch_name
+            };
+          })
+        });
+      }
+    }.bind(this);
+
     // Map from facet name to a list of facet values.
     this.filterMap = new Map();
     this.updateFacets = this.updateFacets.bind(this);
@@ -51,7 +73,9 @@ class App extends Component {
               datasetName={this.state.datasetName}
               totalCount={this.state.totalCount}
             />
-            {this.state.enableFieldSearch && <FieldSearchTextField />}
+            {this.state.enableFieldSearch && (
+              <FieldSearch fields={this.state.fields} />
+            )}
             <FacetsGrid
               updateFacets={this.updateFacets}
               facets={this.state.facets}
@@ -67,6 +91,7 @@ class App extends Component {
   }
 
   componentDidMount() {
+    this.fieldsApi.fieldsGet(this.fieldsCallback);
     this.facetsApi.facetsGet({}, this.facetsCallback);
 
     // Call /api/dataset

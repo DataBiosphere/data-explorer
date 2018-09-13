@@ -45,6 +45,19 @@ paths:
           schema:
             $ref: "#/definitions/FacetsResponse"
       x-swagger-router-controller: "data_explorer.controllers.facets_controller"
+  /fields:
+    get:
+      tags:
+      - "Fields"
+      description: "Returns dataset fields for field search."
+      operationId: "fields_get"
+      parameters: []
+      responses:
+        200:
+          description: "Success"
+          schema:
+            $ref: "#/definitions/FieldsResponse"
+      x-swagger-router-controller: "data_explorer.controllers.fields_controller"
   /exportUrl:
     post:
       tags:
@@ -152,6 +165,39 @@ definitions:
     example:
       authorization_domain: "authorization_domain"
       url: "url"
+  FieldsResponse:
+    properties:
+      fields:
+        type: "array"
+        items:
+          $ref: "#/definitions/Field"
+    description: "Dataset fields for field search."
+    example:
+      fields:
+      - name: "name"
+        description: "description"
+        elasticsearch_name: "elasticsearch_name"
+      - name: "name"
+        description: "description"
+        elasticsearch_name: "elasticsearch_name"
+  Field:
+    properties:
+      name:
+        type: "string"
+        description: "Field name, for example, \"Gender\"."
+      description:
+        type: "string"
+        description: "Optional field description."
+      elasticsearch_name:
+        type: "string"
+        description: "The Elasticsearch field name."
+    description: "A field. For example, a BigQuery Gender column could include the\
+      \ field name \"Gender\", description \"Sex at birth\" and elasticsearch field\
+      \ name \"project_id.dataset_id.table_name.Gender\".\n"
+    example:
+      name: "name"
+      description: "description"
+      elasticsearch_name: "elasticsearch_name"
   exportUrlRequest:
     type: "object"
     properties:

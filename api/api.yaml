@@ -47,6 +47,17 @@ paths:
       tags:
         # Put in facets_controller.py instead of default_controller.py.
         - Facets
+  /fields:
+    get:
+      description: Returns dataset fields for field search.
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/FieldsResponse'
+      tags:
+        # Put in fields_controller.py instead of default_controller.py.
+        - Fields
   /exportUrl:
     # This is post because this is not idempotent; a GCS file is created.
     post:
@@ -134,3 +145,25 @@ definitions:
       authorization_domain:
         type: string
         description: "Optional FireCloud authorization domain"
+  FieldsResponse:
+    description: Dataset fields for field search.
+    properties:
+      fields:
+        type: array
+        items:
+          $ref: '#/definitions/Field'
+  Field:
+    description: >
+      A field. For example, a BigQuery Gender column could include the field
+      name "Gender", description "Sex at birth" and elasticsearch field name
+      "project_id.dataset_id.table_name.Gender".
+    properties:
+      name:
+        type: string
+        description: Field name, for example, "Gender".
+      description:
+        type: string
+        description: Optional field description.
+      elasticsearch_name:
+        type: string
+        description: The Elasticsearch field name.

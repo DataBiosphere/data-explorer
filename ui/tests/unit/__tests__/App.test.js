@@ -2,6 +2,7 @@ import React from "react";
 import App from "../../../src/App";
 import { mockFacetsGet } from "../../../src/api/src/api/FacetsApi";
 import { mockDatasetGet } from "../../../src/api/src/api/DatasetApi";
+import { mockFieldsGet } from "../../../src/api/src/api/FacetsApi";
 
 jest.mock("../../../src/api/src/api/DatasetApi");
 jest.mock("../../../src/api/src/api/FacetsApi");
@@ -10,10 +11,12 @@ jest.mock("../../../src/api/src/api/FacetsApi");
 beforeEach(() => {
   mockFacetsGet.mockClear();
   mockDatasetGet.mockClear();
+  mockFieldsGet.mockClear();
 });
 
 test("Renders an empty div before receiving all data", () => {
   mockDatasetGet.mockImplementationOnce(() => {});
+  mockFieldsGet.mockImplementationOnce(() => {});
   const tree = shallow(<App />);
 
   expect(tree).toMatchSnapshot();

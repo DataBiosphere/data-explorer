@@ -24,7 +24,9 @@ npm install data_explorer_service --save
 ```
 
 #### git
+
 #
+
 If the library is hosted at a git repository, e.g.
 https://github.com/GIT_USER_ID/GIT_REPO_ID
 then install it via:
@@ -37,13 +39,13 @@ then install it via:
 
 The library also works in the browser environment via npm and [browserify](http://browserify.org/). After following
 the above steps with Node.js and installing browserify with `npm install -g browserify`,
-perform the following (assuming *main.js* is your entry file):
+perform the following (assuming _main.js_ is your entry file):
 
 ```shell
 browserify main.js > bundle.js
 ```
 
-Then include *bundle.js* in the HTML pages.
+Then include _bundle.js_ in the HTML pages.
 
 ### Webpack Configuration
 
@@ -59,7 +61,7 @@ module: {
         amd: false
       }
     }
-  ]
+  ];
 }
 ```
 
@@ -68,43 +70,42 @@ module: {
 Please follow the [installation](#installation) instruction and execute the following JS code:
 
 ```javascript
-var DataExplorerService = require('data_explorer_service');
+var DataExplorerService = require("data_explorer_service");
 
-var api = new DataExplorerService.DatasetApi()
+var api = new DataExplorerService.DatasetApi();
 
 var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully. Returned data: ' + data);
+    console.log("API called successfully. Returned data: " + data);
   }
 };
 api.datasetGet(callback);
-
 ```
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *https://localhost*
+All URIs are relative to _https://localhost_
 
-Class | Method | HTTP request | Description
------------- | ------------- | ------------- | -------------
-*DataExplorerService.DatasetApi* | [**datasetGet**](docs/DatasetApi.md#datasetGet) | **GET** /dataset | 
-*DataExplorerService.ExportUrlApi* | [**exportUrlPost**](docs/ExportUrlApi.md#exportUrlPost) | **POST** /exportUrl | 
-*DataExplorerService.FacetsApi* | [**facetsGet**](docs/FacetsApi.md#facetsGet) | **GET** /facets | 
-
+| Class                              | Method                                                  | HTTP request        | Description |
+| ---------------------------------- | ------------------------------------------------------- | ------------------- | ----------- |
+| _DataExplorerService.DatasetApi_   | [**datasetGet**](docs/DatasetApi.md#datasetGet)         | **GET** /dataset    |
+| _DataExplorerService.ExportUrlApi_ | [**exportUrlPost**](docs/ExportUrlApi.md#exportUrlPost) | **POST** /exportUrl |
+| _DataExplorerService.FacetsApi_    | [**facetsGet**](docs/FacetsApi.md#facetsGet)            | **GET** /facets     |
+| _DataExplorerService.FieldsApi_    | [**fieldsGet**](docs/FieldsApi.md#fieldsGet)            | **GET** /fields     |
 
 ## Documentation for Models
 
- - [DataExplorerService.DatasetResponse](docs/DatasetResponse.md)
- - [DataExplorerService.ExportUrlRequest](docs/ExportUrlRequest.md)
- - [DataExplorerService.ExportUrlResponse](docs/ExportUrlResponse.md)
- - [DataExplorerService.Facet](docs/Facet.md)
- - [DataExplorerService.FacetValue](docs/FacetValue.md)
- - [DataExplorerService.FacetsResponse](docs/FacetsResponse.md)
-
+- [DataExplorerService.DatasetResponse](docs/DatasetResponse.md)
+- [DataExplorerService.ExportUrlRequest](docs/ExportUrlRequest.md)
+- [DataExplorerService.ExportUrlResponse](docs/ExportUrlResponse.md)
+- [DataExplorerService.Facet](docs/Facet.md)
+- [DataExplorerService.FacetValue](docs/FacetValue.md)
+- [DataExplorerService.FacetsResponse](docs/FacetsResponse.md)
+- [DataExplorerService.Field](docs/Field.md)
+- [DataExplorerService.FieldsResponse](docs/FieldsResponse.md)
 
 ## Documentation for Authorization
 
- All endpoints do not require authorization.
-
+All endpoints do not require authorization.
