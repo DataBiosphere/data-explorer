@@ -124,7 +124,16 @@ class App extends Component {
   handleChange(selectedOption) {
     let extraFacets = [];
     selectedOption.forEach(option => extraFacets.push(option.value));
-    console.log(extraFacets);
+    if (extraFacets.length > 0) {
+      this.setState({ extraFacets: extraFacets });
+      this.facetsApi.facetsGet(
+        { extraFacets: extraFacets },
+        this.facetsCallback
+      );
+    } else {
+      this.setState({ extraFacets: null });
+      this.facetsApi.facetsGet({}, this.facetsCallback);
+    }
   }
 
   /**
