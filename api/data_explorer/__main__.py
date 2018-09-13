@@ -180,7 +180,7 @@ def _get_field_type(es, field_name):
         field_name]['mapping'][last_part]['type']
 
 
-def _get_max_field_value(es, field_name):
+def _get_field_range(es, field_name):
     response = Search(
         using=es, index=app.app.config['INDEX_NAME']
     ).aggs.metric(
@@ -188,39 +188,46 @@ def _get_max_field_value(es, field_name):
         'max',
         # Don't execute query; we only care about aggregations. See
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/returning-only-agg-results.html
+        field=field_name
+    ).params(size=0).aggs.metric(
+        'min',
+        'min',
+        # Don't execute query; we only care about aggregations. See
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/returning-only-agg-results.html
         field=field_name).params(size=0).execute()
-    return response.aggregations['max']['value']
+    return (response.aggregations['max']['value'] -
+            response.aggregations['min']['value'])
 
 
-def _get_interval(max_field_value):
-    if max_field_value <= 1:
+def _get_bucket_interval(field_range):
+    if field_range <= 1:
         return .1
-    if max_field_value < 8:
+    if field_range < 8:
         return 1
-    elif max_field_value < 20:
+    elif field_range < 20:
         return 2
-    elif max_field_value < 150:
+    elif field_range < 150:
         # Make the ranges easy to read (10-19,20-29 instead of 10-17,18-25).
         return 10
-    elif max_field_value < 1500:
+    elif field_range < 1500:
         return 100
-    elif max_field_value < 15000:
+    elif field_range < 15000:
         return 1000
-    elif max_field_value < 150000:
+    elif field_range < 150000:
         return 10000
-    elif max_field_value < 1500000:
+    elif field_range < 1500000:
         return 100000
-    elif max_field_value < 15000000:
+    elif field_range < 15000000:
         return 1000000
-    elif max_field_value < 150000000:
+    elif field_range < 150000000:
         return 10000000
-    elif max_field_value < 1500000000:
+    elif field_range < 1500000000:
         return 100000000
-    elif max_field_value < 15000000000:
+    elif field_range < 15000000000:
         return 1000000000
-    elif max_field_value < 150000000000:
+    elif field_range < 150000000000:
         return 10000000000
-    elif max_field_value < 1500000000000:
+    elif field_range < 1500000000000:
         return 100000000000
     else:
         return 1000000000000
@@ -272,11 +279,10 @@ def _process_facets():
             # TODO: When https://github.com/elastic/elasticsearch/issues/31828
             # is fixed, use AutoHistogramFacet instead. Will no longer need 2
             # steps.
-            max_field_value = _get_max_field_value(es,
-                                                   elasticsearch_field_name)
+            field_range = _get_field_range(es, elasticsearch_field_name)
             es_facets[ui_facet_name] = HistogramFacet(
                 field=elasticsearch_field_name,
-                interval=_get_interval(max_field_value))
+                interval=_get_bucket_interval(field_range))
 
     app.app.logger.info('Elasticsearch facets: %s' % es_facets)
     app.app.config['ELASTICSEARCH_FACETS'] = es_facets
