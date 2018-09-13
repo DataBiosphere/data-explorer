@@ -23,10 +23,7 @@ class ExportUrlResponse(Model):
         :param authorization_domain: The authorization_domain of this ExportUrlResponse.  # noqa: E501
         :type authorization_domain: str
         """
-        self.swagger_types = {
-            'url': str,
-            'authorization_domain': str
-        }
+        self.swagger_types = {'url': str, 'authorization_domain': str}
 
         self.attribute_map = {
             'url': 'url',
