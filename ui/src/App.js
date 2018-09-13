@@ -7,10 +7,10 @@ import {
 } from "data_explorer_service";
 import ExportFab from "./components/ExportFab";
 import FacetsGrid from "./components/facets/FacetsGrid";
+import FieldSearch from "./components/FieldSearch";
 import Header from "./components/Header";
 
 import React, { Component } from "react";
-import Select from "react-select";
 import { MuiThemeProvider } from "material-ui";
 import ExportUrlApi from "./api/src/api/ExportUrlApi";
 
@@ -22,15 +22,12 @@ class App extends Component {
       enableFieldSearch: false,
       facets: null,
       totalCount: null,
-      filter: null,
-      fields: null,
-      selectedFields: null
+      filter: null
     };
 
     this.apiClient = new ApiClient();
     this.apiClient.basePath = "/api";
     this.facetsApi = new FacetsApi(this.apiClient);
-    this.fieldsApi = new FieldsApi(this.apiClient);
     this.facetsCallback = function(error, data) {
       if (error) {
         console.error(error);
@@ -43,6 +40,7 @@ class App extends Component {
       }
     }.bind(this);
 
+    this.fieldsApi = new FieldsApi(this.apiClient);
     this.fieldsCallback = function(error, data) {
       if (error) {
         console.error(error);
@@ -63,10 +61,6 @@ class App extends Component {
     this.updateFacets = this.updateFacets.bind(this);
   }
 
-  handleChange(selectedOption) {
-    console.log(`Option selected:`, selectedOption);
-  }
-
   render() {
     if (this.state.facets == null || this.state.datasetName === "") {
       // Server has not yet responded or returned an error
@@ -80,11 +74,7 @@ class App extends Component {
               totalCount={this.state.totalCount}
             />
             {this.state.enableFieldSearch && (
-              <Select
-                isMulti="true"
-                onChange={this.handleChange}
-                options={this.state.fields}
-              />
+              <FieldSearch fields={this.state.fields} />
             )}
             <FacetsGrid
               updateFacets={this.updateFacets}
@@ -101,8 +91,8 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.facetsApi.facetsGet({}, this.facetsCallback);
     this.fieldsApi.fieldsGet(this.fieldsCallback);
+    this.facetsApi.facetsGet({}, this.facetsCallback);
 
     // Call /api/dataset
     let datasetApi = new DatasetApi(this.apiClient);
