@@ -15,8 +15,7 @@ class Field(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name=None, description=None,
-                 elasticsearch_name=None):  # noqa: E501
+    def __init__(self, name=None, description=None, elasticsearch_name=None):  # noqa: E501
         """Field - a model defined in Swagger
 
         :param name: The name of this Field.  # noqa: E501
@@ -103,7 +102,7 @@ class Field(Model):
     def elasticsearch_name(self):
         """Gets the elasticsearch_name of this Field.
 
-        The Elasticsearch name.  # noqa: E501
+        The Elasticsearch field name.  # noqa: E501
 
         :return: The elasticsearch_name of this Field.
         :rtype: str
@@ -114,7 +113,7 @@ class Field(Model):
     def elasticsearch_name(self, elasticsearch_name):
         """Sets the elasticsearch_name of this Field.
 
-        The Elasticsearch name.  # noqa: E501
+        The Elasticsearch field name.  # noqa: E501
 
         :param elasticsearch_name: The elasticsearch_name of this Field.
         :type elasticsearch_name: str

@@ -190,10 +190,10 @@ definitions:
         description: "Optional field description."
       elasticsearch_name:
         type: "string"
-        description: "The Elasticsearch name."
+        description: "The Elasticsearch field name."
     description: "A field. For example, a BigQuery Gender column could include the\
       \ field name \"Gender\", description \"Sex at birth\" and elasticsearch field\
-      \ name\n \"project_id.dataset_id.table_name.Gender\".\n"
+      \ name \"project_id.dataset_id.table_name.Gender\".\n"
     example:
       name: "name"
       description: "description"
