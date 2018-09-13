@@ -22,7 +22,8 @@ class App extends Component {
       enableFieldSearch: false,
       facets: null,
       totalCount: null,
-      filter: null
+      filter: null,
+      extraFacets: null
     };
 
     this.apiClient = new ApiClient();
