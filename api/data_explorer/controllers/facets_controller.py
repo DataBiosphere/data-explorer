@@ -42,6 +42,10 @@ def facets_get(filter=None):  # noqa: E501
                                              es_facet._params['interval'])
                 values.append(FacetValue(name=range_str, count=count))
             else:
+                # elasticsearch-dsl returns boolean field keys as 0/1. Use the
+                # field's 'type' to convert back to boolean, if necessary.
+                if field['type'] == 'boolean':
+                    value_name = bool(value_name)
                 values.append(FacetValue(name=value_name, count=count))
         facets.append(Facet(name=name, description=description, values=values))
     return FacetsResponse(
