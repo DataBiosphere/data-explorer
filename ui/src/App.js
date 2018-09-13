@@ -59,6 +59,7 @@ class App extends Component {
     // Map from facet name to a list of facet values.
     this.filterMap = new Map();
     this.updateFacets = this.updateFacets.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   render() {
@@ -74,7 +75,10 @@ class App extends Component {
               totalCount={this.state.totalCount}
             />
             {this.state.enableFieldSearch && (
-              <FieldSearch fields={this.state.fields} />
+              <FieldSearch
+                fields={this.state.fields}
+                handleChange={this.handleChange}
+              />
             )}
             <FacetsGrid
               updateFacets={this.updateFacets}
@@ -108,6 +112,21 @@ class App extends Component {
       }
     }.bind(this);
     datasetApi.datasetGet(datasetCallback);
+  }
+
+  handleChange(selectedOption) {
+    let extraFacets = [];
+    selectedOption.forEach(option => extraFacets.push(option.value));
+    if (extraFacets.length > 0) {
+      this.setState({ extraFacets: extraFacets });
+      this.facetsApi.facetsGet(
+        { extraFacets: extraFacets },
+        this.facetsCallback
+      );
+    } else {
+      this.setState({ extraFacets: null });
+      this.facetsApi.facetsGet({}, this.facetsCallback);
+    }
   }
 
   /**

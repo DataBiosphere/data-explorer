@@ -28,13 +28,16 @@ def _get_bucket_interval(facet):
         return _get_bucket_interval(facet.nested_facet)
 
 
-def facets_get(filter=None):  # noqa: E501
+def facets_get(filter=None, extraFacets=None):  # noqa: E501
     """facets_get
 
     Returns facets. # noqa: E501
 
     :param filter: filter represents selected facet values. Elasticsearch query will be run only over selected facet values. filter is an array of strings, where each string has the format \&quot;facetName&#x3D;facetValue\&quot;. Example url /facets?filter&#x3D;Gender&#x3D;female,Region&#x3D;northwest,Region&#x3D;southwest
     :type filter: List[str]
+
+    :param extraFacets: extra_facets represents the additional facets selected by the user from the UI.
+    :type extraFacets: List[str]
 
     :rtype: FacetsResponse
     """
@@ -44,6 +47,16 @@ def facets_get(filter=None):  # noqa: E501
     # Uncomment to print facets
     # current_app.logger.info(pprint.pformat(es_response_facets))
     facets = []
+    dummy_values = []
+    dummy_values.append(FacetValue(name="value 1", count=3))
+    dummy_values.append(FacetValue(name="value 2", count=4))
+    dummy_values.append(FacetValue(name="value 3", count=5))
+    dummy_values.append(FacetValue(name="value 4", count=6))
+    dummy_values.append(FacetValue(name="value 5", count=7))
+    if extraFacets and len(extraFacets) > 0:
+        for es_name in extraFacets:
+            facets.append(Facet(name=es_name, values=dummy_values))
+
     for name, field in current_app.config['UI_FACETS'].iteritems():
         description = field.get('description')
         es_facet = current_app.config['ELASTICSEARCH_FACETS'][name]
