@@ -1,8 +1,6 @@
 import React from "react";
 import Select from "react-select";
 
-const options = [{ label: "A", value: "A" }, { label: "B", value: "B" }];
-
 class FieldSearch extends React.Component {
   constructor(props) {
     const fields = props.fields;
