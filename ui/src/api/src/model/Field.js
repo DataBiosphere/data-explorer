@@ -21,7 +21,7 @@ import ApiClient from "../ApiClient";
 export default class Field {
   /**
    * Constructs a new <code>Field</code>.
-   * A field. For example, the Gender field would include the field name \&quot;Gender\&quot;, description \&quot;Gender of participant\&quot; and elasticsearch field name \&quot;bigquery_project.dataset.table.Gender\&quot;.
+   * A field. For example, a BigQuery Gender column could include the field name \&quot;Gender\&quot;, description \&quot;Sex at birth\&quot; and elasticsearch field name  \&quot;project_id.dataset_id.table_name.Gender\&quot;.
    * @alias module:model/Field
    * @class
    */
@@ -69,7 +69,7 @@ export default class Field {
    */
   description = undefined;
   /**
-   * The elasticsearch field name.
+   * The Elasticsearch name.
    * @member {String} elasticsearch_name
    */
   elasticsearch_name = undefined;

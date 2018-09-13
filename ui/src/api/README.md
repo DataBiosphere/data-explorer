@@ -93,7 +93,7 @@ All URIs are relative to _https://localhost_
 | _DataExplorerService.DatasetApi_   | [**datasetGet**](docs/DatasetApi.md#datasetGet)         | **GET** /dataset    |
 | _DataExplorerService.ExportUrlApi_ | [**exportUrlPost**](docs/ExportUrlApi.md#exportUrlPost) | **POST** /exportUrl |
 | _DataExplorerService.FacetsApi_    | [**facetsGet**](docs/FacetsApi.md#facetsGet)            | **GET** /facets     |
-| _DataExplorerService.FacetsApi_    | [**fieldsGet**](docs/FacetsApi.md#fieldsGet)            | **GET** /fields     |
+| _DataExplorerService.FieldsApi_    | [**fieldsGet**](docs/FieldsApi.md#fieldsGet)            | **GET** /fields     |
 
 ## Documentation for Models
 

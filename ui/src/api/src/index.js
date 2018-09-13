@@ -23,6 +23,7 @@ import FieldsResponse from "./model/FieldsResponse";
 import DatasetApi from "./api/DatasetApi";
 import ExportUrlApi from "./api/ExportUrlApi";
 import FacetsApi from "./api/FacetsApi";
+import FieldsApi from "./api/FieldsApi";
 
 /**
  * API_Service_that_reads_from_Elasticsearch_.<br>
@@ -115,5 +116,10 @@ export {
    * The FacetsApi service constructor.
    * @property {module:api/FacetsApi}
    */
-  FacetsApi
+  FacetsApi,
+  /**
+   * The FieldsApi service constructor.
+   * @property {module:api/FieldsApi}
+   */
+  FieldsApi
 };

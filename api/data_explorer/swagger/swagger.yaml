@@ -48,8 +48,8 @@ paths:
   /fields:
     get:
       tags:
-      - "Facets"
-      description: "Returns all the fields."
+      - "Fields"
+      description: "Returns dataset fields for field search."
       operationId: "fields_get"
       parameters: []
       responses:
@@ -57,7 +57,7 @@ paths:
           description: "Success"
           schema:
             $ref: "#/definitions/FieldsResponse"
-      x-swagger-router-controller: "data_explorer.controllers.facets_controller"
+      x-swagger-router-controller: "data_explorer.controllers.fields_controller"
   /exportUrl:
     post:
       tags:
@@ -171,7 +171,7 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/Field"
-    description: "Information for field exploration."
+    description: "Dataset fields for field search."
     example:
       fields:
       - name: "name"
@@ -190,10 +190,10 @@ definitions:
         description: "Optional field description."
       elasticsearch_name:
         type: "string"
-        description: "The elasticsearch field name."
-    description: "A field. For example, the Gender field would include the field name\
-      \ \"Gender\", description \"Gender of participant\" and elasticsearch field\
-      \ name \"bigquery_project.dataset.table.Gender\".\n"
+        description: "The Elasticsearch name."
+    description: "A field. For example, a BigQuery Gender column could include the\
+      \ field name \"Gender\", description \"Sex at birth\" and elasticsearch field\
+      \ name\n \"project_id.dataset_id.table_name.Gender\".\n"
     example:
       name: "name"
       description: "description"

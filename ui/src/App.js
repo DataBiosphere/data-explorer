@@ -1,5 +1,10 @@
 import "./App.css";
-import { ApiClient, DatasetApi, FacetsApi } from "data_explorer_service";
+import {
+  ApiClient,
+  DatasetApi,
+  FacetsApi,
+  FieldsApi
+} from "data_explorer_service";
 import ExportFab from "./components/ExportFab";
 import FacetsGrid from "./components/facets/FacetsGrid";
 import Header from "./components/Header";
@@ -19,12 +24,13 @@ class App extends Component {
       totalCount: null,
       filter: null,
       fields: null,
-      selectedOption: null
+      selectedFields: null
     };
 
     this.apiClient = new ApiClient();
     this.apiClient.basePath = "/api";
     this.facetsApi = new FacetsApi(this.apiClient);
+    this.fieldsApi = new FieldsApi(this.apiClient);
     this.facetsCallback = function(error, data) {
       if (error) {
         console.error(error);
@@ -37,19 +43,17 @@ class App extends Component {
       }
     }.bind(this);
 
-    this.fieldsCallBack = function(error, data) {
+    this.fieldsCallback = function(error, data) {
       if (error) {
         console.error(error);
       } else {
-        let selectFields = [];
-        data.fields.forEach(field =>
-          selectFields.push({
-            label: field.name + " - " + field.description,
-            value: field.elasticsearch_name
-          })
-        );
         this.setState({
-          fields: selectFields
+          fields: data.fields.map(field => {
+            return {
+              label: field.name + " - " + field.description,
+              value: field.elasticsearch_name
+            };
+          })
         });
       }
     }.bind(this);
@@ -98,7 +102,7 @@ class App extends Component {
 
   componentDidMount() {
     this.facetsApi.facetsGet({}, this.facetsCallback);
-    this.facetsApi.fieldsGet(this.fieldsCallBack);
+    this.fieldsApi.fieldsGet(this.fieldsCallback);
 
     // Call /api/dataset
     let datasetApi = new DatasetApi(this.apiClient);

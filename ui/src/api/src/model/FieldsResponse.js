@@ -22,7 +22,7 @@ import Field from "./Field";
 export default class FieldsResponse {
   /**
    * Constructs a new <code>FieldsResponse</code>.
-   * Information for field exploration.
+   * Dataset fields for field search.
    * @alias module:model/FieldsResponse
    * @class
    */

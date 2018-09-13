@@ -103,7 +103,7 @@ class Field(Model):
     def elasticsearch_name(self):
         """Gets the elasticsearch_name of this Field.
 
-        The elasticsearch field name.  # noqa: E501
+        The Elasticsearch name.  # noqa: E501
 
         :return: The elasticsearch_name of this Field.
         :rtype: str
@@ -114,7 +114,7 @@ class Field(Model):
     def elasticsearch_name(self, elasticsearch_name):
         """Sets the elasticsearch_name of this Field.
 
-        The elasticsearch field name.  # noqa: E501
+        The Elasticsearch name.  # noqa: E501
 
         :param elasticsearch_name: The elasticsearch_name of this Field.
         :type elasticsearch_name: str
