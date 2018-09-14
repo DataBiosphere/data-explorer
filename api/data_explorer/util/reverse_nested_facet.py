@@ -17,6 +17,7 @@ class ReverseNestedFacet(Facet):
     def __init__(self, path, nested_facet):
         self._path = path
         self._inner = nested_facet
+        self.nested_facet = nested_facet
         nested_agg = nested_facet.get_aggregation()
         nested_agg['outer'] = ReverseNested()
         super(ReverseNestedFacet, self).__init__(

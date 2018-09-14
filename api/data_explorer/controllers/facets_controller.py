@@ -3,11 +3,30 @@ import pprint
 from data_explorer.models.facet import Facet
 from data_explorer.models.facet_value import FacetValue
 from data_explorer.models.facets_response import FacetsResponse
+from data_explorer.util.dataset_faceted_search import DatasetFacetedSearch
+from data_explorer.util.reverse_nested_Facet import ReverseNestedFacet
+
 from elasticsearch_dsl import HistogramFacet
 from flask import current_app
-
-from ..util.dataset_faceted_search import DatasetFacetedSearch
 import urllib
+
+
+def _is_histogram_facet(facet):
+    if isinstance(facet, HistogramFacet):
+        return True
+    # For some reason using isinstance doesn't work here for 
+    # ReverseNestedFacet. I believe it has to do with the
+    # relative importing of the class in __main__.py where it's 
+    # created.
+    elif hasattr(facet, 'nested_facet'):
+        return _is_histogram_facet(facet.nested_facet)
+
+
+def _get_interval(facet):
+    if isinstance(facet, HistogramFacet):
+        return facet._params['interval']
+    elif hasattr(facet, 'nested_facet'):
+        return _get_interval(facet.nested_facet)
 
 
 def facets_get(filter=None):  # noqa: E501
@@ -31,20 +50,23 @@ def facets_get(filter=None):  # noqa: E501
         es_facet = current_app.config['ELASTICSEARCH_FACETS'][name]
         values = []
         for value_name, count, _ in es_response_facets[name]:
-            if isinstance(es_facet, HistogramFacet):
+            if _is_histogram_facet(es_facet):
                 # For histograms, Elasticsearch returns:
                 #   name 10: count 15     (There are 15 people aged 10-19)
                 #   name 20: count 33     (There are 33 people aged 20-29)
                 # Convert "10" -> "10-19".
-                range_str = _number_to_range(value_name,
-                                             es_facet._params['interval'])
-                values.append(FacetValue(name=range_str, count=count))
+                value_name = _number_to_range(value_name,
+                                              _get_interval(es_facet))
             else:
                 # elasticsearch-dsl returns boolean field keys as 0/1. Use the
                 # field's 'type' to convert back to boolean, if necessary.
                 if field['type'] == 'boolean':
                     value_name = bool(value_name)
-                values.append(FacetValue(name=value_name, count=count))
+            values.append(FacetValue(name=value_name, count=count))
+
+        # Add a '(samples)' text to the end of sample facet titles.
+        if hasattr(es_facet, 'nested_facet'):
+            name = '%s (samples)' % name
         facets.append(Facet(name=name, description=description, values=values))
 
     return FacetsResponse(

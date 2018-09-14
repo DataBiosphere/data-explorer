@@ -180,8 +180,8 @@ def _get_field_type(es, field_name):
         field_name]['mapping'][last_part]['type']
 
 
-def _get_field_range(es, field_name):
-    response = Search(
+def _get_field_min_max_agg(es, field_name):
+    return Search(
         using=es, index=app.app.config['INDEX_NAME']
     ).aggs.metric(
         'max',
@@ -195,8 +195,32 @@ def _get_field_range(es, field_name):
         # Don't execute query; we only care about aggregations. See
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/returning-only-agg-results.html
         field=field_name).params(size=0).execute()
-    return (response.aggregations['max']['value'] -
-            response.aggregations['min']['value'])
+
+
+# TODO(bfcrampton): Generalize this for any nested field
+def _get_samples_field_min_max_agg(es, field_name):
+    search = Search(using=es, index=app.app.config['INDEX_NAME'])
+    search.update_from_dict({
+        "aggs": {
+            "parent": {
+                "nested": {"path" : "samples"},
+                "aggs": {
+                    "max": {
+                        "max": {"field": field_name}
+                    },
+                    "min": {
+                        "min": {"field": field_name}
+                    }
+                }
+            }
+        }
+    })
+    return search.params(size=0).execute()
+
+
+def _get_field_range(es, field_name):
+    response = _get_samples_field_min_max_agg(es, field_name) if field_name.startswith('samples.') else _get_field_min_max_agg(es, field_name)
+    return (response.aggregations.parent['max']['value'] - response.aggregations.parent['min']['value'])
 
 
 def _get_bucket_interval(field_range):
@@ -304,21 +328,21 @@ def _process_bigquery():
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                'bigquery.json')
     table_names = []
-    participant_id_col = ''
-    sample_id_col = ''
-    sample_file_cols = []
+    participant_id_column = ''
+    sample_id_column = ''
+    sample_file_columns = []
     if os.path.isfile(config_path):
         bigquery_config = _parse_json_file(config_path)
         table_names = bigquery_config['table_names']
-        participant_id_col = bigquery_config['participant_id_column']
-        sample_id_col = bigquery_config['sample_id_column']
+        participant_id_column = bigquery_config['participant_id_column']
+        sample_id_column = bigquery_config['sample_id_column']
         samle_file_cols = bigquery_config.get('sample_file_columns', [])
         table_names.sort()
 
     app.app.config['TABLE_NAMES'] = table_names
-    app.app.config['PARTICIPANT_ID_COL'] = participant_id_col
-    app.app.config['SAMPLE_ID_COL'] = sample_id_col
-    app.app.config['SAMPLE_FILE_COLS'] = samle_file_cols
+    app.app.config['PARTICIPANT_ID_COLUMN'] = participant_id_column
+    app.app.config['SAMPLE_ID_COLUMN'] = sample_id_column
+    app.app.config['SAMPLE_FILE_COLUMNS'] = sample_file_columns
 
 
 def _process_export_url():

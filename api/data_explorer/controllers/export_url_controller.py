@@ -200,7 +200,7 @@ def _get_filter_query(filters):
             table_columns[table_name] = {column: [clause]}
 
     table_selects = list()
-    participant_id_col = current_app.config['PARTICIPANT_ID_COL']
+    participant_id_column = current_app.config['PARTICIPANT_ID_COLUMN']
     for table_name, columns in table_columns.iteritems():
         table_select = "(SELECT %s FROM `%s` WHERE %s)"
         where_clause = ""
@@ -214,16 +214,16 @@ def _get_filter_query(filters):
                 where_clause = where_clause + " AND "
             where_clause = where_clause + "(" + column_clause + ")"
         table_selects.append(
-            table_select % (participant_id_col, table_name, where_clause))
+            table_select % (participant_id_column, table_name, where_clause))
 
-    query = "SELECT DISTINCT t1.%s FROM " % participant_id_col
+    query = "SELECT DISTINCT t1.%s FROM " % participant_id_column
     cnt = 1
     for table_select in table_selects:
         table = "%s t%d" % (table_select, cnt)
         join = " INNER JOIN %s ON t%d.%s = t%d.%s"
         if cnt > 1:
-            query = query + join % (table, cnt - 1, participant_id_col, cnt,
-                                    participant_id_col)
+            query = query + join % (table, cnt - 1, participant_id_column, cnt,
+                                    participant_id_column)
         else:
             query = query + table
         cnt = cnt + 1

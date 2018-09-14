@@ -82,8 +82,8 @@ describe("End-to-end", () => {
         // Elasticsearch has come up. Now wait for test data to be indexed.
         // There are 7000 docs because each nested sample is stored as a 
         // separate document.
-        await page.goto("http://localhost:9200/_stats/docs");
-        await page.waitForXPath("//*[contains(text(), '7000')]");
+        await page.goto("http://localhost:9200/1000_genomes/type/_count");
+        await page.waitForXPath("//*[contains(text(), '3500')]");
         console.log(
           "Servers up and test data indexed after " + i + " seconds."
         );
