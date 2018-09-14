@@ -203,13 +203,19 @@ def _get_samples_field_min_max_agg(es, field_name):
     search.update_from_dict({
         "aggs": {
             "parent": {
-                "nested": {"path" : "samples"},
+                "nested": {
+                    "path": "samples"
+                },
                 "aggs": {
                     "max": {
-                        "max": {"field": field_name}
+                        "max": {
+                            "field": field_name
+                        }
                     },
                     "min": {
-                        "min": {"field": field_name}
+                        "min": {
+                            "field": field_name
+                        }
                     }
                 }
             }
@@ -219,8 +225,11 @@ def _get_samples_field_min_max_agg(es, field_name):
 
 
 def _get_field_range(es, field_name):
-    response = _get_samples_field_min_max_agg(es, field_name) if field_name.startswith('samples.') else _get_field_min_max_agg(es, field_name)
-    return (response.aggregations.parent['max']['value'] - response.aggregations.parent['min']['value'])
+    response = _get_samples_field_min_max_agg(
+        es, field_name) if field_name.startswith(
+            'samples.') else _get_field_min_max_agg(es, field_name)
+    return (response.aggregations.parent['max']['value'] -
+            response.aggregations.parent['min']['value'])
 
 
 def _get_bucket_interval(field_range):
