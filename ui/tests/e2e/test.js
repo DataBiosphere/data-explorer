@@ -19,7 +19,7 @@ describe("End-to-end", () => {
   });
 
   test("Click on participant facet", async () => {
-    // Click first on a participant facet.
+    // Click on a participant facet.
     let facetValueRow = await getFacetValueRow("Super Population", "African");
     await facetValueRow.click("input");
     // Wait for data to be returned from backend.
@@ -33,14 +33,14 @@ describe("End-to-end", () => {
     await assertFacet("Gender", "1018", "male", "518");
     await assertFacet("Total Exome Sequence", "707", "0B-10B", "435");
 
-    // Make sure non-selected facets are gray.
+    // Make sure non-selected facet values are gray.
     facetValueRow = await getFacetValueRow("Super Population", "European");
     const grayDiv = await facetValueRow.$("div.grayText");
     expect(grayDiv).toBeTruthy();
   });
 
   test("Click on sample facet", async () => {
-    // Click first on a sample facet.
+    // Click on a sample facet.
     let facetValueRow = await getFacetValueRow("Total Low Coverage Sequence", "10B-20B");
     await facetValueRow.click("input");
     // Wait for data to be returned from backend.
@@ -54,7 +54,7 @@ describe("End-to-end", () => {
     await assertFacet("Super Population", "1122", "African", "281");
     await assertFacet("Total Exome Sequence", "1108", "0B-10B", "682");
 
-    // Make sure non-selected facets are gray.
+    // Make sure non-selected facet values are gray.
     facetValueRow = await getFacetValueRow("Total Low Coverage Sequence", "0B-10B");
     const grayDiv = await facetValueRow.$("div.grayText");
     expect(grayDiv).toBeTruthy();

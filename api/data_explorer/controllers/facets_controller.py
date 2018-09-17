@@ -62,10 +62,6 @@ def facets_get(filter=None):  # noqa: E501
                 if field['type'] == 'boolean':
                     value_name = bool(value_name)
             values.append(FacetValue(name=value_name, count=count))
-
-        # Add a '(samples)' text to the end of sample facet titles.
-        # if hasattr(es_facet, 'nested_facet'):
-        #     name = '%s (samples)' % name
         facets.append(Facet(name=name, description=description, values=values))
 
     return FacetsResponse(
