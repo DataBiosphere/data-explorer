@@ -22,7 +22,7 @@ from elasticsearch_dsl import TermsFacet
 from google.cloud import storage
 
 from .encoder import JSONEncoder
-import dataset_faceted_search
+from util.reverse_nested_facet import ReverseNestedFacet
 
 # gunicorn flags are passed via env variables, so we use these as the default
 # values. These arguments will rarely be specified as flags directly, aside from
@@ -180,8 +180,8 @@ def _get_field_type(es, field_name):
         field_name]['mapping'][last_part]['type']
 
 
-def _get_field_range(es, field_name):
-    response = Search(
+def _get_field_min_max_agg(es, field_name):
+    return Search(
         using=es, index=app.app.config['INDEX_NAME']
     ).aggs.metric(
         'max',
@@ -195,8 +195,42 @@ def _get_field_range(es, field_name):
         # Don't execute query; we only care about aggregations. See
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/returning-only-agg-results.html
         field=field_name).params(size=0).execute()
-    return (response.aggregations['max']['value'] -
-            response.aggregations['min']['value'])
+
+
+# TODO(bfcrampton): Generalize this for any nested field
+def _get_samples_field_min_max_agg(es, field_name):
+    search = Search(using=es, index=app.app.config['INDEX_NAME'])
+    search.update_from_dict({
+        "aggs": {
+            "parent": {
+                "nested": {
+                    "path": "samples"
+                },
+                "aggs": {
+                    "max": {
+                        "max": {
+                            "field": field_name
+                        }
+                    },
+                    "min": {
+                        "min": {
+                            "field": field_name
+                        }
+                    }
+                }
+            }
+        }
+    })
+    return search.params(size=0).execute()
+
+
+def _get_field_range(es, field_name):
+    if field_name.startswith('samples.'):
+        response = _get_samples_field_min_max_agg(es, field_name)
+    else:
+        response = _get_field_min_max_agg(es, field_name)
+    return (response.aggregations.parent['max']['value'] -
+            response.aggregations.parent['min']['value'])
 
 
 def _get_bucket_interval(field_range):
@@ -252,6 +286,8 @@ def _process_facets():
         elasticsearch_field_name = facet_config['elasticsearch_field_name']
         field_type = _get_field_type(es, elasticsearch_field_name)
         ui_facet_name = facet_config['ui_facet_name']
+        if elasticsearch_field_name.startswith('samples.'):
+            ui_facet_name = '%s (samples)' % ui_facet_name
 
         ui_facets[ui_facet_name] = {
             'elasticsearch_field_name': elasticsearch_field_name,
@@ -284,6 +320,12 @@ def _process_facets():
                 field=elasticsearch_field_name,
                 interval=_get_bucket_interval(field_range))
 
+        # Handle sample facets in a special way since they are nested objects.
+        if elasticsearch_field_name.startswith('samples.'):
+            app.app.logger.info('Nesting facet: %s' % es_facets[ui_facet_name])
+            es_facets[ui_facet_name] = ReverseNestedFacet(
+                'samples', es_facets[ui_facet_name])
+
     app.app.logger.info('Elasticsearch facets: %s' % es_facets)
     app.app.config['ELASTICSEARCH_FACETS'] = es_facets
     app.app.logger.info('UI facets: %s' % ui_facets)
@@ -293,19 +335,26 @@ def _process_facets():
 def _process_bigquery():
     """Gets an alphabetically ordered list of table names from bigquery.json.
     Table names are fully qualified: <project id>.<dataset id>.<table name>
-    If bigquery.json doesn't exist, this returns an empty list.
+    If bigquery.json doesn't exist, no configuration paramters are set.
     """
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                'bigquery.json')
     table_names = []
-    primary_key = ""
+    participant_id_column = ''
+    sample_id_column = ''
+    sample_file_columns = []
     if os.path.isfile(config_path):
         bigquery_config = _parse_json_file(config_path)
         table_names = bigquery_config['table_names']
-        primary_key = bigquery_config['primary_key']
+        participant_id_column = bigquery_config['participant_id_column']
+        sample_id_column = bigquery_config['sample_id_column']
+        samle_file_cols = bigquery_config.get('sample_file_columns', [])
         table_names.sort()
+
     app.app.config['TABLE_NAMES'] = table_names
-    app.app.config['PRIMARY_KEY'] = primary_key
+    app.app.config['PARTICIPANT_ID_COLUMN'] = participant_id_column
+    app.app.config['SAMPLE_ID_COLUMN'] = sample_id_column
+    app.app.config['SAMPLE_FILE_COLUMNS'] = sample_file_columns
 
 
 def _process_export_url():
