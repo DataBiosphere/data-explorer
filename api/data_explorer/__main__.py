@@ -225,9 +225,10 @@ def _get_samples_field_min_max_agg(es, field_name):
 
 
 def _get_field_range(es, field_name):
-    response = _get_samples_field_min_max_agg(
-        es, field_name) if field_name.startswith(
-            'samples.') else _get_field_min_max_agg(es, field_name)
+    if field_name.startswith('samples.'):
+        response = _get_samples_field_min_max_agg(es, field_name)
+    else:
+        response = _get_field_min_max_agg(es, field_name)
     return (response.aggregations.parent['max']['value'] -
             response.aggregations.parent['min']['value'])
 

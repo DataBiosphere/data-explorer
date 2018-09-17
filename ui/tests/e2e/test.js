@@ -18,8 +18,8 @@ describe("End-to-end", () => {
     await assertFacet("Gender", "3500", "female", "1760");
   });
 
-  test("Faceted search", async () => {
-    // Click first Super Population facet value.
+  test("Click on participant facet", async () => {
+    // Click first on a participant facet.
     let facetValueRow = await getFacetValueRow("Super Population", "African");
     await facetValueRow.click("input");
     // Wait for data to be returned from backend.
@@ -33,8 +33,29 @@ describe("End-to-end", () => {
     await assertFacet("Gender", "1018", "male", "518");
     await assertFacet("Total Exome Sequence", "707", "0B-10B", "435");
 
-    // Make sure second Super Population facet value is gray.
+    // Make sure non-selected facets are gray.
     facetValueRow = await getFacetValueRow("Super Population", "European");
+    const grayDiv = await facetValueRow.$("div.grayText");
+    expect(grayDiv).toBeTruthy();
+  });
+
+  test("Click on sample facet", async () => {
+    // Click first on a sample facet.
+    let facetValueRow = await getFacetValueRow("Total Low Coverage Sequence", "10B-20B");
+    await facetValueRow.click("input");
+    // Wait for data to be returned from backend.
+    // See #63 for why we can't wait for div.grayText.
+    await page.waitForXPath(
+      "//div[contains(@class, 'totalCountText') and text() = '1122']"
+    );
+
+    // Assert page updated correctly.
+    await assertHeaderTotalCount("1122");
+    await assertFacet("Super Population", "1122", "African", "281");
+    await assertFacet("Total Exome Sequence", "1108", "0B-10B", "682");
+
+    // Make sure non-selected facets are gray.
+    facetValueRow = await getFacetValueRow("Total Low Coverage Sequence", "0B-10B");
     const grayDiv = await facetValueRow.$("div.grayText");
     expect(grayDiv).toBeTruthy();
   });
@@ -80,8 +101,6 @@ describe("End-to-end", () => {
           "http://localhost:9200/_cluster/health?wait_for_status=yellow"
         );
         // Elasticsearch has come up. Now wait for test data to be indexed.
-        // There are 7000 docs because each nested sample is stored as a 
-        // separate document.
         await page.goto("http://localhost:9200/1000_genomes/type/_count");
         await page.waitForXPath("//*[contains(text(), '3500')]");
         console.log(

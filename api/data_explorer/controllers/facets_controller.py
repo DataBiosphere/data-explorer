@@ -21,11 +21,11 @@ def _is_histogram_facet(facet):
         return _is_histogram_facet(facet.nested_facet)
 
 
-def _get_interval(facet):
+def _get_bucket_interval(facet):
     if isinstance(facet, HistogramFacet):
         return facet._params['interval']
     elif hasattr(facet, 'nested_facet'):
-        return _get_interval(facet.nested_facet)
+        return _get_bucket_interval(facet.nested_facet)
 
 
 def facets_get(filter=None):  # noqa: E501
@@ -55,7 +55,7 @@ def facets_get(filter=None):  # noqa: E501
                 #   name 20: count 33     (There are 33 people aged 20-29)
                 # Convert "10" -> "10-19".
                 value_name = _number_to_range(value_name,
-                                              _get_interval(es_facet))
+                                              _get_bucket_interval(es_facet))
             else:
                 # elasticsearch-dsl returns boolean field keys as 0/1. Use the
                 # field's 'type' to convert back to boolean, if necessary.
@@ -64,8 +64,8 @@ def facets_get(filter=None):  # noqa: E501
             values.append(FacetValue(name=value_name, count=count))
 
         # Add a '(samples)' text to the end of sample facet titles.
-        if hasattr(es_facet, 'nested_facet'):
-            name = '%s (samples)' % name
+        # if hasattr(es_facet, 'nested_facet'):
+        #     name = '%s (samples)' % name
         facets.append(Facet(name=name, description=description, values=values))
 
     return FacetsResponse(
@@ -88,7 +88,7 @@ def deserialize(filter_arr):
         name = key_val[0]
 
         es_facet = current_app.config['ELASTICSEARCH_FACETS'][name]
-        if isinstance(es_facet, HistogramFacet):
+        if _is_histogram_facet(es_facet):
             value = _range_to_number(key_val[1])
         else:
             value = key_val[1]
