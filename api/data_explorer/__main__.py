@@ -286,6 +286,8 @@ def _process_facets():
         elasticsearch_field_name = facet_config['elasticsearch_field_name']
         field_type = _get_field_type(es, elasticsearch_field_name)
         ui_facet_name = facet_config['ui_facet_name']
+        if elasticsearch_field_name.startswith('samples.'):
+            ui_facet_name = '%s (samples)' % ui_facet_name
 
         ui_facets[ui_facet_name] = {
             'elasticsearch_field_name': elasticsearch_field_name,
