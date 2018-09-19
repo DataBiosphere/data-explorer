@@ -22,13 +22,9 @@ class FieldsResponse(Model):
         :param fields: The fields of this FieldsResponse.  # noqa: E501
         :type fields: List[Field]
         """
-        self.swagger_types = {
-            'fields': List[Field]
-        }
+        self.swagger_types = {'fields': List[Field]}
 
-        self.attribute_map = {
-            'fields': 'fields'
-        }
+        self.attribute_map = {'fields': 'fields'}
 
         self._fields = fields
 
