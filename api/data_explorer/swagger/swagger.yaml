@@ -39,15 +39,6 @@ paths:
         items:
           type: "string"
         collectionFormat: "pipes"
-      - name: "extraFacets"
-        in: "query"
-        description: "extraFacets represents the fields selected from the field search\
-          \ box."
-        required: false
-        type: "array"
-        items:
-          type: "string"
-        collectionFormat: "pipes"
       responses:
         200:
           description: "Success"

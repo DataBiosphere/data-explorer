@@ -48,6 +48,12 @@ class App extends Component {
       } else {
         this.setState({
           fields: data.fields.map(field => {
+            if (field.description == null || field.description === "") {
+              return {
+                label: field.name,
+                value: field.elasticsearch_name
+              };
+            }
             return {
               label: field.name + " - " + field.description,
               value: field.elasticsearch_name
@@ -118,16 +124,7 @@ class App extends Component {
   handleChange(selectedOption) {
     let extraFacets = [];
     selectedOption.forEach(option => extraFacets.push(option.value));
-    if (extraFacets.length > 0) {
-      this.setState({ extraFacets: extraFacets });
-      this.facetsApi.facetsGet(
-        { extraFacets: extraFacets },
-        this.facetsCallback
-      );
-    } else {
-      this.setState({ extraFacets: null });
-      this.facetsApi.facetsGet({}, this.facetsCallback);
-    }
+    console.log(extraFacets);
   }
 
   /**
