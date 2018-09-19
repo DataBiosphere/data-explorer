@@ -23,15 +23,9 @@ class FacetValue(Model):
         :param count: The count of this FacetValue.  # noqa: E501
         :type count: int
         """
-        self.swagger_types = {
-            'name': str,
-            'count': int
-        }
+        self.swagger_types = {'name': str, 'count': int}
 
-        self.attribute_map = {
-            'name': 'name',
-            'count': 'count'
-        }
+        self.attribute_map = {'name': 'name', 'count': 'count'}
 
         self._name = name
         self._count = count
