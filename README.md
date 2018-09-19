@@ -112,13 +112,13 @@ for your dataset.
 `deploy.json` will still need to be filled out. A temporary file will be written to a
 GCS bucket in the project in `deploy.json`, even for local deployment of Data
 Explorer. Choose a project where you have at least Project Editor permissions.
-* Create export bucket. This only needs to be done once per deploy project.  
-`deploy/create-export-url-bucket.sh DATASET`, where `DATASET` is the name of
-the directory in `dataset_config`.
+* Create export bucket. This only needs to be done once per deploy project.
+Run `deploy/create-export-url-bucket.sh DATASET` from the root of the repo,
+where `DATASET` is the name of the directory in `dataset_config`.
 * The Export to Saturn feature requires a service account private key. Follow
 these instructions to download a key. This needs to be done once per person
-per dataset. If three people run Data Explorer
-for dataset D, all three need to download a key for dataset D.
+per deploy project. If three people run Data Explorer with the same deploy
+project, then all three need to download a key for the deploy project.
   * Go to the [Service Accounts page](http://cloud.console.google.com/iam-admin/serviceaccounts)
   for your deploy project.
   * Click on the three-dot Actions menu for the
