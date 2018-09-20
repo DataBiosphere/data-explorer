@@ -345,7 +345,7 @@ def _process_bigquery():
         table_names = bigquery_config['table_names']
         participant_id_column = bigquery_config['participant_id_column']
         sample_id_column = bigquery_config.get('sample_id_column', '')
-        sample_file_columns = bigquery_config.get('sample_file_columns', [])
+        sample_file_columns = bigquery_config.get('sample_file_columns', {})
         table_names.sort()
 
     app.app.config['TABLE_NAMES'] = table_names
