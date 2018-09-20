@@ -28,7 +28,7 @@
     "bryancrampton-testing.data_explorer.1000_genomes_sample_info"
   ],
 
-  "participant_id_column": "participant_id",
+  "participant_id_column": "Sample",
   "sample_id_column": "sample_id",
 
   "sample_file_columns": {
