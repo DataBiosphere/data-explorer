@@ -322,13 +322,10 @@ def _process_facets():
 
         # Handle sample facets in a special way since they are nested objects.
         if elasticsearch_field_name.startswith('samples.'):
-            app.app.logger.info('Nesting facet: %s' % es_facets[ui_facet_name])
             es_facets[ui_facet_name] = ReverseNestedFacet(
                 'samples', es_facets[ui_facet_name])
 
-    app.app.logger.info('Elasticsearch facets: %s' % es_facets)
     app.app.config['ELASTICSEARCH_FACETS'] = es_facets
-    app.app.logger.info('UI facets: %s' % ui_facets)
     app.app.config['UI_FACETS'] = ui_facets
 
 
@@ -416,6 +413,8 @@ def init():
     _process_facets()
     _process_bigquery()
     _process_export_url()
+
+    app.app.logger.info('app.app.config: %s' % app.app.config)
 
 
 if __name__ == '__main__':
