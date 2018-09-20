@@ -165,11 +165,11 @@ def _get_range_clause(column, value):
     return column + " >= " + str(low) + " AND " + column + " < " + str(high)
 
 
-def _get_clause(column, field_type, value, is_sample_file_column):
+def _get_clause(column, field_type, value, has_sample_file_type_field):
     """Returns a single condition of a WHERE clause,
     eg "((age76 >= 20 AND age76 < 30) OR (age76 >= 30 AND age76 < 40))".
     """
-    if is_sample_file_column:
+    if has_sample_file_type_field:
         clause = '%s IS NOT NULL' % column
     elif field_type == 'text':
         clause = '%s = "%s"' % (column, value)
@@ -187,36 +187,35 @@ def _get_facet_and_value(filter):
 
 
 def _get_table_name_column(es_field_name, sample_file_column_fields):
-    is_sample_file_column = False
+    has_sample_file_type_field = False
     if es_field_name.startswith('samples.'):
         es_field_name = es_field_name.replace('samples.', '')
         # Check if this is one of the special '_has_<file_type>' facets.
         stripped = es_field_name.replace('_has_', '')
         if stripped in sample_file_column_fields:
             es_field_name = sample_file_column_fields[stripped]
-            is_sample_file_column = True
+            has_sample_file_type_field = True
 
     split = es_field_name.rsplit('.', 1)
-    return split[0], split[1], is_sample_file_column
+    return split[0], split[1], has_sample_file_type_field
 
 
 def _get_filter_query(filters):
+    if not filters or not len(filters):
+        return ''
+
     sample_file_column_fields = {
         k.lower().replace(" ", "_"): v
         for k, v in current_app.config['SAMPLE_FILE_COLUMNS'].iteritems()
     }
 
-    current_app.logger.info('FILTERSSSS: %s' % filters)
-    if not filters or not len(filters):
-        return ''
-
     table_columns = dict()
     for filter in filters:
         facet, filter_value = _get_facet_and_value(filter)
-        table_name, column, is_sample_file_column = _get_table_name_column(
+        table_name, column, has_sample_file_type_field = _get_table_name_column(
             facet['elasticsearch_field_name'], sample_file_column_fields)
         clause = _get_clause(column, facet['type'], filter_value,
-                             is_sample_file_column)
+                             has_sample_file_type_field)
         if table_name in table_columns:
             if column in table_columns[table_name]:
                 table_columns[table_name][column].append(clause)
