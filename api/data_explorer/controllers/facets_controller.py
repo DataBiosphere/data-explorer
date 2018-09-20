@@ -4,6 +4,7 @@ import urllib
 from collections import OrderedDict
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import HistogramFacet
+from elasticsearch_dsl.faceted_search import NestedFacet
 from flask import current_app
 
 from data_explorer.models.facet import Facet
@@ -12,23 +13,22 @@ from data_explorer.models.facets_response import FacetsResponse
 from data_explorer.util import elasticsearch_util
 from data_explorer.util.dataset_faceted_search import DatasetFacetedSearch
 
+from flask import current_app
+import urllib
+
 
 def _is_histogram_facet(facet):
     if isinstance(facet, HistogramFacet):
         return True
-    # For some reason using isinstance doesn't work here for
-    # ReverseNestedFacet. I believe it has to do with the
-    # relative importing of the class in __main__.py where it's
-    # created.
-    elif hasattr(facet, 'nested_facet'):
-        return _is_histogram_facet(facet.nested_facet)
+    elif isinstance(facet, NestedFacet):
+        return _is_histogram_facet(facet._inner)
 
 
 def _get_bucket_interval(facet):
     if isinstance(facet, HistogramFacet):
         return facet._params['interval']
-    elif hasattr(facet, 'nested_facet'):
-        return _get_bucket_interval(facet.nested_facet)
+    elif isinstance(facet, NestedFacet):
+        return _get_bucket_interval(facet._inner)
 
 
 def _process_extra_facets(extra_facets):
