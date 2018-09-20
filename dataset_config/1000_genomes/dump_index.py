@@ -6,13 +6,15 @@ from elasticsearch.helpers import scan
 
 ES_URL = 'http://localhost:9200'
 OUTPUT_INDEX_FILE = 'dataset_config/1000_genomes/index.json'
-OUTPU_FIELDS_INDEX_FILE = 'dataset_config/1000_genomes/fields.json'
+OUTPUT_FIELDS_INDEX_FILE = 'dataset_config/1000_genomes/fields.json'
 OUTPUT_MAPPINGS_FILE = 'dataset_config/1000_genomes/mappings.json'
 INDEX = '1000_genomes'
 FIELDS_INDEX = '1000_genomes_fields'
 DOC_TYPE = 'type'
 
 client = Elasticsearch([ES_URL])
+
+print('Dumping index')
 
 index_file = open(OUTPUT_INDEX_FILE, 'w')
 for row in scan(client, query={}, index=INDEX, doc_type=DOC_TYPE):
@@ -22,7 +24,9 @@ for row in scan(client, query={}, index=INDEX, doc_type=DOC_TYPE):
 index_file.close()
 
 fields_index_file = open(OUTPUT_FIELDS_INDEX_FILE, 'w')
+print("Opened the fields index")
 for row in scan(client, query={}, index=FIELDS_INDEX, doc_type=DOC_TYPE):
+    print(row)
     json.dump(row, fields_index_file)
     fields_index_file.write('\n')
 
