@@ -34,7 +34,7 @@ class TestExportUrlController(BaseTestCase):
             '/exportUrl',
             data=json.dumps({
                 'cohortName': 'test',
-                'filter': ['Age=34']
+                'filter': ['Age=34', 'Low Coverage Center (samples)=SC']
             }),
             content_type='application/json')
         self.assert200(response)
