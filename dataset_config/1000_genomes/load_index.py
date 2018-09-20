@@ -89,7 +89,7 @@ def main():
                 '_source': record['_source'],
             }
             actions.append(action)
-        
+
     with open(FIELDS_INDEX_JSON) as f:
         for line in f:
             # Each line contains a JSON document. See
