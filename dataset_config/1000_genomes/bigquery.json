@@ -24,10 +24,11 @@
 //   format is: <project>.<dataset>.<table>.<column>
 {
   "table_names": [
-    "bigquery-public-data.human_genome_variants.1000_genomes_sample_info"
+    "bryancrampton-testing.data_explorer.1000_genomes_participant_info",
+    "bryancrampton-testing.data_explorer.1000_genomes_sample_info"
   ],
 
-  "participant_id_column": "Sample",
+  "participant_id_column": "participant_id",
   "sample_id_column": "sample_id",
 
   "sample_file_columns": {
