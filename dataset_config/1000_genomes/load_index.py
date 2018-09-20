@@ -17,6 +17,8 @@ from elasticsearch.exceptions import ConnectionError
 
 INDEX_NAME = '1000_genomes'
 INDEX_JSON = 'index.json'
+FIELDS_INDEX_NAME = '1000_genomes_fields'
+FIELDS_INDEX_JSON = 'fields.json'
 MAPPINGS_JSON = 'mappings.json'
 ES_TIMEOUT_SEC = 60
 
@@ -54,6 +56,21 @@ def init_elasticsearch():
     with open(MAPPINGS_JSON) as f:
         mappings = json.loads(f.next())
     es.indices.create(index=INDEX_NAME, body=mappings)
+
+    print('Deleting %s index.' % FIELDS_INDEX_NAME)
+    try:
+        es.indices.delete(index=FIELDS_INDEX_NAME)
+    except Exception as e:
+        # Sometimes delete fails even though index exists. Add logging to help
+        # debug.
+        print('Deleting %s index failed: %s' % (FIELDS_INDEX_NAME, e))
+        # Ignore 404: index not found
+        index = es.indices.get(index=FIELDS_INDEX_NAME, ignore=404)
+        print('es.indices.get(index=%s): %s' % (FIELDS_INDEX_NAME, index))
+        pass
+    print('Creating %s index.' % FIELDS_INDEX_NAME)
+    es.indices.create(index=FIELDS_INDEX_NAME)
+
     return es
 
 
@@ -68,6 +85,19 @@ def main():
             action = {
                 '_id': record['_id'],
                 '_index': INDEX_NAME,
+                '_type': 'type',
+                '_source': record['_source'],
+            }
+            actions.append(action)
+        
+    with open(FIELDS_INDEX_JSON) as f:
+        for line in f:
+            # Each line contains a JSON document. See
+            # https://github.com/taskrabbit/elasticsearch-dump#dump-format
+            record = json.loads(line)
+            action = {
+                '_id': record['_id'],
+                '_index': FIELDS_INDEX_NAME,
                 '_type': 'type',
                 '_source': record['_source'],
             }
