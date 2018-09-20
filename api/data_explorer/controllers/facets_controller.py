@@ -28,6 +28,11 @@ def _get_bucket_interval(facet):
         return _get_bucket_interval(facet.nested_facet)
 
 
+def _process_extra_facets(extra_facets):
+    if extra_facets:
+        for extra_facet in extra_facets:
+
+
 def facets_get(filter=None, extraFacets=None):  # noqa: E501
     """facets_get
 
@@ -41,22 +46,14 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
 
     :rtype: FacetsResponse
     """
-    search = DatasetFacetedSearch(deserialize(filter))
+    _process_extra_facets(extraFacets)
+    search = DatasetFacetedSearch(deserialize(filter),
+     current_app.config['EXTRA_FACETS'])
     es_response = search.execute()
     es_response_facets = es_response.facets.to_dict()
     # Uncomment to print facets
-    # current_app.logger.info(pprint.pformat(es_response_facets))
+    current_app.logger.info(pprint.pformat(es_response_facets))
     facets = []
-    dummy_values = []
-    dummy_values.append(FacetValue(name="value 1", count=3))
-    dummy_values.append(FacetValue(name="value 2", count=4))
-    dummy_values.append(FacetValue(name="value 3", count=5))
-    dummy_values.append(FacetValue(name="value 4", count=6))
-    dummy_values.append(FacetValue(name="value 5", count=7))
-    if extraFacets and len(extraFacets) > 0:
-        for es_name in extraFacets:
-            facets.append(Facet(name=es_name, values=dummy_values))
-
     for name, field in current_app.config['UI_FACETS'].iteritems():
         description = field.get('description')
         es_facet = current_app.config['ELASTICSEARCH_FACETS'][name]

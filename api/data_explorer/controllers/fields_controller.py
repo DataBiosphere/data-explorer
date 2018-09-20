@@ -1,6 +1,10 @@
 from data_explorer.models.field import Field
 from data_explorer.models.fields_response import FieldsResponse
 
+from flask import current_app
+from elasticsearch import Elasticsearch
+from elasticsearch_dsl import Search
+
 
 def fields_get():
     """fields_get
