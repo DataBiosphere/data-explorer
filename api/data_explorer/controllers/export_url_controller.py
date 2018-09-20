@@ -203,7 +203,7 @@ def _get_table_name_column(es_field_name, sample_file_column_fields):
 def _get_filter_query(filters):
     sample_file_column_fields = {
         k.lower().replace(" ", "_"): v
-        for k,v in current_app.config['SAMPLE_FILE_COLUMNS'].iteritems()
+        for k, v in current_app.config['SAMPLE_FILE_COLUMNS'].iteritems()
     }
 
     current_app.logger.info('FILTERSSSS: %s' % filters)
@@ -215,7 +215,8 @@ def _get_filter_query(filters):
         facet, filter_value = _get_facet_and_value(filter)
         table_name, column, is_sample_file_column = _get_table_name_column(
             facet['elasticsearch_field_name'], sample_file_column_fields)
-        clause = _get_clause(column, facet['type'], filter_value, is_sample_file_column)
+        clause = _get_clause(column, facet['type'], filter_value,
+                             is_sample_file_column)
         if table_name in table_columns:
             if column in table_columns[table_name]:
                 table_columns[table_name][column].append(clause)

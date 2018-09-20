@@ -17,13 +17,22 @@ class TestExportUrlController(BaseTestCase):
             'bucket',
             'TABLE_NAMES': ['project_id.dataset_id.table_name'],
             'PARTICIPANT_ID_COLUMN':
-            "primary_key",
+            'primary_key',
+            'SAMPLE_FILE_COLUMNS': {
+                'Chr 1 VCF': 'project_id.dataset_id.table_name.sample_type',
+            },
             'UI_FACETS': {
                 'Age': {
                     'type':
                     'text',
                     'elasticsearch_field_name':
-                    'project_id.dataset_id.table_name.Age'
+                    'project_id.dataset_id.table_name.age'
+                },
+                'Has Chr 1 VCF (samples)': {
+                    'type':
+                    'boolean',
+                    'elasticsearch_field_name':
+                    'samples.project_id.dataset_id.table_name.sample_type'
                 }
             }
         })
@@ -33,8 +42,9 @@ class TestExportUrlController(BaseTestCase):
         response = self.client.post(
             '/exportUrl',
             data=json.dumps({
-                'cohortName': 'test',
-                'filter': ['Age=34', 'Low Coverage Center (samples)=SC']
+                'cohortName':
+                'test',
+                'filter': ['Age=34', 'Has Chr 1 VCF (samples)=True']
             }),
             content_type='application/json')
         self.assert200(response)
