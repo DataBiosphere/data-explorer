@@ -1,5 +1,3 @@
-import pprint
-
 from data_explorer.models.field import Field
 from data_explorer.models.fields_response import FieldsResponse
 
@@ -19,7 +17,9 @@ def fields_get():
     es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
     search = Search(
         using=es, index=current_app.config['INDEX_NAME'] + '_fields')
-    response = search.execute()
+    # Default number of results is 10. We want to get 100.
+    search = search[0:100]
+    response = search.sort('name.keyword').execute()
     response_fields = response.to_dict()
 
     fields = []
