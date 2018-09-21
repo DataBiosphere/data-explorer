@@ -1,5 +1,6 @@
 """Subclass of FacetedSearch for Data Explorer datasets."""
 
+from collections import OrderedDict
 from flask import current_app
 
 from elasticsearch import Elasticsearch
@@ -9,14 +10,14 @@ from elasticsearch_dsl import FacetedSearch
 class DatasetFacetedSearch(FacetedSearch):
     """Subclass of FacetedSearch for Datasets."""
 
-    def __init__(self, filters={}):
+    def __init__(self, filters={}, extra_facets={}):
         """
         :param filters: a dictionary of facet_name:[object] values to filter
         the query on.
         Ex: {'Region':['southeast', 'northwest'], 'Gender':['male']}.
         """
         self.index = current_app.config['INDEX_NAME']
-        self.facets = current_app.config['ELASTICSEARCH_FACETS']
+        self.facets = OrderedDict(current_app.config['ELASTICSEARCH_FACETS'].items() + extra_facets.items())
         self.using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
         # Now that using is set, create _s.
         super(DatasetFacetedSearch, self).__init__(None, filters)

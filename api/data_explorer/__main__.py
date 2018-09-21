@@ -8,6 +8,8 @@ import logging
 import os
 import time
 
+from flask import current_app
+
 from collections import OrderedDict
 import connexion
 from elasticsearch import Elasticsearch
@@ -152,33 +154,6 @@ def _process_ui():
         app.app.config['ENABLE_FIELD_SEARCH'] = True
 
 
-# TODO(bfcrampton): Generalize this for any nested field
-def _get_samples_field_min_max_agg(es, field_name):
-    search = Search(using=es, index=app.app.config['INDEX_NAME'])
-    search.update_from_dict({
-        "aggs": {
-            "parent": {
-                "nested": {
-                    "path": "samples"
-                },
-                "aggs": {
-                    "max": {
-                        "max": {
-                            "field": field_name
-                        }
-                    },
-                    "min": {
-                        "min": {
-                            "field": field_name
-                        }
-                    }
-                }
-            }
-        }
-    })
-    return search.params(size=0).execute()
-
-
 def _process_facets():
     """Process facets to store a dict from UI facet name to UI facet description
     ,Elasticsearch field name, and field type, and a dict of UI facet name to
@@ -196,7 +171,7 @@ def _process_facets():
 
     for facet_config in facets_config:
         elasticsearch_field_name = facet_config['elasticsearch_field_name']
-        field_type = get_field_type(es, elasticsearch_field_name)
+        field_type = facets_util.get_field_type(es, elasticsearch_field_name)
         ui_facet_name = facet_config['ui_facet_name']
         if elasticsearch_field_name.startswith('samples.'):
             ui_facet_name = '%s (samples)' % ui_facet_name
@@ -227,10 +202,11 @@ def _process_facets():
             # TODO: When https://github.com/elastic/elasticsearch/issues/31828
             # is fixed, use AutoHistogramFacet instead. Will no longer need 2
             # steps.
-            field_range = get_field_range(es, elasticsearch_field_name)
+            field_range = facets_util.get_field_range(
+                es, elasticsearch_field_name)
             es_facets[ui_facet_name] = HistogramFacet(
                 field=elasticsearch_field_name,
-                interval=get_bucket_interval(field_range))
+                interval=facets_util.get_bucket_interval(field_range))
 
         # Handle sample facets in a special way since they are nested objects.
         if elasticsearch_field_name.startswith('samples.'):
