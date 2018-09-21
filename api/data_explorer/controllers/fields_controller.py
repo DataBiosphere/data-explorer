@@ -19,7 +19,8 @@ def fields_get():
         using=es, index=current_app.config['INDEX_NAME'] + '_fields')
     # Default number of results is 10. We want to get 100.
     # TODO(malathir): Change this to case insensitive sorting.
-    search = search.sort('name.keyword')[0:100]
+    search = search.sort('name.keyword')
+    search = search[0:100]
     response = search.execute()
     response_fields = response.to_dict()
 
