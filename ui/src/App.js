@@ -103,6 +103,7 @@ class App extends Component {
 
   componentDidMount() {
     this.fieldsApi.fieldsGet(this.fieldsCallback);
+    console.log("before facets get");
     this.facetsApi.facetsGet({}, this.facetsCallback);
 
     // Call /api/dataset

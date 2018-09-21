@@ -1,11 +1,16 @@
 import pprint
 
+from collections import OrderedDict
 from data_explorer.models.facet import Facet
 from data_explorer.models.facet_value import FacetValue
 from data_explorer.models.facets_response import FacetsResponse
 from data_explorer.util.dataset_faceted_search import DatasetFacetedSearch
+from data_explorer.util import facets_util
 
+from elasticsearch import Elasticsearch
 from elasticsearch_dsl import HistogramFacet
+from elasticsearch_dsl import TermsFacet
+
 from flask import current_app
 import urllib
 
@@ -29,8 +34,45 @@ def _get_bucket_interval(facet):
 
 
 def _process_extra_facets(extra_facets):
+    es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
+
+    es_facets = OrderedDict()
+    ui_facets = OrderedDict()
+
     if extra_facets:
         for extra_facet in extra_facets:
+            field_type = facets_util.get_field_type(es, extra_facet)
+            arr = extra_facet.split('.')
+            ui_facet_name = arr[-1]
+            ui_facets[ui_facet_name] = {
+                'elasticsearch_field_name': extra_facet,
+                'type': field_type
+            }
+            if field_type == 'text':
+                # Use ".keyword" because we want aggregation on keyword field, not
+                # term field. See
+                # https://www.elastic.co/guide/en/elasticsearch/reference/6.2/fielddata.html#before-enabling-fielddata
+                es_facets[ui_facet_name] = TermsFacet(
+                    field=extra_facet + '.keyword')
+            elif field_type == 'boolean':
+                es_facets[ui_facet_name] = TermsFacet(field=extra_facet)
+            else:
+                # Assume numeric type.
+                # Creating this facet is a two-step process.
+                # 1) Get max value
+                # 2) Based on max value, determine bucket size. Create
+                #    HistogramFacet with this bucket size.
+                # TODO: When https://github.com/elastic/elasticsearch/issues/31828
+                # is fixed, use AutoHistogramFacet instead. Will no longer need 2
+                # steps.
+                field_range = facets_util.get_field_range(es, extra_facet)
+                es_facets[ui_facet_name] = HistogramFacet(
+                    field=extra_facet,
+                    interval=facets_util.get_bucket_interval(field_range))
+    current_app.logger.info(es_facets)
+    current_app.logger.info(ui_facets)
+    current_app.config['EXTRA_FACETS'] = es_facets
+    current_app.config['EXTRA_UI_FACETS'] = ui_facets
 
 
 def facets_get(filter=None, extraFacets=None):  # noqa: E501
@@ -46,14 +88,35 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
 
     :rtype: FacetsResponse
     """
+    current_app.logger.info(extraFacets)
     _process_extra_facets(extraFacets)
-    search = DatasetFacetedSearch(deserialize(filter),
-     current_app.config['EXTRA_FACETS'])
+    search = DatasetFacetedSearch(
+        deserialize(filter), current_app.config['EXTRA_FACETS'])
     es_response = search.execute()
     es_response_facets = es_response.facets.to_dict()
     # Uncomment to print facets
     current_app.logger.info(pprint.pformat(es_response_facets))
     facets = []
+    for name, field in current_app.config['EXTRA_UI_FACETS'].iteritems():
+        description = field.get('description')
+        es_facet = current_app.config['EXTRA_FACETS'][name]
+        values = []
+        for value_name, count, _ in es_response_facets[name]:
+            if _is_histogram_facet(es_facet):
+                # For histograms, Elasticsearch returns:
+                #   name 10: count 15     (There are 15 people aged 10-19)
+                #   name 20: count 33     (There are 33 people aged 20-29)
+                # Convert "10" -> "10-19".
+                value_name = _number_to_range(value_name,
+                                          _get_bucket_interval(es_facet))
+            else:
+                # elasticsearch-dsl returns boolean field keys as 0/1. Use the
+                # field's 'type' to convert back to boolean, if necessary.
+                if field['type'] == 'boolean':
+                    value_name = bool(value_name)
+            values.append(FacetValue(name=value_name, count=count))
+        facets.append(Facet(name=name, description=description, values=values))
+        
     for name, field in current_app.config['UI_FACETS'].iteritems():
         description = field.get('description')
         es_facet = current_app.config['ELASTICSEARCH_FACETS'][name]

@@ -1,4 +1,8 @@
 
+from elasticsearch_dsl import Search
+
+from flask import current_app
+
 def get_field_type(es, field_name):
     # elasticsearch_dsl.Mapping, which gets mappings for all fields, would be
     # easier, but we can't use it.
@@ -15,22 +19,23 @@ def get_field_type(es, field_name):
     # truly nested, such as HCA Orange Box. elasticsearch_field_name in ui.json
     # would be "parent.child".
     mapping = es.indices.get_field_mapping(
-        fields=field_name, index=app.app.config['INDEX_NAME'], doc_type='type')
-
+        fields=field_name, index=current_app.config['INDEX_NAME'], doc_type='type')
+    current_app.logger.info("in get field type")
+    current_app.logger.info(field_name)
     if mapping == {}:
         raise ValueError(
             'elasticsearch_field_name %s not found in Elasticsearch index %s' %
-            (field_name, app.app.config['INDEX_NAME']))
+            (field_name, current_app.config['INDEX_NAME']))
 
     # If field_name is "a.b.c", last_part is "c".
     last_part = field_name.split('.')[len(field_name.split('.')) - 1]
-    return mapping[app.app.config['INDEX_NAME']]['mappings']['type'][
+    return mapping[current_app.config['INDEX_NAME']]['mappings']['type'][
         field_name]['mapping'][last_part]['type']
 
 
 def _get_field_min_max_agg(es, field_name):
     return Search(
-        using=es, index=app.app.config['INDEX_NAME']
+        using=es, index=current_app.config['INDEX_NAME']
     ).aggs.metric(
         'max',
         'max',
@@ -43,6 +48,33 @@ def _get_field_min_max_agg(es, field_name):
         # Don't execute query; we only care about aggregations. See
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/returning-only-agg-results.html
         field=field_name).params(size=0).execute()
+
+
+# TODO(bfcrampton): Generalize this for any nested field
+def _get_samples_field_min_max_agg(es, field_name):
+    search = Search(using=es, index=current_app.config['INDEX_NAME'])
+    search.update_from_dict({
+        "aggs": {
+            "parent": {
+                "nested": {
+                    "path": "samples"
+                },
+                "aggs": {
+                    "max": {
+                        "max": {
+                            "field": field_name
+                        }
+                    },
+                    "min": {
+                        "min": {
+                            "field": field_name
+                        }
+                    }
+                }
+            }
+        }
+    })
+    return search.params(size=0).execute()
 
 
 def get_field_range(es, field_name):
