@@ -5,6 +5,7 @@ class FieldSearch extends React.Component {
   constructor(props) {
     const fields = props.fields;
     super(props);
+    this.handleChange = props.handleChange;
     this.state = {
       fields: fields
     };
@@ -18,10 +19,6 @@ class FieldSearch extends React.Component {
         options={this.state.fields}
       />
     );
-  }
-
-  handleChange(selectedOption) {
-    console.log(`Option selected:`, selectedOption);
   }
 }
 

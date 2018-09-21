@@ -22,7 +22,8 @@ class App extends Component {
       enableFieldSearch: false,
       facets: null,
       totalCount: null,
-      filter: null
+      filter: null,
+      extraFacets: null
     };
 
     this.apiClient = new ApiClient();
@@ -47,6 +48,12 @@ class App extends Component {
       } else {
         this.setState({
           fields: data.fields.map(field => {
+            if (field.description == null || field.description === "") {
+              return {
+                label: field.name,
+                value: field.elasticsearch_name
+              };
+            }
             return {
               label: field.name + " - " + field.description,
               value: field.elasticsearch_name
@@ -59,6 +66,7 @@ class App extends Component {
     // Map from facet name to a list of facet values.
     this.filterMap = new Map();
     this.updateFacets = this.updateFacets.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   render() {
@@ -74,7 +82,10 @@ class App extends Component {
               totalCount={this.state.totalCount}
             />
             {this.state.enableFieldSearch && (
-              <FieldSearch fields={this.state.fields} />
+              <FieldSearch
+                fields={this.state.fields}
+                handleChange={this.handleChange}
+              />
             )}
             <FacetsGrid
               updateFacets={this.updateFacets}
@@ -108,6 +119,12 @@ class App extends Component {
       }
     }.bind(this);
     datasetApi.datasetGet(datasetCallback);
+  }
+
+  handleChange(selectedOption) {
+    let extraFacets = [];
+    selectedOption.forEach(option => extraFacets.push(option.value));
+    console.log(extraFacets);
   }
 
   /**

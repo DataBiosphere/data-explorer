@@ -1,2 +1,6 @@
 package.json
 package-lock.json
+# Ignore the index json files because each document is a row and that's not valid json format.
+dataset_config/1000_genomes/index.json
+dataset_config/1000_genomes/fields.json
+dataset_config/1000_genomes/mappings.json
