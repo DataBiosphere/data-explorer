@@ -126,13 +126,24 @@ class App extends Component {
     let difference = this.state.selected.filter(
       x => !selectedOption.includes(x)
     );
+    difference.forEach(removed => {
+      if (this.filterMap.get(removed.label) !== undefined) {
+        this.filterMap.delete(removed.label);
+      }
+    });
+    console.log(this.filterMap);
+    let filterArray = this.filterMapToArray(this.filterMap);
+    console.log(filterArray);
+    this.setState({ filter: filterArray });
+    console.log(this.state.filter);
+
     let extraFacets = [];
     selectedOption.forEach(option => extraFacets.push(option.value));
     if (extraFacets.length > 0) {
       this.setState({ extraFacets: extraFacets });
       this.setState({ selected: selectedOption });
       this.facetsApi.facetsGet(
-        { filter: this.state.filter, extraFacets: extraFacets },
+        { filter: filterArray, extraFacets: extraFacets },
         this.facetsCallback
       );
     } else {
@@ -140,11 +151,6 @@ class App extends Component {
       this.setState({ selected: [] });
       this.facetsApi.facetsGet({}, this.facetsCallback);
     }
-    difference.forEach(removed => {
-      if (this.filterMap.get(removed.label) !== undefined) {
-        this.filterMap.delete(removed.label);
-      }
-    });
   }
 
   /**
