@@ -16,11 +16,6 @@ from elasticsearch import Elasticsearch
 from elasticsearch.client.cat import CatClient
 from elasticsearch.exceptions import ConnectionError
 from elasticsearch.exceptions import TransportError
-from elasticsearch_dsl import HistogramFacet
-from elasticsearch_dsl import FacetedSearch
-from elasticsearch_dsl import Mapping
-from elasticsearch_dsl import Search
-from elasticsearch_dsl import TermsFacet
 from google.cloud import storage
 from data_explorer.util import facets_util
 
@@ -171,50 +166,19 @@ def _process_facets():
 
     for facet_config in facets_config:
         elasticsearch_field_name = facet_config['elasticsearch_field_name']
-        field_type = facets_util.get_field_type(es, elasticsearch_field_name)
         ui_facet_name = facet_config['ui_facet_name']
         if elasticsearch_field_name.startswith('samples.'):
             ui_facet_name = '%s (samples)' % ui_facet_name
-
-        ui_facets[ui_facet_name] = {
-            'elasticsearch_field_name': elasticsearch_field_name,
-            'type': field_type
-        }
+        facets_util.process_facet(es, es_facets, ui_facets, ui_facet_name, elasticsearch_field_name)
         if 'ui_facet_description' in facet_config:
             ui_facets[ui_facet_name]['description'] = facet_config[
                 'ui_facet_description']
 
-        if field_type == 'text':
-            # Use ".keyword" because we want aggregation on keyword field, not
-            # term field. See
-            # https://www.elastic.co/guide/en/elasticsearch/reference/6.2/fielddata.html#before-enabling-fielddata
-            es_facets[ui_facet_name] = TermsFacet(
-                field=elasticsearch_field_name + '.keyword')
-        elif field_type == 'boolean':
-            es_facets[ui_facet_name] = TermsFacet(
-                field=elasticsearch_field_name)
-        else:
-            # Assume numeric type.
-            # Creating this facet is a two-step process.
-            # 1) Get max value
-            # 2) Based on max value, determine bucket size. Create
-            #    HistogramFacet with this bucket size.
-            # TODO: When https://github.com/elastic/elasticsearch/issues/31828
-            # is fixed, use AutoHistogramFacet instead. Will no longer need 2
-            # steps.
-            field_range = facets_util.get_field_range(
-                es, elasticsearch_field_name)
-            es_facets[ui_facet_name] = HistogramFacet(
-                field=elasticsearch_field_name,
-                interval=facets_util.get_bucket_interval(field_range))
-
-        # Handle sample facets in a special way since they are nested objects.
-        if elasticsearch_field_name.startswith('samples.'):
-            es_facets[ui_facet_name] = ReverseNestedFacet(
-                'samples', es_facets[ui_facet_name])
-
     app.app.config['ELASTICSEARCH_FACETS'] = es_facets
     app.app.config['UI_FACETS'] = ui_facets
+    # Initialies the extra facets to empty dicts.
+    app.app.config['EXTRA_FACETS'] = OrderedDict()
+    app.app.config['EXTRA_UI_FACETS'] = OrderedDict()
 
 
 def _process_bigquery():
