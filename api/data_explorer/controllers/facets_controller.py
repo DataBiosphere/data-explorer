@@ -10,6 +10,7 @@ from data_explorer.util import facets_util
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import HistogramFacet
 from elasticsearch_dsl import TermsFacet
+from data_explorer.util.reverse_nested_facet import ReverseNestedFacet
 
 from flask import current_app
 import urllib
@@ -40,12 +41,12 @@ def _process_extra_facets(extra_facets):
     ui_facets = OrderedDict()
 
     if extra_facets:
-        for extra_facet in extra_facets:
-            field_type = facets_util.get_field_type(es, extra_facet)
-            arr = extra_facet.split('.')
+        for elasticsearch_field_name in extra_facets:
+            field_type = facets_util.get_field_type(es, elasticsearch_field_name)
+            arr = elasticsearch_field_name.split('.')
             ui_facet_name = arr[-1]
             ui_facets[ui_facet_name] = {
-                'elasticsearch_field_name': extra_facet,
+                'elasticsearch_field_name': elasticsearch_field_name,
                 'type': field_type
             }
             if field_type == 'text':
@@ -53,9 +54,9 @@ def _process_extra_facets(extra_facets):
                 # term field. See
                 # https://www.elastic.co/guide/en/elasticsearch/reference/6.2/fielddata.html#before-enabling-fielddata
                 es_facets[ui_facet_name] = TermsFacet(
-                    field=extra_facet + '.keyword')
+                    field=elasticsearch_field_name + '.keyword')
             elif field_type == 'boolean':
-                es_facets[ui_facet_name] = TermsFacet(field=extra_facet)
+                es_facets[ui_facet_name] = TermsFacet(field=elasticsearch_field_name)
             else:
                 # Assume numeric type.
                 # Creating this facet is a two-step process.
@@ -65,10 +66,16 @@ def _process_extra_facets(extra_facets):
                 # TODO: When https://github.com/elastic/elasticsearch/issues/31828
                 # is fixed, use AutoHistogramFacet instead. Will no longer need 2
                 # steps.
-                field_range = facets_util.get_field_range(es, extra_facet)
+                field_range = facets_util.get_field_range(es, elasticsearch_field_name)
                 es_facets[ui_facet_name] = HistogramFacet(
-                    field=extra_facet,
+                    field=elasticsearch_field_name,
                     interval=facets_util.get_bucket_interval(field_range))
+
+            # Handle sample facets in a special way since they are nested objects.
+            if elasticsearch_field_name.startswith('samples.'):
+                es_facets[ui_facet_name] = ReverseNestedFacet(
+                    'samples', es_facets[ui_facet_name])
+
     current_app.logger.info(es_facets)
     current_app.logger.info(ui_facets)
     current_app.config['EXTRA_FACETS'] = es_facets
@@ -116,7 +123,7 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
                     value_name = bool(value_name)
             values.append(FacetValue(name=value_name, count=count))
         facets.append(Facet(name=name, description=description, values=values))
-        
+
     for name, field in current_app.config['UI_FACETS'].iteritems():
         description = field.get('description')
         es_facet = current_app.config['ELASTICSEARCH_FACETS'][name]
