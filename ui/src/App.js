@@ -23,7 +23,8 @@ class App extends Component {
       facets: null,
       totalCount: null,
       filter: null,
-      extraFacets: []
+      extraFacets: [],
+      selected: []
     };
 
     this.apiClient = new ApiClient();
@@ -122,29 +123,28 @@ class App extends Component {
   }
 
   handleChange(selectedOption) {
-    let difference = this.state.extraFacets.filter(
+    let difference = this.state.selected.filter(
       x => !selectedOption.includes(x)
     );
     let extraFacets = [];
     selectedOption.forEach(option => extraFacets.push(option.value));
     if (extraFacets.length > 0) {
-      this.setState({ extraFacets: selectedOption });
+      this.setState({ extraFacets: extraFacets });
+      this.setState({ selected: selectedOption });
       this.facetsApi.facetsGet(
-        { extraFacets: extraFacets },
+        { filter: this.state.filter, extraFacets: extraFacets },
         this.facetsCallback
       );
     } else {
-      this.setState({ extraFacets: null });
+      this.setState({ extraFacets: [] });
+      this.setState({ selected: [] });
       this.facetsApi.facetsGet({}, this.facetsCallback);
     }
     difference.forEach(removed => {
-      console.log("removing deleted item" + removed);
-      if (this.filterMap.get(removed) !== undefined) {
-        console.log("deleting");
-        this.filterMap.delete(removed);
+      if (this.filterMap.get(removed.label) !== undefined) {
+        this.filterMap.delete(removed.label);
       }
     });
-    console.log(this.filterMap);
   }
 
   /**
@@ -178,8 +178,10 @@ class App extends Component {
         this.facetsCallback
       );
     } else {
-      console.log("filter is empty");
-      this.facetsApi.facetsGet({}, this.facetsCallback);
+      this.facetsApi.facetsGet(
+        { extraFacets: this.state.extraFacets },
+        this.facetsCallback
+      );
     }
   }
 
