@@ -9,8 +9,6 @@ from data_explorer.util import facets_util
 
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import HistogramFacet
-from elasticsearch_dsl import TermsFacet
-from data_explorer.util.reverse_nested_facet import ReverseNestedFacet
 
 from flask import current_app
 import urllib
@@ -40,44 +38,14 @@ def _process_extra_facets(extra_facets):
     es_facets = OrderedDict()
     ui_facets = OrderedDict()
 
+    # Update the extra facets dicts in the config, only if the extra facets change.
     if extra_facets:
         for elasticsearch_field_name in extra_facets:
-            field_type = facets_util.get_field_type(es, elasticsearch_field_name)
             arr = elasticsearch_field_name.split('.')
             ui_facet_name = arr[-1]
-            ui_facets[ui_facet_name] = {
-                'elasticsearch_field_name': elasticsearch_field_name,
-                'type': field_type
-            }
-            if field_type == 'text':
-                # Use ".keyword" because we want aggregation on keyword field, not
-                # term field. See
-                # https://www.elastic.co/guide/en/elasticsearch/reference/6.2/fielddata.html#before-enabling-fielddata
-                es_facets[ui_facet_name] = TermsFacet(
-                    field=elasticsearch_field_name + '.keyword')
-            elif field_type == 'boolean':
-                es_facets[ui_facet_name] = TermsFacet(field=elasticsearch_field_name)
-            else:
-                # Assume numeric type.
-                # Creating this facet is a two-step process.
-                # 1) Get max value
-                # 2) Based on max value, determine bucket size. Create
-                #    HistogramFacet with this bucket size.
-                # TODO: When https://github.com/elastic/elasticsearch/issues/31828
-                # is fixed, use AutoHistogramFacet instead. Will no longer need 2
-                # steps.
-                field_range = facets_util.get_field_range(es, elasticsearch_field_name)
-                es_facets[ui_facet_name] = HistogramFacet(
-                    field=elasticsearch_field_name,
-                    interval=facets_util.get_bucket_interval(field_range))
+            facets_util.process_facet(es, es_facets, ui_facets, ui_facet_name, elasticsearch_field_name)
+            # TODO(malathir): Figure out how to get description of the field.
 
-            # Handle sample facets in a special way since they are nested objects.
-            if elasticsearch_field_name.startswith('samples.'):
-                es_facets[ui_facet_name] = ReverseNestedFacet(
-                    'samples', es_facets[ui_facet_name])
-
-    current_app.logger.info(es_facets)
-    current_app.logger.info(ui_facets)
     current_app.config['EXTRA_FACETS'] = es_facets
     current_app.config['EXTRA_UI_FACETS'] = ui_facets
 
@@ -95,14 +63,12 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
 
     :rtype: FacetsResponse
     """
-    current_app.logger.info(extraFacets)
     _process_extra_facets(extraFacets)
-    search = DatasetFacetedSearch(
-        deserialize(filter), current_app.config['EXTRA_FACETS'])
+    search = DatasetFacetedSearch(deserialize(filter))
     es_response = search.execute()
     es_response_facets = es_response.facets.to_dict()
     # Uncomment to print facets
-    current_app.logger.info(pprint.pformat(es_response_facets))
+    # current_app.logger.info(pprint.pformat(es_response_facets))
     facets = []
     for name, field in current_app.config['EXTRA_UI_FACETS'].iteritems():
         description = field.get('description')
@@ -157,13 +123,12 @@ def deserialize(filter_arr):
     if not filter_arr or filter_arr == [""]:
         return {}
     parsed_filter = {}
-    # filter_str looks like "Gender=male"
+    filter_facets = OrderedDict(current_app.config['ELASTICSEARCH_FACETS'].items() + current_app.config['EXTRA_FACETS'].items())
     for facet_filter in filter_arr:
         filter_str = urllib.unquote(facet_filter).decode('utf8')
         key_val = filter_str.split('=')
         name = key_val[0]
-
-        es_facet = current_app.config['ELASTICSEARCH_FACETS'][name]
+        es_facet = filter_facets[name]
         if _is_histogram_facet(es_facet):
             value = _range_to_number(key_val[1])
         else:

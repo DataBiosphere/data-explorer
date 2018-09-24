@@ -1,5 +1,8 @@
 
 from elasticsearch_dsl import Search
+from elasticsearch_dsl import HistogramFacet
+from elasticsearch_dsl import TermsFacet
+from data_explorer.util.reverse_nested_facet import ReverseNestedFacet
 
 from flask import current_app
 
@@ -116,3 +119,39 @@ def get_bucket_interval(field_range):
         return 100000000000
     else:
         return 1000000000000
+
+
+def process_facet(es, es_facets, ui_facets, ui_facet_name, elasticsearch_field_name):
+    field_type = get_field_type(es, elasticsearch_field_name)
+
+    ui_facets[ui_facet_name] = {
+        'elasticsearch_field_name': elasticsearch_field_name,
+        'type': field_type
+    }
+
+    if field_type == 'text':
+        # Use ".keyword" because we want aggregation on keyword field, not
+        # term field. See
+        # https://www.elastic.co/guide/en/elasticsearch/reference/6.2/fielddata.html#before-enabling-fielddata
+        es_facets[ui_facet_name] = TermsFacet(
+            field=elasticsearch_field_name + '.keyword')
+    elif field_type == 'boolean':
+        es_facets[ui_facet_name] = TermsFacet(field=elasticsearch_field_name)
+    else:
+        # Assume numeric type.
+        # Creating this facet is a two-step process.
+        # 1) Get max value
+        # 2) Based on max value, determine bucket size. Create
+        #    HistogramFacet with this bucket size.
+        # TODO: When https://github.com/elastic/elasticsearch/issues/31828
+        # is fixed, use AutoHistogramFacet instead. Will no longer need 2
+        # steps.
+        field_range = get_field_range(es, elasticsearch_field_name)
+        es_facets[ui_facet_name] = HistogramFacet(
+            field=elasticsearch_field_name,
+            interval=get_bucket_interval(field_range))
+
+    # Handle sample facets in a special way since they are nested objects.
+    if elasticsearch_field_name.startswith('samples.'):
+        es_facets[ui_facet_name] = ReverseNestedFacet(
+            'samples', es_facets[ui_facet_name])
