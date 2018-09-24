@@ -20,8 +20,6 @@ def get_field_type(es, field_name):
     # would be "parent.child".
     mapping = es.indices.get_field_mapping(
         fields=field_name, index=current_app.config['INDEX_NAME'], doc_type='type')
-    current_app.logger.info("in get field type")
-    current_app.logger.info(field_name)
     if mapping == {}:
         raise ValueError(
             'elasticsearch_field_name %s not found in Elasticsearch index %s' %
