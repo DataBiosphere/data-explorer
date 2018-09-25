@@ -24,7 +24,7 @@ for row in scan(client, query={}, index=INDEX, doc_type=DOC_TYPE):
 index_file.close()
 
 fields_index_file = open(OUTPUT_FIELDS_INDEX_FILE, 'w')
-print("Dumping fields index")
+print("Opened the fields index")
 for row in scan(client, query={}, index=FIELDS_INDEX, doc_type=DOC_TYPE):
     print(row)
     json.dump(row, fields_index_file)

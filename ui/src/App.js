@@ -23,7 +23,8 @@ class App extends Component {
       facets: null,
       totalCount: null,
       filter: null,
-      extraFacets: null
+      selectedFacets: [],
+      extraFacets: []
     };
 
     this.apiClient = new ApiClient();
@@ -121,10 +122,32 @@ class App extends Component {
     datasetApi.datasetGet(datasetCallback);
   }
 
-  handleChange(selectedOption) {
+  handleChange(selectedFacets) {
+    let deletedFacets = this.state.selectedFacets.filter(
+      x => !selectedFacets.includes(x)
+    );
+    deletedFacets.forEach(removed => {
+      if (this.filterMap.get(removed.label) !== undefined) {
+        this.filterMap.delete(removed.label);
+      }
+    });
+    let filterArray = this.filterMapToArray(this.filterMap);
+    this.setState({ filter: filterArray });
+
     let extraFacets = [];
-    selectedOption.forEach(option => extraFacets.push(option.value));
-    console.log(extraFacets);
+    selectedFacets.forEach(option => extraFacets.push(option.value));
+    if (extraFacets.length > 0) {
+      this.setState({ extraFacets: extraFacets });
+      this.setState({ selectedFacets: selectedFacets });
+      this.facetsApi.facetsGet(
+        { filter: filterArray, extraFacets: extraFacets },
+        this.facetsCallback
+      );
+    } else {
+      this.setState({ extraFacets: [] });
+      this.setState({ selectedFacets: [] });
+      this.facetsApi.facetsGet({ filter: filterArray }, this.facetsCallback);
+    }
   }
 
   /**
@@ -149,13 +172,18 @@ class App extends Component {
         this.removeFacet(currentFacetValues, facetValue)
       );
     }
-
     let filterArray = this.filterMapToArray(this.filterMap);
     this.setState({ filter: filterArray });
     if (filterArray.length > 0) {
-      this.facetsApi.facetsGet({ filter: filterArray }, this.facetsCallback);
+      this.facetsApi.facetsGet(
+        { filter: filterArray, extraFacets: this.state.extraFacets },
+        this.facetsCallback
+      );
     } else {
-      this.facetsApi.facetsGet({}, this.facetsCallback);
+      this.facetsApi.facetsGet(
+        { extraFacets: this.state.extraFacets },
+        this.facetsCallback
+      );
     }
   }
 
