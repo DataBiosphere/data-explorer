@@ -44,8 +44,9 @@ def _process_extra_facets(extra_facets):
             if elasticsearch_field_name:
                 arr = elasticsearch_field_name.split('.')
                 ui_facet_name = arr[-1]
-                facets_util.process_facet(es, es_facets, ui_facets, ui_facet_name,
-                                      elasticsearch_field_name)
+                facets_util.process_facet(es, es_facets, ui_facets,
+                                          ui_facet_name,
+                                          elasticsearch_field_name)
                 # TODO(malathir): Figure out how to get description of the field.
 
     current_app.config['EXTRA_FACETS'] = es_facets
