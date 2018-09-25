@@ -52,7 +52,7 @@ The basic flow:
 
 GCP deployment:
 
-![GCP deployment architecture](https://i.imgur.com/mCjDv47.png)
+![GCP deployment architecture](https://i.imgur.com/bClb3Na.png)
 
 
 For local development, an nginx reverse proxy is used to get around CORS:
@@ -64,7 +64,8 @@ For local development, an nginx reverse proxy is used to get around CORS:
 Here's one possible flow.
 
 - [Run local Data Explorer with public 1000 Genomes dataset.](https://github.com/DataBiosphere/data-explorer#quickstart)  
-This makes sure docker and git are installed correctly.
+This makes sure docker and git are installed correctly. (A JSON cache of the
+1000 Genomes indices is imported into Elasticsearch; no indexer is run.)
 - [Run local BigQuery indexer with 1000 Genomes dataset](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery#quickstart)
 - Run locally with your dataset
   - [Run BigQuery indexer on your dataset](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery#index-a-custom-dataset-locally)
