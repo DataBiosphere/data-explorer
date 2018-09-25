@@ -169,7 +169,8 @@ def _process_facets():
         ui_facet_name = facet_config['ui_facet_name']
         if elasticsearch_field_name.startswith('samples.'):
             ui_facet_name = '%s (samples)' % ui_facet_name
-        facets_util.process_facet(es, es_facets, ui_facets, ui_facet_name, elasticsearch_field_name)
+        facets_util.process_facet(es, es_facets, ui_facets, ui_facet_name,
+                                  elasticsearch_field_name)
         if 'ui_facet_description' in facet_config:
             ui_facets[ui_facet_name]['description'] = facet_config[
                 'ui_facet_description']

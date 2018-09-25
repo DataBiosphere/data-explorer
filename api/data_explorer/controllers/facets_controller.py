@@ -43,7 +43,8 @@ def _process_extra_facets(extra_facets):
         for elasticsearch_field_name in extra_facets:
             arr = elasticsearch_field_name.split('.')
             ui_facet_name = arr[-1]
-            facets_util.process_facet(es, es_facets, ui_facets, ui_facet_name, elasticsearch_field_name)
+            facets_util.process_facet(es, es_facets, ui_facets, ui_facet_name,
+                                      elasticsearch_field_name)
             # TODO(malathir): Figure out how to get description of the field.
 
     current_app.config['EXTRA_FACETS'] = es_facets
@@ -81,7 +82,7 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
                 #   name 20: count 33     (There are 33 people aged 20-29)
                 # Convert "10" -> "10-19".
                 value_name = _number_to_range(value_name,
-                                          _get_bucket_interval(es_facet))
+                                              _get_bucket_interval(es_facet))
             else:
                 # elasticsearch-dsl returns boolean field keys as 0/1. Use the
                 # field's 'type' to convert back to boolean, if necessary.
@@ -123,7 +124,9 @@ def deserialize(filter_arr):
     if not filter_arr or filter_arr == [""]:
         return {}
     parsed_filter = {}
-    filter_facets = OrderedDict(current_app.config['ELASTICSEARCH_FACETS'].items() + current_app.config['EXTRA_FACETS'].items())
+    filter_facets = OrderedDict(
+        current_app.config['ELASTICSEARCH_FACETS'].items() +
+        current_app.config['EXTRA_FACETS'].items())
     for facet_filter in filter_arr:
         filter_str = urllib.unquote(facet_filter).decode('utf8')
         key_val = filter_str.split('=')
