@@ -123,23 +123,14 @@ def get_bucket_interval(field_range):
         return 1000000000000
 
 
-def process_facet(es, es_facets, ui_facets, ui_facet_name,
-                  elasticsearch_field_name):
-    field_type = get_field_type(es, elasticsearch_field_name)
-
-    ui_facets[ui_facet_name] = {
-        'elasticsearch_field_name': elasticsearch_field_name,
-        'type': field_type
-    }
-
+def get_elastisearch_facet(es, elasticsearch_field_name, field_type):
     if field_type == 'text':
         # Use ".keyword" because we want aggregation on keyword field, not
         # term field. See
         # https://www.elastic.co/guide/en/elasticsearch/reference/6.2/fielddata.html#before-enabling-fielddata
-        es_facets[ui_facet_name] = TermsFacet(
-            field=elasticsearch_field_name + '.keyword')
+        es_facet = TermsFacet(field=elasticsearch_field_name + '.keyword')
     elif field_type == 'boolean':
-        es_facets[ui_facet_name] = TermsFacet(field=elasticsearch_field_name)
+        es_facet = TermsFacet(field=elasticsearch_field_name)
     else:
         # Assume numeric type.
         # Creating this facet is a two-step process.
@@ -150,11 +141,12 @@ def process_facet(es, es_facets, ui_facets, ui_facet_name,
         # is fixed, use AutoHistogramFacet instead. Will no longer need 2
         # steps.
         field_range = get_field_range(es, elasticsearch_field_name)
-        es_facets[ui_facet_name] = HistogramFacet(
+        es_facet = HistogramFacet(
             field=elasticsearch_field_name,
             interval=get_bucket_interval(field_range))
 
     # Handle sample facets in a special way since they are nested objects.
     if elasticsearch_field_name.startswith('samples.'):
-        es_facets[ui_facet_name] = ReverseNestedFacet('samples',
-                                                      es_facets[ui_facet_name])
+        es_facet = ReverseNestedFacet('samples', es_facet)
+
+    return es_facet

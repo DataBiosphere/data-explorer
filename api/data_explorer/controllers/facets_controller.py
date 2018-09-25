@@ -44,13 +44,17 @@ def _process_extra_facets(extra_facets):
             if elasticsearch_field_name:
                 arr = elasticsearch_field_name.split('.')
                 ui_facet_name = arr[-1]
-                facets_util.process_facet(es, es_facets, ui_facets,
-                                          ui_facet_name,
-                                          elasticsearch_field_name)
+                field_type = facets_util.get_field_type(
+                    es, elasticsearch_field_name)
+                ui_facets[ui_facet_name] = {
+                    'elasticsearch_field_name': elasticsearch_field_name,
+                    'type': field_type
+                }
                 # TODO(malathir): Figure out how to get description of the field.
+                es_facets[ui_facet_name] = facets_util.get_elastisearch_facet(
+                    es, elasticsearch_field_name, field_type)
 
-    current_app.config['EXTRA_FACETS'] = es_facets
-    current_app.config['EXTRA_UI_FACETS'] = ui_facets
+    return es_facets, ui_facets
 
 
 def facets_get(filter=None, extraFacets=None):  # noqa: E501
@@ -66,36 +70,21 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
 
     :rtype: FacetsResponse
     """
-    _process_extra_facets(extraFacets)
-    search = DatasetFacetedSearch(deserialize(filter))
+    extra_es_facets, extra_ui_facets = _process_extra_facets(extraFacets)
+    combined_es_facets = OrderedDict(extra_es_facets.items() + current_app.
+                                     config['ELASTICSEARCH_FACETS'].items())
+    combined_ui_facets = OrderedDict(extra_ui_facets.items() +
+                                     current_app.config['UI_FACETS'].items())
+    search = DatasetFacetedSearch(
+        deserialize(filter, combined_es_facets), combined_es_facets)
     es_response = search.execute()
     es_response_facets = es_response.facets.to_dict()
     # Uncomment to print facets
     # current_app.logger.info(pprint.pformat(es_response_facets))
     facets = []
-    for name, field in current_app.config['EXTRA_UI_FACETS'].iteritems():
+    for name, field in combined_ui_facets.iteritems():
         description = field.get('description')
-        es_facet = current_app.config['EXTRA_FACETS'][name]
-        values = []
-        for value_name, count, _ in es_response_facets[name]:
-            if _is_histogram_facet(es_facet):
-                # For histograms, Elasticsearch returns:
-                #   name 10: count 15     (There are 15 people aged 10-19)
-                #   name 20: count 33     (There are 33 people aged 20-29)
-                # Convert "10" -> "10-19".
-                value_name = _number_to_range(value_name,
-                                              _get_bucket_interval(es_facet))
-            else:
-                # elasticsearch-dsl returns boolean field keys as 0/1. Use the
-                # field's 'type' to convert back to boolean, if necessary.
-                if field['type'] == 'boolean':
-                    value_name = bool(value_name)
-            values.append(FacetValue(name=value_name, count=count))
-        facets.append(Facet(name=name, description=description, values=values))
-
-    for name, field in current_app.config['UI_FACETS'].iteritems():
-        description = field.get('description')
-        es_facet = current_app.config['ELASTICSEARCH_FACETS'][name]
+        es_facet = combined_es_facets[name]
         values = []
         for value_name, count, _ in es_response_facets[name]:
             if _is_histogram_facet(es_facet):
@@ -117,23 +106,21 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
         facets=facets, count=es_response._faceted_search.count())
 
 
-def deserialize(filter_arr):
+def deserialize(filter_arr, combined_es_facets):
     """
     :param filter_arr: an array of strings with format "facet_name=facet_value".
-    A facet_name may be repeated if multiple filters are desired.
+     A facet_name may be repeated if multiple filters are desired.
+    :param combined_es_facets: a dict of the static ui facets and extra facets added via UI.
     :return: A dict of facet_name:[facet_value] mappings.
     """
     if not filter_arr or filter_arr == [""]:
         return {}
     parsed_filter = {}
-    filter_facets = OrderedDict(
-        current_app.config['ELASTICSEARCH_FACETS'].items() +
-        current_app.config['EXTRA_FACETS'].items())
     for facet_filter in filter_arr:
         filter_str = urllib.unquote(facet_filter).decode('utf8')
         key_val = filter_str.split('=')
         name = key_val[0]
-        es_facet = filter_facets[name]
+        es_facet = combined_es_facets[name]
         if _is_histogram_facet(es_facet):
             value = _range_to_number(key_val[1])
         else:
