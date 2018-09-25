@@ -41,11 +41,12 @@ def _process_extra_facets(extra_facets):
     # Update the extra facets dicts in the config, only if the extra facets change.
     if extra_facets:
         for elasticsearch_field_name in extra_facets:
-            arr = elasticsearch_field_name.split('.')
-            ui_facet_name = arr[-1]
-            facets_util.process_facet(es, es_facets, ui_facets, ui_facet_name,
+            if elasticsearch_field_name:
+                arr = elasticsearch_field_name.split('.')
+                ui_facet_name = arr[-1]
+                facets_util.process_facet(es, es_facets, ui_facets, ui_facet_name,
                                       elasticsearch_field_name)
-            # TODO(malathir): Figure out how to get description of the field.
+                # TODO(malathir): Figure out how to get description of the field.
 
     current_app.config['EXTRA_FACETS'] = es_facets
     current_app.config['EXTRA_UI_FACETS'] = ui_facets

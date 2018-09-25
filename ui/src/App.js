@@ -172,7 +172,6 @@ class App extends Component {
         this.removeFacet(currentFacetValues, facetValue)
       );
     }
-
     let filterArray = this.filterMapToArray(this.filterMap);
     this.setState({ filter: filterArray });
     if (filterArray.length > 0) {
