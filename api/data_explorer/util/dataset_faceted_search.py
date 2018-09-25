@@ -17,7 +17,9 @@ class DatasetFacetedSearch(FacetedSearch):
         Ex: {'Region':['southeast', 'northwest'], 'Gender':['male']}.
         """
         self.index = current_app.config['INDEX_NAME']
-        self.facets = OrderedDict(current_app.config['ELASTICSEARCH_FACETS'].items() + current_app.config['EXTRA_FACETS'].items())
+        self.facets = OrderedDict(
+            current_app.config['ELASTICSEARCH_FACETS'].items() +
+            current_app.config['EXTRA_FACETS'].items())
         self.using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
         # Now that using is set, create _s.
         super(DatasetFacetedSearch, self).__init__(None, filters)

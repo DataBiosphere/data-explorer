@@ -1,10 +1,10 @@
-
 from elasticsearch_dsl import Search
 from elasticsearch_dsl import HistogramFacet
 from elasticsearch_dsl import TermsFacet
 from data_explorer.util.reverse_nested_facet import ReverseNestedFacet
 
 from flask import current_app
+
 
 def get_field_type(es, field_name):
     # elasticsearch_dsl.Mapping, which gets mappings for all fields, would be
@@ -22,7 +22,9 @@ def get_field_type(es, field_name):
     # truly nested, such as HCA Orange Box. elasticsearch_field_name in ui.json
     # would be "parent.child".
     mapping = es.indices.get_field_mapping(
-        fields=field_name, index=current_app.config['INDEX_NAME'], doc_type='type')
+        fields=field_name,
+        index=current_app.config['INDEX_NAME'],
+        doc_type='type')
     if mapping == {}:
         raise ValueError(
             'elasticsearch_field_name %s not found in Elasticsearch index %s' %
@@ -121,7 +123,8 @@ def get_bucket_interval(field_range):
         return 1000000000000
 
 
-def process_facet(es, es_facets, ui_facets, ui_facet_name, elasticsearch_field_name):
+def process_facet(es, es_facets, ui_facets, ui_facet_name,
+                  elasticsearch_field_name):
     field_type = get_field_type(es, elasticsearch_field_name)
 
     ui_facets[ui_facet_name] = {
@@ -153,5 +156,5 @@ def process_facet(es, es_facets, ui_facets, ui_facet_name, elasticsearch_field_n
 
     # Handle sample facets in a special way since they are nested objects.
     if elasticsearch_field_name.startswith('samples.'):
-        es_facets[ui_facet_name] = ReverseNestedFacet(
-            'samples', es_facets[ui_facet_name])
+        es_facets[ui_facet_name] = ReverseNestedFacet('samples',
+                                                      es_facets[ui_facet_name])
