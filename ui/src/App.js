@@ -23,8 +23,8 @@ class App extends Component {
       facets: null,
       totalCount: null,
       filter: null,
-      extraFacets: [],
-      selected: []
+      selectedFacets: [],
+      extraFacets: []
     };
 
     this.apiClient = new ApiClient();
@@ -122,34 +122,31 @@ class App extends Component {
     datasetApi.datasetGet(datasetCallback);
   }
 
-  handleChange(selectedOption) {
-    let difference = this.state.selected.filter(
-      x => !selectedOption.includes(x)
+  handleChange(selectedFacets) {
+    let deletedFacets = this.state.selectedFacets.filter(
+      x => !selectedFacets.includes(x)
     );
-    difference.forEach(removed => {
+    deletedFacets.forEach(removed => {
       if (this.filterMap.get(removed.label) !== undefined) {
         this.filterMap.delete(removed.label);
       }
     });
-    console.log(this.filterMap);
     let filterArray = this.filterMapToArray(this.filterMap);
-    console.log(filterArray);
     this.setState({ filter: filterArray });
-    console.log(this.state.filter);
 
     let extraFacets = [];
-    selectedOption.forEach(option => extraFacets.push(option.value));
+    selectedFacets.forEach(option => extraFacets.push(option.value));
     if (extraFacets.length > 0) {
       this.setState({ extraFacets: extraFacets });
-      this.setState({ selected: selectedOption });
+      this.setState({ selectedFacets: selectedFacets });
       this.facetsApi.facetsGet(
         { filter: filterArray, extraFacets: extraFacets },
         this.facetsCallback
       );
     } else {
       this.setState({ extraFacets: [] });
-      this.setState({ selected: [] });
-      this.facetsApi.facetsGet({}, this.facetsCallback);
+      this.setState({ selectedFacets: [] });
+      this.facetsApi.facetsGet({ filter: filterArray }, this.facetsCallback);
     }
   }
 
