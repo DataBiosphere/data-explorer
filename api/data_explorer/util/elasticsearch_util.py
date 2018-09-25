@@ -11,6 +11,27 @@ from filters_facet import FiltersFacet
 from flask import current_app
 
 
+def convert_to_index_name(s):
+    """Converts a string to an Elasticsearch index name."""
+    # For Elasticsearch index name restrictions, see
+    # https://github.com/DataBiosphere/data-explorer-indexers/issues/5#issue-308168951
+    # Elasticsearch allows single quote in index names. However, they cause other
+    # problems. For example,
+    # "curl -XDELETE http://localhost:9200/nurse's_health_study" doesn't work.
+    # So also remove single quotes.
+    prohibited_chars = [
+        ' ', '"', '*', '\\', '<', '|', ',', '>', '/', '?', '\''
+    ]
+    for char in prohibited_chars:
+        s = s.replace(char, '_')
+    s = s.lower()
+    # Remove leading underscore.
+    if s.find('_', 0, 1) == 0:
+        s = s.lstrip('_')
+    print('Index name: %s' % s)
+    return s
+
+
 def get_field_type(es, field_name):
     # elasticsearch_dsl.Mapping, which gets mappings for all fields, would be
     # easier, but we can't use it.

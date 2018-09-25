@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import argparse
-import connexion
 import csv
 import jsmin
 import json
@@ -10,14 +9,16 @@ import os
 import time
 
 from collections import OrderedDict
+import connexion
 from elasticsearch import Elasticsearch
 from elasticsearch.client.cat import CatClient
 from elasticsearch.exceptions import ConnectionError
 from elasticsearch.exceptions import TransportError
 from google.cloud import storage
 
-from data_explorer.encoder import JSONEncoder
+from .encoder import JSONEncoder
 from data_explorer.util import elasticsearch_util
+from data_explorer.util.reverse_nested_facet import ReverseNestedFacet
 
 # gunicorn flags are passed via env variables, so we use these as the default
 # values. These arguments will rarely be specified as flags directly, aside from
@@ -108,33 +109,11 @@ def _parse_json_file(json_path):
         return jsonDict
 
 
-# Keep in sync with convert_to_index_name() in data-explorer-indexers repo.
-def _convert_to_index_name(s):
-    """Converts a string to an Elasticsearch index name."""
-    # For Elasticsearch index name restrictions, see
-    # https://github.com/DataBiosphere/data-explorer-indexers/issues/5#issue-308168951
-    # Elasticsearch allows single quote in index names. However, they cause other
-    # problems. For example,
-    # "curl -XDELETE http://localhost:9200/nurse's_health_study" doesn't work.
-    # So also remove single quotes.
-    prohibited_chars = [
-        ' ', '"', '*', '\\', '<', '|', ',', '>', '/', '?', '\''
-    ]
-    for char in prohibited_chars:
-        s = s.replace(char, '_')
-    s = s.lower()
-    # Remove leading underscore.
-    if s.find('_', 0, 1) == 0:
-        s = s.lstrip('_')
-    print('Index name: %s' % s)
-    return s
-
-
 def _process_dataset():
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                'dataset.json')
     app.app.config['DATASET_NAME'] = _parse_json_file(config_path)['name']
-    app.app.config['INDEX_NAME'] = _convert_to_index_name(
+    app.app.config['INDEX_NAME'] = elasticsearch_util.convert_to_index_name(
         app.app.config['DATASET_NAME'])
 
 
@@ -274,24 +253,23 @@ def _process_export_url():
             % app.app.config['EXPORT_URL_GCS_BUCKET'])
 
 
-# Read config files. Just do this once; don't need to read files on every
-# request.
-@app.app.before_first_request
+# On server startup, read and process config files, and populate
+# app.app.config. Only do this once, instead of on every request.
+# Controllers are expected to read from app.app.config and not from config
+# files.
 def init():
-    # _get_dataset_name() reads from app.app.config. If we move this
-    # outside of init(), Flask complains that we're working outside of
-    # application context. @app.app.before_first_request guarantees that app
-    # context has been set up.
-
     _process_dataset()
     _process_ui()
     init_elasticsearch()
-    _process_bigquery()
     _process_facets()
+    _process_bigquery()
     _process_export_url()
 
-    app.app.logger.info('app.app.config: %s' % app.app.config)
+    app.app.logger.info('app.app.config:')
+    for key in sorted(app.app.config.keys()):
+        app.app.logger.info('    %s: %s' % (key, app.app.config[key]))
 
+init()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=args.port)
