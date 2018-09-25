@@ -26,9 +26,8 @@ Run local Data Explorer with the 1000 Genomes dataset:
 
 * Index your dataset into Elasticsearch.  
    Before you can run the servers in this repo to display a Data Explorer UI,
-  your dataset must be indexed into Elasticsearch.
-  You can use one of the indexers at
-  https://github.com/DataBiosphere/data-explorer-indexers, or any other indexer.
+  your dataset must be indexed into Elasticsearch. Use an indexer from
+  https://github.com/DataBiosphere/data-explorer-indexers.
 * Create `dataset_config/<my dataset>`
 
   * If you used https://github.com/DataBiosphere/data-explorer-indexers, copy
@@ -46,9 +45,34 @@ Run local Data Explorer with the 1000 Genomes dataset:
 
 ## Architecture overview
 
-For local development, an nginx reverse proxy is used to get around CORS.
+The basic flow:
 
-![Architecture overview](https://i.imgur.com/IZLbPx9.png)
+1. Index dataset into Elasticsearch using an indexer from https://github.com/DataBiosphere/data-explorer-indexers
+2. Run the servers in this repo to display Data Explorer UI
+
+GCP deployment:
+
+![GCP deployment architecture](https://i.imgur.com/bClb3Na.png)
+
+
+For local development, an nginx reverse proxy is used to get around CORS:
+
+![Local deployment architecture](https://i.imgur.com/IZLbPx9.png)
+
+## Want to try out Data Explorer for your dataset?
+
+Here's one possible flow.
+
+- [Run local Data Explorer with public 1000 Genomes dataset.](https://github.com/DataBiosphere/data-explorer#quickstart)  
+This makes sure docker and git are installed correctly. (A JSON cache of the
+1000 Genomes indices is imported into Elasticsearch; no indexer is run.)
+- [Run local BigQuery indexer with 1000 Genomes dataset](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery#quickstart)
+- Run locally with your dataset
+  - [Run BigQuery indexer on your dataset](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery#index-a-custom-dataset-locally)
+  - [Run UI and API servers for your dataset](https://github.com/DataBiosphere/data-explorer#run-local-data-explorer-with-a-custom-dataset)
+- Deploy on GCP for your dataset
+  - [Deploy indexer for your dataset](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery/deploy)
+  - [Deploy UI and API servers for your dataset](https://github.com/DataBiosphere/data-explorer/tree/master/deploy)
 
 ## Development
 

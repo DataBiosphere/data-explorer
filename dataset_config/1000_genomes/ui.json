@@ -69,5 +69,5 @@
         "samples.bryancrampton-testing.data_explorer.1000_genomes_sample_info.Main_project_LC_platform"
     }
   ],
-  "enable_field_search": "true"
+  "enable_field_search": false
 }
