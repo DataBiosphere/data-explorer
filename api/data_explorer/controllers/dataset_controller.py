@@ -14,8 +14,7 @@ def dataset_get():  # noqa: E501
     :rtype: DatasetResponse
     """
     enable_field_search = False
-    if 'ENABLE_FIELD_SEARCH' in current_app.config and current_app.config[
-            'ENABLE_FIELD_SEARCH']:
+    if 'ENABLE_FIELD_SEARCH' in current_app.config and current_app.config['ENABLE_FIELD_SEARCH']:
         enable_field_search = True
     return DatasetResponse(
         name=current_app.config['DATASET_NAME'],
