@@ -14,8 +14,6 @@ DOC_TYPE = 'type'
 
 client = Elasticsearch([ES_URL])
 
-print('Dumping index')
-
 index_file = open(OUTPUT_INDEX_FILE, 'w')
 for row in scan(client, query={}, index=INDEX, doc_type=DOC_TYPE):
     json.dump(row, index_file)
