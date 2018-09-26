@@ -14,8 +14,6 @@ from elasticsearch import Elasticsearch
 from elasticsearch.client.cat import CatClient
 from elasticsearch.exceptions import ConnectionError
 from elasticsearch.exceptions import TransportError
-from elasticsearch_dsl import FacetedSearch
-from elasticsearch_dsl import Mapping
 from google.cloud import storage
 
 from .encoder import JSONEncoder
