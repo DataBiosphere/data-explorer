@@ -107,8 +107,8 @@ def _parse_json_file(json_path):
   """
     app.app.logger.info('Reading JSON file %s' % json_path)
     with open(json_path, 'r') as f:
-        # Remove comments using jsmin, as recommended by JSON creator
-        # (https://plus.google.com/+DouglasCrockfordEsq/posts/RK8qyGVaGSr).
+        # Remove comments using jsmin, as recommended by JSON creator:
+        # https://plus.google.com/+DouglasCrockfordEsq/posts/RK8qyGVaGSr
         jsonDict = json.loads(jsmin.jsmin(f.read()))
         return jsonDict
 
