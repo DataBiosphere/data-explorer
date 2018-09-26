@@ -5,7 +5,7 @@ from data_explorer.models.facet import Facet
 from data_explorer.models.facet_value import FacetValue
 from data_explorer.models.facets_response import FacetsResponse
 from data_explorer.util.dataset_faceted_search import DatasetFacetedSearch
-from data_explorer.util import facets_util
+from data_explorer.util import elasticsearch_util
 
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import HistogramFacet
@@ -38,19 +38,21 @@ def _process_extra_facets(extra_facets):
     es_facets = OrderedDict()
     ui_facets = OrderedDict()
 
-    for elasticsearch_field_name in extra_facets:
-        if elasticsearch_field_name:
-            arr = elasticsearch_field_name.split('.')
-            ui_facet_name = arr[-1]
-            field_type = facets_util.get_field_type(es,
-                                                    elasticsearch_field_name)
-            ui_facets[ui_facet_name] = {
-                'elasticsearch_field_name': elasticsearch_field_name,
-                'type': field_type
-            }
-            # TODO(malathir): Figure out how to get description of the field.
-            es_facets[ui_facet_name] = facets_util.get_elastisearch_facet(
-                es, elasticsearch_field_name, field_type)
+    if extra_facets:
+        for elasticsearch_field_name in extra_facets:
+            if elasticsearch_field_name:
+                arr = elasticsearch_field_name.split('.')
+                ui_facet_name = arr[-1]
+                field_type = elasticsearch_util.get_field_type(
+                    es, elasticsearch_field_name)
+                ui_facets[ui_facet_name] = {
+                    'elasticsearch_field_name': elasticsearch_field_name,
+                    'type': field_type
+                }
+                # TODO(malathir): Figure out how to get description of the field.
+                es_facets[
+                    ui_facet_name] = elasticsearch_util.get_elastisearch_facet(
+                        es, elasticsearch_field_name, field_type)
 
     return es_facets, ui_facets
 

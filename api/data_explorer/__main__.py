@@ -19,7 +19,7 @@ from elasticsearch.exceptions import TransportError
 from google.cloud import storage
 
 from .encoder import JSONEncoder
-from util import facets_util
+from util import elasticsearch_util
 from util.reverse_nested_facet import ReverseNestedFacet
 
 # gunicorn flags are passed via env variables, so we use these as the default
@@ -169,7 +169,8 @@ def _process_facets():
         ui_facet_name = facet_config['ui_facet_name']
         if elasticsearch_field_name.startswith('samples.'):
             ui_facet_name = '%s (samples)' % ui_facet_name
-        field_type = facets_util.get_field_type(es, elasticsearch_field_name)
+        field_type = elasticsearch_util.get_field_type(
+            es, elasticsearch_field_name)
         ui_facets[ui_facet_name] = {
             'elasticsearch_field_name': elasticsearch_field_name,
             'type': field_type
@@ -177,7 +178,7 @@ def _process_facets():
         if 'ui_facet_description' in facet_config:
             ui_facets[ui_facet_name]['description'] = facet_config[
                 'ui_facet_description']
-        es_facets[ui_facet_name] = facets_util.get_elastisearch_facet(
+        es_facets[ui_facet_name] = elasticsearch_util.get_elastisearch_facet(
             es, elasticsearch_field_name, field_type)
 
     # Map from UI facet name to Elasticsearch facet object

@@ -128,6 +128,7 @@ class App extends Component {
     //   'label': field name - field description,
     //   'value': Elasticsearch field name
     // }
+    console.log("in handle change");
     let deletedFacets = this.state.extraFacetsDicts.filter(
       x => !extraFacetsDicts.includes(x)
     );
@@ -156,7 +157,7 @@ class App extends Component {
       this.facetsApi.facetsGet(
         {
           filter: filterArray,
-          extraFacetsEsFieldNames: extraFacetsEsFieldNames
+          extraFacets: extraFacetsEsFieldNames
         },
         this.facetsCallback
       );
@@ -198,13 +199,13 @@ class App extends Component {
       this.facetsApi.facetsGet(
         {
           filter: filterArray,
-          extraFacetsEsFieldNames: this.state.extraFacetsEsFieldNames
+          extraFacets: this.state.extraFacetsEsFieldNames
         },
         this.facetsCallback
       );
     } else {
       this.facetsApi.facetsGet(
-        { extraFacetsEsFieldNames: this.state.extraFacetsEsFieldNames },
+        { extraFacets: this.state.extraFacetsEsFieldNames },
         this.facetsCallback
       );
     }
