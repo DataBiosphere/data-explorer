@@ -17,9 +17,9 @@ from elasticsearch.client.cat import CatClient
 from elasticsearch.exceptions import ConnectionError
 from elasticsearch.exceptions import TransportError
 from google.cloud import storage
-from data_explorer.util import facets_util
 
 from .encoder import JSONEncoder
+from util import facets_util
 from util.reverse_nested_facet import ReverseNestedFacet
 
 # gunicorn flags are passed via env variables, so we use these as the default
@@ -180,7 +180,10 @@ def _process_facets():
         es_facets[ui_facet_name] = facets_util.get_elastisearch_facet(
             es, elasticsearch_field_name, field_type)
 
+    # Map from UI facet name to Elasticsearch facet object
     app.app.config['ELASTICSEARCH_FACETS'] = es_facets
+    # Map from UI facet name to dict with Elasticsearch field name,
+    # Elasticsearch field type, and optional UI facet description.
     app.app.config['UI_FACETS'] = ui_facets
 
 

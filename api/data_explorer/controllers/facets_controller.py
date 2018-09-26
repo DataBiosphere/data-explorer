@@ -38,21 +38,19 @@ def _process_extra_facets(extra_facets):
     es_facets = OrderedDict()
     ui_facets = OrderedDict()
 
-    # Update the extra facets dicts in the config, only if the extra facets change.
-    if extra_facets:
-        for elasticsearch_field_name in extra_facets:
-            if elasticsearch_field_name:
-                arr = elasticsearch_field_name.split('.')
-                ui_facet_name = arr[-1]
-                field_type = facets_util.get_field_type(
-                    es, elasticsearch_field_name)
-                ui_facets[ui_facet_name] = {
-                    'elasticsearch_field_name': elasticsearch_field_name,
-                    'type': field_type
-                }
-                # TODO(malathir): Figure out how to get description of the field.
-                es_facets[ui_facet_name] = facets_util.get_elastisearch_facet(
-                    es, elasticsearch_field_name, field_type)
+    for elasticsearch_field_name in extra_facets:
+        if elasticsearch_field_name:
+            arr = elasticsearch_field_name.split('.')
+            ui_facet_name = arr[-1]
+            field_type = facets_util.get_field_type(es,
+                                                    elasticsearch_field_name)
+            ui_facets[ui_facet_name] = {
+                'elasticsearch_field_name': elasticsearch_field_name,
+                'type': field_type
+            }
+            # TODO(malathir): Figure out how to get description of the field.
+            es_facets[ui_facet_name] = facets_util.get_elastisearch_facet(
+                es, elasticsearch_field_name, field_type)
 
     return es_facets, ui_facets
 
@@ -106,11 +104,11 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
         facets=facets, count=es_response._faceted_search.count())
 
 
-def deserialize(filter_arr, combined_es_facets):
+def deserialize(filter_arr, es_facets):
     """
     :param filter_arr: an array of strings with format "facet_name=facet_value".
      A facet_name may be repeated if multiple filters are desired.
-    :param combined_es_facets: a dict of the static ui facets and extra facets added via UI.
+    :param es_facets: a map from UI facet name to Elasticsearch facet object
     :return: A dict of facet_name:[facet_value] mappings.
     """
     if not filter_arr or filter_arr == [""]:
@@ -120,7 +118,7 @@ def deserialize(filter_arr, combined_es_facets):
         filter_str = urllib.unquote(facet_filter).decode('utf8')
         key_val = filter_str.split('=')
         name = key_val[0]
-        es_facet = combined_es_facets[name]
+        es_facet = es_facets[name]
         if _is_histogram_facet(es_facet):
             value = _range_to_number(key_val[1])
         else:

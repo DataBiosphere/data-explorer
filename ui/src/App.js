@@ -23,8 +23,8 @@ class App extends Component {
       facets: null,
       totalCount: null,
       filter: null,
-      selectedFacets: [],
-      extraFacets: []
+      extraFacetsDicts: [],
+      extraFacetsEsFieldNames: []
     };
 
     this.apiClient = new ApiClient();
@@ -67,7 +67,7 @@ class App extends Component {
     // Map from facet name to a list of facet values.
     this.filterMap = new Map();
     this.updateFacets = this.updateFacets.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.handleFieldSearchChange = this.handleFieldSearchChange.bind(this);
   }
 
   render() {
@@ -85,7 +85,7 @@ class App extends Component {
             {this.state.enableFieldSearch && (
               <FieldSearch
                 fields={this.state.fields}
-                handleChange={this.handleChange}
+                handleChange={this.handleFieldSearchChange}
               />
             )}
             <FacetsGrid
@@ -122,30 +122,50 @@ class App extends Component {
     datasetApi.datasetGet(datasetCallback);
   }
 
-  handleChange(selectedFacets) {
-    let deletedFacets = this.state.selectedFacets.filter(
-      x => !selectedFacets.includes(x)
+  handleFieldSearchChange(extraFacetsDicts) {
+    // extraFacetsDicts is a list of dicts, where each dict is:
+    // {
+    //   'label': field name - field description,
+    //   'value': Elasticsearch field name
+    // }
+    let deletedFacets = this.state.extraFacetsDicts.filter(
+      x => !extraFacetsDicts.includes(x)
     );
+    // Remove deleted facets from filter, if necessary.
+    // - User adds extra facet A
+    // - User checks A_val in facet A. filter is now "A=A_val"
+    // - In FieldSearch component, user deletes chip for facet A. We need to
+    // remove "A=A_val" from filter.
     deletedFacets.forEach(removed => {
       if (this.filterMap.get(removed.label) !== undefined) {
         this.filterMap.delete(removed.label);
       }
     });
     let filterArray = this.filterMapToArray(this.filterMap);
-    this.setState({ filter: filterArray });
 
-    let extraFacets = [];
-    selectedFacets.forEach(option => extraFacets.push(option.value));
-    if (extraFacets.length > 0) {
-      this.setState({ extraFacets: extraFacets });
-      this.setState({ selectedFacets: selectedFacets });
+    let extraFacetsEsFieldNames = [];
+    extraFacetsDicts.forEach(option =>
+      extraFacetsEsFieldNames.push(option.value)
+    );
+    if (extraFacetsEsFieldNames.length > 0) {
+      this.setState({
+        extraFacetsEsFieldNames: extraFacetsEsFieldNames,
+        extraFacetsDicts: extraFacetsDicts,
+        filter: filterArray
+      });
       this.facetsApi.facetsGet(
-        { filter: filterArray, extraFacets: extraFacets },
+        {
+          filter: filterArray,
+          extraFacetsEsFieldNames: extraFacetsEsFieldNames
+        },
         this.facetsCallback
       );
     } else {
-      this.setState({ extraFacets: [] });
-      this.setState({ selectedFacets: [] });
+      this.setState({
+        extraFacetsEsFieldNames: [],
+        extraFacetsDicts: [],
+        filter: filterArray
+      });
       this.facetsApi.facetsGet({ filter: filterArray }, this.facetsCallback);
     }
   }
@@ -176,12 +196,15 @@ class App extends Component {
     this.setState({ filter: filterArray });
     if (filterArray.length > 0) {
       this.facetsApi.facetsGet(
-        { filter: filterArray, extraFacets: this.state.extraFacets },
+        {
+          filter: filterArray,
+          extraFacetsEsFieldNames: this.state.extraFacetsEsFieldNames
+        },
         this.facetsCallback
       );
     } else {
       this.facetsApi.facetsGet(
-        { extraFacets: this.state.extraFacets },
+        { extraFacetsEsFieldNames: this.state.extraFacetsEsFieldNames },
         this.facetsCallback
       );
     }
