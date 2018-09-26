@@ -39,6 +39,15 @@ paths:
           collectionFormat: pipes
           items:
             type: string
+        - name: extraFacets
+          description: extraFacets represents the fields selected from the field search box.
+            extraFacets is a list of Elasticsearch field names. In the returned
+            list of facets, the extra facets will come before the facets from ui.json.
+          in: query
+          collectionFormat: pipes
+          type: array
+          items:
+            type: string
       responses:
         200:
           description: Success
