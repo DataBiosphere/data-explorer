@@ -4,7 +4,6 @@ import urllib
 from collections import OrderedDict
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import HistogramFacet
-from elasticsearch_dsl.faceted_search import NestedFacet
 from flask import current_app
 
 from data_explorer.models.facet import Facet
@@ -12,9 +11,6 @@ from data_explorer.models.facet_value import FacetValue
 from data_explorer.models.facets_response import FacetsResponse
 from data_explorer.util import elasticsearch_util
 from data_explorer.util.dataset_faceted_search import DatasetFacetedSearch
-
-from flask import current_app
-import urllib
 
 
 def _is_histogram_facet(facet):

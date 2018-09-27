@@ -61,7 +61,7 @@ describe("End-to-end", () => {
   });
 
   test("Samples Overview facet", async () => {
-    // Click on a Samples Overview facet.
+    // Click on Samples Overview facet.
     let facetValueRow = await getFacetValueRow("Samples Overview", "Has WGS Low Coverage BAM");
     await facetValueRow.click("input");
     // Wait for data to be returned from backend.
@@ -79,6 +79,13 @@ describe("End-to-end", () => {
     facetValueRow = await getFacetValueRow("Samples Overview", "Has Exome BAM");
     const grayDiv = await facetValueRow.$("div.grayText");
     expect(grayDiv).toBeTruthy();
+
+    // Test exporting to saturn.
+    await page.click("button[title='Send to Saturn']");
+    await page.waitForSelector("#name");
+    await page.type("#name", "samples-cohort");
+    await Promise.all([page.click("#save"), page.waitFor(15000)]);
+    expect(await page.url()).toBe("https://bvdp-saturn-prod.appspot.com/");
   });
 
   test("Export to Saturn - no selected cohort", async () => {
