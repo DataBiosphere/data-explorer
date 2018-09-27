@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import connexion
 import csv
 import jsmin
 import json
@@ -9,16 +10,14 @@ import os
 import time
 
 from collections import OrderedDict
-import connexion
 from elasticsearch import Elasticsearch
 from elasticsearch.client.cat import CatClient
 from elasticsearch.exceptions import ConnectionError
 from elasticsearch.exceptions import TransportError
 from google.cloud import storage
 
-from .encoder import JSONEncoder
+from data_explorer.encoder import JSONEncoder
 from data_explorer.util import elasticsearch_util
-from data_explorer.util.reverse_nested_facet import ReverseNestedFacet
 
 # gunicorn flags are passed via env variables, so we use these as the default
 # values. These arguments will rarely be specified as flags directly, aside from
@@ -162,6 +161,24 @@ def _process_facets():
     es_facets = OrderedDict()
     ui_facets = OrderedDict()
 
+    # Add a 'Samples Overview' facet if sample_file_columns were specified in
+    # bigquery.json.
+    if app.app.config['SAMPLE_FILE_COLUMNS']:
+        # Construct Elasticsearch filters. See
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-filters-aggregation.html
+        es_field_names = {}
+        for name, field in app.app.config['SAMPLE_FILE_COLUMNS'].iteritems():
+            facet_name = 'Has %s' % name
+            es_field_name = 'samples._has_%s' % name.lower().replace(' ', '_')
+            es_field_names[facet_name] = es_field_name
+        ui_facets['Samples Overview'] = {
+            'elasticsearch_field_names': es_field_names,
+            'type': 'samples_overview'
+        }
+        es_facets[
+            'Samples Overview'] = elasticsearch_util.get_samples_overview_facet(
+                es_field_names)
+
     for facet_config in facets_config:
         elasticsearch_field_name = facet_config['elasticsearch_field_name']
         field_type = elasticsearch_util.get_field_type(
@@ -269,8 +286,8 @@ def init():
     _process_dataset()
     _process_ui()
     init_elasticsearch()
-    _process_facets()
     _process_bigquery()
+    _process_facets()
     _process_export_url()
 
     app.app.logger.info('app.app.config: %s' % app.app.config)

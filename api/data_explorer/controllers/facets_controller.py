@@ -17,18 +17,18 @@ def _is_histogram_facet(facet):
     if isinstance(facet, HistogramFacet):
         return True
     # For some reason using isinstance doesn't work here for
-    # ReverseNestedFacet. I believe it has to do with the
-    # relative importing of the class in __main__.py where it's
-    # created.
-    elif hasattr(facet, 'nested_facet'):
-        return _is_histogram_facet(facet.nested_facet)
+    # NestedFacet. I believe it's due to the absolute path,
+    # it may work once NestedFacet is exported as part of
+    # elasticsearch_dsl.
+    elif hasattr(facet, '_inner'):
+        return _is_histogram_facet(facet._inner)
 
 
 def _get_bucket_interval(facet):
     if isinstance(facet, HistogramFacet):
         return facet._params['interval']
-    elif hasattr(facet, 'nested_facet'):
-        return _get_bucket_interval(facet.nested_facet)
+    elif hasattr(facet, '_inner'):
+        return _get_bucket_interval(facet._inner)
 
 
 def _process_extra_facets(extra_facets):

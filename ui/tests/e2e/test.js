@@ -60,6 +60,34 @@ describe("End-to-end", () => {
     expect(grayDiv).toBeTruthy();
   });
 
+  test("Samples Overview facet", async () => {
+    // Click on Samples Overview facet.
+    let facetValueRow = await getFacetValueRow("Samples Overview", "Has WGS Low Coverage BAM");
+    await facetValueRow.click("input");
+    // Wait for data to be returned from backend.
+    // See #63 for why we can't wait for div.grayText.
+    await page.waitForXPath(
+      "//div[contains(@class, 'totalCountText') and text() = '2535']"
+    );
+
+    // Assert page updated correctly.
+    await assertHeaderTotalCount("2535");
+    await assertFacet("Gender", "2535", "female", "1291");
+    await assertFacet("Total Exome Sequence", "2535", "0B-10B", "1429");
+
+    // Make sure non-selected facet values are gray.
+    facetValueRow = await getFacetValueRow("Samples Overview", "Has Exome BAM");
+    const grayDiv = await facetValueRow.$("div.grayText");
+    expect(grayDiv).toBeTruthy();
+
+    // Test exporting to saturn.
+    await page.click("button[title='Send to Saturn']");
+    await page.waitForSelector("#name");
+    await page.type("#name", "samples-cohort");
+    await Promise.all([page.click("#save"), page.waitFor(15000)]);
+    expect(await page.url()).toBe("https://bvdp-saturn-prod.appspot.com/");
+  });
+
   test("Export to Saturn - no selected cohort", async () => {
     await Promise.all([
       page.click("button[title='Send to Saturn']"),

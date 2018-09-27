@@ -1,8 +1,13 @@
 from elasticsearch_dsl import Search
 from elasticsearch_dsl import HistogramFacet
 from elasticsearch_dsl import TermsFacet
+# TODO(bryancrampton): Remove '.faceted_search' once
+# https://github.com/elastic/elasticsearch-dsl-py/pull/976 is included in a
+# release (6.2.2)
+from elasticsearch_dsl.faceted_search import NestedFacet
+from elasticsearch_dsl.query import Match
+from filters_facet import FiltersFacet
 
-from data_explorer.util.reverse_nested_facet import ReverseNestedFacet
 from flask import current_app
 
 
@@ -124,16 +129,22 @@ def _get_bucket_interval(field_range):
         return 1000000000000
 
 
+def get_samples_overview_facet(es_field_names):
+    filters = {
+        facet: Match(**{field: True})
+        for facet, field in es_field_names.iteritems()
+    }
+    return NestedFacet('samples', FiltersFacet(filters))
+
+
 def get_elasticsearch_facet(es, elasticsearch_field_name, field_type):
     if field_type == 'text':
         # Use ".keyword" because we want aggregation on keyword field, not
         # term field. See
         # https://www.elastic.co/guide/en/elasticsearch/reference/6.2/fielddata.html#before-enabling-fielddata
         es_facet = TermsFacet(field=elasticsearch_field_name + '.keyword')
-
     elif field_type == 'boolean':
         es_facet = TermsFacet(field=elasticsearch_field_name)
-
     else:
         # Assume numeric type.
         # Creating this facet is a two-step process.
@@ -150,6 +161,6 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type):
 
     # Handle sample facets in a special way since they are nested objects.
     if elasticsearch_field_name.startswith('samples.'):
-        es_facet = ReverseNestedFacet('samples', es_facet)
+        es_facet = NestedFacet('samples', es_facet)
 
     return es_facet
