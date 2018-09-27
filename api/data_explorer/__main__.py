@@ -18,21 +18,14 @@ from google.cloud import storage
 
 from .encoder import JSONEncoder
 from data_explorer.util import elasticsearch_util
-from data_explorer.util.reverse_nested_facet import ReverseNestedFacet
 from elasticsearch_dsl import FacetedSearch
 from elasticsearch_dsl import HistogramFacet
 from elasticsearch_dsl import Mapping
 from elasticsearch_dsl import Search
 from elasticsearch_dsl import TermsFacet
-# TODO(bryancrampton): Remove '.faceted_search' once 
-# https://github.com/elastic/elasticsearch-dsl-py/pull/976 is included in a
-# release (6.2.2)
-from elasticsearch_dsl.faceted_search import NestedFacet
-from elasticsearch_dsl.query import Match
 from google.cloud import storage
 
 from .encoder import JSONEncoder
-from util.filters_facet import FiltersFacet
 
 # gunicorn flags are passed via env variables, so we use these as the default
 # values. These arguments will rarely be specified as flags directly, aside from
@@ -181,18 +174,18 @@ def _process_facets():
     if app.app.config['SAMPLE_FILE_COLUMNS']:
         # Construct Elasticsearch filters. See
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-filters-aggregation.html
-        filters = {}
         es_field_names = {}
         for name, field in app.app.config['SAMPLE_FILE_COLUMNS'].iteritems():
             facet_name = 'Has %s' % name
             es_field_name = 'samples._has_%s' % name.lower().replace(' ', '_')
-            filters[facet_name] = Match(**{es_field_name: True})
             es_field_names[facet_name] = es_field_name
-        es_facets['Samples Overview'] = NestedFacet('samples', FiltersFacet(filters))
         ui_facets['Samples Overview'] = {
             'elasticsearch_field_names': es_field_names,
             'type': 'samples_overview'
         }
+        es_facets[
+            'Samples Overview'] = elasticsearch_util.get_samples_overview_facet(
+                es_field_names)
 
     for facet_config in facets_config:
         elasticsearch_field_name = facet_config['elasticsearch_field_name']

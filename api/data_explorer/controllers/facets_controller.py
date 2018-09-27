@@ -22,16 +22,16 @@ def _is_histogram_facet(facet):
         return True
     # For some reason using isinstance doesn't work here for
     # NestedFacet. I believe it's due to the absolute path,
-    # it may work once NestedFacet is exported as part of 
+    # it may work once NestedFacet is exported as part of
     # elasticsearch_dsl.
-    elif hasattr(facet, '_inner'):    
-        return _is_histogram_facet(facet._inner)  
+    elif hasattr(facet, '_inner'):
+        return _is_histogram_facet(facet._inner)
 
 
 def _get_bucket_interval(facet):
     if isinstance(facet, HistogramFacet):
         return facet._params['interval']
-    elif hasattr(facet, '_inner'):    
+    elif hasattr(facet, '_inner'):
         return _get_bucket_interval(facet._inner)
 
 

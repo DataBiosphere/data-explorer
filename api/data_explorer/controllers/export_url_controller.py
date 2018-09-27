@@ -218,7 +218,8 @@ def _get_filter_query(filters):
     table_columns = dict()
     for filter_str in filters:
         facet, value = _get_facet_and_value(filter_str)
-        table_name, column, clause = _get_table_and_clause(facet, value, sample_file_column_fields)
+        table_name, column, clause = _get_table_and_clause(
+            facet, value, sample_file_column_fields)
         if table_name in table_columns:
             if column in table_columns[table_name]:
                 table_columns[table_name][column].append(clause)
