@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import connexion
 import csv
 import jsmin
 import json
@@ -9,23 +10,14 @@ import os
 import time
 
 from collections import OrderedDict
-import connexion
 from elasticsearch import Elasticsearch
 from elasticsearch.client.cat import CatClient
 from elasticsearch.exceptions import ConnectionError
 from elasticsearch.exceptions import TransportError
 from google.cloud import storage
 
-from .encoder import JSONEncoder
+from data_explorer.encoder import JSONEncoder
 from data_explorer.util import elasticsearch_util
-from elasticsearch_dsl import FacetedSearch
-from elasticsearch_dsl import HistogramFacet
-from elasticsearch_dsl import Mapping
-from elasticsearch_dsl import Search
-from elasticsearch_dsl import TermsFacet
-from google.cloud import storage
-
-from .encoder import JSONEncoder
 
 # gunicorn flags are passed via env variables, so we use these as the default
 # values. These arguments will rarely be specified as flags directly, aside from
