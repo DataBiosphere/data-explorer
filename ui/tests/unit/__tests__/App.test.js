@@ -39,15 +39,18 @@ test("Stringifies queries when calling the API to update Facets", () => {
     tree.instance().facetsCallback
   );
   expect(mockFacetsGet).toHaveBeenCalledWith(
-    { filter: ["Facet 1=FacetValue 1"] },
+    { filter: ["Facet 1=FacetValue 1"], extraFacets: [] },
     tree.instance().facetsCallback
   );
   expect(mockFacetsGet).toHaveBeenCalledWith(
-    { filter: ["Facet 1=FacetValue 1", "Facet 1=FacetValue 2"] },
+    {
+      filter: ["Facet 1=FacetValue 1", "Facet 1=FacetValue 2"],
+      extraFacets: []
+    },
     tree.instance().facetsCallback
   );
   expect(mockFacetsGet).toHaveBeenCalledWith(
-    { filter: ["Facet 1=FacetValue 2"] },
+    { filter: ["Facet 1=FacetValue 2"], extraFacets: [] },
     tree.instance().facetsCallback
   );
 });
