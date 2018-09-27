@@ -55,10 +55,10 @@ class App extends Component {
       } else {
         this.setState({
           fields: data.fields.map(field => {
-           return {
-               label: field.name,
-               value: field.elasticsearch_name
-           };
+            return {
+              label: field.name,
+              value: field.elasticsearch_name
+            };
           })
         });
       }
@@ -178,7 +178,8 @@ class App extends Component {
     let filterArray = this.filterMapToArray(this.filterMap);
     this.setState({ filter: filterArray });
 
-    this.facetsApi.facetsGet({
+    this.facetsApi.facetsGet(
+      {
         filter: filterArray,
         extraFacets: this.state.extraFacetsOptions.map(option => option.value)
       },
