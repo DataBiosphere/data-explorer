@@ -130,10 +130,8 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type):
         # term field. See
         # https://www.elastic.co/guide/en/elasticsearch/reference/6.2/fielddata.html#before-enabling-fielddata
         es_facet = TermsFacet(field=elasticsearch_field_name + '.keyword')
-
     elif field_type == 'boolean':
         es_facet = TermsFacet(field=elasticsearch_field_name)
-
     else:
         # Assume numeric type.
         # Creating this facet is a two-step process.

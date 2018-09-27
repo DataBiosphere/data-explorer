@@ -24,7 +24,9 @@ from elasticsearch_dsl import HistogramFacet
 from elasticsearch_dsl import Mapping
 from elasticsearch_dsl import Search
 from elasticsearch_dsl import TermsFacet
-# TODO: Remove '.faceted_search' on next release of elasticsearch-dsl
+# TODO(bryancrampton): Remove '.faceted_search' once 
+# https://github.com/elastic/elasticsearch-dsl-py/pull/976 is included in a
+# release (6.2.2)
 from elasticsearch_dsl.faceted_search import NestedFacet
 from elasticsearch_dsl.query import Match
 from google.cloud import storage
@@ -177,17 +179,19 @@ def _process_facets():
     # Add a 'Samples Overview' facet if sample_file_columns were specified in
     # bigquery.json.
     if app.app.config['SAMPLE_FILE_COLUMNS']:
-        filters_facet = FiltersFacet({
-            'Has %s' % key:
-            Match(**{'samples._has_%s' % key.lower().replace(' ', '_'): True})
-            for key in app.app.config['SAMPLE_FILE_COLUMNS'].keys()
-        })
-        es_facets['Samples Overview'] = NestedFacet('samples', filters_facet)
+        # Construct Elasticsearch filters. See
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-filters-aggregation.html
+        filters = {}
+        es_field_names = {}
+        for name, field in app.app.config['SAMPLE_FILE_COLUMNS'].iteritems():
+            facet_name = 'Has %s' % name
+            es_field_name = 'samples._has_%s' % name.lower().replace(' ', '_')
+            filters[facet_name] = Match(**{es_field_name: True})
+            es_field_names[facet_name] = es_field_name
+        es_facets['Samples Overview'] = NestedFacet('samples', FiltersFacet(filters))
         ui_facets['Samples Overview'] = {
-            # TODO(bryancrampton): This needs to be generalized to support filtering
-            # across multiple fields, and to support the _has_* sample file fields.
-            'elasticsearch_field_name': 'samples',
-            'type': 'text'
+            'elasticsearch_field_names': es_field_names,
+            'type': 'samples_overview'
         }
 
     for facet_config in facets_config:
@@ -208,33 +212,6 @@ def _process_facets():
 
         es_facets[ui_facet_name] = elasticsearch_util.get_elasticsearch_facet(
             es, elasticsearch_field_name, field_type)
-        if field_type == 'text':
-            # Use ".keyword" because we want aggregation on keyword field, not
-            # term field. See
-            # https://www.elastic.co/guide/en/elasticsearch/reference/6.2/fielddata.html#before-enabling-fielddata
-            es_facets[ui_facet_name] = TermsFacet(
-                field=elasticsearch_field_name + '.keyword')
-        elif field_type == 'boolean':
-            es_facets[ui_facet_name] = TermsFacet(
-                field=elasticsearch_field_name)
-        else:
-            # Assume numeric type.
-            # Creating this facet is a two-step process.
-            # 1) Get max value
-            # 2) Based on max value, determine bucket size. Create
-            #    HistogramFacet with this bucket size.
-            # TODO: When https://github.com/elastic/elasticsearch/issues/31828
-            # is fixed, use AutoHistogramFacet instead. Will no longer need 2
-            # steps.
-            field_range = _get_field_range(es, elasticsearch_field_name)
-            es_facets[ui_facet_name] = HistogramFacet(
-                field=elasticsearch_field_name,
-                interval=_get_bucket_interval(field_range))
-
-        # Handle sample facets in a special way since they are nested objects.
-        if elasticsearch_field_name.startswith('samples.'):
-            es_facets[ui_facet_name] = NestedFacet('samples',
-                                                   es_facets[ui_facet_name])
 
     # Map from UI facet name to Elasticsearch facet object
     app.app.config['ELASTICSEARCH_FACETS'] = es_facets

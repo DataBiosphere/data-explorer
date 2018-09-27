@@ -50,14 +50,17 @@ class FacetCard extends Component {
         }
       />
     ));
+    const totalFacetValueCount = (
+      <span className="totalFacetValueCount">
+        {this.totalFacetValueCount}
+      </span>
+    );
     return (
       <Card className="facetCard">
         <div className="cardHeader">
           <div>
             <span>{this.props.facet.name}</span>
-            <span className="totalFacetValueCount">
-              {this.totalFacetValueCount}
-            </span>
+            {this.props.facet.name != "Samples Overview" ? totalFacetValueCount : null}
           </div>
           <span className="facetDescription">
             {this.props.facet.description}
