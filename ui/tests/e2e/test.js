@@ -31,7 +31,7 @@ describe("End-to-end", () => {
     // Assert page updated correctly.
     await assertHeaderTotalCount("1018");
     await assertFacet("Gender", "1018", "male", "518");
-    await assertFacet("Total Exome Sequence (samples)", "707", "0B-10B", "435");
+    await assertFacet("Total Exome Sequence", "707", "0B-10B", "435");
 
     // Make sure non-selected facet values are gray.
     facetValueRow = await getFacetValueRow("Super Population", "European");
@@ -52,7 +52,7 @@ describe("End-to-end", () => {
     // Assert page updated correctly.
     await assertHeaderTotalCount("1122");
     await assertFacet("Super Population", "1122", "African", "281");
-    await assertFacet("Total Exome Sequence (samples)", "1108", "0B-10B", "682");
+    await assertFacet("Total Exome Sequence", "1108", "0B-10B", "682");
 
     // Make sure non-selected facet values are gray.
     facetValueRow = await getFacetValueRow("Total Low Coverage Sequence", "0B-10B");
@@ -73,7 +73,7 @@ describe("End-to-end", () => {
     // Assert page updated correctly.
     await assertHeaderTotalCount("2535");
     await assertFacet("Gender", "2535", "female", "1291");
-    await assertFacet("Total Exome Sequence (samples)", "2535", "0B-10B", "1429");
+    await assertFacet("Total Exome Sequence", "2535", "0B-10B", "1429");
 
     // Make sure non-selected facet values are gray.
     facetValueRow = await getFacetValueRow("Samples Overview", "Has Exome BAM");
