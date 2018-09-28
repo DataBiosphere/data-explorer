@@ -125,6 +125,31 @@ def _process_ui():
         app.app.config['ENABLE_FIELD_SEARCH'] = True
 
 
+def _process_bigquery():
+    """Gets an alphabetically ordered list of table names from bigquery.json.
+    Table names are fully qualified: <project id>.<dataset id>.<table name>
+    If bigquery.json doesn't exist, no configuration paramters are set.
+    """
+    config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
+                               'bigquery.json')
+    table_names = []
+    participant_id_column = ''
+    sample_id_column = ''
+    sample_file_columns = []
+    if os.path.isfile(config_path):
+        bigquery_config = _parse_json_file(config_path)
+        table_names = bigquery_config['table_names']
+        participant_id_column = bigquery_config['participant_id_column']
+        sample_id_column = bigquery_config.get('sample_id_column', '')
+        sample_file_columns = bigquery_config.get('sample_file_columns', {})
+        table_names.sort()
+
+    app.app.config['TABLE_NAMES'] = table_names
+    app.app.config['PARTICIPANT_ID_COLUMN'] = participant_id_column
+    app.app.config['SAMPLE_ID_COLUMN'] = sample_id_column
+    app.app.config['SAMPLE_FILE_COLUMNS'] = sample_file_columns
+
+
 def _process_facets():
     """Process facets to store a dict from UI facet name to UI facet description
     ,Elasticsearch field name, and field type, and a dict of UI facet name to
@@ -184,31 +209,6 @@ def _process_facets():
     app.app.config['UI_FACETS'] = ui_facets
 
 
-def _process_bigquery():
-    """Gets an alphabetically ordered list of table names from bigquery.json.
-    Table names are fully qualified: <project id>.<dataset id>.<table name>
-    If bigquery.json doesn't exist, no configuration paramters are set.
-    """
-    config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
-                               'bigquery.json')
-    table_names = []
-    participant_id_column = ''
-    sample_id_column = ''
-    sample_file_columns = []
-    if os.path.isfile(config_path):
-        bigquery_config = _parse_json_file(config_path)
-        table_names = bigquery_config['table_names']
-        participant_id_column = bigquery_config['participant_id_column']
-        sample_id_column = bigquery_config.get('sample_id_column', '')
-        sample_file_columns = bigquery_config.get('sample_file_columns', {})
-        table_names.sort()
-
-    app.app.config['TABLE_NAMES'] = table_names
-    app.app.config['PARTICIPANT_ID_COLUMN'] = participant_id_column
-    app.app.config['SAMPLE_ID_COLUMN'] = sample_id_column
-    app.app.config['SAMPLE_FILE_COLUMNS'] = sample_file_columns
-
-
 def _process_export_url():
     """Sets config variables related to /exportUrl endpoint."""
     app.app.config['AUTHORIZATION_DOMAIN'] = ''
@@ -261,13 +261,14 @@ def init():
     _process_dataset()
     _process_ui()
     init_elasticsearch()
-    _process_facets()
     _process_bigquery()
+    _process_facets()
     _process_export_url()
 
     app.app.logger.info('app.app.config:')
     for key in sorted(app.app.config.keys()):
         app.app.logger.info('    %s: %s' % (key, app.app.config[key]))
+
 
 init()
 
