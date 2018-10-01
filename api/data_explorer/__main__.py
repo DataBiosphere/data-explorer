@@ -258,16 +258,17 @@ def _process_export_url():
 # Controllers are expected to read from app.app.config and not from config
 # files.
 def init():
-    _process_dataset()
-    _process_ui()
-    init_elasticsearch()
-    _process_bigquery()
-    _process_facets()
-    _process_export_url()
+    with app.app.app_context():
+        _process_dataset()
+        _process_ui()
+        _process_bigquery()
+        init_elasticsearch()
+        _process_facets()
+        _process_export_url()
 
-    app.app.logger.info('app.app.config:')
-    for key in sorted(app.app.config.keys()):
-        app.app.logger.info('    %s: %s' % (key, app.app.config[key]))
+        app.app.logger.info('app.app.config:')
+        for key in sorted(app.app.config.keys()):
+            app.app.logger.info('    %s: %s' % (key, app.app.config[key]))
 
 
 init()
