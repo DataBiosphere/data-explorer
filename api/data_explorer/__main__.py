@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import argparse
-import connexion
 import csv
 import jsmin
 import json
@@ -10,13 +9,14 @@ import os
 import time
 
 from collections import OrderedDict
+import connexion
 from elasticsearch import Elasticsearch
 from elasticsearch.client.cat import CatClient
 from elasticsearch.exceptions import ConnectionError
 from elasticsearch.exceptions import TransportError
 from google.cloud import storage
 
-from data_explorer.encoder import JSONEncoder
+from .encoder import JSONEncoder
 from data_explorer.util import elasticsearch_util
 
 # gunicorn flags are passed via env variables, so we use these as the default
@@ -74,6 +74,9 @@ def init_elasticsearch():
             es.cluster.health(wait_for_status='yellow')
             app.app.logger.info('Elasticsearch took %d seconds to come up.' %
                                 (time.time() - start))
+            # For local deployment, load_test_data will delete and recreate
+            # 1000 Genomes index. Wait for load_test_data to finish.
+            time.sleep(5)
             break
         except ConnectionError:
             app.app.logger.info('Elasticsearch not up yet, will try again.')
@@ -108,33 +111,11 @@ def _parse_json_file(json_path):
         return jsonDict
 
 
-# Keep in sync with convert_to_index_name() in data-explorer-indexers repo.
-def _convert_to_index_name(s):
-    """Converts a string to an Elasticsearch index name."""
-    # For Elasticsearch index name restrictions, see
-    # https://github.com/DataBiosphere/data-explorer-indexers/issues/5#issue-308168951
-    # Elasticsearch allows single quote in index names. However, they cause other
-    # problems. For example,
-    # "curl -XDELETE http://localhost:9200/nurse's_health_study" doesn't work.
-    # So also remove single quotes.
-    prohibited_chars = [
-        ' ', '"', '*', '\\', '<', '|', ',', '>', '/', '?', '\''
-    ]
-    for char in prohibited_chars:
-        s = s.replace(char, '_')
-    s = s.lower()
-    # Remove leading underscore.
-    if s.find('_', 0, 1) == 0:
-        s = s.lstrip('_')
-    print('Index name: %s' % s)
-    return s
-
-
 def _process_dataset():
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                'dataset.json')
     app.app.config['DATASET_NAME'] = _parse_json_file(config_path)['name']
-    app.app.config['INDEX_NAME'] = _convert_to_index_name(
+    app.app.config['INDEX_NAME'] = elasticsearch_util.convert_to_index_name(
         app.app.config['DATASET_NAME'])
 
 
@@ -144,6 +125,31 @@ def _process_ui():
     app.app.config['ENABLE_FIELD_SEARCH'] = False
     if 'enable_field_search' in config and config['enable_field_search']:
         app.app.config['ENABLE_FIELD_SEARCH'] = True
+
+
+def _process_bigquery():
+    """Gets an alphabetically ordered list of table names from bigquery.json.
+    Table names are fully qualified: <project id>.<dataset id>.<table name>
+    If bigquery.json doesn't exist, no configuration paramters are set.
+    """
+    config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
+                               'bigquery.json')
+    table_names = []
+    participant_id_column = ''
+    sample_id_column = ''
+    sample_file_columns = []
+    if os.path.isfile(config_path):
+        bigquery_config = _parse_json_file(config_path)
+        table_names = bigquery_config['table_names']
+        participant_id_column = bigquery_config['participant_id_column']
+        sample_id_column = bigquery_config.get('sample_id_column', '')
+        sample_file_columns = bigquery_config.get('sample_file_columns', {})
+        table_names.sort()
+
+    app.app.config['TABLE_NAMES'] = table_names
+    app.app.config['PARTICIPANT_ID_COLUMN'] = participant_id_column
+    app.app.config['SAMPLE_ID_COLUMN'] = sample_id_column
+    app.app.config['SAMPLE_FILE_COLUMNS'] = sample_file_columns
 
 
 def _process_facets():
@@ -205,31 +211,6 @@ def _process_facets():
     app.app.config['UI_FACETS'] = ui_facets
 
 
-def _process_bigquery():
-    """Gets an alphabetically ordered list of table names from bigquery.json.
-    Table names are fully qualified: <project id>.<dataset id>.<table name>
-    If bigquery.json doesn't exist, no configuration paramters are set.
-    """
-    config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
-                               'bigquery.json')
-    table_names = []
-    participant_id_column = ''
-    sample_id_column = ''
-    sample_file_columns = []
-    if os.path.isfile(config_path):
-        bigquery_config = _parse_json_file(config_path)
-        table_names = bigquery_config['table_names']
-        participant_id_column = bigquery_config['participant_id_column']
-        sample_id_column = bigquery_config.get('sample_id_column', '')
-        sample_file_columns = bigquery_config.get('sample_file_columns', {})
-        table_names.sort()
-
-    app.app.config['TABLE_NAMES'] = table_names
-    app.app.config['PARTICIPANT_ID_COLUMN'] = participant_id_column
-    app.app.config['SAMPLE_ID_COLUMN'] = sample_id_column
-    app.app.config['SAMPLE_FILE_COLUMNS'] = sample_file_columns
-
-
 def _process_export_url():
     """Sets config variables related to /exportUrl endpoint."""
     app.app.config['AUTHORIZATION_DOMAIN'] = ''
@@ -274,24 +255,25 @@ def _process_export_url():
             % app.app.config['EXPORT_URL_GCS_BUCKET'])
 
 
-# Read config files. Just do this once; don't need to read files on every
-# request.
-@app.app.before_first_request
+# On server startup, read and process config files, and populate
+# app.app.config. Only do this once, instead of on every request.
+# Controllers are expected to read from app.app.config and not from config
+# files.
 def init():
-    # _get_dataset_name() reads from app.app.config. If we move this
-    # outside of init(), Flask complains that we're working outside of
-    # application context. @app.app.before_first_request guarantees that app
-    # context has been set up.
+    with app.app.app_context():
+        _process_dataset()
+        _process_ui()
+        _process_bigquery()
+        init_elasticsearch()
+        _process_facets()
+        _process_export_url()
 
-    _process_dataset()
-    _process_ui()
-    init_elasticsearch()
-    _process_bigquery()
-    _process_facets()
-    _process_export_url()
+        app.app.logger.info('app.app.config:')
+        for key in sorted(app.app.config.keys()):
+            app.app.logger.info('    %s: %s' % (key, app.app.config[key]))
 
-    app.app.logger.info('app.app.config: %s' % app.app.config)
 
+init()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=args.port)
