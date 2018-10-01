@@ -18,7 +18,6 @@ from google.cloud import storage
 
 from .encoder import JSONEncoder
 from data_explorer.util import elasticsearch_util
-from data_explorer.util.reverse_nested_facet import ReverseNestedFacet
 
 # gunicorn flags are passed via env variables, so we use these as the default
 # values. These arguments will rarely be specified as flags directly, aside from
@@ -263,6 +262,10 @@ def init():
         _process_ui()
         _process_bigquery()
         init_elasticsearch()
+        # For local runs, load_test_index deletes and recreates 1000 Genomes
+        # index. This init() method runs before load_test_index, so the index
+        # seen during this init() method may be incorrect. (It would only be
+        # incorrect on the first "docker-compose up".)
         _process_facets()
         _process_export_url()
 
