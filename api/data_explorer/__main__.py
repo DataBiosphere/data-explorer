@@ -74,6 +74,9 @@ def init_elasticsearch():
             es.cluster.health(wait_for_status='yellow')
             app.app.logger.info('Elasticsearch took %d seconds to come up.' %
                                 (time.time() - start))
+            # For local deployment, load_test_data will delete and recreate
+            # 1000 Genomes index. Wait for load_test_data to finish.
+            time.sleep(5)
             break
         except ConnectionError:
             app.app.logger.info('Elasticsearch not up yet, will try again.')
@@ -262,10 +265,6 @@ def init():
         _process_ui()
         _process_bigquery()
         init_elasticsearch()
-        # For local runs, load_test_index deletes and recreates 1000 Genomes
-        # index. This init() method runs before load_test_index, so the index
-        # seen during this init() method may be incorrect. (It would only be
-        # incorrect on the first "docker-compose up".)
         _process_facets()
         _process_export_url()
 
