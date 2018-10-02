@@ -97,16 +97,15 @@ def init_elasticsearch():
                                       fields_path)
 
     if not es.indices.exists(app.app.config['INDEX_NAME']):
-        raise EnvironmentError('Index %s not found at %s' %
-                               (app.app.config['INDEX_NAME'],
-                                app.app.config['ELASTICSEARCH_URL']))
+        raise EnvironmentError(
+            'Index %s not found at %s' % (app.app.config['INDEX_NAME'],
+                                          app.app.config['ELASTICSEARCH_URL']))
 
     document_count = CatClient(es).count(
         app.app.config['INDEX_NAME'], format='json')[0]['count']
     if document_count == '0':
-        raise EnvironmentError('Index %s at %s has 0 documents' %
-                               (app.app.config['INDEX_NAME'],
-                                app.app.config['ELASTICSEARCH_URL']))
+        raise EnvironmentError('Index %s at %s has 0 documents' % (
+            app.app.config['INDEX_NAME'], app.app.config['ELASTICSEARCH_URL']))
     return es
 
 
@@ -131,8 +130,8 @@ def _process_dataset():
     app.app.config['DATASET_NAME'] = _parse_json_file(config_path)['name']
     app.app.config['INDEX_NAME'] = elasticsearch_util.convert_to_index_name(
         app.app.config['DATASET_NAME'])
-    app.app.config['FIELDS_INDEX_NAME'] = '%s_fields' % app.app.config[
-        'INDEX_NAME']
+    app.app.config[
+        'FIELDS_INDEX_NAME'] = '%s_fields' % app.app.config['INDEX_NAME']
 
 
 def _process_ui():
