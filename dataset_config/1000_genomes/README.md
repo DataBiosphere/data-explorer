@@ -10,11 +10,13 @@ of the [data explorer indexers](https://github.com/DataBiosphere/data-explorer-i
 
 Ensure the elastic search index is already running at `http://localhost:9200`.
 
-TODO(bryan): UPDATE
 ```
-virtualenv ~/virtualenv/dump_index
-source ~/virtualenv/dump_index/bin/activate
+virtualenv ~/virtualenv/elasticsearch
+source ~/virtualenv/elasticsearch/bin/activate
 pip install elasticsearch requests
-python dataset_config/1000_genomes/dump_index.py
+python util/dump_index.py \ 
+ --us_url='http://some-path' \
+ --dataset='some_other_dataset' \
+ --output_dir='dataset_config/some_other_dataset'
 deactivate
 ```
