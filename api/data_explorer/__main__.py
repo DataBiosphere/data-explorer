@@ -14,7 +14,6 @@ from elasticsearch import Elasticsearch
 from elasticsearch.client.cat import CatClient
 from elasticsearch.exceptions import ConnectionError
 from elasticsearch.exceptions import TransportError
-from google.cloud import storage
 
 from .encoder import JSONEncoder
 from data_explorer.util import elasticsearch_util
@@ -247,12 +246,6 @@ def _process_export_url():
         app.app.config['DEPLOY_PROJECT_ID'] = project_id
 
     app.app.config['EXPORT_URL_GCS_BUCKET'] = project_id + '-export'
-    client = storage.Client(project=project_id)
-    if not client.lookup_bucket(app.app.config['EXPORT_URL_GCS_BUCKET']):
-        app.app.logger.warning(
-            'Bucket %s not found. Export to Saturn feature will not work. '
-            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature-for-export-to-saturn-feature'
-            % app.app.config['EXPORT_URL_GCS_BUCKET'])
 
 
 # On server startup, read and process config files, and populate
