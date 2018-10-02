@@ -115,9 +115,9 @@ def _write_gcs_file(entities):
         random.choice(string.ascii_letters + string.digits) for _ in range(10))
     blob = bucket.blob(random_str)
     blob.upload_from_string(json.dumps(entities))
-    current_app.logger.info(
-        'Wrote gs://%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'],
-                              random_str))
+    current_app.logger.info('Wrote gs://%s/%s' %
+                            (current_app.config['EXPORT_URL_GCS_BUCKET'],
+                             random_str))
     # Return in the format that signing a URL needs.
     return '/%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'], random_str)
 
@@ -126,16 +126,16 @@ def _create_signed_url(gcs_path):
     private_key_path = os.path.join(current_app.config['DATASET_CONFIG_DIR'],
                                     'private-key.json')
     creds = ServiceAccountCredentials.from_json_keyfile_name(private_key_path)
-    service_account_email = current_app.config[
-        'DEPLOY_PROJECT_ID'] + '@appspot.gserviceaccount.com'
+    service_account_email = current_app.config['DEPLOY_PROJECT_ID'] + '@appspot.gserviceaccount.com'
     # Signed URL will be valid for 5 minutes
     timestamp = str(int(time.time()) + 5 * 60)
     file_metadata = '\n'.join(['GET', '', '', timestamp, gcs_path])
     signature = base64.b64encode(creds.sign_blob(file_metadata)[1])
     signature = urllib.quote(signature, safe='')
     signed_url = ('https://storage.googleapis.com%s?GoogleAccessId=%s'
-                  '&Expires=%s&Signature=%s') % (
-                      gcs_path, service_account_email, timestamp, signature)
+                  '&Expires=%s&Signature=%s') % (gcs_path,
+                                                 service_account_email,
+                                                 timestamp, signature)
     # import-data expects url to be url encoded
     signed_url = urllib.quote(signed_url, safe='')
     current_app.logger.info('Signed URL: ' + signed_url)
@@ -242,8 +242,8 @@ def _get_filter_query(filters):
             if len(where_clause) > 0:
                 where_clause = where_clause + " AND "
             where_clause = where_clause + "(" + column_clause + ")"
-        table_selects.append(
-            table_select % (participant_id_column, table_name, where_clause))
+        table_selects.append(table_select % (participant_id_column, table_name,
+                                             where_clause))
 
     query = "SELECT DISTINCT t1.%s FROM " % participant_id_column
     cnt = 1

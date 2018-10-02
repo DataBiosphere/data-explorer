@@ -72,9 +72,6 @@ def init_elasticsearch():
             es.cluster.health(wait_for_status='yellow')
             app.app.logger.info('Elasticsearch took %d seconds to come up.' %
                                 (time.time() - start))
-            # For local deployment, load_test_data will delete and recreate
-            # 1000 Genomes index. Wait for load_test_data to finish.
-            time.sleep(10)
             break
         except ConnectionError:
             app.app.logger.info('Elasticsearch not up yet, will try again.')
@@ -91,21 +88,22 @@ def init_elasticsearch():
                                      'mappings.json')
         fields_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                    'fields.json')
-        elasticsearch_util.load_index(es, app.app.config['INDEX_NAME'],
-                                      index_path, mappings_path)
-        elasticsearch_util.load_index(es, app.app.config['FIELDS_INDEX_NAME'],
-                                      fields_path)
+        elasticsearch_util.load_index_from_json(
+            es, app.app.config['INDEX_NAME'], index_path, mappings_path)
+        elasticsearch_util.load_index_from_json(
+            es, app.app.config['FIELDS_INDEX_NAME'], fields_path)
 
     if not es.indices.exists(app.app.config['INDEX_NAME']):
-        raise EnvironmentError(
-            'Index %s not found at %s' % (app.app.config['INDEX_NAME'],
-                                          app.app.config['ELASTICSEARCH_URL']))
+        raise EnvironmentError('Index %s not found at %s' %
+                               (app.app.config['INDEX_NAME'],
+                                app.app.config['ELASTICSEARCH_URL']))
 
     document_count = CatClient(es).count(
         app.app.config['INDEX_NAME'], format='json')[0]['count']
     if document_count == '0':
-        raise EnvironmentError('Index %s at %s has 0 documents' % (
-            app.app.config['INDEX_NAME'], app.app.config['ELASTICSEARCH_URL']))
+        raise EnvironmentError('Index %s at %s has 0 documents' %
+                               (app.app.config['INDEX_NAME'],
+                                app.app.config['ELASTICSEARCH_URL']))
     return es
 
 
@@ -130,8 +128,8 @@ def _process_dataset():
     app.app.config['DATASET_NAME'] = _parse_json_file(config_path)['name']
     app.app.config['INDEX_NAME'] = elasticsearch_util.convert_to_index_name(
         app.app.config['DATASET_NAME'])
-    app.app.config[
-        'FIELDS_INDEX_NAME'] = '%s_fields' % app.app.config['INDEX_NAME']
+    app.app.config['FIELDS_INDEX_NAME'] = '%s_fields' % app.app.config[
+        'INDEX_NAME']
 
 
 def _process_ui():

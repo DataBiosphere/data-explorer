@@ -5,10 +5,11 @@ example index if the indexer changes. It dumps the main
 index and its mappings, as well as the '_fields' index. 
 This tool can also be used to dump any other index.
 
-To run:
+- Ensure the elastic search index is already running at `http://localhost:9200`.
+- Run:
 
-virtualenv ~/virtualenv/elasticsearch
-source ~/virtualenv/elasticsearch/bin/activate
+virtualenv ~/virtualenv/dump_index
+source ~/virtualenv/dump_index/bin/activate
 pip install elasticsearch requests
 python util/dump_index.py \ 
  --us_url='http://some-path' \
@@ -63,8 +64,8 @@ def main():
 
     print 'Dump index mappings: %s' % index
     mappings_file = open(output_mappings_file, 'w')
-    mappings = requests.get(
-        '%s/%s/_mapping/type' % (args.es_url, index)).json()
+    mappings = requests.get('%s/%s/_mapping/type' % (args.es_url,
+                                                     index)).json()
     json.dump(mappings[index], mappings_file)
     mappings_file.close()
 

@@ -191,7 +191,6 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type):
 
 
 def _delete_index(es, index):
-    current_app.logger.info('Deleting %s index.' % index)
     try:
         es.indices.delete(index=index)
     except Exception as e:
@@ -200,12 +199,11 @@ def _delete_index(es, index):
         current_app.logger.info('Deleting %s index failed: %s' % (index, e))
         # Ignore 404: index not found
         index = es.indices.get(index=index, ignore=404)
-        current_app.logger.info(
-            'es.indices.get(index=%s): %s' % (index, index))
+        current_app.logger.info('es.indices.get(index=%s): %s' % (index,
+                                                                  index))
 
 
 def _create_index(es, index, mappings_file=None):
-    current_app.logger.info('Creating %s index.' % index)
     if mappings_file:
         with open(mappings_file) as f:
             mappings = json.loads(f.next())
@@ -214,13 +212,14 @@ def _create_index(es, index, mappings_file=None):
         es.indices.create(index=index)
 
 
-def load_index(es, index, index_file, mappings_file=None):
+def load_index_from_json(es, index, index_file, mappings_file=None):
     """Load index from index.json.
 
     Input must be JSON, not CSV. Unlike JSON, CSV values don't have types, so
     numbers would be indexed as strings. (And there is no easy way in Python to
     detect the type of a string.)
     """
+    current_app.logger.info('Loading %s index from JSON cache.' % index)
     _delete_index(es, index)
     _create_index(es, index, mappings_file)
     actions = []
