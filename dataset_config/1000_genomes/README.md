@@ -10,6 +10,7 @@ of the [data explorer indexers](https://github.com/DataBiosphere/data-explorer-i
 
 Ensure the elastic search index is already running at `http://localhost:9200`.
 
+TODO(bryan): UPDATE
 ```
 virtualenv ~/virtualenv/dump_index
 source ~/virtualenv/dump_index/bin/activate

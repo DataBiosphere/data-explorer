@@ -1,3 +1,6 @@
+import json
+
+from elasticsearch import helpers
 from elasticsearch_dsl import Search
 from elasticsearch_dsl import HistogramFacet
 from elasticsearch_dsl import TermsFacet
@@ -185,3 +188,51 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type):
         es_facet = NestedFacet('samples', es_facet)
 
     return es_facet
+
+
+def _delete_index(es, index):
+    current_app.logger.info('Deleting %s index.' % index)
+    try:
+        es.indices.delete(index=index)
+    except Exception as e:
+        # Sometimes delete fails even though index exists. Add logging to help
+        # debug.
+        current_app.logger.info('Deleting %s index failed: %s' % (index, e))
+        # Ignore 404: index not found
+        index = es.indices.get(index=index, ignore=404)
+        current_app.logger.info('es.indices.get(index=%s): %s' % (index, index))
+
+
+def _create_index(es, index, mappings_file=None):
+    current_app.logger.info('Creating %s index.' % index)
+    if mappings_file:
+        with open(mappings_file) as f:
+            mappings = json.loads(f.next())
+        es.indices.create(index=index, body=mappings)
+    else:
+        es.indices.create(index=index)
+
+
+def load_index(es, index, index_file, mappings_file=None):
+    """Load index from index.json.
+
+    Input must be JSON, not CSV. Unlike JSON, CSV values don't have types, so
+    numbers would be indexed as strings. (And there is no easy way in Python to
+    detect the type of a string.)
+    """
+    _delete_index(es, index)
+    _create_index(es, index, mappings_file)
+    actions = []
+    with open(index_file) as f:
+        for line in f:
+            # Each line contains a JSON document. See
+            # https://github.com/taskrabbit/elasticsearch-dump#dump-format
+            record = json.loads(line)
+            action = {
+                '_id': record['_id'],
+                '_index': index,
+                '_type': 'type',
+                '_source': record['_source'],
+            }
+            actions.append(action)
+    helpers.bulk(es, actions)
