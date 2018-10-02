@@ -9,13 +9,17 @@ import sys
 import time
 import urllib
 
+from collections import OrderedDict
+from data_explorer.models.export_url_response import ExportUrlResponse  # noqa: E501
+from data_explorer.util import elasticsearch_util
+from data_explorer.util.dataset_faceted_search import DatasetFacetedSearch
+from elasticsearch import Elasticsearch
+from elasticsearch_dsl import Search
 from flask import request
 from flask import current_app
 from werkzeug.exceptions import BadRequest
 from google.cloud import storage
 from oauth2client.service_account import ServiceAccountCredentials
-
-from data_explorer.models.export_url_response import ExportUrlResponse  # noqa: E501
 
 # Export to Saturn flow
 # - User clicks export button on bottom right of Data Explorer
@@ -70,7 +74,7 @@ def _check_preconditions():
         raise BadRequest(error_msg)
 
 
-def _get_entities_dict(cohort_name, query):
+def _get_entities_dict(cohort_name, query, doc_generator):
     """Returns a dict representing the JSON list of entities."""
     # Saturn add-import expects a JSON list of entities, where each entity is
     # the entity JSON passed into
@@ -103,6 +107,22 @@ def _get_entities_dict(cohort_name, query):
                 'query': query
             }
         })
+
+    for doc in doc_generator:
+        for sample in doc.get('samples', []):
+            sample_id = sample['sample_id']
+            export_sample = {
+                k.replace('.', '_'): v
+                for k, v in sample.iteritems()
+                if k != 'sample_id' and not k.startswith('_has_')
+            }
+
+            entities.append({
+                'entityType': 'samples',
+                'name': sample_id,
+                'attributes': export_sample,
+            })
+
     return entities
 
 
@@ -259,15 +279,32 @@ def _get_filter_query(filters):
     return query
 
 
+def _get_doc_generator(filter_arr):
+    es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
+    es_facets = OrderedDict(current_app.config['ELASTICSEARCH_FACETS'].items())
+    filters = elasticsearch_util.deserialize(filter_arr, es_facets)
+    search_dict = DatasetFacetedSearch(filters, es_facets).build_search().to_dict().get('post_filter', {})
+    search = Search(using=es, index=current_app.config['INDEX_NAME'])
+    search.update_from_dict({'post_filter': search_dict})
+    for result in search.scan():
+        yield result.to_dict()
+
+
 def export_url_post():  # noqa: E501
     _check_preconditions()
     data = json.loads(request.data)
+    filter_arr = data['filter']
+
     current_app.logger.info('Export URL request data %s' % request.data)
-    query = _get_filter_query(data['filter'])
-    cohortname = data['cohortName']
-    cohortname = cohortname.replace(" ", "_")
-    entities = _get_entities_dict(cohortname, query)
+
+    # TODO(malathir): Add extraFacets to this endpoint
+    query = _get_filter_query(filter_arr)
+    cohortname = data['cohortName'].replace(" ", "_")
+    doc_generator = _get_doc_generator(filter_arr)
+
+    entities = _get_entities_dict(cohortname, query, doc_generator)
     current_app.logger.info('Entity JSON: %s' % json.dumps(entities))
+
     # Don't actually write GCS file during unit test. If we wrote a file during
     # unit test, in order to make it easy for anyone to run this test, we would
     # have to create a world-readable bucket.

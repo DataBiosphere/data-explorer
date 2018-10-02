@@ -9,7 +9,7 @@ This tool can also be used to dump any other index.
 - Run:
 
 virtualenv ~/virtualenv/dump_index
-source ~/virtualenv/dump_index/bin/activate
+source ~/virtualenv/elasticsearch/bin/dump_index
 pip install elasticsearch requests
 python util/dump_index.py \ 
  --us_url='http://some-path' \
