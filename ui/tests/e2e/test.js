@@ -1,10 +1,28 @@
 const JEST_TIMEOUT_MS = 60 * 1000;
 
+class MyCustomReporter {
+  constructor(globalConfig, options) {
+    this._globalConfig = globalConfig;
+    this._options = options;
+  }
+
+  onTestStart(contexts, results) {
+    console.log('Custom reporter output:');
+    console.log('GlobalConfig: ', this._globalConfig);
+    console.log('Options: ', this._options);
+  }
+}
+module.exports = MyCustomReporter;
 describe("End-to-end", () => {
-  beforeEach(async () => {
+
+  beforeAll(async () => {
     // It can take a while for servers to start up
     jest.setTimeout(JEST_TIMEOUT_MS);
     await waitForElasticsearchIndex();
+  });
+
+  beforeEach(async () => {
+    
     await page.goto("http://localhost:4400");
     await page.waitForSelector("span.datasetName");
   });
@@ -83,15 +101,18 @@ describe("End-to-end", () => {
     // Test exporting to saturn.
     await page.click("button[title='Send to Saturn']");
     await page.waitForSelector("#name");
-    await page.type("#name", "samples-cohort");
-    await Promise.all([page.click("#save"), page.waitFor(15000)]);
+    await page.type("#name", "c");
+    await Promise.all([
+      page.click("#save"),
+      page.waitForNavigation()
+    ]);
     expect(await page.url()).toBe("https://bvdp-saturn-prod.appspot.com/");
   });
 
   test("Export to Saturn - no selected cohort", async () => {
     await Promise.all([
       page.click("button[title='Send to Saturn']"),
-      page.waitFor(15000)
+      page.waitForNavigation()
     ]);
     expect(await page.url()).toBe("https://bvdp-saturn-prod.appspot.com/");
   });
@@ -108,8 +129,11 @@ describe("End-to-end", () => {
     await page.click("button[title='Send to Saturn']");
     await page.waitForSelector("#name");
 
-    await page.type("#name", "test-cohort");
-    await Promise.all([page.click("#save"), page.waitFor(15000)]);
+    await page.type("#name", "c");
+    await Promise.all([
+      page.click("#save"),
+      page.waitForNavigation()
+    ]);
     expect(await page.url()).toBe("https://bvdp-saturn-prod.appspot.com/");
   });
 

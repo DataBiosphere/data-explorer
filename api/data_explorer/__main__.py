@@ -76,7 +76,7 @@ def init_elasticsearch():
                                 (time.time() - start))
             # For local deployment, load_test_data will delete and recreate
             # 1000 Genomes index. Wait for load_test_data to finish.
-            time.sleep(5)
+            time.sleep(10)
             break
         except ConnectionError:
             app.app.logger.info('Elasticsearch not up yet, will try again.')

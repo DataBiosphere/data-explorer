@@ -3,8 +3,8 @@ module.exports = {
     //    Uncomment to see console.log output.
     //    dumpio: true,
     //    Uncomment to see browser.
-    //    headless: false,
+        headless: false,
     //    Uncomment to slow down execution. Unit is ms.
-    //    slowMo: 100,
+        slowMo: 200,
   }
 };
