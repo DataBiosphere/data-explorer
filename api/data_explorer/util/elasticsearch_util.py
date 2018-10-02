@@ -200,7 +200,8 @@ def _delete_index(es, index):
         current_app.logger.info('Deleting %s index failed: %s' % (index, e))
         # Ignore 404: index not found
         index = es.indices.get(index=index, ignore=404)
-        current_app.logger.info('es.indices.get(index=%s): %s' % (index, index))
+        current_app.logger.info('es.indices.get(index=%s): %s' % (index,
+                                                                  index))
 
 
 def _create_index(es, index, mappings_file=None):
