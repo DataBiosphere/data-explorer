@@ -64,8 +64,8 @@ def main():
 
     print 'Dump index mappings: %s' % index
     mappings_file = open(output_mappings_file, 'w')
-    mappings = requests.get('%s/%s/_mapping/type' % (args.es_url,
-                                                     index)).json()
+    mappings = requests.get(
+        '%s/%s/_mapping/type' % (args.es_url, index)).json()
     json.dump(mappings[index], mappings_file)
     mappings_file.close()
 
