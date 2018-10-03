@@ -1,18 +1,12 @@
 const JEST_TIMEOUT_MS = 60 * 1000;
 
-class MyCustomReporter {
-  constructor(globalConfig, options) {
-    this._globalConfig = globalConfig;
-    this._options = options;
-  }
+// Print test name at the beginning of each test
+jasmine.getEnv().addReporter({
+    specStarted: function(result) {
+        console.log(result.fullName);
+    }
+});
 
-  onTestStart(contexts, results) {
-    console.log('Custom reporter output:');
-    console.log('GlobalConfig: ', this._globalConfig);
-    console.log('Options: ', this._options);
-  }
-}
-module.exports = MyCustomReporter;
 describe("End-to-end", () => {
 
   beforeAll(async () => {
@@ -22,7 +16,6 @@ describe("End-to-end", () => {
   });
 
   beforeEach(async () => {
-    
     await page.goto("http://localhost:4400");
     await page.waitForSelector("span.datasetName");
   });
@@ -32,12 +25,11 @@ describe("End-to-end", () => {
     await assertHeaderTotalCount("3714");
   });
 
-  test("Gender facet", async () => {
-    await assertFacet("Gender", "3500", "female", "1760");
-  });
+  test("Participant facet", async () => {
+    // Assert facet rendered correctly
+    await assertFacet("Super Population", "3500", "African", "1018");
 
-  test("Click on participant facet", async () => {
-    // Click on a participant facet.
+    // Click on facet value
     let facetValueRow = await getFacetValueRow("Super Population", "African");
     await facetValueRow.click("input");
     // Wait for data to be returned from backend.
@@ -49,7 +41,6 @@ describe("End-to-end", () => {
     // Assert page updated correctly.
     await assertHeaderTotalCount("1018");
     await assertFacet("Gender", "1018", "male", "518");
-    await assertFacet("Total Exome Sequence", "707", "0B-10B", "435");
 
     // Make sure non-selected facet values are gray.
     facetValueRow = await getFacetValueRow("Super Population", "European");
@@ -57,8 +48,11 @@ describe("End-to-end", () => {
     expect(grayDiv).toBeTruthy();
   });
 
-  test("Click on sample facet", async () => {
-    // Click on a sample facet.
+  test("Sample facet", async () => {
+    // Assert facet rendered correctly
+    await assertFacet("Total Low Coverage Sequence", "2688", "0B-10B", "10");
+
+    // Click on facet value
     let facetValueRow = await getFacetValueRow("Total Low Coverage Sequence", "10B-20B");
     await facetValueRow.click("input");
     // Wait for data to be returned from backend.
@@ -69,8 +63,7 @@ describe("End-to-end", () => {
 
     // Assert page updated correctly.
     await assertHeaderTotalCount("1122");
-    await assertFacet("Super Population", "1122", "African", "281");
-    await assertFacet("Total Exome Sequence", "1108", "0B-10B", "682");
+    await assertFacet("Gender", "1122", "female", "569");
 
     // Make sure non-selected facet values are gray.
     facetValueRow = await getFacetValueRow("Total Low Coverage Sequence", "0B-10B");
@@ -79,7 +72,10 @@ describe("End-to-end", () => {
   });
 
   test("Samples Overview facet", async () => {
-    // Click on Samples Overview facet.
+    // Skip asserting facet rendered correctly, because this facet doesn't have
+    // totalFacetValueCount span.
+
+    // Click on facet value
     let facetValueRow = await getFacetValueRow("Samples Overview", "Has WGS Low Coverage BAM");
     await facetValueRow.click("input");
     // Wait for data to be returned from backend.
@@ -91,7 +87,6 @@ describe("End-to-end", () => {
     // Assert page updated correctly.
     await assertHeaderTotalCount("2535");
     await assertFacet("Gender", "2535", "female", "1291");
-    await assertFacet("Total Exome Sequence", "2535", "0B-10B", "1429");
 
     // Make sure non-selected facet values are gray.
     facetValueRow = await getFacetValueRow("Samples Overview", "Has Exome BAM");
@@ -99,22 +94,11 @@ describe("End-to-end", () => {
     expect(grayDiv).toBeTruthy();
 
     // Test exporting to saturn.
-    await page.click("button[title='Send to Saturn']");
-    await page.waitForSelector("#name");
-    await page.type("#name", "c");
-    await Promise.all([
-      page.click("#save"),
-      page.waitForNavigation()
-    ]);
-    expect(await page.url()).toBe("https://bvdp-saturn-prod.appspot.com/");
+    await exportToSaturn_selectedCohort();
   });
 
   test("Export to Saturn - no selected cohort", async () => {
-    await Promise.all([
-      page.click("button[title='Send to Saturn']"),
-      page.waitForNavigation()
-    ]);
-    expect(await page.url()).toBe("https://bvdp-saturn-prod.appspot.com/");
+    await exportToSaturn_noSelectedCohort();
   });
 
   test("Export to Saturn - selected cohort", async () => {
@@ -126,15 +110,8 @@ describe("End-to-end", () => {
     await page.waitForXPath(
       "//div[contains(@class, 'totalCountText') and text() = '1018']"
     );
-    await page.click("button[title='Send to Saturn']");
-    await page.waitForSelector("#name");
 
-    await page.type("#name", "c");
-    await Promise.all([
-      page.click("#save"),
-      page.waitForNavigation()
-    ]);
-    expect(await page.url()).toBe("https://bvdp-saturn-prod.appspot.com/");
+    await exportToSaturn_selectedCohort();
   });
 
   async function waitForElasticsearchIndex() {
@@ -205,7 +182,7 @@ describe("End-to-end", () => {
       (facetCard, valueName) => {
         let divs = facetCard.querySelectorAll("label");
         for (let div of divs) {
-          if (div.innerText.match(valueName)) return div;
+          if (div.innerText.includes(valueName)) return div;
         }
         return null;
       },
@@ -224,11 +201,31 @@ describe("End-to-end", () => {
       const divs = document.querySelectorAll("div.facetCard");
       for (const div of divs) {
         const name = div.querySelector("span").innerText;
-        if (name.match(innerFacetName)) return div;
+        if (name.includes(innerFacetName)) return div;
       }
       return null;
     }, facetName)).asElement();
     expect(facetCard).toBeTruthy();
     return facetCard;
+  }
+
+  async function exportToSaturn_noSelectedCohort() {
+    await page.click("button[title='Send to Saturn']");
+    // Jest documentation says to use waitForNavigation():
+    // https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pageclickselector-options
+    // Here we use waitForRequest() instead. waitForRequest() is slightly
+    // faster because it doesn't wait for the Saturn page to finish (or start?)
+    // loading.
+    await page.waitForRequest("https://bvdp-saturn-prod.appspot.com/");
+  }
+
+  async function exportToSaturn_selectedCohort() {
+    await page.click("button[title='Send to Saturn']");
+    // Wait for cohort name dialog
+    await page.waitForSelector("#name");
+
+    await page.type("#name", "c");
+    await page.click("#save");
+    await page.waitForRequest("https://bvdp-saturn-prod.appspot.com/");
   }
 });
