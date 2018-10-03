@@ -71,8 +71,6 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     extra_es_facets, extra_ui_facets = _process_extra_facets(extraFacets)
     combined_es_facets = OrderedDict(extra_es_facets.items() + current_app.
                                      config['ELASTICSEARCH_FACETS'].items())
-    combined_es_facets = OrderedDict(extra_es_facets.items() +
-                                     current_app.config['ELASTICSEARCH_FACETS'].items())
     combined_ui_facets = OrderedDict(extra_ui_facets.items() +
                                      current_app.config['UI_FACETS'].items())
     search = DatasetFacetedSearch(
