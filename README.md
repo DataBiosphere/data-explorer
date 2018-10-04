@@ -177,6 +177,10 @@ curl -XDELETE localhost:9200/_all
 docker-compose up --build
 cd ui && npm run test:e2e
 ```
+Troubleshooting tips for end-to-end tests:
+- [Uncomment headless](https://github.com/DataBiosphere/data-explorer/blob/master/ui/jest-puppeteer.config.js)
+to see the browser during test run.
+- Run a single test: `npm run test:e2e -- -t "test name"`
 
 ### Formatting
 
