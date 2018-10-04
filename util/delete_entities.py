@@ -7,9 +7,8 @@ To run:
 virtualenv ~/virtualenv/firecloud
 source ~/virtualenv/firecloud/bin/activate
 pip install firecloud
-python util/delete-entities.py WORKSPACE_NAMESPACE WORKSPACE_NAME
+python util/delete_entities.py WORKSPACE_NAMESPACE WORKSPACE_NAME
 """
-
 import argparse
 import collections
 import sys
@@ -19,8 +18,8 @@ from firecloud import fiss
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--workspace-namespace', required=True)
-    parser.add_argument('--workspace-name', required=True)
+    parser.add_argument('workspace_namespace')
+    parser.add_argument('workspace_name')
     return parser.parse_args()
 
 

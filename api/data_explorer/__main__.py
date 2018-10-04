@@ -2,6 +2,7 @@
 
 import argparse
 import csv
+import connexion
 import jsmin
 import json
 import logging
@@ -9,14 +10,12 @@ import os
 import time
 
 from collections import OrderedDict
-import connexion
+from data_explorer.encoder import JSONEncoder
+from data_explorer.util import elasticsearch_util
 from elasticsearch import Elasticsearch
 from elasticsearch.client.cat import CatClient
 from elasticsearch.exceptions import ConnectionError
 from elasticsearch.exceptions import TransportError
-
-from .encoder import JSONEncoder
-from data_explorer.util import elasticsearch_util
 
 # gunicorn flags are passed via env variables, so we use these as the default
 # values. These arguments will rarely be specified as flags directly, aside from
@@ -73,15 +72,26 @@ def init_elasticsearch():
             es.cluster.health(wait_for_status='yellow')
             app.app.logger.info('Elasticsearch took %d seconds to come up.' %
                                 (time.time() - start))
-            # For local deployment, load_test_data will delete and recreate
-            # 1000 Genomes index. Wait for load_test_data to finish.
-            time.sleep(10)
             break
         except ConnectionError:
             app.app.logger.info('Elasticsearch not up yet, will try again.')
             time.sleep(1)
     else:
         raise EnvironmentError('Elasticsearch failed to start.')
+
+    # Use the cached JSON files to load the example 1000 genomes dataset
+    # without having to run the indexer.
+    if app.app.config['INDEX_NAME'] == '1000_genomes':
+        index_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
+                                  'index.json')
+        mappings_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
+                                     'mappings.json')
+        fields_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
+                                   'fields.json')
+        elasticsearch_util.load_index_from_json(
+            es, app.app.config['INDEX_NAME'], index_path, mappings_path)
+        elasticsearch_util.load_index_from_json(
+            es, app.app.config['FIELDS_INDEX_NAME'], fields_path)
 
     if not es.indices.exists(app.app.config['INDEX_NAME']):
         raise EnvironmentError(
@@ -93,15 +103,16 @@ def init_elasticsearch():
     if document_count == '0':
         raise EnvironmentError('Index %s at %s has 0 documents' % (
             app.app.config['INDEX_NAME'], app.app.config['ELASTICSEARCH_URL']))
+    return es
 
 
 def _parse_json_file(json_path):
     """Opens and returns JSON contents.
-  Args:
-    json_path: Relative or absolute path of JSON file
-  Returns:
-    Parsed JSON
-  """
+    Args:
+        json_path: Relative or absolute path of JSON file
+    Returns:
+        Parsed JSON
+    """
     app.app.logger.info('Reading JSON file %s' % json_path)
     with open(json_path, 'r') as f:
         # Remove comments using jsmin, as recommended by JSON creator:
@@ -116,6 +127,8 @@ def _process_dataset():
     app.app.config['DATASET_NAME'] = _parse_json_file(config_path)['name']
     app.app.config['INDEX_NAME'] = elasticsearch_util.convert_to_index_name(
         app.app.config['DATASET_NAME'])
+    app.app.config[
+        'FIELDS_INDEX_NAME'] = '%s_fields' % app.app.config['INDEX_NAME']
 
 
 def _process_ui():
@@ -151,14 +164,12 @@ def _process_bigquery():
     app.app.config['SAMPLE_FILE_COLUMNS'] = sample_file_columns
 
 
-def _process_facets():
+def _process_facets(es):
     """Process facets to store a dict from UI facet name to UI facet description
     ,Elasticsearch field name, and field type, and a dict of UI facet name to
     Elasticsearch facet object. If there is no description for a facet,
     the value is None.
     """
-
-    es = Elasticsearch(app.app.config['ELASTICSEARCH_URL'])
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'], 'ui.json')
     facets_config = _parse_json_file(config_path)['facets']
 
@@ -257,8 +268,8 @@ def init():
         _process_dataset()
         _process_ui()
         _process_bigquery()
-        init_elasticsearch()
-        _process_facets()
+        es = init_elasticsearch()
+        _process_facets(es)
         _process_export_url()
 
         app.app.logger.info('app.app.config:')
