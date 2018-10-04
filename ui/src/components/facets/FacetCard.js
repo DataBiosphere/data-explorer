@@ -1,9 +1,24 @@
 import React, { Component } from "react";
-import { Card } from "material-ui/Card";
-import { List, ListItem } from "material-ui/List";
-import { Checkbox } from "material-ui";
+import { withStyles } from '@material-ui/core/styles';
+import Checkbox from '@material-ui/core/Checkbox';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 
+import * as Style from "libs/style"
 import "components/facets/FacetCard.css";
+
+const styles = theme => ({
+  root: {
+    // Disable gray background on ListItem hover. It's not possible to inline
+    // hover CSS
+    // (https://stackoverflow.com/questions/1033156/how-to-write-ahover-in-inline-css)
+    // so we have to do it this way.
+    '&:hover': {
+      backgroundColor: 'unset',
+    },
+  }
+});
 
 class FacetCard extends Component {
   constructor(props) {
@@ -12,6 +27,7 @@ class FacetCard extends Component {
     this.facetValues = this.props.facet.values;
 
     this.state = {
+      // List of strings, eg ["female"]
       selectedValues: []
     };
 
@@ -20,7 +36,7 @@ class FacetCard extends Component {
       []
     );
 
-    this.onValueCheck = this.onValueCheck.bind(this);
+    this.onClick = this.onClick.bind(this);
     this.isDimmed = this.isDimmed.bind(this);
   }
 
@@ -32,30 +48,36 @@ class FacetCard extends Component {
   }
 
   render() {
+    const { classes } = this.props;
+
+    // facetValue is a dict, eg { name: "female", count: 1760 }
     const facetValues = this.props.facet.values.map(facetValue => (
       <ListItem
         key={facetValue.name}
-        leftCheckbox={
-          <Checkbox
-            onCheck={(event, isInputChecked) =>
-              this.onValueCheck(facetValue, isInputChecked)
-            }
-          />
-        }
-        primaryText={
+        button
+        dense
+        disableRipple
+        onClick={(e) => this.onClick(facetValue.name)}
+      >
+        <Checkbox
+          style={{ width:'24px', height:'24px' }}
+          checked={this.state.selectedValues.includes(facetValue.name)}
+        />
+        <ListItemText primary={
           <div className={this.isDimmed(facetValue) ? " grayText" : ""}>
             <div className="facetValueName">{facetValue.name}</div>
             <div className="facetValueCount">{facetValue.count}</div>
           </div>
-        }
-      />
+        } />
+      </ListItem>
     ));
     const totalFacetValueCount = (
-      <span className="totalFacetValueCount">{this.totalFacetValueCount}</span>
+      <span className="totalFacetValueCount">
+        {this.totalFacetValueCount}
+      </span>
     );
     return (
-      <Card className="facetCard">
-        <div className="cardHeader">
+      <div className="facetCard" style={ Style.elements.card }>
           <div>
             <span>{this.props.facet.name}</span>
             {this.props.facet.name != "Samples Overview"
@@ -65,16 +87,15 @@ class FacetCard extends Component {
           <span className="facetDescription">
             {this.props.facet.description}
           </span>
-        </div>
-        <List>{facetValues}</List>
-      </Card>
+        <List dense disablePadding>{facetValues}</List>
+      </div>
     );
   }
 
   isDimmed(facetValue) {
     return (
       this.state.selectedValues.length > 0 &&
-      this.state.selectedValues.indexOf(facetValue.name) < 0
+      !(this.state.selectedValues.includes(facetValue.name))
     );
   }
 
@@ -100,21 +121,24 @@ class FacetCard extends Component {
     return count;
   }
 
-  /** Update this card's state and trigger the callback on the parent component. */
-  onValueCheck(facetValue, isInputChecked) {
-    let newValues = this.state.selectedValues;
-    if (isInputChecked) {
-      newValues.push(facetValue.name);
-    } else {
+  onClick(facetValue) {
+    // facetValue is a string, eg "female"
+    let newValues = this.state.selectedValues.slice(0);
+    let isSelected;
+    if (this.state.selectedValues.includes(facetValue)) {
+      // User must have unchecked the checkbox.
+      isSelected = false;
       newValues.splice(newValues.indexOf(facetValue.name), 1);
+    } else {
+      // User must have unchecked the checkbox.
+      isSelected = true;
+      newValues.push(facetValue);
     }
+
     this.setState({ selectedValues: newValues });
-    this.props.updateFacets(
-      this.props.facet.es_field_name,
-      facetValue.name,
-      isInputChecked
-    );
+    this.props.updateFacets(this.props.facet.name, facetValue, isSelected);
   }
+
 }
 
-export default FacetCard;
+export default withStyles(styles)(FacetCard);

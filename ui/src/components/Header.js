@@ -1,24 +1,23 @@
 import React from "react";
-import { Toolbar, ToolbarGroup, ToolbarTitle } from "material-ui/Toolbar";
-
-import "components/Header.css";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 
 function Header(props) {
   const datasetName = props.datasetName;
   const totalCount = props.totalCount;
 
   return (
-    <Toolbar className="toolbar">
-      <ToolbarGroup firstChild={true}>
-        <ToolbarTitle className="datasetName" text={datasetName} />
-      </ToolbarGroup>
-      <ToolbarGroup>
-        <div className="participantCountBox">
-          <div className="totalCountText">{totalCount}</div>
-          <div>Participants</div>
-        </div>
-      </ToolbarGroup>
-    </Toolbar>
+    <AppBar position="static" style={{ backgroundColor: "#5aa6da" }}>
+      <Toolbar>
+        <Typography className="datasetName" variant="headline" color="inherit" style={{ flexGrow: 1 }}>
+          {datasetName}
+        </Typography>
+        <Typography className="totalCountText" color="inherit">
+          {totalCount} Participants
+        </Typography>
+      </Toolbar>
+    </AppBar>
   );
 }
 

@@ -17,7 +17,7 @@ describe("End-to-end", () => {
 
   beforeEach(async () => {
     await page.goto("http://localhost:4400");
-    await page.waitForSelector("span.datasetName");
+    await page.waitForSelector(".datasetName");
   });
 
   test("Header", async () => {
@@ -32,11 +32,7 @@ describe("End-to-end", () => {
     // Click on facet value
     let facetValueRow = await getFacetValueRow("Super Population", "African");
     await facetValueRow.click("input");
-    // Wait for data to be returned from backend.
-    // See #63 for why we can't wait for div.grayText.
-    await page.waitForXPath(
-      "//div[contains(@class, 'totalCountText') and text() = '1018']"
-    );
+    await waitForFacetsUpdate(1018);
 
     // Assert page updated correctly.
     await assertHeaderTotalCount("1018");
@@ -44,7 +40,7 @@ describe("End-to-end", () => {
 
     // Make sure non-selected facet values are gray.
     facetValueRow = await getFacetValueRow("Super Population", "European");
-    const grayDiv = await facetValueRow.$("div.grayText");
+    const grayDiv = await facetValueRow.$(".grayText");
     expect(grayDiv).toBeTruthy();
   });
 
@@ -56,9 +52,9 @@ describe("End-to-end", () => {
     let facetValueRow = await getFacetValueRow("Total Low Coverage Sequence", "10B-20B");
     await facetValueRow.click("input");
     // Wait for data to be returned from backend.
-    // See #63 for why we can't wait for div.grayText.
+    // See #63 for why we can't wait for .grayText.
     await page.waitForXPath(
-      "//div[contains(@class, 'totalCountText') and text() = '1122']"
+      "//*[contains(@class, 'totalCountText') and text() = '1122']"
     );
 
     // Assert page updated correctly.
@@ -67,7 +63,7 @@ describe("End-to-end", () => {
 
     // Make sure non-selected facet values are gray.
     facetValueRow = await getFacetValueRow("Total Low Coverage Sequence", "0B-10B");
-    const grayDiv = await facetValueRow.$("div.grayText");
+    const grayDiv = await facetValueRow.$(".grayText");
     expect(grayDiv).toBeTruthy();
   });
 
@@ -78,11 +74,7 @@ describe("End-to-end", () => {
     // Click on facet value
     let facetValueRow = await getFacetValueRow("Samples Overview", "Has WGS Low Coverage BAM");
     await facetValueRow.click("input");
-    // Wait for data to be returned from backend.
-    // See #63 for why we can't wait for div.grayText.
-    await page.waitForXPath(
-      "//div[contains(@class, 'totalCountText') and text() = '2535']"
-    );
+    await waitForFacetsUpdate(2535);
 
     // Assert page updated correctly.
     await assertHeaderTotalCount("2535");
@@ -90,7 +82,7 @@ describe("End-to-end", () => {
 
     // Make sure non-selected facet values are gray.
     facetValueRow = await getFacetValueRow("Samples Overview", "Has Exome BAM");
-    const grayDiv = await facetValueRow.$("div.grayText");
+    const grayDiv = await facetValueRow.$(".grayText");
     expect(grayDiv).toBeTruthy();
 
     // Test exporting to saturn.
@@ -105,11 +97,7 @@ describe("End-to-end", () => {
     // Click first Super Population facet value.
     let facetValueRow = await getFacetValueRow("Super Population", "African");
     await facetValueRow.click("input");
-    // Wait for data to be returned from backend.
-    // See #63 for why we can't wait for div.grayText.
-    await page.waitForXPath(
-      "//div[contains(@class, 'totalCountText') and text() = '1018']"
-    );
+    await waitForFacetsUpdate(1018);
 
     await exportToSaturn_selectedCohort();
   });
@@ -150,7 +138,8 @@ describe("End-to-end", () => {
   }
 
   async function assertHeaderTotalCount(count) {
-    const totalCount = await page.$eval("div.totalCountText", e => e.innerText);
+    // e.innerText looks like "3500 Participants"
+    const totalCount = await page.$eval(".totalCountText", e => e.innerText.split(" ")[0]);
     await expect(totalCount).toBe(count);
   }
 
@@ -163,13 +152,13 @@ describe("End-to-end", () => {
     const facetCard = await getFacetCard(facetName);
 
     expect(
-      await facetCard.$eval("span.totalFacetValueCount", node => node.innerText)
+      await facetCard.$eval(".totalFacetValueCount", node => node.innerText)
     ).toBe(totalCount);
     expect(
-      await facetCard.$eval("div.facetValueName", node => node.innerText)
+      await facetCard.$eval(".facetValueName", node => node.innerText)
     ).toBe(firstValueName);
     expect(
-      await facetCard.$eval("div.facetValueCount", node => node.innerText)
+      await facetCard.$eval(".facetValueCount", node => node.innerText)
     ).toBe(firstValueCount);
   }
 
@@ -180,7 +169,7 @@ describe("End-to-end", () => {
     let facetCard = await getFacetCard(facetName);
     let facetValueRow = (await page.evaluateHandle(
       (facetCard, valueName) => {
-        let divs = facetCard.querySelectorAll("label");
+        let divs = facetCard.querySelectorAll("*[class*='MuiListItem-']");
         for (let div of divs) {
           if (div.innerText.includes(valueName)) return div;
         }
@@ -207,6 +196,16 @@ describe("End-to-end", () => {
     }, facetName)).asElement();
     expect(facetCard).toBeTruthy();
     return facetCard;
+  }
+
+  /**
+   * Waits for new facets data from backend, and Data Explorer UI to update.
+   */
+  async function waitForFacetsUpdate(newTotalCount) {
+    // See #63 for why we can't wait for .grayText.
+    await page.waitForXPath(
+      "//*[contains(@class, 'totalCountText') and contains(text(), newTotalCount)]"
+    );
   }
 
   async function exportToSaturn_noSelectedCohort() {
