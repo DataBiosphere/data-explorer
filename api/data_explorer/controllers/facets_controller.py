@@ -47,7 +47,6 @@ def _process_extra_facets(extra_facets):
     return es_facets, ui_facets
 
 
-
 def _number_to_range(interval_start, interval):
     """Converts "X" -> "X-Y"."""
     if interval < 1:
@@ -84,7 +83,8 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     combined_ui_facets = OrderedDict(extra_ui_facets.items() +
                                      current_app.config['UI_FACETS'].items())
     search = DatasetFacetedSearch(
-        elasticsearch_util.deserialize(filter, combined_es_facets), combined_es_facets)
+        elasticsearch_util.deserialize(filter, combined_es_facets),
+        combined_es_facets)
     es_response = search.execute()
     es_response_facets = es_response.facets.to_dict()
     # Uncomment to print facets

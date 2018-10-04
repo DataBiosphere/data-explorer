@@ -283,7 +283,9 @@ def _get_doc_generator(filter_arr):
     es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
     es_facets = OrderedDict(current_app.config['ELASTICSEARCH_FACETS'].items())
     filters = elasticsearch_util.deserialize(filter_arr, es_facets)
-    search_dict = DatasetFacetedSearch(filters, es_facets).build_search().to_dict().get('post_filter', {})
+    search_dict = DatasetFacetedSearch(filters,
+                                       es_facets).build_search().to_dict().get(
+                                           'post_filter', {})
     search = Search(using=es, index=current_app.config['INDEX_NAME'])
     search.update_from_dict({'post_filter': search_dict})
     for result in search.scan():
