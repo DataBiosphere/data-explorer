@@ -55,6 +55,7 @@
     "coveragePathIgnorePatterns": [
       "<rootDir>/src/api/"
     ],
+    "moduleDirectories": ["node_modules", "<rootDir>/src"],
     "modulePathIgnorePatterns": [
       "<rootDir>/src/api/"
     ],
