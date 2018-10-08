@@ -1,18 +1,18 @@
-import "./App.css";
+import React, { Component } from "react";
+import { MuiThemeProvider } from "material-ui";
+
+import "App.css";
 import {
   ApiClient,
   DatasetApi,
   FacetsApi,
   FieldsApi
 } from "data_explorer_service";
-import ExportFab from "./components/ExportFab";
-import FacetsGrid from "./components/facets/FacetsGrid";
-import FieldSearch from "./components/FieldSearch";
-import Header from "./components/Header";
-
-import React, { Component } from "react";
-import { MuiThemeProvider } from "material-ui";
-import ExportUrlApi from "./api/src/api/ExportUrlApi";
+import ExportFab from "components/ExportFab";
+import ExportUrlApi from "api/src/api/ExportUrlApi";
+import FacetsGrid from "components/facets/FacetsGrid";
+import FieldSearch from "components/FieldSearch";
+import Header from "components/Header";
 
 class App extends Component {
   constructor(props) {
