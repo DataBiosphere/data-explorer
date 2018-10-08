@@ -16,19 +16,19 @@
 //   format is: <project>.<dataset>.<table>.<column>
 {  
     "table_names":[
-        "verily-public-data.human_genome_variants_no_fastq.1000_genomes_participant_info",
-        "verily-public-data.human_genome_variants_no_fastq.1000_genomes_sample_info"
+        "verily-public-data.human_genome_variants.1000_genomes_participant_info",
+        "verily-public-data.human_genome_variants.1000_genomes_sample_info"
     ],
     "participant_id_column":"participant_id",
     "sample_id_column":"sample_id",
     "sample_file_columns":{
-        "Autosome VCF":"verily-public-data.human_genome_variants_no_fastq.1000_genomes_sample_info.chr_1_vcf",
-        "Chr Y VCF":"verily-public-data.human_genome_variants_no_fastq.1000_genomes_sample_info.chr_Y_vcf",
-        "WGS High Coverage BAM":"verily-public-data.human_genome_variants_no_fastq.1000_genomes_sample_info.wgs_high_cov_bam",
-        "WGS Low Coverage BAM":"verily-public-data.human_genome_variants_no_fastq.1000_genomes_sample_info.wgs_low_cov_mapped_bam",
-        "WGS High Coverage CRAM":"verily-public-data.human_genome_variants_no_fastq.1000_genomes_sample_info.wgs_high_cov_cram",
-        "WGS Low Coverage CRAM":"verily-public-data.human_genome_variants_no_fastq.1000_genomes_sample_info.wgs_low_cov_mapped_cram",
-        "Exome BAM":"verily-public-data.human_genome_variants_no_fastq.1000_genomes_sample_info.exome_mapped_bam",
-        "Exome CRAM":"verily-public-data.human_genome_variants_no_fastq.1000_genomes_sample_info.exome_mapped_cram"
+        "Autosome VCF":"verily-public-data.human_genome_variants.1000_genomes_sample_info.chr_1_vcf",
+        "Chr Y VCF":"verily-public-data.human_genome_variants.1000_genomes_sample_info.chr_Y_vcf",
+        "WGS High Coverage BAM":"verily-public-data.human_genome_variants.1000_genomes_sample_info.wgs_high_cov_bam",
+        "WGS Low Coverage BAM":"verily-public-data.human_genome_variants.1000_genomes_sample_info.wgs_low_cov_mapped_bam",
+        "WGS High Coverage CRAM":"verily-public-data.human_genome_variants.1000_genomes_sample_info.wgs_high_cov_cram",
+        "WGS Low Coverage CRAM":"verily-public-data.human_genome_variants.1000_genomes_sample_info.wgs_low_cov_mapped_cram",
+        "Exome BAM":"verily-public-data.human_genome_variants.1000_genomes_sample_info.exome_mapped_bam",
+        "Exome CRAM":"verily-public-data.human_genome_variants.1000_genomes_sample_info.exome_mapped_cram"
    }
 }
