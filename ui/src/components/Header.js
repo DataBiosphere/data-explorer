@@ -1,7 +1,7 @@
-import "./Header.css";
-
 import React from "react";
 import { Toolbar, ToolbarGroup, ToolbarTitle } from "material-ui/Toolbar";
+
+import "components/Header.css";
 
 function Header(props) {
   const datasetName = props.datasetName;

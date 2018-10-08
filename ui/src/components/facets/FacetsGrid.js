@@ -1,9 +1,9 @@
-import "./FacetsGrid.css";
-import FacetCard from "./FacetCard";
-
 import React, { Component } from "react";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
+
+import "components/facets/FacetsGrid.css";
+import FacetCard from "components/facets/FacetCard";
 
 function FacetsGrid(props) {
   const facets = props.facets;

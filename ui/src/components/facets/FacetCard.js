@@ -1,9 +1,9 @@
-import "./FacetCard.css";
-
 import React, { Component } from "react";
 import { Card } from "material-ui/Card";
 import { List, ListItem } from "material-ui/List";
 import { Checkbox } from "material-ui";
+
+import "components/facets/FacetCard.css";
 
 class FacetCard extends Component {
   constructor(props) {
