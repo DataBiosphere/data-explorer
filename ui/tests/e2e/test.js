@@ -22,7 +22,7 @@ describe("End-to-end", () => {
 
   test("Header", async () => {
     await expect(page).toMatch("1000 Genomes");
-    await assertHeaderTotalCount("3714");
+    await assertHeaderTotalCount("3500");
   });
 
   test("Participant facet", async () => {
@@ -131,7 +131,7 @@ describe("End-to-end", () => {
         );
         // Elasticsearch has come up. Now wait for test data to be indexed.
         await page.goto("http://localhost:9200/1000_genomes/type/_count");
-        await page.waitForXPath("//*[contains(text(), '3714')]");
+        await page.waitForXPath("//*[contains(text(), '3500')]");
         console.log(
           "Servers up and test data indexed after " + i + " seconds."
         );
