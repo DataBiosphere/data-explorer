@@ -26,7 +26,10 @@ def parse_args():
 def main():
     args = parse_args()
 
-    resp = fapi.get_entities_with_type(args.workspace_namespace, args.workspace_name)
+    resp = fapi.get_entities_with_type(args.workspace_namespace, 
+                                       args.workspace_name)
+    fapi._check_response_code(resp, 200)
+
     entities_by_type = {}
     for entity in resp.json():
         entity_type = entity['entityType']
@@ -37,11 +40,23 @@ def main():
     # Entities are sorted by type: participant, participant_set, sample,
     # sample_set. FireCloud complains if we delete a participant before deleting
     # associated participant_set/sample/sample_set.
-    for entity_type in ['participant', 'sample', 'participant_set', 'sample_set', 'pair']:
+    for entity_type in [
+            'participant', 'sample', 'participant_set', 'sample_set', 'pair'
+    ]:
         if entity_type in entities_by_type:
             entities = entities_by_type[entity_type]
-            fapi.delete_entity_type(args.workspace_namespace, args.workspace_name, entity_type, entities)
+            fapi.delete_entity_type(args.workspace_namespace, 
+                                    args.workspace_name, entity_type, entities)
+            fapi._check_response_code(resp, 200)
+            print 'Succesfully deleted entities of type: %s' % entity_type
+            del entities_by_type[entity_type]
 
+    # Delete the remaining entities where order does not matter.
+    for entity_type, entities in entities_by_type.iteritems():
+        fapi.delete_entity_type(args.workspace_namespace, 
+                                args.workspace_name, entity_type, entities)
+        fapi._check_response_code(resp, 200)
+        print 'Succesfully deleted entities of type: %s' % entity_type
 
 if __name__ == '__main__':
     main()
