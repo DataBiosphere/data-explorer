@@ -16,11 +16,22 @@ import sys
 import firecloud.api as fapi
 
 
+FC_ENTITY_TYPES = [
+    'participant', 'sample', 'participant_set', 'sample_set', 'pair'
+]
+
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('workspace_namespace')
     parser.add_argument('workspace_name')
     return parser.parse_args()
+
+
+def delete_entities(entity_type, entities):
+    fapi.delete_entity_type(args.workspace_namespace, args.workspace_name, 
+                            entity_type, entities)
+    fapi._check_response_code(resp, 200)
+    print 'Succesfully deleted entities of type: %s' % entity_type
 
 
 def main():
@@ -40,23 +51,19 @@ def main():
     # Entities are sorted by type: participant, participant_set, sample,
     # sample_set. FireCloud complains if we delete a participant before deleting
     # associated participant_set/sample/sample_set.
-    for entity_type in [
-            'participant', 'sample', 'participant_set', 'sample_set', 'pair'
-    ]:
+    for entity_type in FC_ENTITY_TYPES:
         if entity_type in entities_by_type:
             entities = entities_by_type[entity_type]
-            fapi.delete_entity_type(args.workspace_namespace,
-                                    args.workspace_name, entity_type, entities)
-            fapi._check_response_code(resp, 200)
-            print 'Succesfully deleted entities of type: %s' % entity_type
+            delete_entities(entity_type, entities)
             del entities_by_type[entity_type]
 
     # Delete the remaining entities where order does not matter.
     for entity_type, entities in entities_by_type.iteritems():
-        fapi.delete_entity_type(args.workspace_namespace,
-                                args.workspace_name, entity_type, entities)
-        fapi._check_response_code(resp, 200)
-        print 'Succesfully deleted entities of type: %s' % entity_type
+        if entity_type not in FC_ENTITY_TYPES:
+            fapi.delete_entity_type(args.workspace_namespace, args.workspace_name, 
+                                    entity_type, entities)
+            fapi._check_response_code(resp, 200)
+            print 'Succesfully deleted entities of type: %s' % entity_type
 
 
 if __name__ == '__main__':
