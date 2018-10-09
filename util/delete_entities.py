@@ -13,7 +13,7 @@ import argparse
 import collections
 import sys
 
-from firecloud import fiss
+import firecloud.api as fapi
 
 
 def parse_args():
@@ -26,24 +26,21 @@ def parse_args():
 def main():
     args = parse_args()
 
-    FissArgs = collections.namedtuple('FissArgs', ['project', 'workspace'])
-    fiss_args = FissArgs(args.workspace_namespace, args.workspace_name)
-    entities = fiss.entity_list(fiss_args)
+    resp = fapi.get_entities_with_type(args.workspace_namespace, args.workspace_name)
+    entities_by_type = {}
+    for entity in resp.json():
+        entity_type = entity['entityType']
+        if entity_type not in entities_by_type:
+            entities_by_type[entity_type] = []
+        entities_by_type[entity_type].append(entity['name'])
 
-    FissArgs = collections.namedtuple(
-        'FissArgs', ['yes', 'project', 'workspace', 'entity_type', 'entity'])
-    # entities are sorted by type: participant, participant_set, sample,
+    # Entities are sorted by type: participant, participant_set, sample,
     # sample_set. FireCloud complains if we delete a participant before deleting
-    # associated participant_set/sample/sample_set. By reversing the list, we
-    # won't have this problem. We will delete: sample_set, sample,
-    # participant_set, participant.
-    for entity in reversed(entities):
-        print('Deleting ' + entity)
-        entity_splits = entity.split('\t')
-        fiss_args = FissArgs(True, args.workspace_namespace,
-                             args.workspace_name, entity_splits[0],
-                             entity_splits[1])
-        fiss.entity_delete(fiss_args)
+    # associated participant_set/sample/sample_set.
+    for entity_type in ['participant', 'sample', 'participant_set', 'sample_set', 'pair']:
+        if entity_type in entities_by_type:
+            entities = entities_by_type[entity_type]
+            fapi.delete_entity_type(args.workspace_namespace, args.workspace_name, entity_type, entities)
 
 
 if __name__ == '__main__':
