@@ -13,7 +13,11 @@ import argparse
 import collections
 import sys
 
-from firecloud import fiss
+import firecloud.api as fapi
+
+FC_ENTITY_TYPES = [
+    'participant', 'sample', 'participant_set', 'sample_set', 'pair'
+]
 
 
 def parse_args():
@@ -23,27 +27,43 @@ def parse_args():
     return parser.parse_args()
 
 
+def delete_entities(entity_type, entities):
+    fapi.delete_entity_type(args.workspace_namespace, args.workspace_name,
+                            entity_type, entities)
+    fapi._check_response_code(resp, 200)
+    print 'Succesfully deleted entities of type: %s' % entity_type
+
+
 def main():
     args = parse_args()
 
-    FissArgs = collections.namedtuple('FissArgs', ['project', 'workspace'])
-    fiss_args = FissArgs(args.workspace_namespace, args.workspace_name)
-    entities = fiss.entity_list(fiss_args)
+    resp = fapi.get_entities_with_type(args.workspace_namespace,
+                                       args.workspace_name)
+    fapi._check_response_code(resp, 200)
 
-    FissArgs = collections.namedtuple(
-        'FissArgs', ['yes', 'project', 'workspace', 'entity_type', 'entity'])
-    # entities are sorted by type: participant, participant_set, sample,
+    entities_by_type = {}
+    for entity in resp.json():
+        entity_type = entity['entityType']
+        if entity_type not in entities_by_type:
+            entities_by_type[entity_type] = []
+        entities_by_type[entity_type].append(entity['name'])
+
+    # Entities are sorted by type: participant, participant_set, sample,
     # sample_set. FireCloud complains if we delete a participant before deleting
-    # associated participant_set/sample/sample_set. By reversing the list, we
-    # won't have this problem. We will delete: sample_set, sample,
-    # participant_set, participant.
-    for entity in reversed(entities):
-        print('Deleting ' + entity)
-        entity_splits = entity.split('\t')
-        fiss_args = FissArgs(True, args.workspace_namespace,
-                             args.workspace_name, entity_splits[0],
-                             entity_splits[1])
-        fiss.entity_delete(fiss_args)
+    # associated participant_set/sample/sample_set.
+    for entity_type in FC_ENTITY_TYPES:
+        if entity_type in entities_by_type:
+            entities = entities_by_type[entity_type]
+            delete_entities(entity_type, entities)
+            del entities_by_type[entity_type]
+
+    # Delete the remaining entities where order does not matter.
+    for entity_type, entities in entities_by_type.iteritems():
+        if entity_type not in FC_ENTITY_TYPES:
+            fapi.delete_entity_type(args.workspace_namespace,
+                                    args.workspace_name, entity_type, entities)
+            fapi._check_response_code(resp, 200)
+            print 'Succesfully deleted entities of type: %s' % entity_type
 
 
 if __name__ == '__main__':
