@@ -26,7 +26,7 @@ def parse_args():
 def main():
     args = parse_args()
 
-    resp = fapi.get_entities_with_type(args.workspace_namespace, 
+    resp = fapi.get_entities_with_type(args.workspace_namespace,
                                        args.workspace_name)
     fapi._check_response_code(resp, 200)
 
@@ -45,7 +45,7 @@ def main():
     ]:
         if entity_type in entities_by_type:
             entities = entities_by_type[entity_type]
-            fapi.delete_entity_type(args.workspace_namespace, 
+            fapi.delete_entity_type(args.workspace_namespace,
                                     args.workspace_name, entity_type, entities)
             fapi._check_response_code(resp, 200)
             print 'Succesfully deleted entities of type: %s' % entity_type
@@ -53,10 +53,11 @@ def main():
 
     # Delete the remaining entities where order does not matter.
     for entity_type, entities in entities_by_type.iteritems():
-        fapi.delete_entity_type(args.workspace_namespace, 
+        fapi.delete_entity_type(args.workspace_namespace,
                                 args.workspace_name, entity_type, entities)
         fapi._check_response_code(resp, 200)
         print 'Succesfully deleted entities of type: %s' % entity_type
+
 
 if __name__ == '__main__':
     main()
