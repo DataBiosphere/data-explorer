@@ -132,17 +132,19 @@ def _random_str():
 def _write_gcs_file(entities):
     """Returns GCS file path of the format /bucket/object."""
     client = storage.Client(project=current_app.config['DEPLOY_PROJECT_ID'])
-    export_bucket = client.get_bucket(current_app.config['EXPORT_URL_GCS_BUCKET'])
-    samples_bucket = client.get_bucket(current_app.config['EXPORT_SAMPLES_URL_GCS_BUCKET'])
+    export_bucket = client.get_bucket(
+        current_app.config['EXPORT_URL_GCS_BUCKET'])
+    samples_bucket = client.get_bucket(
+        current_app.config['EXPORT_SAMPLES_URL_GCS_BUCKET'])
 
-    # Copy the samples blob to the export bucket in order to compose with the other 
+    # Copy the samples blob to the export bucket in order to compose with the other
     # object containing the rest of the entities JSON.
     samples_blob = samples_bucket.get_blob('samples')
     samples_blob = samples_bucket.copy_blob(samples_blob, export_bucket)
 
     blob = export_bucket.blob(_random_str())
     entities_json = json.dumps(entities)
-    # Remove the leading '[' character since this is being concatenated with the 
+    # Remove the leading '[' character since this is being concatenated with the
     # sample entities JSON, which has the trailing ']' stripped in the indexer.
     entities_json = ',%s' % entities_json[1:]
     blob.upload_from_string(entities_json)
@@ -153,7 +155,8 @@ def _write_gcs_file(entities):
 
     current_app.logger.info('Wrote %s' % merged.path)
     # Return in the format that signing a URL needs.
-    return '/%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'], merged.name)
+    return '/%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'],
+                       merged.name)
 
 
 def _create_signed_url(gcs_path):

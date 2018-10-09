@@ -9,8 +9,8 @@ def test_convert_to_index_name():
 
 def test_range_to_number(self):
     def _inner(range_str, expected_number):
-    	actual_number = facets_controller._range_to_number(range_str)
-    	self.assertEquals(actual_number, expected_number)
+        actual_number = facets_controller._range_to_number(range_str)
+        self.assertEquals(actual_number, expected_number)
 
     _inner('0.1-0.2', 0.1)
     _inner('1', 1)

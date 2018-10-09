@@ -258,7 +258,8 @@ def _process_export_url():
         app.app.config['DEPLOY_PROJECT_ID'] = project_id
 
     app.app.config['EXPORT_URL_GCS_BUCKET'] = project_id + '-export'
-    app.app.config['EXPORT_SAMPLES_URL_GCS_BUCKET'] = project_id + '-export-samples'
+    app.app.config[
+        'EXPORT_SAMPLES_URL_GCS_BUCKET'] = project_id + '-export-samples'
 
 
 # On server startup, read and process config files, and populate
