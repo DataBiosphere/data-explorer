@@ -109,14 +109,20 @@ def _get_entities_dict(cohort_name, query, doc_generator):
         })
 
     if cohort_name:
-        sample_ids = []
+        sample_items = []
         for doc in doc_generator:
-            sample_ids.extend([s['sample_id'] for s in doc.get('samples', [])])
+            sample_items.extend([
+                {'entityType': 'sample', 'entityName': s['sample_id']} 
+                for s in doc.get('samples', [])
+            ])
         entities.append({
             'entityType': 'sample_set',
             'name': cohort_name,
             'attributes': {
-                'samples': sample_ids,
+                'samples': {
+                    'itemsType': 'EntityReference',
+                    'items': sample_items
+                }
             }
         })
 
