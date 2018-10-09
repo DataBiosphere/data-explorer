@@ -18,6 +18,7 @@ import firecloud.api as fapi
 FC_ENTITY_TYPES = [
     'participant', 'sample', 'participant_set', 'sample_set', 'pair'
 ]
+ENTITY_CHUNK_SIZE = 100
 
 
 def parse_args():
@@ -27,10 +28,17 @@ def parse_args():
     return parser.parse_args()
 
 
-def delete_entities(entity_type, entities):
-    fapi.delete_entity_type(args.workspace_namespace, args.workspace_name,
-                            entity_type, entities)
-    fapi._check_response_code(resp, 200)
+def _chunk_list(l, size):
+    return [
+        l[i:i + size] for i in xrange(0, len(l), size)
+    ]
+
+
+def delete_entities(args, entity_type, entities):
+    for chunked in _chunk_list(entities, ENTITY_CHUNK_SIZE):
+        resp = fapi.delete_entity_type(args.workspace_namespace, args.workspace_name,
+                                       entity_type, chunked)
+        fapi._check_response_code(resp, 204)
     print 'Succesfully deleted entities of type: %s' % entity_type
 
 
@@ -54,16 +62,13 @@ def main():
     for entity_type in FC_ENTITY_TYPES:
         if entity_type in entities_by_type:
             entities = entities_by_type[entity_type]
-            delete_entities(entity_type, entities)
+            delete_entities(args, entity_type, entities)
             del entities_by_type[entity_type]
 
     # Delete the remaining entities where order does not matter.
     for entity_type, entities in entities_by_type.iteritems():
         if entity_type not in FC_ENTITY_TYPES:
-            fapi.delete_entity_type(args.workspace_namespace,
-                                    args.workspace_name, entity_type, entities)
-            fapi._check_response_code(resp, 200)
-            print 'Succesfully deleted entities of type: %s' % entity_type
+            delete_entities(args, entity_type, entities)
 
 
 if __name__ == '__main__':
