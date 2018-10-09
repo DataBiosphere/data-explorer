@@ -9,12 +9,9 @@ This tool can also be used to dump any other index.
 - Run:
 
 virtualenv ~/virtualenv/dump_index
-source ~/virtualenv/elasticsearch/bin/dump_index
+source ~/virtualenv/dump_index/bin/activate
 pip install elasticsearch requests
-python util/dump_index.py \ 
- --us_url='http://some-path' \
- --dataset='some_other_dataset' \
- --output_dir='dataset_config/some_other_dataset'
+python util/dump_index.py
 deactivate
 """
 import argparse

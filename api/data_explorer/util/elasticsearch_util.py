@@ -137,7 +137,7 @@ def convert_to_index_name(s):
     return s
 
 
-def deserialize(filter_arr, es_facets):
+def get_facet_value_dict(filter_arr, es_facets):
     """
     Parses an array of filters and es facets into a dict of facet_name:[facet_value] 
     mappings.
