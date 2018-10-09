@@ -12,11 +12,10 @@ python util/delete_entities.py WORKSPACE_NAMESPACE WORKSPACE_NAME
 import argparse
 import collections
 import sys
-
 import firecloud.api as fapi
 
 FC_ENTITY_TYPES = [
-    'participant', 'sample', 'participant_set', 'sample_set', 'pair'
+    'pair', 'sample_set', 'participant_set', 'sample', 'participant'
 ]
 ENTITY_CHUNK_SIZE = 100
 
@@ -28,18 +27,19 @@ def parse_args():
     return parser.parse_args()
 
 
-def _chunk_list(l, size):
-    return [
-        l[i:i + size] for i in xrange(0, len(l), size)
-    ]
+def delete_entity_type(args, entity_type, entities):
+    # Get the total number of chunks for this entity type.
+    chunks = len(entities)/ENTITY_CHUNK_SIZE
+    if len(entities) % ENTITY_CHUNK_SIZE != 0:
+        chunks += 1
 
-
-def delete_entities(args, entity_type, entities):
-    for chunked in _chunk_list(entities, ENTITY_CHUNK_SIZE):
+    for i in xrange(0, len(entities), ENTITY_CHUNK_SIZE):
+        chunk = entities[i:i+ENTITY_CHUNK_SIZE]
+        print('Deleting chunk %s of %s for type: %s' % (i/ENTITY_CHUNK_SIZE + 1, chunks, entity_type))
         resp = fapi.delete_entity_type(args.workspace_namespace, args.workspace_name,
-                                       entity_type, chunked)
+                                       entity_type, chunk)
         fapi._check_response_code(resp, 204)
-    print 'Succesfully deleted entities of type: %s' % entity_type
+    print('Succesfully deleted entities of type: %s' % entity_type)
 
 
 def main():
@@ -62,13 +62,13 @@ def main():
     for entity_type in FC_ENTITY_TYPES:
         if entity_type in entities_by_type:
             entities = entities_by_type[entity_type]
-            delete_entities(args, entity_type, entities)
+            delete_entity_type(args, entity_type, entities)
             del entities_by_type[entity_type]
 
     # Delete the remaining entities where order does not matter.
     for entity_type, entities in entities_by_type.iteritems():
         if entity_type not in FC_ENTITY_TYPES:
-            delete_entities(args, entity_type, entities)
+            delete_entity_type(args, entity_type, entities)
 
 
 if __name__ == '__main__':
