@@ -15,10 +15,10 @@ import sys
 
 import firecloud.api as fapi
 
-
 FC_ENTITY_TYPES = [
     'participant', 'sample', 'participant_set', 'sample_set', 'pair'
 ]
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -28,7 +28,7 @@ def parse_args():
 
 
 def delete_entities(entity_type, entities):
-    fapi.delete_entity_type(args.workspace_namespace, args.workspace_name, 
+    fapi.delete_entity_type(args.workspace_namespace, args.workspace_name,
                             entity_type, entities)
     fapi._check_response_code(resp, 200)
     print 'Succesfully deleted entities of type: %s' % entity_type
@@ -60,8 +60,8 @@ def main():
     # Delete the remaining entities where order does not matter.
     for entity_type, entities in entities_by_type.iteritems():
         if entity_type not in FC_ENTITY_TYPES:
-            fapi.delete_entity_type(args.workspace_namespace, args.workspace_name, 
-                                    entity_type, entities)
+            fapi.delete_entity_type(args.workspace_namespace,
+                                    args.workspace_name, entity_type, entities)
             fapi._check_response_code(resp, 200)
             print 'Succesfully deleted entities of type: %s' % entity_type
 
