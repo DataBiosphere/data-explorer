@@ -13,6 +13,7 @@ responses = Responses('urllib3')
 
 class TestExportUrlController(BaseTestCase):
     """ExportUrlController integration test stubs"""
+
     @classmethod
     def setUpClass(self):
         responses_dir = 'data_explorer/test/mock_responses'
@@ -38,7 +39,8 @@ class TestExportUrlController(BaseTestCase):
             'SAMPLE_FILE_COLUMNS': {
                 'Chr 1 VCF': 'project_id.dataset_id.table_name.sample_type',
             },
-            'INDEX_NAME': 'index_name',
+            'INDEX_NAME':
+            'index_name',
             'UI_FACETS': {
                 'Age': {
                     'type':
@@ -54,10 +56,13 @@ class TestExportUrlController(BaseTestCase):
                 }
             },
             'ELASTICSEARCH_FACETS': {
-                'Age': TermsFacet(field='Age.keyword'),
-                'Has Chr 1 VCF (samples)': TermsFacet(field='samples._has_chr1_vcf')
+                'Age':
+                TermsFacet(field='Age.keyword'),
+                'Has Chr 1 VCF (samples)':
+                TermsFacet(field='samples._has_chr1_vcf')
             },
-            'ELASTICSEARCH_URL': 'fakeurl:9200',
+            'ELASTICSEARCH_URL':
+            'fakeurl:9200',
         })
         return app
 
