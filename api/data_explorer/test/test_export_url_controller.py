@@ -1,10 +1,28 @@
 import json
+import os
+
+from elasticsearch_dsl import TermsFacet
+# Elasticsearch uses urllib3 by default, so use urllib3_mock instead of
+# requests_mock.
+from urllib3_mock import Responses
 
 from data_explorer.test.base_test_case import BaseTestCase
+
+responses = Responses('urllib3')
 
 
 class TestExportUrlController(BaseTestCase):
     """ExportUrlController integration test stubs"""
+
+    @classmethod
+    def setUpClass(self):
+        responses_dir = 'data_explorer/test/mock_responses'
+
+        def _open_resp_file(filename):
+            with open(os.path.join(responses_dir, filename)) as f:
+                return f.read()
+
+        self.es_response = _open_resp_file('es_histogram.txt')
 
     def create_app(self):
         app = super(TestExportUrlController, self).create_app()
@@ -21,6 +39,8 @@ class TestExportUrlController(BaseTestCase):
             'SAMPLE_FILE_COLUMNS': {
                 'Chr 1 VCF': 'project_id.dataset_id.table_name.sample_type',
             },
+            'INDEX_NAME':
+            'index_name',
             'UI_FACETS': {
                 'Age': {
                     'type':
@@ -34,11 +54,27 @@ class TestExportUrlController(BaseTestCase):
                     'elasticsearch_field_name':
                     'samples.project_id.dataset_id.table_name.sample_type'
                 }
-            }
+            },
+            'ELASTICSEARCH_FACETS': {
+                'Age':
+                TermsFacet(field='Age.keyword'),
+                'Has Chr 1 VCF (samples)':
+                TermsFacet(field='samples._has_chr1_vcf')
+            },
+            'ELASTICSEARCH_URL':
+            'fakeurl:9200',
         })
         return app
 
+    @responses.activate
     def test_export_url_post(self):
+        responses.add(
+            'GET',
+            '/index_name/_search',
+            body=self.es_response,
+            status=200,
+            content_type='application/json')
+
         response = self.client.post(
             '/exportUrl',
             data=json.dumps({

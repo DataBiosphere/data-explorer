@@ -9,6 +9,9 @@ import sys
 import time
 import urllib
 
+from collections import OrderedDict
+from elasticsearch import Elasticsearch
+from elasticsearch_dsl import Search
 from flask import request
 from flask import current_app
 from werkzeug.exceptions import BadRequest
@@ -16,6 +19,8 @@ from google.cloud import storage
 from oauth2client.service_account import ServiceAccountCredentials
 
 from data_explorer.models.export_url_response import ExportUrlResponse  # noqa: E501
+from data_explorer.util import elasticsearch_util
+from data_explorer.util.dataset_faceted_search import DatasetFacetedSearch
 
 # Export to Saturn flow
 # - User clicks export button on bottom right of Data Explorer
@@ -24,6 +29,8 @@ from data_explorer.models.export_url_response import ExportUrlResponse  # noqa: 
 # - UI server calls API server /export_url (this file):
 #   - Constructs a JSON array of JSON entity objects
 #   - Writes JSON array to a GCS file
+#   - Concat that with an existing samples JSON entity file, which contains
+#     all the samples in the dataset and is created on indexing.
 #   - Creates a signed url for GCS file. Returns signed url to UI server
 # - UI server redirects to Saturn add-import?url=SIGNED_URL
 # - On add-import page, user selects Workspace. User clicks Import button.
@@ -70,7 +77,23 @@ def _check_preconditions():
         raise BadRequest(error_msg)
 
 
-def _get_entities_dict(cohort_name, query):
+def _get_doc_generator(filter_arr):
+    if len(filter_arr) == 0:
+        return
+
+    es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
+    es_facets = OrderedDict(current_app.config['ELASTICSEARCH_FACETS'].items())
+    filters = elasticsearch_util.get_facet_value_dict(filter_arr, es_facets)
+    search_dict = DatasetFacetedSearch(filters,
+                                       es_facets).build_search().to_dict().get(
+                                           'post_filter', {})
+    search = Search(using=es, index=current_app.config['INDEX_NAME'])
+    search.update_from_dict({'post_filter': search_dict})
+    for result in search.scan():
+        yield result.to_dict()
+
+
+def _get_entities_dict(cohort_name, query, filter_arr):
     """Returns a dict representing the JSON list of entities."""
     # Saturn add-import expects a JSON list of entities, where each entity is
     # the entity JSON passed into
@@ -95,7 +118,10 @@ def _get_entities_dict(cohort_name, query):
                 'table_name': table_name
             }
         })
-    if query and cohort_name:
+
+    # If a cohort was selected, create a query entity and get Elasticsearch documents
+    # for the cohort so we can create sample_set entity.
+    if cohort_name:
         entities.append({
             'entityType': 'cohort',
             'name': cohort_name,
@@ -103,23 +129,63 @@ def _get_entities_dict(cohort_name, query):
                 'query': query
             }
         })
+
+        sample_items = []
+        for doc in _get_doc_generator(filter_arr):
+            sample_items.extend([{
+                'entityType': 'sample',
+                'entityName': s['sample_id']
+            } for s in doc.get('samples', [])])
+        entities.append({
+            'entityType': 'sample_set',
+            'name': cohort_name,
+            'attributes': {
+                'samples': {
+                    'itemsType': 'EntityReference',
+                    'items': sample_items
+                }
+            }
+        })
+
     return entities
+
+
+def _random_str():
+    # Random 10 character string
+    return ''.join(
+        random.choice(string.ascii_letters + string.digits) for _ in range(10))
 
 
 def _write_gcs_file(entities):
     """Returns GCS file path of the format /bucket/object."""
     client = storage.Client(project=current_app.config['DEPLOY_PROJECT_ID'])
-    bucket = client.get_bucket(current_app.config['EXPORT_URL_GCS_BUCKET'])
-    # Random 10 character string
-    random_str = ''.join(
-        random.choice(string.ascii_letters + string.digits) for _ in range(10))
-    blob = bucket.blob(random_str)
-    blob.upload_from_string(json.dumps(entities))
+    export_bucket = client.get_bucket(
+        current_app.config['EXPORT_URL_GCS_BUCKET'])
+    samples_bucket = client.get_bucket(
+        current_app.config['EXPORT_URL_SAMPLES_GCS_BUCKET'])
+
+    # Copy the samples blob to the export bucket in order to compose with the other
+    # object containing the rest of the entities JSON.
+    samples_blob = samples_bucket.get_blob('samples')
+    samples_blob = samples_bucket.copy_blob(samples_blob, export_bucket)
+
+    blob = export_bucket.blob(_random_str())
+    entities_json = json.dumps(entities)
+    # Remove the leading '[' character since this is being concatenated with the
+    # sample entities JSON, which has the trailing ']' stripped in the indexer.
+    entities_json = ',%s' % entities_json[1:]
+    blob.upload_from_string(entities_json)
+
+    merged = export_bucket.blob(_random_str())
+    merged.upload_from_string('')
+    merged.compose([samples_blob, blob])
+
     current_app.logger.info(
         'Wrote gs://%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'],
-                              random_str))
+                              merged.name))
     # Return in the format that signing a URL needs.
-    return '/%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'], random_str)
+    return '/%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'],
+                       merged.name)
 
 
 def _create_signed_url(gcs_path):
@@ -262,12 +328,15 @@ def _get_filter_query(filters):
 def export_url_post():  # noqa: E501
     _check_preconditions()
     data = json.loads(request.data)
+    filter_arr = data['filter']
+
     current_app.logger.info('Export URL request data %s' % request.data)
-    query = _get_filter_query(data['filter'])
-    cohortname = data['cohortName']
-    cohortname = cohortname.replace(" ", "_")
-    entities = _get_entities_dict(cohortname, query)
-    current_app.logger.info('Entity JSON: %s' % json.dumps(entities))
+
+    # TODO(malathir): Add extraFacets to this endpoint
+    query = _get_filter_query(filter_arr)
+    cohort_name = data['cohortName'].replace(" ", "_")
+    entities = _get_entities_dict(cohort_name, query, filter_arr)
+
     # Don't actually write GCS file during unit test. If we wrote a file during
     # unit test, in order to make it easy for anyone to run this test, we would
     # have to create a world-readable bucket.

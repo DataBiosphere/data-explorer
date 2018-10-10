@@ -226,6 +226,7 @@ def _process_export_url():
     app.app.config['AUTHORIZATION_DOMAIN'] = ''
     app.app.config['DEPLOY_PROJECT_ID'] = ''
     app.app.config['EXPORT_URL_GCS_BUCKET'] = ''
+    app.app.config['EXPORT_URL_SAMPLES_GCS_BUCKET'] = ''
 
     dataset_config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                        'dataset.json')
@@ -257,6 +258,8 @@ def _process_export_url():
         app.app.config['DEPLOY_PROJECT_ID'] = project_id
 
     app.app.config['EXPORT_URL_GCS_BUCKET'] = project_id + '-export'
+    app.app.config[
+        'EXPORT_URL_SAMPLES_GCS_BUCKET'] = project_id + '-export-samples'
 
 
 # On server startup, read and process config files, and populate

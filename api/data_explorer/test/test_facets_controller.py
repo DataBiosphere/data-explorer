@@ -105,16 +105,6 @@ class TestFacetsController(BaseTestCase):
         _inner(10, 10, '10-20')
         _inner(10000000, 10000000, '10M-20M')
 
-    def test_range_to_number(self):
-        def _inner(range_str, expected_number):
-            actual_number = facets_controller._range_to_number(range_str)
-            self.assertEquals(actual_number, expected_number)
-
-        _inner('0.1-0.2', 0.1)
-        _inner('1', 1)
-        _inner('10-20', 10)
-        _inner('10M-20M', 10000000)
-
 
 if __name__ == '__main__':
     import unittest

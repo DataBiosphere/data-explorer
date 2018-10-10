@@ -1,4 +1,5 @@
 import json
+import urllib
 
 from elasticsearch import helpers
 from elasticsearch_dsl import Search
@@ -12,58 +13,6 @@ from elasticsearch_dsl.query import Match
 from filters_facet import FiltersFacet
 
 from flask import current_app
-
-
-def convert_to_index_name(s):
-    """Converts a string to an Elasticsearch index name."""
-    # For Elasticsearch index name restrictions, see
-    # https://github.com/DataBiosphere/data-explorer-indexers/issues/5#issue-308168951
-    # Elasticsearch allows single quote in index names. However, they cause other
-    # problems. For example,
-    # "curl -XDELETE http://localhost:9200/nurse's_health_study" doesn't work.
-    # So also remove single quotes.
-    prohibited_chars = [
-        ' ', '"', '*', '\\', '<', '|', ',', '>', '/', '?', '\''
-    ]
-    for char in prohibited_chars:
-        s = s.replace(char, '_')
-    s = s.lower()
-    # Remove leading underscore.
-    if s.find('_', 0, 1) == 0:
-        s = s.lstrip('_')
-    print('Index name: %s' % s)
-    return s
-
-
-def get_field_type(es, field_name):
-    # elasticsearch_dsl.Mapping, which gets mappings for all fields, would be
-    # easier, but we can't use it.
-    # BigQuery indexer uses field names like "project.dataset.table.column".
-    # elasticsearch_dsl.Mapping corresponds to
-    # "curl /index/_mapping/doc_type". That returns a nested dict:
-    #   "project":
-    #     "dataset":
-    #       ...
-    # It's difficult to retrieve type from the nested dict.
-    # Instead, we get the type for one field:
-    # "curl /index/_mapping/doc_type/project.dataset.table.column".
-    # This has the benefit that we can support Elasticsearch documents that are
-    # truly nested, such as HCA Orange Box. elasticsearch_field_name in ui.json
-    # would be "parent.child".
-    mapping = es.indices.get_field_mapping(
-        fields=field_name,
-        index=current_app.config['INDEX_NAME'],
-        doc_type='type')
-
-    if mapping == {}:
-        raise ValueError(
-            'elasticsearch_field_name %s not found in Elasticsearch index %s' %
-            (field_name, current_app.config['INDEX_NAME']))
-
-    # If field_name is "a.b.c", last_part is "c".
-    last_part = field_name.split('.')[len(field_name.split('.')) - 1]
-    return mapping[current_app.config['INDEX_NAME']]['mappings']['type'][
-        field_name]['mapping'][last_part]['type']
 
 
 def _get_field_min_max_agg(es, field_name):
@@ -153,12 +102,95 @@ def _get_bucket_interval(field_range):
         return 1000000000000
 
 
-def get_samples_overview_facet(es_field_names):
-    filters = {
-        facet: Match(**{field: True})
-        for facet, field in es_field_names.iteritems()
-    }
-    return NestedFacet('samples', FiltersFacet(filters))
+def range_to_number(interval_str):
+    """Converts "X-Y" -> "X"."""
+    if not '-' in interval_str:
+        return int(interval_str)
+
+    number = interval_str.split('-')[0]
+    number = number.replace('M', '000000')
+    number = number.replace('B', '000000000')
+    if '.' in number:
+        return float(number)
+    else:
+        return int(number)
+
+
+def convert_to_index_name(s):
+    """Converts a string to an Elasticsearch index name."""
+    # For Elasticsearch index name restrictions, see
+    # https://github.com/DataBiosphere/data-explorer-indexers/issues/5#issue-308168951
+    # Elasticsearch allows single quote in index names. However, they cause other
+    # problems. For example,
+    # "curl -XDELETE http://localhost:9200/nurse's_health_study" doesn't work.
+    # So also remove single quotes.
+    prohibited_chars = [
+        ' ', '"', '*', '\\', '<', '|', ',', '>', '/', '?', '\''
+    ]
+    for char in prohibited_chars:
+        s = s.replace(char, '_')
+    s = s.lower()
+    # Remove leading underscore.
+    if s.find('_', 0, 1) == 0:
+        s = s.lstrip('_')
+    print('Index name: %s' % s)
+    return s
+
+
+def get_facet_value_dict(filter_arr, es_facets):
+    """
+    Parses an array of filters and es facets into a dict of facet_name:[facet_value] 
+    mappings.
+    """
+    if not filter_arr or filter_arr == [""]:
+        return {}
+    parsed_filter = {}
+    for facet_filter in filter_arr:
+        filter_str = urllib.unquote(facet_filter).decode('utf8')
+        key_val = filter_str.split('=')
+        name = key_val[0]
+        es_facet = es_facets[name]
+        if is_histogram_facet(es_facet):
+            value = range_to_number(key_val[1])
+        else:
+            value = key_val[1]
+
+        if not name in parsed_filter:
+            parsed_filter[name] = [value]
+        else:
+            parsed_filter[name].append(value)
+    return parsed_filter
+
+
+def get_field_type(es, field_name):
+    # elasticsearch_dsl.Mapping, which gets mappings for all fields, would be
+    # easier, but we can't use it.
+    # BigQuery indexer uses field names like "project.dataset.table.column".
+    # elasticsearch_dsl.Mapping corresponds to
+    # "curl /index/_mapping/doc_type". That returns a nested dict:
+    #   "project":
+    #     "dataset":
+    #       ...
+    # It's difficult to retrieve type from the nested dict.
+    # Instead, we get the type for one field:
+    # "curl /index/_mapping/doc_type/project.dataset.table.column".
+    # This has the benefit that we can support Elasticsearch documents that are
+    # truly nested, such as HCA Orange Box. elasticsearch_field_name in ui.json
+    # would be "parent.child".
+    mapping = es.indices.get_field_mapping(
+        fields=field_name,
+        index=current_app.config['INDEX_NAME'],
+        doc_type='type')
+
+    if mapping == {}:
+        raise ValueError(
+            'elasticsearch_field_name %s not found in Elasticsearch index %s' %
+            (field_name, current_app.config['INDEX_NAME']))
+
+    # If field_name is "a.b.c", last_part is "c".
+    last_part = field_name.split('.')[len(field_name.split('.')) - 1]
+    return mapping[current_app.config['INDEX_NAME']]['mappings']['type'][
+        field_name]['mapping'][last_part]['type']
 
 
 def get_elasticsearch_facet(es, elasticsearch_field_name, field_type):
@@ -188,6 +220,25 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type):
         es_facet = NestedFacet('samples', es_facet)
 
     return es_facet
+
+
+def get_samples_overview_facet(es_field_names):
+    filters = {
+        facet: Match(**{field: True})
+        for facet, field in es_field_names.iteritems()
+    }
+    return NestedFacet('samples', FiltersFacet(filters))
+
+
+def is_histogram_facet(facet):
+    if isinstance(facet, HistogramFacet):
+        return True
+    # For some reason using isinstance doesn't work here for
+    # NestedFacet. I believe it's due to the absolute path,
+    # it may work once NestedFacet is exported as part of
+    # elasticsearch_dsl.
+    elif hasattr(facet, '_inner'):
+        return is_histogram_facet(facet._inner)
 
 
 def _delete_index(es, index):
