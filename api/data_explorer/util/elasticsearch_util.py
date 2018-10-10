@@ -102,7 +102,7 @@ def _get_bucket_interval(field_range):
         return 1000000000000
 
 
-def _range_to_number(interval_str):
+def range_to_number(interval_str):
     """Converts "X-Y" -> "X"."""
     if not '-' in interval_str:
         return int(interval_str)
@@ -151,7 +151,7 @@ def get_facet_value_dict(filter_arr, es_facets):
         name = key_val[0]
         es_facet = es_facets[name]
         if is_histogram_facet(es_facet):
-            value = _range_to_number(key_val[1])
+            value = range_to_number(key_val[1])
         else:
             value = key_val[1]
 

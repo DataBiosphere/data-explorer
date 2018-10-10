@@ -1,4 +1,5 @@
 import json
+import os
 
 from elasticsearch_dsl import TermsFacet
 # Elasticsearch uses urllib3 by default, so use urllib3_mock instead of
@@ -20,12 +21,7 @@ class TestExportUrlController(BaseTestCase):
             with open(os.path.join(responses_dir, filename)) as f:
                 return f.read()
 
-        self.es_basic = _open_resp_file('es_basic.txt')
-        self.api_server_facets_basic = _open_resp_file(
-            'api_server_facets_basic.txt')
-        self.es_histogram = _open_resp_file('es_histogram.txt')
-        self.api_server_facets_histogram = _open_resp_file(
-            'api_server_facets_histogram.txt')
+        self.es_response = _open_resp_file('es_histogram.txt')
 
     def create_app(self):
         app = super(TestExportUrlController, self).create_app()
@@ -65,7 +61,15 @@ class TestExportUrlController(BaseTestCase):
         })
         return app
 
+    @responses.activate
     def test_export_url_post(self):
+        responses.add(
+            'GET',
+            '/index_name/_search',
+            body=self.es_response,
+            status=200,
+            content_type='application/json')
+
         response = self.client.post(
             '/exportUrl',
             data=json.dumps({
