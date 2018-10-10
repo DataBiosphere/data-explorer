@@ -59,6 +59,13 @@ handler.setLevel(logging.INFO)
 app.app.logger.addHandler(handler)
 app.app.logger.setLevel(logging.INFO)
 
+# Uncomment to see Elasticsearch REST requests and responses. The requests can
+# be used with curl.
+# handler.setLevel(logging.DEBUG)
+# root = logging.getLogger()
+# root.addHandler(handler)
+# logging.getLogger('elasticsearch').setLevel(logging.DEBUG)
+
 app.app.json_encoder = JSONEncoder
 app.add_api('swagger.yaml', base_path=args.path_prefix)
 

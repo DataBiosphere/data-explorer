@@ -85,9 +85,12 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     search = DatasetFacetedSearch(
         elasticsearch_util.get_facet_value_dict(filter, combined_es_facets),
         combined_es_facets)
+    # Uncomment to print Elasticsearch request python object
+    # current_app.logger.info(
+    #     'Query: %s' % pprint.pformat(search.build_search().to_dict()))
     es_response = search.execute()
     es_response_facets = es_response.facets.to_dict()
-    # Uncomment to print facets
+    # Uncomment to print Elasticsearch response python object
     # current_app.logger.info(pprint.pformat(es_response_facets))
     facets = []
     for name, field in combined_ui_facets.iteritems():

@@ -182,6 +182,12 @@ Troubleshooting tips for end-to-end tests:
 to see the browser during test run.
 - Run a single test: `npm run test:e2e -- -t "test name"`
 
+### Troubleshooting
+
+- Print Elasticsearch request and response Python object
+- Print Elasticsearch REST request and response. The REST
+request can be used with `curl`.
+
 ### Formatting
 
 `ui/` is formatted with [Prettier](https://prettier.io/). husky is used to automatically format files upon commit.
