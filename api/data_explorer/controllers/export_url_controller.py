@@ -29,6 +29,8 @@ from data_explorer.util.dataset_faceted_search import DatasetFacetedSearch
 # - UI server calls API server /export_url (this file):
 #   - Constructs a JSON array of JSON entity objects
 #   - Writes JSON array to a GCS file
+#   - Concat that with an existing samples JSON entity file, which contains
+#     all the samples in the dataset and is created on indexing.
 #   - Creates a signed url for GCS file. Returns signed url to UI server
 # - UI server redirects to Saturn add-import?url=SIGNED_URL
 # - On add-import page, user selects Workspace. User clicks Import button.
