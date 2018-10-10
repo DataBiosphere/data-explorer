@@ -246,8 +246,9 @@ def _process_export_url():
         )
         return
 
-    project_id = _parse_json_file(deploy_config_path)['project_id']
-    if project_id == 'PROJECT_ID_TO_DEPLOY_TO':
+    deploy_config = _parse_json_file(deploy_config_path)
+    if not 'project_id' in deploy_config or deploy_config[
+            'project_id'] == 'PROJECT_ID_TO_DEPLOY_TO':
         app.app.logger.warning(
             'Project not set in deploy.json. Export to Saturn feature will not work. '
             'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature-for-export-to-saturn-feature'
