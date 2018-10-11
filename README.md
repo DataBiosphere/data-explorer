@@ -184,8 +184,8 @@ to see the browser during test run.
 
 ### Troubleshooting
 
-- Print Elasticsearch request and response Python object
-- Print Elasticsearch REST request and response. The REST
+- [Print Elasticsearch request and response Python object.](https://github.com/DataBiosphere/data-explorer/blob/1abfad964b01fc1b73b7e249a1078c26a9f21823/api/data_explorer/controllers/facets_controller.py#L88-L94)
+- [Print Elasticsearch REST request and response](https://github.com/DataBiosphere/data-explorer/blob/1abfad964b01fc1b73b7e249a1078c26a9f21823/api/data_explorer/__main__.py#L62-L67). The REST
 request can be used with `curl`.
 
 ### Formatting
