@@ -28,6 +28,8 @@ def _process_extra_facets(extra_facets):
     if not extra_facets:
         return es_facets, ui_facets
 
+    nested_facet_paths = elasticsearch_util.get_nested_paths(es)
+
     for elasticsearch_field_name in extra_facets:
         if not elasticsearch_field_name:
             continue
@@ -42,7 +44,7 @@ def _process_extra_facets(extra_facets):
         }
         # TODO(malathir): Figure out how to get description of the field.
         es_facets[ui_facet_name] = elasticsearch_util.get_elasticsearch_facet(
-            es, elasticsearch_field_name, field_type)
+            es, elasticsearch_field_name, field_type, nested_facet_paths)
 
     return es_facets, ui_facets
 
@@ -91,12 +93,13 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     es_response = search.execute()
     es_response_facets = es_response.facets.to_dict()
     # Uncomment to print Elasticsearch response python object
-    # current_app.logger.info(pprint.pformat(es_response_facets))
+    current_app.logger.info(pprint.pformat(es_response_facets))
     facets = []
     for name, field in combined_ui_facets.iteritems():
         description = field.get('description')
         es_facet = combined_es_facets[name]
         values = []
+        print(name)
         for value_name, count, _ in es_response_facets[name]:
             if elasticsearch_util.is_histogram_facet(es_facet):
                 # For histograms, Elasticsearch returns:
