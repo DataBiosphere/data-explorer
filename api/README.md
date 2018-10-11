@@ -14,6 +14,36 @@ pip freeze | sort -f > requirements.txt
 deactivate
 ```
 
+### Troubleshooting tips
+- pdb with `docker-compose` [requires some setup](https://blog.lucasferreira.org/howto/2017/06/03/running-pdb-with-docker-and-gunicorn.html#adding-support-for-pdb-debug).
+  * Add to `api/Dockerfile`:
+
+    ```
+    ENTRYPOINT ["gunicorn", "-b", ":8390", "--reload", "-t", "36000", "data_explorer.__main__:app"]
+    ```
+  * Add to `docker-compose.yml` `apise` section:
+
+    ```
+        stdin_open: true
+        tty: true
+    ```
+
+  * Add to .py file:
+
+    ```
+    import pdb; pdb.set_trace()
+    ```
+  * Restart API server:
+
+    ```
+    docker-compose stop apise && docker-compose up --build -d apise && docker attach data-explorer_apise_1
+    ```
+- If you want to run curl commands against Elasticsearch (localhost:9200),
+Kibana (localhost:5601) is the most convenient way.
+- [Print Elasticsearch request and response Python object.](https://github.com/DataBiosphere/data-explorer/blob/1abfad964b01fc1b73b7e249a1078c26a9f21823/api/data_explorer/controllers/facets_controller.py#L88-L94)
+- [Print Elasticsearch REST request and response](https://github.com/DataBiosphere/data-explorer/blob/1abfad964b01fc1b73b7e249a1078c26a9f21823/api/data_explorer/__main__.py#L62-L67). The REST
+request can be used with `curl`.
+
 ### Generating mock responses for API server unit tests
 
 In the [API server unit tests](https://github.com/DataBiosphere/data-explorer/blob/master/api/data_explorer/test/test_facets_controller.py),
