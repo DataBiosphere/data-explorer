@@ -202,19 +202,23 @@ def get_nested_field_paths(prefix, mappings):
         if 'type' in field and field['type'] == 'nested':
             nested_field_paths.append(nested_path)
         if 'properties' in field:
-            nested_field_paths.extend(get_nested_field_paths(nested_path, field['properties']))
+            nested_field_paths.extend(
+                get_nested_field_paths(nested_path, field['properties']))
     return nested_field_paths
 
 
 def get_nested_paths(es):
     nested_paths = []
     mappings = es.indices.get_mapping(index=current_app.config['INDEX_NAME'])
-    nested_paths.extend(get_nested_field_paths('', mappings[
-        current_app.config['INDEX_NAME']]['mappings']['type']['properties']))
+    nested_paths.extend(
+        get_nested_field_paths(
+            '', mappings[current_app.config['INDEX_NAME']]['mappings']['type']
+            ['properties']))
     return nested_paths
 
 
-def get_elasticsearch_facet(es, elasticsearch_field_name, field_type, nested_facet_paths):
+def get_elasticsearch_facet(es, elasticsearch_field_name, field_type,
+                            nested_facet_paths):
     if field_type == 'text':
         # Use ".keyword" because we want aggregation on keyword field, not
         # term field. See
@@ -238,7 +242,7 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type, nested_fac
 
     nested_path = is_nested_facet(elasticsearch_field_name, nested_facet_paths)
     if nested_path:
-      es_facet = NestedFacet(nested_path, es_facet)
+        es_facet = NestedFacet(nested_path, es_facet)
 
     return es_facet
 

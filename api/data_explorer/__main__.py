@@ -204,7 +204,7 @@ def _process_facets(es):
 
     # Get the list of nested facet paths.
     nested_facet_paths = elasticsearch_util.get_nested_paths(es)
-    
+
     for facet_config in facets_config:
         elasticsearch_field_name = facet_config['elasticsearch_field_name']
         field_type = elasticsearch_util.get_field_type(
