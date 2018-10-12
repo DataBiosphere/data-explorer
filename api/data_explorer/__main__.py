@@ -204,9 +204,7 @@ def _process_facets(es):
 
     # Get the list of nested facet paths.
     nested_facet_paths = elasticsearch_util.get_nested_paths(es)
-    print("nested facet paths")
-    print(nested_facet_paths)
-
+    
     for facet_config in facets_config:
         elasticsearch_field_name = facet_config['elasticsearch_field_name']
         field_type = elasticsearch_util.get_field_type(
@@ -295,12 +293,9 @@ def init():
         _process_facets(es)
         _process_export_url()
 
-        app.app.logger.info(
-            '    %s: %s' % ('ELASTICSEARCH_FACETS',
-                            app.app.config['ELASTICSEARCH_FACETS']))
-        #app.app.logger.info('app.app.config:')
-        #for key in sorted(app.app.config.keys()):
-        #    app.app.logger.info('    %s: %s' % (key, app.app.config[key]))
+        app.app.logger.info('app.app.config:')
+        for key in sorted(app.app.config.keys()):
+            app.app.logger.info('    %s: %s' % (key, app.app.config[key]))
 
 
 init()
