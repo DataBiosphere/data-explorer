@@ -193,29 +193,24 @@ def get_field_type(es, field_name):
         field_name]['mapping'][last_part]['type']
 
 
-def get_nested_field_paths(prefix, field_mappings):
+def get_nested_field_paths(prefix, mappings):
     nested_field_paths = []
-    for field_name, field in field_mappings.items():
+    for field_name, field in mappings.items():
+        nested_path = field_name
+        if prefix:
+            nested_path = '%s.%s' % (prefix, field_name)
         if 'type' in field and field['type'] == 'nested':
-            nested_field_paths.append(('%s.%s.' % (prefix, field_name)))
-            nested_field_paths.extend(get_nested_field_paths('%s.%s' % (prefix, field_name), field['properties']))
-    print(nested_field_paths)
+            nested_field_paths.append(nested_path)
+        if 'properties' in field:
+            nested_field_paths.extend(get_nested_field_paths(nested_path, field['properties']))
     return nested_field_paths
 
 
 def get_nested_paths(es):
     nested_paths = []
     mappings = es.indices.get_mapping(index=current_app.config['INDEX_NAME'])
-    project_mappings = mappings[current_app.config['INDEX_NAME']]['mappings']['type']['properties']
-    for project in project_mappings:
-        dataset_mappings = project_mappings[project]['properties']
-        for dataset in dataset_mappings:
-            table_mappings = dataset_mappings[dataset]['properties']
-            for table in table_mappings:
-                field_mappings = table_mappings[table]['properties']
-                print(field_mappings)
-                nested_paths.extend(get_nested_field_paths('%s.%s.%s' % (project, dataset, table), field_mappings))
-    print(nested_paths)
+    nested_paths.extend(get_nested_field_paths('', mappings[
+        current_app.config['INDEX_NAME']]['mappings']['type']['properties']))
     return nested_paths
 
 
@@ -250,7 +245,7 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type, nested_fac
 
 def is_nested_facet(elasticsearch_field_name, nested_facet_paths):
     for path in nested_facet_paths:
-        if elasticsearch_field_name.startswith(path):
+        if elasticsearch_field_name.startswith(path + '.'):
             return path
     return None
 

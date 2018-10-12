@@ -295,7 +295,9 @@ def init():
         _process_facets(es)
         _process_export_url()
 
-        app.app.logger.info('    %s: %s' % ('ELASTICSEARCH_FACETS', app.app.config['ELASTICSEARCH_FACETS']))
+        app.app.logger.info(
+            '    %s: %s' % ('ELASTICSEARCH_FACETS',
+                            app.app.config['ELASTICSEARCH_FACETS']))
         #app.app.logger.info('app.app.config:')
         #for key in sorted(app.app.config.keys()):
         #    app.app.logger.info('    %s: %s' % (key, app.app.config[key]))
