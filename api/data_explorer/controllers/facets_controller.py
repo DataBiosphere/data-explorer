@@ -93,13 +93,12 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     es_response = search.execute()
     es_response_facets = es_response.facets.to_dict()
     # Uncomment to print Elasticsearch response python object
-    current_app.logger.info(pprint.pformat(es_response_facets))
+    # current_app.logger.info(pprint.pformat(es_response_facets))
     facets = []
     for name, field in combined_ui_facets.iteritems():
         description = field.get('description')
         es_facet = combined_es_facets[name]
         values = []
-        print(name)
         for value_name, count, _ in es_response_facets[name]:
             if elasticsearch_util.is_histogram_facet(es_facet):
                 # For histograms, Elasticsearch returns:
