@@ -28,7 +28,7 @@ def _process_extra_facets(extra_facets):
     if not extra_facets:
         return es_facets, ui_facets
 
-    nested_facet_paths = elasticsearch_util.get_nested_paths(es)
+    nested_paths = elasticsearch_util.get_nested_paths(es)
 
     for elasticsearch_field_name in extra_facets:
         if not elasticsearch_field_name:
@@ -44,7 +44,7 @@ def _process_extra_facets(extra_facets):
         }
         # TODO(malathir): Figure out how to get description of the field.
         es_facets[ui_facet_name] = elasticsearch_util.get_elasticsearch_facet(
-            es, elasticsearch_field_name, field_type, nested_facet_paths)
+            es, elasticsearch_field_name, field_type, nested_paths)
 
     return es_facets, ui_facets
 
