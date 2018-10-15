@@ -251,42 +251,33 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type,
             field=elasticsearch_field_name,
             interval=_get_bucket_interval(field_range))
 
-    nested_facet = _get_nested_facet(elasticsearch_field_name, es_facet,
-                                     nested_paths)
+    nested_facet = _maybe_get_nested_facet(elasticsearch_field_name, es_facet,
+                                           nested_paths)
     if nested_facet:
         es_facet = nested_facet
     return es_facet
 
 
-def _get_nested_facet(elasticsearch_field_name, es_facet, nested_paths):
+def _maybe_get_nested_facet(elasticsearch_field_name, es_facet, nested_paths):
     """
     Returns a NestedFacet for the Elasticsearch field, if the field is nested.
+
+    Note there can be multiple levels of NestedFacet,
+    eg NestedFacet(outer, NestedFacet(inner, es_facet))
     """
-    parent = elasticsearch_field_name.rsplit('.', 1)[0]
-    nested_facet = None
+    parts = elasticsearch_field_name.rsplit('.', 1)
     # Traverse up the nesting levels from the leaf field, till we reach the root.
     # Need to traverse till the root, because the root can be a nested field,
     # for example "samples". All the sub fields can be non-nested, like
     # "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.Main_project_LC_platform"
     # This field needs to be a NestedFacet because an ancestor("samples") is nested.
-    while parent:
-        for path in nested_paths:
-            if path == parent:
-                # If the child is a nested field.
-                if nested_facet:
-                    nested_facet = NestedFacet(parent, nested_facet)
-                # If the child is not a nested field.
-                else:
-                    nested_facet = NestedFacet(parent, es_facet)
-                break
+    while len(parts) > 1:
+        parent = parts[0]
+        if parent in nested_paths:
+            es_facet = NestedFacet(parent, es_facet)
         parts = parent.rsplit('.', 1)
-        if len(parts) > 1:
-            parent = parts[0]
-        # If we reach the root, there is no parent.
-        else:
-            parent = None
 
-    return nested_facet
+    return es_facet
 
 
 def get_samples_overview_facet(es_field_names):
