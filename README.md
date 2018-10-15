@@ -182,14 +182,6 @@ Troubleshooting tips for end-to-end tests:
 to see the browser during test run.
 - Run a single test: `npm run test:e2e -- -t "test name"`
 
-### Troubleshooting tips
-
-- If you want to run curl commands against Elasticsearch (localhost:9200),
-Kibana (localhost:5601) is the most convenient way.
-- [Print Elasticsearch request and response Python object.](https://github.com/DataBiosphere/data-explorer/blob/1abfad964b01fc1b73b7e249a1078c26a9f21823/api/data_explorer/controllers/facets_controller.py#L88-L94)
-- [Print Elasticsearch REST request and response](https://github.com/DataBiosphere/data-explorer/blob/1abfad964b01fc1b73b7e249a1078c26a9f21823/api/data_explorer/__main__.py#L62-L67). The REST
-request can be used with `curl`.
-
 ### Formatting
 
 `ui/` is formatted with [Prettier](https://prettier.io/). husky is used to automatically format files upon commit.
