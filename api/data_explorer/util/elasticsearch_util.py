@@ -193,7 +193,7 @@ def get_field_type(es, field_name):
         field_name]['mapping'][last_part]['type']
 
 
-def _get_nested_field_paths(prefix, mappings):
+def _get_nested_paths_inner(prefix, mappings):
     nested_field_paths = []
     for field_name, field in mappings.items():
         nested_path = field_name
@@ -203,7 +203,7 @@ def _get_nested_field_paths(prefix, mappings):
             nested_field_paths.append(nested_path)
         if 'properties' in field:
             nested_field_paths.extend(
-                _get_nested_field_paths(nested_path, field['properties']))
+                _get_nested_paths_inner(nested_path, field['properties']))
     return nested_field_paths
 
 
@@ -222,7 +222,7 @@ def get_nested_paths(es):
     nested_paths = []
     mappings = es.indices.get_mapping(index=current_app.config['INDEX_NAME'])
     nested_paths.extend(
-        _get_nested_field_paths(
+        _get_nested_paths_inner(
             '', mappings[current_app.config['INDEX_NAME']]['mappings']['type']
             ['properties']))
     return nested_paths
@@ -260,26 +260,31 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type,
 
 def _get_nested_facet(elasticsearch_field_name, es_facet, nested_paths):
     """
-    Returns a NestedFacet for the elasticsearch field, if the field is nested.
+    Returns a NestedFacet for the Elasticsearch field, if the field is nested.
     """
     parent = elasticsearch_field_name.rsplit('.', 1)[0]
     nested_facet = None
-    is_nested = True
-
-    # Traverse up the nesting levels from the leaf field, till we reach a
-    # non-nested field.
-    while is_nested:
-        is_nested = False
+    # Traverse up the nesting levels from the leaf field, till we reach the root.
+    # Need to traverse till the root, because the root can be a nested field,
+    # for example "samples". All the sub fields can be non-nested, like
+    # "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.Main_project_LC_platform"
+    # This field needs to be a NestedFacet because an ancestor("samples") is nested.
+    while parent:
         for path in nested_paths:
             if path == parent:
                 # If the child is a nested field.
                 if nested_facet:
                     nested_facet = NestedFacet(parent, nested_facet)
+                # If the child is not a nested field.
                 else:
                     nested_facet = NestedFacet(parent, es_facet)
-                is_nested = True
                 break
-        parent = parent.rsplit('.', 1)[0]
+        parts = parent.rsplit('.', 1)
+        if len(parts) > 1:
+            parent = parts[0]
+        # If we reach the root, there is no parent.
+        else:
+            parent = None
 
     return nested_facet
 
