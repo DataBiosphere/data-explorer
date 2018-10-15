@@ -214,6 +214,7 @@ def get_nested_paths(es):
         get_nested_field_paths(
             '', mappings[current_app.config['INDEX_NAME']]['mappings']['type']
             ['properties']))
+    print(nested_paths)
     return nested_paths
 
 
@@ -240,18 +241,30 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type,
             field=elasticsearch_field_name,
             interval=_get_bucket_interval(field_range))
 
-    nested_path = is_nested_facet(elasticsearch_field_name, nested_facet_paths)
-    if nested_path:
-        es_facet = NestedFacet(nested_path, es_facet)
-
+    nested_facet = is_nested_facet(elasticsearch_field_name, es_facet, nested_facet_paths)
+    if nested_facet:
+        es_facet = nested_facet
     return es_facet
 
 
-def is_nested_facet(elasticsearch_field_name, nested_facet_paths):
-    for path in nested_facet_paths:
-        if elasticsearch_field_name.startswith(path + '.'):
-            return path
-    return None
+def is_nested_facet(elasticsearch_field_name, es_facet, nested_facet_paths):
+    parent = elasticsearch_field_name.rsplit('.', 1)[0]
+    nested_facet = None
+    is_nested = True
+
+    while is_nested:
+        is_nested = False
+        for path in nested_facet_paths:
+            if path == parent:
+                if nested_facet:
+                    nested_facet = NestedFacet(parent, nested_facet)
+                else:
+                    nested_facet = NestedFacet(parent, es_facet)
+                is_nested = True
+                break
+        parent = parent.rsplit('.', 1)[0]
+
+    return nested_facet
 
 
 def get_samples_overview_facet(es_field_names):
