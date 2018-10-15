@@ -139,7 +139,7 @@ def convert_to_index_name(s):
 
 def get_facet_value_dict(filter_arr, es_facets):
     """
-    Parses an array of filters and es facets into a dict of facet_name:[facet_value] 
+    Parses an array of filters and es facets into a dict of facet_name:[facet_value]
     mappings.
     """
     if not filter_arr or filter_arr == [""]:
@@ -193,7 +193,65 @@ def get_field_type(es, field_name):
         field_name]['mapping'][last_part]['type']
 
 
-def get_elasticsearch_facet(es, elasticsearch_field_name, field_type):
+def _get_nested_paths_inner(prefix, mappings):
+    nested_field_paths = []
+    for field_name, field in mappings.items():
+        nested_path = field_name
+        if prefix:
+            nested_path = '%s.%s' % (prefix, field_name)
+        if 'type' in field and field['type'] == 'nested':
+            nested_field_paths.append(nested_path)
+        if 'properties' in field:
+            nested_field_paths.extend(
+                _get_nested_paths_inner(nested_path, field['properties']))
+    return nested_field_paths
+
+
+def _maybe_get_nested_facet(elasticsearch_field_name, es_facet, nested_paths):
+    """
+    Returns a NestedFacet for the Elasticsearch field, if the field is nested.
+
+    Note there can be multiple levels of NestedFacet,
+    eg NestedFacet(outer, NestedFacet(inner, es_facet))
+    """
+    parts = elasticsearch_field_name.rsplit('.', 1)
+    # Traverse up the nesting levels from the leaf field, till we reach the root.
+    # Need to traverse till the root, because the root can be a nested field,
+    # for example "samples". All the sub fields can be non-nested, like
+    # "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.Main_project_LC_platform"
+    # This field needs to be a NestedFacet because an ancestor("samples") is nested.
+    while len(parts) > 1:
+        parent = parts[0]
+        if parent in nested_paths:
+            es_facet = NestedFacet(parent, es_facet)
+        parts = parent.rsplit('.', 1)
+
+    return es_facet
+
+
+def get_nested_paths(es):
+    """
+    Returns nested paths, which can be used to created NestedFacet's.
+
+    When performing faceted search on nested fields within a document, NestedFacet must be used.
+    See https://elasticsearch-dsl.readthedocs.io/en/latest/faceted_search.html?highlight=nestedfacet#configuration
+
+    The first argument to NestedFacet is a path to the nested field. For example, the 1000 Genomes index has
+    one nested path: "samples". See https://github.com/DataBiosphere/data-explorer-indexers#main-dataset-index
+
+    This method crawls through index mappings and returns all nested paths.
+    """
+    nested_paths = []
+    mappings = es.indices.get_mapping(index=current_app.config['INDEX_NAME'])
+    nested_paths.extend(
+        _get_nested_paths_inner(
+            '', mappings[current_app.config['INDEX_NAME']]['mappings']['type']
+            ['properties']))
+    return nested_paths
+
+
+def get_elasticsearch_facet(es, elasticsearch_field_name, field_type,
+                            nested_paths):
     if field_type == 'text':
         # Use ".keyword" because we want aggregation on keyword field, not
         # term field. See
@@ -215,10 +273,10 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type):
             field=elasticsearch_field_name,
             interval=_get_bucket_interval(field_range))
 
-    # Handle sample facets in a special way since they are nested objects.
-    if elasticsearch_field_name.startswith('samples.'):
-        es_facet = NestedFacet('samples', es_facet)
-
+    nested_facet = _maybe_get_nested_facet(elasticsearch_field_name, es_facet,
+                                           nested_paths)
+    if nested_facet:
+        es_facet = nested_facet
     return es_facet
 
 

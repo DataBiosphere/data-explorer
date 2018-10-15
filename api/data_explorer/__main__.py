@@ -202,6 +202,8 @@ def _process_facets(es):
             'Samples Overview'] = elasticsearch_util.get_samples_overview_facet(
                 es_field_names)
 
+    nested_paths = elasticsearch_util.get_nested_paths(es)
+
     for facet_config in facets_config:
         elasticsearch_field_name = facet_config['elasticsearch_field_name']
         field_type = elasticsearch_util.get_field_type(
@@ -219,7 +221,7 @@ def _process_facets(es):
                 'ui_facet_description']
 
         es_facets[ui_facet_name] = elasticsearch_util.get_elasticsearch_facet(
-            es, elasticsearch_field_name, field_type)
+            es, elasticsearch_field_name, field_type, nested_paths)
 
     # Map from UI facet name to Elasticsearch facet object
     app.app.config['ELASTICSEARCH_FACETS'] = es_facets
