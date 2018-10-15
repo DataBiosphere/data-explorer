@@ -14,6 +14,18 @@ import FacetsGrid from "components/facets/FacetsGrid";
 import FieldSearch from "components/FieldSearch";
 import Header from "components/Header";
 
+const Disclaimer = (
+  <div style={{ margin: "20px" }}>
+    This dataset is publicly available for anyone to use under the terms
+    provided by the dataset source (<a href="http://www.internationalgenome.org/data">
+      http://www.internationalgenome.org/data
+    </a>) and are provided "AS IS" without any warranty, express or implied,
+    from Verily Life Sciences, LLC. Verily Life Sciences, LLC disclaims all
+    liability for any damages, direct or indirect, resulting from the use of the
+    dataset.
+  </div>
+);
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -97,6 +109,7 @@ class App extends Component {
               exportUrlApi={new ExportUrlApi(this.apiClient)}
               filter={this.state.filter}
             />
+            {this.state.datasetName == "1000 Genomes" ? Disclaimer : null}
           </div>
         </MuiThemeProvider>
       );
