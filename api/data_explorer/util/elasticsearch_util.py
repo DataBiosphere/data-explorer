@@ -207,6 +207,28 @@ def _get_nested_paths_inner(prefix, mappings):
     return nested_field_paths
 
 
+def _maybe_get_nested_facet(elasticsearch_field_name, es_facet, nested_paths):
+    """
+    Returns a NestedFacet for the Elasticsearch field, if the field is nested.
+
+    Note there can be multiple levels of NestedFacet,
+    eg NestedFacet(outer, NestedFacet(inner, es_facet))
+    """
+    parts = elasticsearch_field_name.rsplit('.', 1)
+    # Traverse up the nesting levels from the leaf field, till we reach the root.
+    # Need to traverse till the root, because the root can be a nested field,
+    # for example "samples". All the sub fields can be non-nested, like
+    # "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.Main_project_LC_platform"
+    # This field needs to be a NestedFacet because an ancestor("samples") is nested.
+    while len(parts) > 1:
+        parent = parts[0]
+        if parent in nested_paths:
+            es_facet = NestedFacet(parent, es_facet)
+        parts = parent.rsplit('.', 1)
+
+    return es_facet
+
+
 def get_nested_paths(es):
     """
     Returns nested paths, which can be used to created NestedFacet's.
@@ -255,28 +277,6 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type,
                                            nested_paths)
     if nested_facet:
         es_facet = nested_facet
-    return es_facet
-
-
-def _maybe_get_nested_facet(elasticsearch_field_name, es_facet, nested_paths):
-    """
-    Returns a NestedFacet for the Elasticsearch field, if the field is nested.
-
-    Note there can be multiple levels of NestedFacet,
-    eg NestedFacet(outer, NestedFacet(inner, es_facet))
-    """
-    parts = elasticsearch_field_name.rsplit('.', 1)
-    # Traverse up the nesting levels from the leaf field, till we reach the root.
-    # Need to traverse till the root, because the root can be a nested field,
-    # for example "samples". All the sub fields can be non-nested, like
-    # "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.Main_project_LC_platform"
-    # This field needs to be a NestedFacet because an ancestor("samples") is nested.
-    while len(parts) > 1:
-        parent = parts[0]
-        if parent in nested_paths:
-            es_facet = NestedFacet(parent, es_facet)
-        parts = parent.rsplit('.', 1)
-
     return es_facet
 
 
