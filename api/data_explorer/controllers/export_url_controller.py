@@ -168,6 +168,7 @@ def _write_gcs_file(entities):
     # object containing the rest of the entities JSON.
     samples_blob = samples_bucket.get_blob('samples')
     copied_samples_blob = export_bucket.blob('samples')
+    # Use the rewrite rather than the copy API because the copy can timeout.
     copied_samples_blob.rewrite(samples_blob)
 
     blob = export_bucket.blob(_random_str())
