@@ -34,7 +34,7 @@ jobs:
           name: Run the UI linter
           command: |
               cd ui
-              npm run lint -- --list-different
+              npm run lint
       - run:
           name: Run API server unit tests
           command: |

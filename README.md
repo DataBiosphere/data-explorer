@@ -182,6 +182,6 @@ to see the browser during test run.
 
 ### Formatting
 
-`ui/` is formatted with [Prettier](https://prettier.io/). husky is used to automatically format files upon commit.
+`ui/` is formatted with [Prettier](https://prettier.io/). husky is used to automatically format files upon commit. To fix formatting, in `ui/` run `npm run fix`.
 
 Python files are formatted with [YAPF](https://github.com/google/yapf).
