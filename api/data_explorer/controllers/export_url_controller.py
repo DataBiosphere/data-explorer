@@ -167,7 +167,8 @@ def _write_gcs_file(entities):
     # Copy the samples blob to the export bucket in order to compose with the other
     # object containing the rest of the entities JSON.
     samples_blob = samples_bucket.get_blob('samples')
-    samples_blob = samples_bucket.copy_blob(samples_blob, export_bucket)
+    copied_samples_blob = export_bucket.blob('samples')
+    copied_samples_blob.rewrite(samples_blob)
 
     blob = export_bucket.blob(_random_str())
     entities_json = json.dumps(entities)
@@ -178,7 +179,7 @@ def _write_gcs_file(entities):
 
     merged = export_bucket.blob(_random_str())
     merged.upload_from_string('')
-    merged.compose([samples_blob, blob])
+    merged.compose([copied_samples_blob, blob])
 
     current_app.logger.info(
         'Wrote gs://%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'],
