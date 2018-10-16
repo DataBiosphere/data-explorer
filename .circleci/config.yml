@@ -52,4 +52,4 @@ jobs:
       - run:
           name: Run e2e tests
           command: |
-              cd ui && npm run test:e2e
+              cd ui && npm test
