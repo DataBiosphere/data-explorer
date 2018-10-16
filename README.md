@@ -153,8 +153,6 @@ project, then all three need to download a key for the deploy project.
 
 Every commit on a remote branch kicks off all tests [on CircleCI](https://circleci.com/gh/DataBiosphere).
 
-UI unit tests use [Jest](https://facebook.github.io/jest/) and [Enzyme](https://github.com/airbnb/enzyme). To run locally: `cd ui && npm install && npm test`
-
 API server unit tests use [pytest](https://docs.pytest.org/en/latest/) and
 [tox](https://tox.readthedocs.io/en/latest/). To run locally:
 
@@ -175,7 +173,7 @@ docker-compose up --build -d elasticsearch
 curl -XDELETE localhost:9200/_all
 # Start the rest of the services
 docker-compose up --build
-cd ui && npm run test:e2e
+cd ui && npm test
 ```
 Troubleshooting tips for end-to-end tests:
 - [Uncomment headless](https://github.com/DataBiosphere/data-explorer/blob/master/ui/jest-puppeteer.config.js)

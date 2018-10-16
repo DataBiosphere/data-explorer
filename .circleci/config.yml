@@ -31,15 +31,10 @@ jobs:
             pip install yapf
             yapf -dr . --exclude ui/node_modules/
       - run:
-          name: Run the ui linter
+          name: Run the UI linter
           command: |
               cd ui
               npm run lint -- --list-different
-      - run:
-          name: Run UI server unit tests
-          command: |
-              cd ui
-              npm test
       - run:
           name: Run API server unit tests
           command: |
