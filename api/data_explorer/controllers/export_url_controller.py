@@ -82,10 +82,10 @@ def _get_doc_generator(filter_arr):
         return
 
     es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
-    es_facets = OrderedDict(current_app.config['ELASTICSEARCH_FACETS'].items())
-    filters = elasticsearch_util.get_facet_value_dict(filter_arr, es_facets)
+    facets = OrderedDict(current_app.config['UI_FACETS'].items())
+    filters = elasticsearch_util.get_facet_value_dict(filter_arr, facets)
     search_dict = DatasetFacetedSearch(filters,
-                                       es_facets).build_search().to_dict().get(
+                                       facets).build_search().to_dict().get(
                                            'post_filter', {})
     search = Search(using=es, index=current_app.config['INDEX_NAME'])
     search.update_from_dict({'post_filter': search_dict})
@@ -236,20 +236,17 @@ def _get_range_clause(column, value):
 def _get_facet_and_value(filter):
     facets = current_app.config['UI_FACETS']
     split = filter.rsplit('=', 1)
-    return facets[split[0]], split[1]
+    return split[0], facets[split[0]], split[1]
 
 
-def _get_table_and_clause(facet, value, sample_file_column_fields):
+def _get_table_and_clause(es_field_name, type, value, sample_file_column_fields):
     """Returns a table name and a single condition of a WHERE clause,
     eg "((age76 >= 20 AND age76 < 30) OR (age76 >= 30 AND age76 < 40))".
     """
     sample_file_type_field = False
-    es_field_name = ''
-    if facet['type'] == 'samples_overview':
+    if type == 'samples_overview':
         es_field_name = facet['elasticsearch_field_names'][value]
         value = True
-    else:
-        es_field_name = facet['elasticsearch_field_name']
 
     if es_field_name.startswith('samples.'):
         es_field_name = es_field_name.replace('samples.', '')
@@ -258,16 +255,15 @@ def _get_table_and_clause(facet, value, sample_file_column_fields):
         if stripped in sample_file_column_fields:
             es_field_name = sample_file_column_fields[stripped]
             sample_file_type_field = True
-
     table_name, column = es_field_name.rsplit('.', 1)
     if sample_file_type_field:
         if value == True:
             clause = '%s IS NOT NULL' % column
         else:
             clause = '%s IS NULL' % column
-    elif facet['type'] == 'text':
+    elif type == 'text':
         clause = '%s = "%s"' % (column, value)
-    elif facet['type'] == 'boolean':
+    elif type == 'boolean':
         clause = '%s = %s' % (column, value)
     else:
         clause = _get_range_clause(column, value)
@@ -285,9 +281,9 @@ def _get_filter_query(filters):
 
     table_columns = dict()
     for filter_str in filters:
-        facet, value = _get_facet_and_value(filter_str)
+        es_field_name, facet, value = _get_facet_and_value(filter_str)
         table_name, column, clause = _get_table_and_clause(
-            facet, value, sample_file_column_fields)
+            es_field_name, facet['type'], value, sample_file_column_fields)
         if table_name in table_columns:
             if column in table_columns[table_name]:
                 table_columns[table_name][column].append(clause)
