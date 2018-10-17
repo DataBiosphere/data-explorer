@@ -122,6 +122,7 @@ definitions:
           count: 0
         name: "name"
         description: "description"
+        elasticsearch_name: "elasticsearch_name"
       - values:
         - name: "name"
           count: 0
@@ -129,6 +130,7 @@ definitions:
           count: 0
         name: "name"
         description: "description"
+        elasticsearch_name: "elasticsearch_name"
   Facet:
     properties:
       name:
@@ -137,6 +139,9 @@ definitions:
       description:
         type: "string"
         description: "Optional facet description."
+      elasticsearch_name:
+        type: "string"
+        description: "The Elasticsearch field name."
       values:
         type: "array"
         items:
@@ -151,6 +156,7 @@ definitions:
         count: 0
       name: "name"
       description: "description"
+      elasticsearch_name: "elasticsearch_name"
   FacetValue:
     properties:
       name:

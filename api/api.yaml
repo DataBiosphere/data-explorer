@@ -132,6 +132,9 @@ definitions:
       description:
         type: string
         description: Optional facet description.
+      elasticsearch_name:
+        type: string
+        description: The Elasticsearch field name.
       values:
         type: array
         items:

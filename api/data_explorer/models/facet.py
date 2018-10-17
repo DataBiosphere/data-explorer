@@ -16,30 +16,39 @@ class Facet(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name=None, description=None, values=None):  # noqa: E501
+    def __init__(self,
+                 name=None,
+                 description=None,
+                 elasticsearch_name=None,
+                 values=None):  # noqa: E501
         """Facet - a model defined in Swagger
 
         :param name: The name of this Facet.  # noqa: E501
         :type name: str
         :param description: The description of this Facet.  # noqa: E501
         :type description: str
+        :param elasticsearch_name: The elasticsearch_name of this Facet.  # noqa: E501
+        :type elasticsearch_name: str
         :param values: The values of this Facet.  # noqa: E501
         :type values: List[FacetValue]
         """
         self.swagger_types = {
             'name': str,
             'description': str,
+            'elasticsearch_name': str,
             'values': List[FacetValue]
         }
 
         self.attribute_map = {
             'name': 'name',
             'description': 'description',
+            'elasticsearch_name': 'elasticsearch_name',
             'values': 'values'
         }
 
         self._name = name
         self._description = description
+        self._elasticsearch_name = elasticsearch_name
         self._values = values
 
     @classmethod
@@ -98,6 +107,29 @@ class Facet(Model):
         """
 
         self._description = description
+
+    @property
+    def elasticsearch_name(self):
+        """Gets the elasticsearch_name of this Facet.
+
+        The Elasticsearch field name.  # noqa: E501
+
+        :return: The elasticsearch_name of this Facet.
+        :rtype: str
+        """
+        return self._elasticsearch_name
+
+    @elasticsearch_name.setter
+    def elasticsearch_name(self, elasticsearch_name):
+        """Sets the elasticsearch_name of this Facet.
+
+        The Elasticsearch field name.  # noqa: E501
+
+        :param elasticsearch_name: The elasticsearch_name of this Facet.
+        :type elasticsearch_name: str
+        """
+
+        self._elasticsearch_name = elasticsearch_name
 
     @property
     def values(self):

@@ -181,7 +181,6 @@ def _process_facets(es):
     facets_config = _parse_json_file(config_path)['facets']
 
     # Preserve order, so facets are returned in same order as the config file.
-    es_facets = OrderedDict()
     ui_facets = OrderedDict()
 
     # Add a 'Samples Overview' facet if sample_file_columns were specified in
@@ -198,8 +197,8 @@ def _process_facets(es):
             'elasticsearch_field_names': es_field_names,
             'type': 'samples_overview'
         }
-        es_facets[
-            'Samples Overview'] = elasticsearch_util.get_samples_overview_facet(
+        ui_facets['Samples Overview'][
+            'facet'] = elasticsearch_util.get_samples_overview_facet(
                 es_field_names)
 
     nested_paths = elasticsearch_util.get_nested_paths(es)
@@ -212,19 +211,18 @@ def _process_facets(es):
         if elasticsearch_field_name.startswith('samples.'):
             ui_facet_name = '%s (samples)' % ui_facet_name
 
-        ui_facets[ui_facet_name] = {
-            'elasticsearch_field_name': elasticsearch_field_name,
+        ui_facets[elasticsearch_field_name] = {
+            'ui_facet_name': ui_facet_name,
             'type': field_type
         }
         if 'ui_facet_description' in facet_config:
-            ui_facets[ui_facet_name]['description'] = facet_config[
+            ui_facets[elasticsearch_field_name]['description'] = facet_config[
                 'ui_facet_description']
 
-        es_facets[ui_facet_name] = elasticsearch_util.get_elasticsearch_facet(
-            es, elasticsearch_field_name, field_type, nested_paths)
+        ui_facets[elasticsearch_field_name][
+            'facet'] = elasticsearch_util.get_elasticsearch_facet(
+                es, elasticsearch_field_name, field_type, nested_paths)
 
-    # Map from UI facet name to Elasticsearch facet object
-    app.app.config['ELASTICSEARCH_FACETS'] = es_facets
     # Map from UI facet name to dict with Elasticsearch field name,
     # Elasticsearch field type, and optional UI facet description.
     app.app.config['UI_FACETS'] = ui_facets
