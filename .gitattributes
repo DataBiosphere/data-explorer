@@ -2,4 +2,3 @@
 api/data_explorer/models/** linguist-generated=true
 api/data_explorer/swagger/** linguist-generated=true
 ui/src/api/** linguist-generated=true
-ui/src/api/**/__mocks__ linguist-generated=false
