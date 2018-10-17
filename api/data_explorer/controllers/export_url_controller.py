@@ -239,7 +239,8 @@ def _get_facet_and_value(filter):
     return split[0], facets[split[0]], split[1]
 
 
-def _get_table_and_clause(es_field_name, type, value, sample_file_column_fields):
+def _get_table_and_clause(es_field_name, type, value,
+                          sample_file_column_fields):
     """Returns a table name and a single condition of a WHERE clause,
     eg "((age76 >= 20 AND age76 < 30) OR (age76 >= 30 AND age76 < 40))".
     """

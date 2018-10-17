@@ -42,8 +42,9 @@ def _process_extra_facets(extra_facets):
             'type': field_type
         }
         # TODO(malathir): Figure out how to get description of the field.
-        ui_facets[elasticsearch_field_name]['facet'] = elasticsearch_util.get_elasticsearch_facet(
-            es, elasticsearch_field_name, field_type, nested_paths)
+        ui_facets[elasticsearch_field_name][
+            'facet'] = elasticsearch_util.get_elasticsearch_facet(
+                es, elasticsearch_field_name, field_type, nested_paths)
 
     return ui_facets
 
