@@ -22,11 +22,10 @@ def _get_bucket_interval(facet):
 def _process_extra_facets(extra_facets):
     es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
 
-    es_facets = OrderedDict()
     ui_facets = OrderedDict()
 
     if not extra_facets:
-        return es_facets, ui_facets
+        return ui_facets
 
     nested_paths = elasticsearch_util.get_nested_paths(es)
 
@@ -38,15 +37,15 @@ def _process_extra_facets(extra_facets):
         ui_facet_name = arr[-1]
         field_type = elasticsearch_util.get_field_type(
             es, elasticsearch_field_name)
-        ui_facets[ui_facet_name] = {
-            'elasticsearch_field_name': elasticsearch_field_name,
+        ui_facets[elasticsearch_field_name] = {
+            'ui_facet_name': ui_facet_name,
             'type': field_type
         }
         # TODO(malathir): Figure out how to get description of the field.
-        es_facets[ui_facet_name] = elasticsearch_util.get_elasticsearch_facet(
+        ui_facets[elasticsearch_field_name]['facet'] = elasticsearch_util.get_elasticsearch_facet(
             es, elasticsearch_field_name, field_type, nested_paths)
 
-    return es_facets, ui_facets
+    return ui_facets
 
 
 def _number_to_range(interval_start, interval):
@@ -79,7 +78,7 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     :type extraFacets: List[str]
     :rtype: FacetsResponse
     """
-    extra_es_facets, extra_ui_facets = _process_extra_facets(extraFacets)
+    extra_ui_facets = _process_extra_facets(extraFacets)
     combined_ui_facets = OrderedDict(extra_ui_facets.items() +
                                      current_app.config['UI_FACETS'].items())
     search = DatasetFacetedSearch(
@@ -91,8 +90,8 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     es_response = search.execute()
     es_response_facets = es_response.facets.to_dict()
     # Uncomment to print Elasticsearch response python object
-    current_app.logger.info(
-        'Elasticsearch response: %s' % pprint.pformat(es_response_facets))
+    #current_app.logger.info(
+    #    'Elasticsearch response: %s' % pprint.pformat(es_response_facets))
     facets = []
     for elasticsearch_name, field in combined_ui_facets.iteritems():
         name = field.get('ui_facet_name')

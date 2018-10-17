@@ -25,7 +25,6 @@ def fields_get():
 
     fields = []
     for field in response_fields['hits']['hits']:
-        current_app.logger.info(field["_id"])
         if "description" in field["_source"]:
             fields.append(
                 Field(

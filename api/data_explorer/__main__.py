@@ -195,7 +195,8 @@ def _process_facets(es):
             es_field_names[facet_name] = es_field_name
         ui_facets['Samples Overview'] = {
             'elasticsearch_field_names': es_field_names,
-            'type': 'samples_overview'
+            'type': 'samples_overview',
+            'ui_facet_name': 'Samples Overview'
         }
         ui_facets['Samples Overview'][
             'facet'] = elasticsearch_util.get_samples_overview_facet(
