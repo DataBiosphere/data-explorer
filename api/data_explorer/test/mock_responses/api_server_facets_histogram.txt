@@ -28,7 +28,8 @@
           "name": "60-70"
         }
       ],
-      "name": "Age"
+      "name": "Age",
+      "elasticsearch_name":"Age name",
     }
   ]
 }
