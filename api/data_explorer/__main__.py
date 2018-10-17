@@ -171,7 +171,8 @@ def _process_bigquery():
         splits = full_table_name.split('.')
         if len(splits) != 3:
             raise EnvironmentError(
-                'Unknown format for table name %s. Expected BigQuery project_id.dataset_id.table_name')
+                'Unknown format for table name %s. Expected BigQuery project_id.dataset_id.table_name'
+            )
         project, dataset, table_name = splits
         client = bigquery.Client(project=project)
         dataset_ref = client.dataset(dataset, project=project)
@@ -183,7 +184,6 @@ def _process_bigquery():
     app.app.config['PARTICIPANT_ID_COLUMN'] = participant_id_column
     app.app.config['SAMPLE_ID_COLUMN'] = sample_id_column
     app.app.config['SAMPLE_FILE_COLUMNS'] = sample_file_columns
-
 
 
 def _process_facets(es):
