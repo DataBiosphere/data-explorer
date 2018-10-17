@@ -168,19 +168,20 @@ def _process_bigquery():
 
     table_names_dict = OrderedDict()
     for full_table_name in table_names:
-        splits = full_table_name.split('.')
+        splits = full_table_name.rsplit('.', 2)
         if len(splits) != 3:
-            raise EnvironmentError(
+            raise ValueError(
                 'Unknown format for table name %s. Expected BigQuery project_id.dataset_id.table_name'
-            )
-        project, dataset, table_name = splits
-        client = bigquery.Client(project=project)
-        dataset_ref = client.dataset(dataset, project=project)
+                % full_table_name)
+        project_id, dataset_id, table_name = splits
+        client = bigquery.Client(project=project_id)
+        dataset_ref = client.dataset(dataset_id, project=project_id)
         table_ref = dataset_ref.table(table_name)
         description = client.get_table(table_ref).description
         table_names_dict[full_table_name] = description
 
-    app.app.config['TABLE_NAMES'] = table_names_dict
+    # A dict from table name (project_id.dataset_id.table_name) to table description.
+    app.app.config['TABLES'] = table_names_dict
     app.app.config['PARTICIPANT_ID_COLUMN'] = participant_id_column
     app.app.config['SAMPLE_ID_COLUMN'] = sample_id_column
     app.app.config['SAMPLE_FILE_COLUMNS'] = sample_file_columns

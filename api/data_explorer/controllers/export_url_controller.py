@@ -99,7 +99,10 @@ def _get_entities_dict(cohort_name, query, filter_arr):
     # the entity JSON passed into
     # https://rawls.dsde-prod.broadinstitute.org/#!/entities/create_entity
     entities = []
-    for name, description in current_app.config['TABLE_NAMES'].iteritems():
+    for name, description in current_app.config['TABLES'].iteritems():
+        attributes = {'table_name': name}
+        if description:
+            attributes['table_description'] = description
         entities.append({
             # FireCloud doesn't allow spaces, so use underscore.
             'entityType': 'BigQuery_table',
@@ -109,10 +112,7 @@ def _get_entities_dict(cohort_name, query, filter_arr):
             # periods here. RAWLS does allow periods in attributes. So use
             # underscores here and periods in table_name attribute.
             'name': name.replace('.', '_'),
-            'attributes': {
-                'table_name': name,
-                'table_description': description
-            }
+            'attributes': attributes
         })
 
     # If a cohort was selected, create a query entity and get Elasticsearch documents
