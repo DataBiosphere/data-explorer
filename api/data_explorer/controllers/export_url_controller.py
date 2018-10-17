@@ -99,12 +99,7 @@ def _get_entities_dict(cohort_name, query, filter_arr):
     # the entity JSON passed into
     # https://rawls.dsde-prod.broadinstitute.org/#!/entities/create_entity
     entities = []
-    for table_name in current_app.config['TABLE_NAMES']:
-        splits = table_name.split('.')
-        if len(splits) != 3:
-            raise BadRequest(
-                'Unknown format for table name %s. Expected BigQuery project_id.dataset_id.table_name'
-            )
+    for table_name, description in current_app.config['TABLE_NAMES'].iteritems():
         entities.append({
             # FireCloud doesn't allow spaces, so use underscore.
             'entityType': 'BigQuery_table',
@@ -115,7 +110,8 @@ def _get_entities_dict(cohort_name, query, filter_arr):
             # underscores here and periods in table_name attribute.
             'name': table_name.replace('.', '_'),
             'attributes': {
-                'table_name': table_name
+                'table_name': table_name,
+                'table_description': description
             }
         })
 
