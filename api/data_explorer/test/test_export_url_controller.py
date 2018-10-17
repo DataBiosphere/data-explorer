@@ -47,14 +47,16 @@ class TestExportUrlController(BaseTestCase):
                     'text',
                     'elasticsearch_field_name':
                     'project_id.dataset_id.table_name.age',
-                    'facet': TermsFacet(field='Age.keyword')
+                    'facet':
+                    TermsFacet(field='Age.keyword')
                 },
                 'Has Chr 1 VCF (samples)': {
                     'type':
                     'boolean',
                     'elasticsearch_field_name':
                     'samples.project_id.dataset_id.table_name.sample_type',
-                    'facet': TermsFacet(field='samples._has_chr1_vcf')
+                    'facet':
+                    TermsFacet(field='samples._has_chr1_vcf')
                 }
             },
             'ELASTICSEARCH_URL':

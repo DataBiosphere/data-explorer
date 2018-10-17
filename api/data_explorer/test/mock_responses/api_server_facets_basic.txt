@@ -3,8 +3,8 @@
    "facets":[
       {
          "name":"Region",
-         "elasticsearch_name":"Region name",
          "description":"Region description",
+         "elasticsearch_name":"Region name",
          "values":[
             {
                "count":364,
