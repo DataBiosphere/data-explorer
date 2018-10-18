@@ -51,16 +51,16 @@ class FacetCard extends Component {
       />
     ));
     const totalFacetValueCount = (
-      <span className="totalFacetValueCount">
-        {this.totalFacetValueCount}
-      </span>
+      <span className="totalFacetValueCount">{this.totalFacetValueCount}</span>
     );
     return (
       <Card className="facetCard">
         <div className="cardHeader">
           <div>
             <span>{this.props.facet.name}</span>
-            {this.props.facet.name != "Samples Overview" ? totalFacetValueCount : null}
+            {this.props.facet.name != "Samples Overview"
+              ? totalFacetValueCount
+              : null}
           </div>
           <span className="facetDescription">
             {this.props.facet.description}
@@ -110,7 +110,7 @@ class FacetCard extends Component {
     }
     this.setState({ selectedValues: newValues });
     this.props.updateFacets(
-      this.props.facet.name,
+      this.props.facet.es_field_name,
       facetValue.name,
       isInputChecked
     );

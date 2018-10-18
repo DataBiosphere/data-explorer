@@ -188,20 +188,15 @@ def _process_bigquery():
 
 
 def _process_facets(es):
-    """Process facets to store a dict from UI facet name to UI facet description
-    ,Elasticsearch field name, and field type, and a dict of UI facet name to
-    Elasticsearch facet object. If there is no description for a facet,
-    the value is None.
-    """
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'], 'ui.json')
     facets_config = _parse_json_file(config_path)['facets']
 
     # Preserve order, so facets are returned in same order as the config file.
-    es_facets = OrderedDict()
-    ui_facets = OrderedDict()
+    facets = OrderedDict()
 
     # Add a 'Samples Overview' facet if sample_file_columns were specified in
-    # bigquery.json.
+    # bigquery.json. This facet is mapped to multiple Elasticsearch facets, and
+    # has keys - 'elasticsearch_field_names', 'type', 'ui_facet_name' and 'es_facet'.
     if app.app.config['SAMPLE_FILE_COLUMNS']:
         # Construct Elasticsearch filters. See
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-filters-aggregation.html
@@ -210,12 +205,13 @@ def _process_facets(es):
             facet_name = 'Has %s' % name
             es_field_name = 'samples._has_%s' % name.lower().replace(' ', '_')
             es_field_names[facet_name] = es_field_name
-        ui_facets['Samples Overview'] = {
+        facets['Samples Overview'] = {
             'elasticsearch_field_names': es_field_names,
-            'type': 'samples_overview'
+            'type': 'samples_overview',
+            'ui_facet_name': 'Samples Overview'
         }
-        es_facets[
-            'Samples Overview'] = elasticsearch_util.get_samples_overview_facet(
+        facets['Samples Overview'][
+            'es_facet'] = elasticsearch_util.get_samples_overview_facet(
                 es_field_names)
 
     nested_paths = elasticsearch_util.get_nested_paths(es)
@@ -228,22 +224,22 @@ def _process_facets(es):
         if elasticsearch_field_name.startswith('samples.'):
             ui_facet_name = '%s (samples)' % ui_facet_name
 
-        ui_facets[ui_facet_name] = {
-            'elasticsearch_field_name': elasticsearch_field_name,
+        facets[elasticsearch_field_name] = {
+            'ui_facet_name': ui_facet_name,
             'type': field_type
         }
         if 'ui_facet_description' in facet_config:
-            ui_facets[ui_facet_name]['description'] = facet_config[
+            facets[elasticsearch_field_name]['description'] = facet_config[
                 'ui_facet_description']
 
-        es_facets[ui_facet_name] = elasticsearch_util.get_elasticsearch_facet(
-            es, elasticsearch_field_name, field_type, nested_paths)
+        facets[elasticsearch_field_name][
+            'es_facet'] = elasticsearch_util.get_elasticsearch_facet(
+                es, elasticsearch_field_name, field_type, nested_paths)
 
-    # Map from UI facet name to Elasticsearch facet object
-    app.app.config['ELASTICSEARCH_FACETS'] = es_facets
-    # Map from UI facet name to dict with Elasticsearch field name,
-    # Elasticsearch field type, and optional UI facet description.
-    app.app.config['UI_FACETS'] = ui_facets
+    # Map from Elasticsearch field name to dict with ui facet name,
+    # Elasticsearch field type, optional UI facet description and Elasticsearch
+    # facet.
+    app.app.config['FACET_INFO'] = facets
 
 
 def _process_export_url():

@@ -139,7 +139,7 @@ def convert_to_index_name(s):
     return s
 
 
-def get_facet_value_dict(filter_arr, es_facets):
+def get_facet_value_dict(filter_arr, facets):
     """
     Parses an array of filters and es facets into a dict of facet_name:[facet_value]
     mappings.
@@ -151,7 +151,7 @@ def get_facet_value_dict(filter_arr, es_facets):
         filter_str = urllib.unquote(facet_filter).decode('utf8')
         key_val = filter_str.split('=')
         name = key_val[0]
-        es_facet = es_facets[name]
+        es_facet = facets[name]['es_facet']
         if is_histogram_facet(es_facet):
             value = range_to_number(key_val[1])
         else:

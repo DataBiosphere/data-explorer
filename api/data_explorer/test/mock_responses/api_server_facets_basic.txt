@@ -1,23 +1,24 @@
-{  
+{
    "count":1338,
-   "facets":[  
-      {  
+   "facets":[
+      {
          "name":"Region",
          "description":"Region description",
-         "values":[  
-            {  
+         "es_field_name":"Region es field name",
+         "values":[
+            {
                "count":364,
                "name":"southeast"
             },
-            {  
+            {
                "count":325,
                "name":"northwest"
             },
-            {  
+            {
                "count":325,
                "name":"southwest"
             },
-            {  
+            {
                "count":324,
                "name":"northeast"
             }

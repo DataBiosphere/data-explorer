@@ -16,30 +16,39 @@ class Facet(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name=None, description=None, values=None):  # noqa: E501
+    def __init__(self,
+                 name=None,
+                 description=None,
+                 es_field_name=None,
+                 values=None):  # noqa: E501
         """Facet - a model defined in Swagger
 
         :param name: The name of this Facet.  # noqa: E501
         :type name: str
         :param description: The description of this Facet.  # noqa: E501
         :type description: str
+        :param es_field_name: The es_field_name of this Facet.  # noqa: E501
+        :type es_field_name: str
         :param values: The values of this Facet.  # noqa: E501
         :type values: List[FacetValue]
         """
         self.swagger_types = {
             'name': str,
             'description': str,
+            'es_field_name': str,
             'values': List[FacetValue]
         }
 
         self.attribute_map = {
             'name': 'name',
             'description': 'description',
+            'es_field_name': 'es_field_name',
             'values': 'values'
         }
 
         self._name = name
         self._description = description
+        self._es_field_name = es_field_name
         self._values = values
 
     @classmethod
@@ -98,6 +107,29 @@ class Facet(Model):
         """
 
         self._description = description
+
+    @property
+    def es_field_name(self):
+        """Gets the es_field_name of this Facet.
+
+        The Elasticsearch field name.  # noqa: E501
+
+        :return: The es_field_name of this Facet.
+        :rtype: str
+        """
+        return self._es_field_name
+
+    @es_field_name.setter
+    def es_field_name(self, es_field_name):
+        """Sets the es_field_name of this Facet.
+
+        The Elasticsearch field name.  # noqa: E501
+
+        :param es_field_name: The es_field_name of this Facet.
+        :type es_field_name: str
+        """
+
+        self._es_field_name = es_field_name
 
     @property
     def values(self):

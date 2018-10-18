@@ -34,15 +34,13 @@ class TestFacetsController(BaseTestCase):
         app = super(TestFacetsController, self).create_app()
         app.config.update({
             'INDEX_NAME': 'index_name',
-            'UI_FACETS': {
-                'Region': {
+            'FACET_INFO': {
+                'Region es field name': {
                     'description': 'Region description',
                     'type': 'text',
-                    'elasticsearch_field_name': 'Region name'
+                    'ui_facet_name': 'Region',
+                    'es_facet': TermsFacet(field='Region.keyword')
                 }
-            },
-            'ELASTICSEARCH_FACETS': {
-                'Region': TermsFacet(field='Region.keyword')
             },
             'ELASTICSEARCH_URL': 'fakeurl:9200',
         })
@@ -72,14 +70,12 @@ class TestFacetsController(BaseTestCase):
         """
         self.maxDiff = 2000
         self.app.config.update({
-            'UI_FACETS': {
-                'Age': {
+            'FACET_INFO': {
+                'Age es field name': {
                     'type': 'text',
-                    'elasticsearch_field_name': 'Age name'
+                    'ui_facet_name': 'Age',
+                    'es_facet': HistogramFacet(field='Age', interval=10)
                 }
-            },
-            'ELASTICSEARCH_FACETS': {
-                'Age': HistogramFacet(field='Age', interval=10)
             },
         })
         responses.add(

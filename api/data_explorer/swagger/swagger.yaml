@@ -32,7 +32,7 @@ paths:
         in: "query"
         description: "filter represents selected facet values. Elasticsearch query\
           \ will be run only over selected facet values. filter is an array of strings,\
-          \ where each string has the format \"facetName=facetValue\". Example url\
+          \ where each string has the format \"esFieldName=facetValue\". Example url\
           \ /facets?filter=Gender=female,Region=northwest,Region=southwest\n"
         required: false
         type: "array"
@@ -122,6 +122,7 @@ definitions:
           count: 0
         name: "name"
         description: "description"
+        es_field_name: "es_field_name"
       - values:
         - name: "name"
           count: 0
@@ -129,6 +130,7 @@ definitions:
           count: 0
         name: "name"
         description: "description"
+        es_field_name: "es_field_name"
   Facet:
     properties:
       name:
@@ -137,6 +139,9 @@ definitions:
       description:
         type: "string"
         description: "Optional facet description."
+      es_field_name:
+        type: "string"
+        description: "The Elasticsearch field name."
       values:
         type: "array"
         items:
@@ -151,6 +156,7 @@ definitions:
         count: 0
       name: "name"
       description: "description"
+      es_field_name: "es_field_name"
   FacetValue:
     properties:
       name:

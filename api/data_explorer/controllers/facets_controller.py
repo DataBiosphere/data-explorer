@@ -22,11 +22,10 @@ def _get_bucket_interval(facet):
 def _process_extra_facets(extra_facets):
     es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
 
-    es_facets = OrderedDict()
     ui_facets = OrderedDict()
 
     if not extra_facets:
-        return es_facets, ui_facets
+        return ui_facets
 
     nested_paths = elasticsearch_util.get_nested_paths(es)
 
@@ -38,15 +37,16 @@ def _process_extra_facets(extra_facets):
         ui_facet_name = arr[-1]
         field_type = elasticsearch_util.get_field_type(
             es, elasticsearch_field_name)
-        ui_facets[ui_facet_name] = {
-            'elasticsearch_field_name': elasticsearch_field_name,
+        ui_facets[elasticsearch_field_name] = {
+            'ui_facet_name': ui_facet_name,
             'type': field_type
         }
         # TODO(malathir): Figure out how to get description of the field.
-        es_facets[ui_facet_name] = elasticsearch_util.get_elasticsearch_facet(
-            es, elasticsearch_field_name, field_type, nested_paths)
+        ui_facets[elasticsearch_field_name][
+            'es_facet'] = elasticsearch_util.get_elasticsearch_facet(
+                es, elasticsearch_field_name, field_type, nested_paths)
 
-    return es_facets, ui_facets
+    return ui_facets
 
 
 def _number_to_range(interval_start, interval):
@@ -73,33 +73,36 @@ def _number_to_range(interval_start, interval):
 def facets_get(filter=None, extraFacets=None):  # noqa: E501
     """facets_get
     Returns facets. # noqa: E501
-    :param filter: filter represents selected facet values. Elasticsearch query will be run only over selected facet values. filter is an array of strings, where each string has the format \&quot;facetName&#x3D;facetValue\&quot;. Example url /facets?filter&#x3D;Gender&#x3D;female,Region&#x3D;northwest,Region&#x3D;southwest
+    :param filter: filter represents selected facet values. Elasticsearch query
+    will be run only over selected facet values. filter is an array of strings,
+    where each string has the format \&quot;facetName&#x3D;facetValue\&quot;.
+    Example url /facets?filter=project_id.dataset_id.table_name.Gender=female,project_id.dataset_id.table_name.Region=northwest,project_id.dataset_id.table_name.Region=southwest
     :type filter: List[str]
     :param extraFacets: extra_facets represents the additional facets selected by the user from the UI.
     :type extraFacets: List[str]
     :rtype: FacetsResponse
     """
-    extra_es_facets, extra_ui_facets = _process_extra_facets(extraFacets)
-    combined_es_facets = OrderedDict(extra_es_facets.items() + current_app.
-                                     config['ELASTICSEARCH_FACETS'].items())
-    combined_ui_facets = OrderedDict(extra_ui_facets.items() +
-                                     current_app.config['UI_FACETS'].items())
+    extra_facets = _process_extra_facets(extraFacets)
+    combined_facets = OrderedDict(extra_facets.items() +
+                                  current_app.config['FACET_INFO'].items())
     search = DatasetFacetedSearch(
-        elasticsearch_util.get_facet_value_dict(filter, combined_es_facets),
-        combined_es_facets)
+        elasticsearch_util.get_facet_value_dict(filter, combined_facets),
+        combined_facets)
     # Uncomment to print Elasticsearch request python object
     # current_app.logger.info(
     #     'Elasticsearch request: %s' % pprint.pformat(search.build_search().to_dict()))
     es_response = search.execute()
     es_response_facets = es_response.facets.to_dict()
     # Uncomment to print Elasticsearch response python object
-    # current_app.logger.info('Elasticsearch response: %s' % pprint.pformat(es_response_facets))
+    #current_app.logger.info(
+    #    'Elasticsearch response: %s' % pprint.pformat(es_response_facets))
     facets = []
-    for name, field in combined_ui_facets.iteritems():
-        description = field.get('description')
-        es_facet = combined_es_facets[name]
+    for es_field_name, facet_info in combined_facets.iteritems():
+        name = facet_info.get('ui_facet_name')
+        description = facet_info.get('description')
+        es_facet = facet_info.get('es_facet')
         values = []
-        for value_name, count, _ in es_response_facets[name]:
+        for value_name, count, _ in es_response_facets[es_field_name]:
             if elasticsearch_util.is_histogram_facet(es_facet):
                 # For histograms, Elasticsearch returns:
                 #   name 10: count 15     (There are 15 people aged 10-19)
@@ -110,10 +113,15 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
             else:
                 # elasticsearch-dsl returns boolean field keys as 0/1. Use the
                 # field's 'type' to convert back to boolean, if necessary.
-                if field['type'] == 'boolean':
+                if facet_info['type'] == 'boolean':
                     value_name = bool(value_name)
             values.append(FacetValue(name=value_name, count=count))
-        facets.append(Facet(name=name, description=description, values=values))
+        facets.append(
+            Facet(
+                name=name,
+                description=description,
+                values=values,
+                es_field_name=es_field_name))
 
     return FacetsResponse(
         facets=facets, count=es_response._faceted_search.count())

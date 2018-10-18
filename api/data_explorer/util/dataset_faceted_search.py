@@ -18,7 +18,9 @@ class DatasetFacetedSearch(FacetedSearch):
         :param es_facets: a dict of facets to perform faceted search on.
         """
         self.index = current_app.config['INDEX_NAME']
-        self.facets = es_facets
+        self.facets = dict(
+            [(elasticsearch_field_name, field['es_facet'])
+             for elasticsearch_field_name, field in es_facets.items()])
         self.using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
         # Now that using is set, create _s.
         super(DatasetFacetedSearch, self).__init__(None, filters)

@@ -28,7 +28,8 @@
           "name": "60-70"
         }
       ],
-      "name": "Age"
+      "name": "Age",
+      "es_field_name": "Age es field name"
     }
   ]
 }
