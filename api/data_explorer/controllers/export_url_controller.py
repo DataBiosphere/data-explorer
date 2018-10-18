@@ -111,7 +111,7 @@ def _get_entities_dict(cohort_name, query, filter_arr):
             # table_name attribute. Unfortunately RAWLS doesn't allow
             # periods here. RAWLS does allow periods in attributes. So use
             # underscores here and periods in table_name attribute.
-            'name': name.replace('.', '_'),
+            'name': name.replace('.', '_').replace(':', '_'),
             'attributes': attributes
         })
 
