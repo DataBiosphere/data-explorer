@@ -53,6 +53,7 @@ class FacetCard extends Component {
     // facetValue is a dict, eg { name: "female", count: 1760 }
     const facetValues = this.props.facet.values.map(facetValue => (
       <ListItem
+        classes={{ root: classes.root }}
         key={facetValue.name}
         button
         dense
