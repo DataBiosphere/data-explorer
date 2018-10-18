@@ -137,7 +137,7 @@ class FacetCard extends Component {
     }
 
     this.setState({ selectedValues: newValues });
-    this.props.updateFacets(this.props.facet.name, facetValue, isSelected);
+    this.props.updateFacets(this.props.facet.es_field_name, facetValue, isSelected);
   }
 
 }
