@@ -29,7 +29,7 @@
         }
       ],
       "name": "Age",
-      "elasticsearch_name":"Age name"
+      "es_field_name":"Age es field name"
     }
   ]
 }

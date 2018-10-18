@@ -4,7 +4,7 @@
       {
          "name":"Region",
          "description":"Region description",
-         "elasticsearch_name":"Region name",
+         "es_field_name":"Region es field name",
          "values":[
             {
                "count":364,

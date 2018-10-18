@@ -13,7 +13,7 @@
     "hits": []
   },
   "aggregations": {
-    "_filter_Region name": {
+    "_filter_Region es field name": {
       "doc_count": 1338,
       "Region name": {
         "doc_count_error_upper_bound": 0,

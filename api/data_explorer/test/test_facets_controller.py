@@ -34,7 +34,7 @@ class TestFacetsController(BaseTestCase):
         app = super(TestFacetsController, self).create_app()
         app.config.update({
             'INDEX_NAME': 'index_name',
-            'UI_FACETS': {
+            'FACET_INFO': {
                 'Region name': {
                     'description': 'Region description',
                     'type': 'text',
@@ -70,7 +70,7 @@ class TestFacetsController(BaseTestCase):
         """
         self.maxDiff = 2000
         self.app.config.update({
-            'UI_FACETS': {
+            'FACET_INFO': {
                 'Age name': {
                     'type': 'text',
                     'ui_facet_name': 'Age',

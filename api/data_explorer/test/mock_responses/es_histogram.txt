@@ -13,7 +13,7 @@
   },
   "took": 5,
   "aggregations": {
-    "_filter_Age name": {
+    "_filter_Age es field name": {
       "Age name": {
         "buckets": [
           {

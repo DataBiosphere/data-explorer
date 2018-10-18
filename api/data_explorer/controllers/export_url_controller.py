@@ -82,7 +82,7 @@ def _get_doc_generator(filter_arr):
         return
 
     es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
-    facets = OrderedDict(current_app.config['UI_FACETS'].items())
+    facets = OrderedDict(current_app.config['FACET_INFO'].items())
     filters = elasticsearch_util.get_facet_value_dict(filter_arr, facets)
     search_dict = DatasetFacetedSearch(filters,
                                        facets).build_search().to_dict().get(
@@ -233,12 +233,6 @@ def _get_range_clause(column, value):
     return column + " >= " + str(low) + " AND " + column + " < " + str(high)
 
 
-def _get_facet_and_value(filter):
-    facets = current_app.config['UI_FACETS']
-    split = filter.rsplit('=', 1)
-    return split[0], facets[split[0]], split[1]
-
-
 def _get_table_and_clause(es_field_name, field_type, value,
                           sample_file_column_fields):
     """Returns a table name and a single condition of a WHERE clause,
@@ -246,7 +240,8 @@ def _get_table_and_clause(es_field_name, field_type, value,
     """
     sample_file_type_field = False
     if field_type == 'samples_overview':
-        es_field_name = facet['elasticsearch_field_names'][value]
+        es_field_name = current_app.config['FACET_INFO']['Samples Overview'][
+            'elasticsearch_field_names'][value]
         value = True
 
     if es_field_name.startswith('samples.'):
@@ -282,9 +277,12 @@ def _get_filter_query(filters):
 
     table_columns = dict()
     for filter_str in filters:
-        facet_name, facet, value = _get_facet_and_value(filter_str)
+        splits = filter_str.rsplit('=', 1)
+        es_field_name = splits[0]
+        value = splits[1]
+        type = current_app.config['FACET_INFO'][es_field_name]['type']
         table_name, column, clause = _get_table_and_clause(
-            facet_name, facet['type'], value, sample_file_column_fields)
+            es_field_name, type, value, sample_file_column_fields)
         if table_name in table_columns:
             if column in table_columns[table_name]:
                 table_columns[table_name][column].append(clause)

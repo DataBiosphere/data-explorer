@@ -29,7 +29,7 @@ paths:
           description: >
             filter represents selected facet values. Elasticsearch query will
             be run only over selected facet values. filter is an array of
-            strings, where each string has the format "facetName=facetValue".
+            strings, where each string has the format "esFieldName=facetValue".
             Example url /facets?filter=Gender=female,Region=northwest,Region=southwest
           in: query
           type: array
@@ -132,7 +132,7 @@ definitions:
       description:
         type: string
         description: Optional facet description.
-      elasticsearch_name:
+      es_field_name:
         type: string
         description: The Elasticsearch field name.
       values:

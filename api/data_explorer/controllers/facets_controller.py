@@ -81,7 +81,7 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     """
     extra_ui_facets = _process_extra_facets(extraFacets)
     combined_ui_facets = OrderedDict(extra_ui_facets.items() +
-                                     current_app.config['UI_FACETS'].items())
+                                     current_app.config['FACET_INFO'].items())
     search = DatasetFacetedSearch(
         elasticsearch_util.get_facet_value_dict(filter, combined_ui_facets),
         combined_ui_facets)
@@ -94,12 +94,12 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     #current_app.logger.info(
     #    'Elasticsearch response: %s' % pprint.pformat(es_response_facets))
     facets = []
-    for elasticsearch_name, facet_info in combined_ui_facets.iteritems():
+    for es_field_name, facet_info in combined_ui_facets.iteritems():
         name = facet_info.get('ui_facet_name')
         description = facet_info.get('description')
         es_facet = facet_info.get('es_facet')
         values = []
-        for value_name, count, _ in es_response_facets[elasticsearch_name]:
+        for value_name, count, _ in es_response_facets[es_field_name]:
             if elasticsearch_util.is_histogram_facet(es_facet):
                 # For histograms, Elasticsearch returns:
                 #   name 10: count 15     (There are 15 people aged 10-19)
@@ -118,7 +118,7 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
                 name=name,
                 description=description,
                 values=values,
-                elasticsearch_name=elasticsearch_name))
+                es_field_name=es_field_name))
 
     return FacetsResponse(
         facets=facets, count=es_response._faceted_search.count())

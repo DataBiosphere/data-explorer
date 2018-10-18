@@ -41,7 +41,7 @@ class TestExportUrlController(BaseTestCase):
             },
             'INDEX_NAME':
             'index_name',
-            'UI_FACETS': {
+            'FACET_INFO': {
                 'project_id.dataset_id.table_name.age': {
                     'type': 'text',
                     'ui_facet_name': 'Age',

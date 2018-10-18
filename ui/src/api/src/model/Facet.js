@@ -49,9 +49,9 @@ export default class Facet {
           "String"
         );
       }
-      if (data.hasOwnProperty("elasticsearch_name")) {
-        obj["elasticsearch_name"] = ApiClient.convertToType(
-          data["elasticsearch_name"],
+      if (data.hasOwnProperty("es_field_name")) {
+        obj["es_field_name"] = ApiClient.convertToType(
+          data["es_field_name"],
           "String"
         );
       }
@@ -74,9 +74,9 @@ export default class Facet {
   description = undefined;
   /**
    * The Elasticsearch field name.
-   * @member {String} elasticsearch_name
+   * @member {String} es_field_name
    */
-  elasticsearch_name = undefined;
+  es_field_name = undefined;
   /**
    * @member {Array.<module:model/FacetValue>} values
    */

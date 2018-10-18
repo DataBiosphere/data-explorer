@@ -110,7 +110,7 @@ class FacetCard extends Component {
     }
     this.setState({ selectedValues: newValues });
     this.props.updateFacets(
-      this.props.facet.elasticsearch_name,
+      this.props.facet.es_field_name,
       facetValue.name,
       isInputChecked
     );
