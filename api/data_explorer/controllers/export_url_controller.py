@@ -239,13 +239,13 @@ def _get_facet_and_value(filter):
     return split[0], facets[split[0]], split[1]
 
 
-def _get_table_and_clause(es_field_name, type, value,
+def _get_table_and_clause(es_field_name, field_type, value,
                           sample_file_column_fields):
     """Returns a table name and a single condition of a WHERE clause,
     eg "((age76 >= 20 AND age76 < 30) OR (age76 >= 30 AND age76 < 40))".
     """
     sample_file_type_field = False
-    if type == 'samples_overview':
+    if field_type == 'samples_overview':
         es_field_name = facet['elasticsearch_field_names'][value]
         value = True
 
@@ -262,9 +262,9 @@ def _get_table_and_clause(es_field_name, type, value,
             clause = '%s IS NOT NULL' % column
         else:
             clause = '%s IS NULL' % column
-    elif type == 'text':
+    elif field_type == 'text':
         clause = '%s = "%s"' % (column, value)
-    elif type == 'boolean':
+    elif field_type == 'boolean':
         clause = '%s = %s' % (column, value)
     else:
         clause = _get_range_clause(column, value)
@@ -282,9 +282,9 @@ def _get_filter_query(filters):
 
     table_columns = dict()
     for filter_str in filters:
-        es_field_name, facet, value = _get_facet_and_value(filter_str)
+        facet_name, facet, value = _get_facet_and_value(filter_str)
         table_name, column, clause = _get_table_and_clause(
-            es_field_name, facet['type'], value, sample_file_column_fields)
+            facet_name, facet['type'], value, sample_file_column_fields)
         if table_name in table_columns:
             if column in table_columns[table_name]:
                 table_columns[table_name][column].append(clause)

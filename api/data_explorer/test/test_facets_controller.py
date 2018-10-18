@@ -39,7 +39,7 @@ class TestFacetsController(BaseTestCase):
                     'description': 'Region description',
                     'type': 'text',
                     'ui_facet_name': 'Region',
-                    'facet': TermsFacet(field='Region.keyword')
+                    'es_facet': TermsFacet(field='Region.keyword')
                 }
             },
             'ELASTICSEARCH_URL': 'fakeurl:9200',
@@ -74,7 +74,7 @@ class TestFacetsController(BaseTestCase):
                 'Age name': {
                     'type': 'text',
                     'ui_facet_name': 'Age',
-                    'facet': HistogramFacet(field='Age', interval=10)
+                    'es_facet': HistogramFacet(field='Age', interval=10)
                 }
             },
         })

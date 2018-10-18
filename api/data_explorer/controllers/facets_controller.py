@@ -43,7 +43,7 @@ def _process_extra_facets(extra_facets):
         }
         # TODO(malathir): Figure out how to get description of the field.
         ui_facets[elasticsearch_field_name][
-            'facet'] = elasticsearch_util.get_elasticsearch_facet(
+            'es_facet'] = elasticsearch_util.get_elasticsearch_facet(
                 es, elasticsearch_field_name, field_type, nested_paths)
 
     return ui_facets
@@ -94,10 +94,10 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     #current_app.logger.info(
     #    'Elasticsearch response: %s' % pprint.pformat(es_response_facets))
     facets = []
-    for elasticsearch_name, field in combined_ui_facets.iteritems():
-        name = field.get('ui_facet_name')
-        description = field.get('description')
-        es_facet = field.get('facet')
+    for elasticsearch_name, facet_info in combined_ui_facets.iteritems():
+        name = facet_info.get('ui_facet_name')
+        description = facet_info.get('description')
+        es_facet = facet_info.get('es_facet')
         values = []
         for value_name, count, _ in es_response_facets[elasticsearch_name]:
             if elasticsearch_util.is_histogram_facet(es_facet):
@@ -110,7 +110,7 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
             else:
                 # elasticsearch-dsl returns boolean field keys as 0/1. Use the
                 # field's 'type' to convert back to boolean, if necessary.
-                if field['type'] == 'boolean':
+                if facet_info['type'] == 'boolean':
                     value_name = bool(value_name)
             values.append(FacetValue(name=value_name, count=count))
         facets.append(

@@ -42,21 +42,15 @@ class TestExportUrlController(BaseTestCase):
             'INDEX_NAME':
             'index_name',
             'UI_FACETS': {
-                'Age': {
-                    'type':
-                    'text',
-                    'elasticsearch_field_name':
-                    'project_id.dataset_id.table_name.age',
-                    'facet':
-                    TermsFacet(field='Age.keyword')
+                'project_id.dataset_id.table_name.age': {
+                    'type': 'text',
+                    'ui_facet_name': 'Age',
+                    'es_facet': TermsFacet(field='Age.keyword')
                 },
-                'Has Chr 1 VCF (samples)': {
-                    'type':
-                    'boolean',
-                    'elasticsearch_field_name':
-                    'samples.project_id.dataset_id.table_name.sample_type',
-                    'facet':
-                    TermsFacet(field='samples._has_chr1_vcf')
+                'samples.project_id.dataset_id.table_name.sample_type': {
+                    'type': 'boolean',
+                    'ui_facet_name': 'Has Chr 1 VCF (samples)',
+                    'es_facet': TermsFacet(field='samples._has_chr1_vcf')
                 }
             },
             'ELASTICSEARCH_URL':
@@ -78,7 +72,10 @@ class TestExportUrlController(BaseTestCase):
             data=json.dumps({
                 'cohortName':
                 'test',
-                'filter': ['Age=34', 'Has Chr 1 VCF (samples)=True']
+                'filter': [
+                    'project_id.dataset_id.table_name.age=34',
+                    'samples.project_id.dataset_id.table_name.sample_type=True'
+                ]
             }),
             content_type='application/json')
         self.assert200(response)

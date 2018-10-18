@@ -193,13 +193,13 @@ def _process_facets(es):
             facet_name = 'Has %s' % name
             es_field_name = 'samples._has_%s' % name.lower().replace(' ', '_')
             es_field_names[facet_name] = es_field_name
-        ui_facets['Samples Overview'] = {
+        ui_facets['samples_overview'] = {
             'elasticsearch_field_names': es_field_names,
             'type': 'samples_overview',
             'ui_facet_name': 'Samples Overview'
         }
-        ui_facets['Samples Overview'][
-            'facet'] = elasticsearch_util.get_samples_overview_facet(
+        ui_facets['samples_overview'][
+            'es_facet'] = elasticsearch_util.get_samples_overview_facet(
                 es_field_names)
 
     nested_paths = elasticsearch_util.get_nested_paths(es)
@@ -221,7 +221,7 @@ def _process_facets(es):
                 'ui_facet_description']
 
         ui_facets[elasticsearch_field_name][
-            'facet'] = elasticsearch_util.get_elasticsearch_facet(
+            'es_facet'] = elasticsearch_util.get_elasticsearch_facet(
                 es, elasticsearch_field_name, field_type, nested_paths)
 
     # Map from UI facet name to dict with Elasticsearch field name,
