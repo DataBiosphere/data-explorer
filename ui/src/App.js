@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { MuiThemeProvider } from "material-ui";
 
 import "App.css";
 import {
@@ -94,30 +93,28 @@ class App extends Component {
       return <div />;
     } else {
       return (
-        <MuiThemeProvider>
-          <div className="app">
-            <Header
-              datasetName={this.state.datasetName}
-              totalCount={this.state.totalCount}
+        <div className="app">
+          <Header
+            datasetName={this.state.datasetName}
+            totalCount={this.state.totalCount}
+          />
+          {this.state.enableFieldSearch && (
+            <FieldSearch
+              fields={this.state.fields}
+              handleChange={this.handleFieldSearchChange}
+              extraFacetsOptions={this.state.extraFacetsOptions}
             />
-            {this.state.enableFieldSearch && (
-              <FieldSearch
-                fields={this.state.fields}
-                handleChange={this.handleFieldSearchChange}
-                extraFacetsOptions={this.state.extraFacetsOptions}
-              />
-            )}
-            <FacetsGrid
-              updateFacets={this.updateFacets}
-              facets={this.state.facets}
-            />
-            <ExportFab
-              exportUrlApi={new ExportUrlApi(this.apiClient)}
-              filter={this.state.filter}
-            />
-            {this.state.datasetName == "1000 Genomes" ? Disclaimer : null}
-          </div>
-        </MuiThemeProvider>
+          )}
+          <FacetsGrid
+            updateFacets={this.updateFacets}
+            facets={this.state.facets}
+          />
+          <ExportFab
+            exportUrlApi={new ExportUrlApi(this.apiClient)}
+            filter={this.state.filter}
+          />
+          {this.state.datasetName == "1000 Genomes" ? Disclaimer : null}
+        </div>
       );
     }
   }
