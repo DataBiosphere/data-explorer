@@ -35,7 +35,7 @@ class TestFacetsController(BaseTestCase):
         app.config.update({
             'INDEX_NAME': 'index_name',
             'FACET_INFO': {
-                'Region name': {
+                'Region es field name': {
                     'description': 'Region description',
                     'type': 'text',
                     'ui_facet_name': 'Region',
@@ -71,7 +71,7 @@ class TestFacetsController(BaseTestCase):
         self.maxDiff = 2000
         self.app.config.update({
             'FACET_INFO': {
-                'Age name': {
+                'Age es field name': {
                     'type': 'text',
                     'ui_facet_name': 'Age',
                     'es_facet': HistogramFacet(field='Age', interval=10)

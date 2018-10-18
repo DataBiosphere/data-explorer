@@ -14,7 +14,7 @@
   "took": 5,
   "aggregations": {
     "_filter_Age es field name": {
-      "Age name": {
+      "Age es field name": {
         "buckets": [
           {
             "key": 10.0,
