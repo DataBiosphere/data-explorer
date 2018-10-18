@@ -62,10 +62,12 @@ def _get_samples_field_min_max_agg(es, field_name):
 def _get_field_range(es, field_name):
     if field_name.startswith('samples.'):
         response = _get_samples_field_min_max_agg(es, field_name)
+        return (response.aggregations.parent['max']['value'] -
+                response.aggregations.parent['min']['value'])
     else:
         response = _get_field_min_max_agg(es, field_name)
-    return (response.aggregations.parent['max']['value'] -
-            response.aggregations.parent['min']['value'])
+        return (response.aggregations['max']['value'] -
+                response.aggregations['min']['value'])
 
 
 def _get_bucket_interval(field_range):
