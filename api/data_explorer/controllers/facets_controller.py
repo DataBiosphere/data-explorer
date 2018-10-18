@@ -73,18 +73,21 @@ def _number_to_range(interval_start, interval):
 def facets_get(filter=None, extraFacets=None):  # noqa: E501
     """facets_get
     Returns facets. # noqa: E501
-    :param filter: filter represents selected facet values. Elasticsearch query will be run only over selected facet values. filter is an array of strings, where each string has the format \&quot;facetName&#x3D;facetValue\&quot;. Example url /facets?filter&#x3D;Gender&#x3D;female,Region&#x3D;northwest,Region&#x3D;southwest
+    :param filter: filter represents selected facet values. Elasticsearch query
+    will be run only over selected facet values. filter is an array of strings,
+    where each string has the format \&quot;facetName&#x3D;facetValue\&quot;.
+    Example url /facets?filter=project_id.dataset_id.table_name.Gender=female,project_id.dataset_id.table_name.Region=northwest,project_id.dataset_id.table_name.Region=southwest
     :type filter: List[str]
     :param extraFacets: extra_facets represents the additional facets selected by the user from the UI.
     :type extraFacets: List[str]
     :rtype: FacetsResponse
     """
-    extra_ui_facets = _process_extra_facets(extraFacets)
-    combined_ui_facets = OrderedDict(extra_ui_facets.items() +
-                                     current_app.config['FACET_INFO'].items())
+    extra_facets = _process_extra_facets(extraFacets)
+    combined_facets = OrderedDict(extra_facets.items() +
+                                  current_app.config['FACET_INFO'].items())
     search = DatasetFacetedSearch(
-        elasticsearch_util.get_facet_value_dict(filter, combined_ui_facets),
-        combined_ui_facets)
+        elasticsearch_util.get_facet_value_dict(filter, combined_facets),
+        combined_facets)
     # Uncomment to print Elasticsearch request python object
     # current_app.logger.info(
     #     'Elasticsearch request: %s' % pprint.pformat(search.build_search().to_dict()))
@@ -94,7 +97,7 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     #current_app.logger.info(
     #    'Elasticsearch response: %s' % pprint.pformat(es_response_facets))
     facets = []
-    for es_field_name, facet_info in combined_ui_facets.iteritems():
+    for es_field_name, facet_info in combined_facets.iteritems():
         name = facet_info.get('ui_facet_name')
         description = facet_info.get('description')
         es_facet = facet_info.get('es_facet')
