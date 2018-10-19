@@ -69,5 +69,5 @@
         "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.Main_project_LC_platform"
     }
   ],
-  "enable_field_search": false
+  "enable_field_search": true
 }
