@@ -164,6 +164,29 @@ def get_facet_value_dict(filter_arr, facets):
     return parsed_filter
 
 
+def get_field_description(es, field_name):
+    s = Search(using=es, index=current_app.config['INDEX_NAME'] + '_fields')
+    s.update_from_dict({
+        "query": {
+            "bool": {
+                "must": [{
+                    "match": {
+                        "_id": field_name
+                    }
+                }]
+            }
+        }
+    })
+    hits = s.execute()['hits']['hits']
+    if len(hits) == 0:
+        raise ValueError(
+            'elasticsearch_field_name %s not found in Elasticsearch index %s' %
+            (field_name, current_app.config['INDEX_NAME'] + '_fields'))
+    if 'description' in hits[0]['_source']:
+        return hits[0]['_source']['description']
+    return ''
+
+
 def get_field_type(es, field_name):
     # elasticsearch_dsl.Mapping, which gets mappings for all fields, would be
     # easier, but we can't use it.
