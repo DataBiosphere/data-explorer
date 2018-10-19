@@ -69,12 +69,17 @@ class App extends Component {
             if (field.description) {
               return {
                 label: field.name + " - " + field.description,
-                value: field.elasticsearch_name
+                value: field.elasticsearch_name,
+                chipLabel: (field.name + " - " + field.description).substr(
+                  0,
+                  10
+                )
               };
             }
             return {
               label: field.name,
-              value: field.elasticsearch_name
+              value: field.elasticsearch_name,
+              chipLabel: field.name.substr(0, 10)
             };
           })
         });
