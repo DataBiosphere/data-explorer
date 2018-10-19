@@ -118,7 +118,7 @@ describe("End-to-end", () => {
     await page.waitForXPath("//div[contains(text(), 'Avuncular')]");
     let avuncular = await page.$x("//div[contains(text(), 'Avuncular')]");
     avuncular[0].click();
-    // Asser that the chip was added.
+    // Assert that the chip was added.
     let chip = await page.$x("//div[contains(text(), 'Avuncular')]");
     expect(chip.length).toBe(1);
   });
