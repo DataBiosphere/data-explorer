@@ -67,13 +67,11 @@ class App extends Component {
         this.setState({
           fields: data.fields.map(field => {
             if (field.description) {
+              let display_name = field.name + " - " + field.description;
               return {
-                label: field.name + " - " + field.description,
+                label: display_name,
                 value: field.elasticsearch_name,
-                chipLabel: (field.name + " - " + field.description).substr(
-                  0,
-                  10
-                )
+                chipLabel: display_name.substr(0, 10)
               };
             }
             return {
