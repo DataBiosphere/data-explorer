@@ -1,5 +1,11 @@
 import React from "react";
-import Select from "react-select";
+import Select, { components } from "react-select";
+
+const MultiValue = props => (
+  <components.MultiValue {...props}>
+    {props.data.chipLabel}
+  </components.MultiValue>
+);
 
 class FieldSearch extends React.Component {
   constructor(props) {
@@ -12,6 +18,7 @@ class FieldSearch extends React.Component {
         isMulti="true"
         onChange={this.props.handleChange}
         options={this.props.fields}
+        components={{ MultiValue }}
         value={this.props.extraFacetsOptions}
       />
     );
