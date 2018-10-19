@@ -169,7 +169,11 @@ def get_field_description(es, field_name):
     s.update_from_dict({
         "query": {
             "bool": {
-                "must": [{"match": {"_id": field_name}}]
+                "must": [{
+                    "match": {
+                        "_id": field_name
+                    }
+                }]
             }
         }
     })
