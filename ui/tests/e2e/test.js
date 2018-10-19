@@ -2,13 +2,12 @@ const JEST_TIMEOUT_MS = 60 * 1000;
 
 // Print test name at the beginning of each test
 jasmine.getEnv().addReporter({
-    specStarted: function(result) {
-        console.log(result.fullName);
-    }
+  specStarted: function(result) {
+    console.log(result.fullName);
+  }
 });
 
 describe("End-to-end", () => {
-
   beforeAll(async () => {
     // It can take a while for servers to start up
     jest.setTimeout(JEST_TIMEOUT_MS);
@@ -49,7 +48,10 @@ describe("End-to-end", () => {
     await assertFacet("Total Low Coverage Sequence", "2688", "0B-10B", "10");
 
     // Click on facet value
-    let facetValueRow = await getFacetValueRow("Total Low Coverage Sequence", "10B-20B");
+    let facetValueRow = await getFacetValueRow(
+      "Total Low Coverage Sequence",
+      "10B-20B"
+    );
     await facetValueRow.click("input");
     // Wait for data to be returned from backend.
     // See #63 for why we can't wait for .grayText.
@@ -62,7 +64,10 @@ describe("End-to-end", () => {
     await assertFacet("Gender", "1122", "female", "569");
 
     // Make sure non-selected facet values are gray.
-    facetValueRow = await getFacetValueRow("Total Low Coverage Sequence", "0B-10B");
+    facetValueRow = await getFacetValueRow(
+      "Total Low Coverage Sequence",
+      "0B-10B"
+    );
     const grayDiv = await facetValueRow.$(".grayText");
     expect(grayDiv).toBeTruthy();
   });
@@ -72,7 +77,10 @@ describe("End-to-end", () => {
     // totalFacetValueCount span.
 
     // Click on facet value
-    let facetValueRow = await getFacetValueRow("Samples Overview", "Has WGS Low Coverage BAM");
+    let facetValueRow = await getFacetValueRow(
+      "Samples Overview",
+      "Has WGS Low Coverage BAM"
+    );
     await facetValueRow.click("input");
     await waitForFacetsUpdate(2535);
 
@@ -100,6 +108,19 @@ describe("End-to-end", () => {
     await waitForFacetsUpdate(1018);
 
     await exportToSaturn_selectedCohort();
+  });
+
+  test("Field search - chip selected", async () => {
+    // Click on the drop down
+    let initial_select = await page.$x("//div[text()='Select...']");
+    initial_select[0].click();
+    // Click on the 'Avuncular' chip
+    await page.waitForXPath("//div[contains(text(), 'Avuncular')]");
+    let avuncular = await page.$x("//div[contains(text(), 'Avuncular')]");
+    avuncular[0].click();
+    // Asser that the chip was added.
+    let chip = await page.$x("//div[contains(text(), 'Avuncular')]");
+    expect(chip.length).toBe(1);
   });
 
   async function waitForElasticsearchIndex() {
@@ -139,7 +160,10 @@ describe("End-to-end", () => {
 
   async function assertHeaderTotalCount(count) {
     // e.innerText looks like "3500 Participants"
-    const totalCount = await page.$eval(".totalCountText", e => e.innerText.split(" ")[0]);
+    const totalCount = await page.$eval(
+      ".totalCountText",
+      e => e.innerText.split(" ")[0]
+    );
     await expect(totalCount).toBe(count);
   }
 
