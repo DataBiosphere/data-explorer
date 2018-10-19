@@ -1,10 +1,13 @@
 module.exports = {
   launch: {
-    //    Uncomment to see console.log output.
-    //    dumpio: true,
-    //    Uncomment to see browser.
-//        headless: false,
-    //    Uncomment to slow down execution. Unit is ms.
-//        slowMo: 200,
+    // Uncomment to see browser.
+    // headless: false,
+
+    // Uncomment to slow down execution. Unit is ms.
+    // slowMo: 200,
+
+    // Needed for debugger, see
+    // https://github.com/GoogleChrome/puppeteer#debugging-tips
+    // devtools: true,
   }
 };
