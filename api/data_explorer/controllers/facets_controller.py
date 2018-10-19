@@ -22,10 +22,10 @@ def _get_bucket_interval(facet):
 def _process_extra_facets(extra_facets):
     es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
 
-    ui_facets = OrderedDict()
+    facets = OrderedDict()
 
     if not extra_facets:
-        return ui_facets
+        return facets
 
     nested_paths = elasticsearch_util.get_nested_paths(es)
 
@@ -37,16 +37,18 @@ def _process_extra_facets(extra_facets):
         ui_facet_name = arr[-1]
         field_type = elasticsearch_util.get_field_type(
             es, elasticsearch_field_name)
-        ui_facets[elasticsearch_field_name] = {
+        facets[elasticsearch_field_name] = {
             'ui_facet_name': ui_facet_name,
             'type': field_type
         }
-        # TODO(malathir): Figure out how to get description of the field.
-        ui_facets[elasticsearch_field_name][
+        facets[elasticsearch_field_name][
+            'description'] = elasticsearch_util.get_field_description(
+                es, elasticsearch_field_name)
+        facets[elasticsearch_field_name][
             'es_facet'] = elasticsearch_util.get_elasticsearch_facet(
                 es, elasticsearch_field_name, field_type, nested_paths)
 
-    return ui_facets
+    return facets
 
 
 def _number_to_range(interval_start, interval):
