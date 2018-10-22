@@ -67,9 +67,8 @@ class App extends Component {
         this.setState({
           fields: data.fields.map(field => {
             if (field.description) {
-              let display_name = field.name + " - " + field.description;
               return {
-                label: display_name,
+                label: field.name,
                 value: field.elasticsearch_name,
                 chipLabel: field.name
               };
