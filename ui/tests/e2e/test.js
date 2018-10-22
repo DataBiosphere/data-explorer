@@ -118,12 +118,12 @@ describe("End-to-end", () => {
     await page.waitForXPath("//div[contains(text(), 'Avuncular')]");
     let avuncular = await page.$x("//div[contains(text(), 'Avuncular')]");
     avuncular[0].click();
-    // Assert that the chip was added.
-    let chip = await page.$x("//div[contains(text(), 'Avuncular')]");
+    // Wait for the chip to be added, and assert that there is only 1 such chip.
+    await page.waitForXPath("//div[text()='Avuncular']");
+    let chip = await page.$x("//div[text()='Avuncular']");
     expect(chip.length).toBe(1);
-    // wait for 1 second
-    await page.waitFor(1000);
-    // Assert that the facet card was rendered.
+    // Wait for the facet card to be rendered and then assert.
+    await waitForFacetCard("Avuncular");
     await assertFacet("Avuncular", "10", "HG00658 (aunt/uncle)", "1");
   });
 
@@ -234,6 +234,13 @@ describe("End-to-end", () => {
     await page.waitForXPath(
       "//*[contains(@class, 'totalCountText') and contains(text(), newTotalCount)]"
     );
+  }
+
+  /**
+   * Waits for facet card to be rendered.
+   */
+  async function waitForFacetCard(facetName) {
+    await page.waitForXPath("//span[contains(text(), facetName)]");
   }
 
   async function exportToSaturn_noSelectedCohort() {
