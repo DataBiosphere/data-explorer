@@ -55,6 +55,7 @@ class TestExportUrlController(BaseTestCase):
                     'es_facet': TermsFacet(field='samples._has_chr1_vcf')
                 }
             },
+            'EXTRA_FACET_INFO': {},
             'ELASTICSEARCH_URL':
             'fakeurl:9200',
         })
