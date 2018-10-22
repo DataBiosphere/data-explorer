@@ -26,6 +26,7 @@ def _process_extra_facets(extra_facets):
 
     if not extra_facets:
         current_app.config['EXTRA_FACET_INFO'] = {}
+        return
 
     nested_paths = elasticsearch_util.get_nested_paths(es)
 
