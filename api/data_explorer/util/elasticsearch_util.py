@@ -38,7 +38,6 @@ def _get_field_range(es, field_name):
     bucket.metric('max', Max(field=field_name))
     bucket.metric('min', Min(field=field_name))
 
-    print 'SEARCH: %s' % search.to_dict()
     aggs = search.params(size=0).execute().aggregations.to_dict()
     for nesting in nestings:
         aggs = aggs.get(nesting)
