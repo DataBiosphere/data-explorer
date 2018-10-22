@@ -82,7 +82,8 @@ def _get_doc_generator(filter_arr):
         return
 
     es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
-    facets = OrderedDict(current_app.config['FACET_INFO'].items())
+    facets = OrderedDict(current_app.config['EXTRA_FACET_INFO'].items() +
+                                  current_app.config['FACET_INFO'].items())
     filters = elasticsearch_util.get_facet_value_dict(filter_arr, facets)
     search_dict = DatasetFacetedSearch(filters,
                                        facets).build_search().to_dict().get(
@@ -276,9 +277,13 @@ def _get_filter_query(filters):
         splits = filter_str.rsplit('=', 1)
         es_field_name = splits[0]
         value = splits[1]
-        type = current_app.config['FACET_INFO'][es_field_name]['type']
+        field_type = ''
+        if es_field_name in current_app.config['FACET_INFO']:
+            field_type = current_app.config['FACET_INFO'][es_field_name]['type']
+        elif es_field_name in current_app.config['EXTRA_FACET_INFO']:
+            field_type = current_app.config['EXTRA_FACET_INFO'][es_field_name]['type']
         table_name, column, clause = _get_table_and_clause(
-            es_field_name, type, value, sample_file_column_fields)
+            es_field_name, field_type, value, sample_file_column_fields)
         if table_name in table_columns:
             if column in table_columns[table_name]:
                 table_columns[table_name][column].append(clause)
@@ -325,7 +330,6 @@ def export_url_post():  # noqa: E501
 
     current_app.logger.info('Export URL request data %s' % request.data)
 
-    # TODO(malathir): Add extraFacets to this endpoint
     query = _get_filter_query(filter_arr)
     cohort_name = data['cohortName'].replace(" ", "_")
     entities = _get_entities_dict(cohort_name, query, filter_arr)

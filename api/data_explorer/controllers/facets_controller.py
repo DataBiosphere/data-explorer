@@ -48,6 +48,11 @@ def _process_extra_facets(extra_facets):
             'es_facet'] = elasticsearch_util.get_elasticsearch_facet(
                 es, elasticsearch_field_name, field_type, nested_paths)
 
+    # Map from Elasticsearch field name to dict with ui facet name,
+    # Elasticsearch field type, optional UI facet description and Elasticsearch
+    # facet. This map is for extra facets added from the field search dropdown
+    # on the UI.
+    current_app.config['EXTRA_FACET_INFO'] = facets
     return facets
 
 
