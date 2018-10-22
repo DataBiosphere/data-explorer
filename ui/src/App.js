@@ -68,7 +68,7 @@ class App extends Component {
           fields: data.fields.map(field => {
             if (field.description) {
               return {
-                label: field.name,
+                label: field.name + " - " + field.description,
                 value: field.elasticsearch_name,
                 chipLabel: field.name
               };
