@@ -121,6 +121,8 @@ describe("End-to-end", () => {
     // Assert that the chip was added.
     let chip = await page.$x("//div[contains(text(), 'Avuncular')]");
     expect(chip.length).toBe(1);
+    // wait for 1 second
+    await page.waitFor(1000);
     // Assert that the facet card was rendered.
     await assertFacet("Avuncular", "10", "HG00658 (aunt/uncle)", "1");
   });
