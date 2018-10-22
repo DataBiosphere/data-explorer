@@ -19,6 +19,7 @@ paths:
         # Put in dataset_controller.py instead of default_controller.py.
         - Dataset
   /facets:
+    # Example url /facets?project_id.dataset_id.table_name.filter=Gender=female,project_id.dataset_id.table_name.Region=northwest,project_id.dataset_id.table_name.Region=southwest
     get:
       description: Returns facets.
       parameters:

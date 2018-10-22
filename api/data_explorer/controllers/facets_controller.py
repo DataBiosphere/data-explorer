@@ -25,7 +25,7 @@ def _process_extra_facets(extra_facets):
     facets = OrderedDict()
 
     if not extra_facets:
-        return facets
+        current_app.config['EXTRA_FACET_INFO'] = {}
 
     nested_paths = elasticsearch_util.get_nested_paths(es)
 
@@ -52,8 +52,10 @@ def _process_extra_facets(extra_facets):
     # Elasticsearch field type, optional UI facet description and Elasticsearch
     # facet. This map is for extra facets added from the field search dropdown
     # on the UI.
+    # This must be stored separately from FACET_INFO. If this were added to
+    # FACET_INFO, then if user deletes extra facets chip, we wouldn't know which
+    # facet to remove from FACET_INFO.
     current_app.config['EXTRA_FACET_INFO'] = facets
-    return facets
 
 
 def _number_to_range(interval_start, interval):
@@ -89,9 +91,10 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     :type extraFacets: List[str]
     :rtype: FacetsResponse
     """
-    extra_facets = _process_extra_facets(extraFacets)
-    combined_facets = OrderedDict(extra_facets.items() +
-                                  current_app.config['FACET_INFO'].items())
+    _process_extra_facets(extraFacets)
+    combined_facets = OrderedDict(
+        current_app.config['EXTRA_FACET_INFO'].items() +
+        current_app.config['FACET_INFO'].items())
     search = DatasetFacetedSearch(
         elasticsearch_util.get_facet_value_dict(filter, combined_facets),
         combined_facets)

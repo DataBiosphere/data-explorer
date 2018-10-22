@@ -82,12 +82,14 @@ def _get_doc_generator(filter_arr):
         return
 
     es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
-    facets = OrderedDict(current_app.config['EXTRA_FACET_INFO'].items() +
-                         current_app.config['FACET_INFO'].items())
-    filters = elasticsearch_util.get_facet_value_dict(filter_arr, facets)
-    search_dict = DatasetFacetedSearch(filters,
-                                       facets).build_search().to_dict().get(
-                                           'post_filter', {})
+    combined_facets = OrderedDict(
+        current_app.config['EXTRA_FACET_INFO'].items() +
+        current_app.config['FACET_INFO'].items())
+    filters = elasticsearch_util.get_facet_value_dict(filter_arr,
+                                                      combined_facets)
+    search_dict = DatasetFacetedSearch(
+        filters, combined_facets).build_search().to_dict().get(
+            'post_filter', {})
     search = Search(using=es, index=current_app.config['INDEX_NAME'])
     search.update_from_dict({'post_filter': search_dict})
     for result in search.scan():
