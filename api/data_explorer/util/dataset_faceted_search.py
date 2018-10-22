@@ -14,7 +14,7 @@ class DatasetFacetedSearch(FacetedSearch):
         """
         :param filters: a dictionary of facet_name:[object] values to filter
         the query on.
-        Ex: {'Region':['southeast', 'northwest'], 'Gender':['male']}.
+        Ex: {'project_id.dataset_id.table_name.Region':['southeast', 'northwest'], 'project_id.dataset_id.table_name.Gender':['male']}.
         :param es_facets: a dict of facets to perform faceted search on.
         """
         self.index = current_app.config['INDEX_NAME']
