@@ -28,8 +28,6 @@ def _process_extra_facets(extra_facets):
         current_app.config['EXTRA_FACET_INFO'] = {}
         return
 
-    nested_paths = elasticsearch_util.get_nested_paths(es)
-
     for elasticsearch_field_name in extra_facets:
         if not elasticsearch_field_name:
             continue
@@ -47,7 +45,7 @@ def _process_extra_facets(extra_facets):
                 es, elasticsearch_field_name)
         facets[elasticsearch_field_name][
             'es_facet'] = elasticsearch_util.get_elasticsearch_facet(
-                es, elasticsearch_field_name, field_type, nested_paths)
+                es, elasticsearch_field_name, field_type)
 
     # Map from Elasticsearch field name to dict with ui facet name,
     # Elasticsearch field type, optional UI facet description and Elasticsearch
