@@ -10,7 +10,7 @@ jasmine.getEnv().addReporter({
 describe("End-to-end", () => {
   beforeAll(async () => {
     // It can take a while for servers to start up
-    jest.setTimeout(JEST_TIMEOUT_MS);
+    jest.setTimeout(100000);
     await waitForElasticsearchIndex();
   });
 
@@ -110,7 +110,7 @@ describe("End-to-end", () => {
     await exportToSaturn_selectedCohort();
   });
 
-  test("Field search - chip selected", async () => {
+  test("Field search", async () => {
     // Click on the drop down
     let initial_select = await page.$x("//div[text()='Select...']");
     initial_select[0].click();
@@ -121,6 +121,8 @@ describe("End-to-end", () => {
     // Assert that the chip was added.
     let chip = await page.$x("//div[contains(text(), 'Avuncular')]");
     expect(chip.length).toBe(1);
+    // Assert that the facet card was rendered.
+    await assertFacet("Avuncular", "10", "HG00658 (aunt/uncle)", "1");
   });
 
   async function waitForElasticsearchIndex() {
