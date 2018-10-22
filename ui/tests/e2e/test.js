@@ -10,7 +10,7 @@ jasmine.getEnv().addReporter({
 describe("End-to-end", () => {
   beforeAll(async () => {
     // It can take a while for servers to start up
-    jest.setTimeout(100000);
+    jest.setTimeout(JEST_TIMEOUT_MS);
     await waitForElasticsearchIndex();
   });
 
