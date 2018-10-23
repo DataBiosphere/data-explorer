@@ -13,5 +13,4 @@ def dataset_get():  # noqa: E501
 
     :rtype: DatasetResponse
     """
-    return DatasetResponse(
-        name=current_app.config['DATASET_NAME'])
+    return DatasetResponse(name=current_app.config['DATASET_NAME'])

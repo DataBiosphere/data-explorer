@@ -16,7 +16,11 @@ class Facet(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name=None, description=None, es_field_name=None, values=None):  # noqa: E501
+    def __init__(self,
+                 name=None,
+                 description=None,
+                 es_field_name=None,
+                 values=None):  # noqa: E501
         """Facet - a model defined in Swagger
 
         :param name: The name of this Facet.  # noqa: E501
