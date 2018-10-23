@@ -100,13 +100,11 @@ class App extends Component {
             datasetName={this.state.datasetName}
             totalCount={this.state.totalCount}
           />
-          {this.state.enableFieldSearch && (
-            <FieldSearch
-              fields={this.state.fields}
-              handleChange={this.handleFieldSearchChange}
-              extraFacetsOptions={this.state.extraFacetsOptions}
-            />
-          )}
+          <FieldSearch
+            fields={this.state.fields}
+            handleChange={this.handleFieldSearchChange}
+            extraFacetsOptions={this.state.extraFacetsOptions}
+          />
           <FacetsGrid
             updateFacets={this.updateFacets}
             facets={this.state.facets}
