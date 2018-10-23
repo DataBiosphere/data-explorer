@@ -23,9 +23,15 @@ class ExportUrlRequest(Model):
         :param filter: The filter of this ExportUrlRequest.  # noqa: E501
         :type filter: List[str]
         """
-        self.swagger_types = {'cohort_name': str, 'filter': List[str]}
+        self.swagger_types = {
+            'cohort_name': str,
+            'filter': List[str]
+        }
 
-        self.attribute_map = {'cohort_name': 'cohortName', 'filter': 'filter'}
+        self.attribute_map = {
+            'cohort_name': 'cohortName',
+            'filter': 'filter'
+        }
 
         self._cohort_name = cohort_name
         self._filter = filter
