@@ -163,7 +163,8 @@ def _write_gcs_file(entities):
     samples_bucket = client.get_bucket(
         current_app.config['EXPORT_URL_SAMPLES_GCS_BUCKET'])
     user = os.environ.get('USER')
-    samples_file_name = '%s-%s-samples' % (current_app.config['INDEX_NAME'], user)
+    samples_file_name = '%s-%s-samples' % (current_app.config['INDEX_NAME'],
+                                           user)
     # Copy the samples blob to the export bucket in order to compose with the other
     # object containing the rest of the entities JSON.
     samples_blob = samples_bucket.get_blob(samples_file_name)
