@@ -271,61 +271,98 @@ def _get_filter_query(filters):
     if not filters or not len(filters):
         return ''
 
+    participant_id_column = current_app.config['PARTICIPANT_ID_COLUMN']
     sample_file_column_fields = {
         k.lower().replace(" ", "_"): v
         for k, v in current_app.config['SAMPLE_FILE_COLUMNS'].iteritems()
     }
 
-    table_columns = dict()
+    # facet_table_clauses must have two levels of nesting (facet_id, table_name)
+    # because clauses from the same column are OR'ed together, whereas clauses
+    # from different columns are AND'ed together.
+    facet_table_clauses = {}
     for filter_str in filters:
         splits = filter_str.rsplit('=', 1)
-        es_field_name = splits[0]
+        # facet_id is "Samples Overview" for the Samples Overview facet, and
+        # es_field_name for all other facets.
+        facet_id = splits[0]
         value = splits[1]
         field_type = ''
-        if es_field_name in current_app.config['FACET_INFO']:
-            field_type = current_app.config['FACET_INFO'][es_field_name][
-                'type']
-        elif es_field_name in current_app.config['EXTRA_FACET_INFO']:
-            field_type = current_app.config['EXTRA_FACET_INFO'][es_field_name][
+        if facet_id in current_app.config['FACET_INFO']:
+            field_type = current_app.config['FACET_INFO'][facet_id]['type']
+        elif facet_id in current_app.config['EXTRA_FACET_INFO']:
+            field_type = current_app.config['EXTRA_FACET_INFO'][facet_id][
                 'type']
         table_name, column, clause = _get_table_and_clause(
-            es_field_name, field_type, value, sample_file_column_fields)
-        if table_name in table_columns:
-            if column in table_columns[table_name]:
-                table_columns[table_name][column].append(clause)
-            else:
-                table_columns[table_name][column] = [clause]
-        else:
-            table_columns[table_name] = {column: [clause]}
+            facet_id, field_type, value, sample_file_column_fields)
 
-    table_selects = []
-    participant_id_column = current_app.config['PARTICIPANT_ID_COLUMN']
-    for table_name, columns in table_columns.iteritems():
-        table_select = "(SELECT %s FROM `%s` WHERE %s)"
-        where_clause = ""
-        for column, clauses in columns.iteritems():
-            column_clause = ""
+        if facet_id not in facet_table_clauses:
+            facet_table_clauses[facet_id] = {}
+        if table_name not in facet_table_clauses[facet_id]:
+            facet_table_clauses[facet_id][table_name] = []
+        facet_table_clauses[facet_id][table_name].append(clause)
+
+    # Map from table name to list of where clauses.
+    table_wheres = {}
+    table_num = 1
+    table_select = '(SELECT %s FROM `%s` WHERE %s)'
+    query = 'SELECT DISTINCT t1.%s FROM ' % participant_id_column
+
+    def _append_to_query(existing, new, join, table_num):
+        return existing + join if table_num > 1 else existing + new
+
+    # Handle the clauses on a per-facet level.
+    for facet_id, table_clauses in facet_table_clauses.iteritems():
+        table_wheres_current_facet = {}
+        for table_name, clauses in table_clauses.iteritems():
+            where = ''
             for clause in clauses:
-                if len(column_clause) > 0:
-                    column_clause = column_clause + " OR "
-                column_clause = column_clause + "(" + clause + ")"
-            if len(where_clause) > 0:
-                where_clause = where_clause + " AND "
-            where_clause = where_clause + "(" + column_clause + ")"
-        table_selects.append(
-            table_select % (participant_id_column, table_name, where_clause))
+                if len(where) > 0:
+                    where += ' OR (%s)' % clause
+                else:
+                    where = '(%s)' % clause
+            table_wheres_current_facet[table_name] = where
 
-    query = "SELECT DISTINCT t1.%s FROM " % participant_id_column
-    cnt = 1
-    for table_select in table_selects:
-        table = "%s t%d" % (table_select, cnt)
-        join = " INNER JOIN %s ON t%d.%s = t%d.%s"
-        if cnt > 1:
-            query = query + join % (table, cnt - 1, participant_id_column, cnt,
-                                    participant_id_column)
+        if len(table_wheres_current_facet) == 1:
+            # If all of the facet where caluses are on the same table, add it
+            # to the table_wheres map for coalescing by table below.
+            # All normal, non-Samples Overview facets fall under this case.
+            if table_name not in table_wheres:
+                table_wheres[table_name] = []
+            table_wheres[table_name].append(
+                table_wheres_current_facet[table_name])
         else:
-            query = query + table
-        cnt = cnt + 1
+            # Normally, different columns are AND'ed together.
+            # Different columns within Samples Overview facet are OR'ed together.
+            # OR is done using FULL JOIN in case columns are from different tables.
+            for table_name, where in table_wheres_current_facet.iteritems():
+                select = table_select % (participant_id_column, table_name,
+                                         where)
+                table = '%s t%d' % (select, table_num)
+                join = ' FULL JOIN %s ON t%d.%s = t%d.%s' % (
+                    table, table_num - 1, participant_id_column, table_num,
+                    participant_id_column)
+                query = _append_to_query(query, table, join, table_num)
+                table_num += 1
+
+    # Coalesce all where clauses for facet's which span a single table into
+    # one select per table.
+    for table_name, wheres in table_wheres.iteritems():
+        where_clause = ''
+        for where in wheres:
+            if len(where_clause) > 0:
+                where_clause += ' AND '
+            where_clause += ' (%s)' % where
+
+        select = table_select % (participant_id_column, table_name,
+                                 where_clause)
+        table = '%s t%d' % (select, table_num)
+        join = ' INNER JOIN %s ON t%d.%s = t%d.%s' % (
+            table, table_num - 1, participant_id_column, table_num,
+            participant_id_column)
+        query = _append_to_query(query, table, join, table_num)
+        table_num += 1
+
     return query
 
 
