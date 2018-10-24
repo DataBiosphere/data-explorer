@@ -326,6 +326,7 @@ def _get_filter_query(filters):
         if len(table_wheres_current_facet) == 1:
             # If all of the facet where caluses are on the same table, add it
             # to the table_wheres map for coalescing by table below.
+            # All normal, non-Samples Overview facets fall under this case.
             if table_name not in table_wheres:
                 table_wheres[table_name] = []
             table_wheres[table_name].append(
