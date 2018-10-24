@@ -5,6 +5,9 @@ from elasticsearch import helpers
 from elasticsearch_dsl import Search
 from elasticsearch_dsl import HistogramFacet
 from elasticsearch_dsl import TermsFacet
+from elasticsearch_dsl.aggs import Max
+from elasticsearch_dsl.aggs import Min
+from elasticsearch_dsl.aggs import Nested
 # TODO(bryancrampton): Remove '.faceted_search' once
 # https://github.com/elastic/elasticsearch-dsl-py/pull/976 is included in a
 # release (6.2.2)
@@ -15,59 +18,31 @@ from filters_facet import FiltersFacet
 from flask import current_app
 
 
-def _get_field_min_max_agg(es, field_name):
-    return Search(
-        using=es, index=current_app.config['INDEX_NAME']
-    ).aggs.metric(
-        'max',
-        'max',
-        # Don't execute query; we only care about aggregations. See
-        # https://www.elastic.co/guide/en/elasticsearch/reference/current/returning-only-agg-results.html
-        field=field_name
-    ).params(size=0).aggs.metric(
-        'min',
-        'min',
-        # Don't execute query; we only care about aggregations. See
-        # https://www.elastic.co/guide/en/elasticsearch/reference/current/returning-only-agg-results.html
-        field=field_name).params(size=0).execute()
-
-
-# TODO(bfcrampton): Generalize this for any nested field
-def _get_samples_field_min_max_agg(es, field_name):
-    search = Search(using=es, index=current_app.config['INDEX_NAME'])
-    search.update_from_dict({
-        "aggs": {
-            "parent": {
-                "nested": {
-                    "path": "samples"
-                },
-                "aggs": {
-                    "max": {
-                        "max": {
-                            "field": field_name
-                        }
-                    },
-                    "min": {
-                        "min": {
-                            "field": field_name
-                        }
-                    }
-                }
-            }
-        }
-    })
-    return search.params(size=0).execute()
-
-
 def _get_field_range(es, field_name):
-    if field_name.startswith('samples.'):
-        response = _get_samples_field_min_max_agg(es, field_name)
-        return (response.aggregations.parent['max']['value'] -
-                response.aggregations.parent['min']['value'])
-    else:
-        response = _get_field_min_max_agg(es, field_name)
-        return (response.aggregations['max']['value'] -
-                response.aggregations['min']['value'])
+    search = Search(using=es, index=current_app.config['INDEX_NAME'])
+    # Traverse down the nesting levels from the root field, until we reach the leaf.
+    # Need to traverse until the root, because we have to build the search object
+    # by adding Nested aggregations consecutively. For example, a nested "samples.foo"
+    # field will result in:
+    # Search(...).bucket('samples', Nested(path='samples')).metric(...)
+    parts = field_name.split('.')
+    bucket = search.aggs
+    parent = ''
+    nestings = []
+    for part in parts:
+        parent = '%s.%s' % (parent, part) if parent else part
+        if parent in current_app.config['NESTED_PATHS']:
+            bucket = bucket.bucket(parent, Nested(path=parent))
+            nestings.append(parent)
+
+    bucket.metric('max', Max(field=field_name))
+    bucket.metric('min', Min(field=field_name))
+
+    aggs = search.params(size=0).execute().aggregations.to_dict()
+    for nesting in nestings:
+        aggs = aggs.get(nesting)
+
+    return (aggs['max']['value'] - aggs['min']['value'])
 
 
 def _get_bucket_interval(field_range):
@@ -232,7 +207,7 @@ def _get_nested_paths_inner(prefix, mappings):
     return nested_field_paths
 
 
-def _maybe_get_nested_facet(elasticsearch_field_name, es_facet, nested_paths):
+def _maybe_get_nested_facet(elasticsearch_field_name, es_facet):
     """
     Returns a NestedFacet for the Elasticsearch field, if the field is nested.
 
@@ -240,14 +215,14 @@ def _maybe_get_nested_facet(elasticsearch_field_name, es_facet, nested_paths):
     eg NestedFacet(outer, NestedFacet(inner, es_facet))
     """
     parts = elasticsearch_field_name.rsplit('.', 1)
-    # Traverse up the nesting levels from the leaf field, till we reach the root.
-    # Need to traverse till the root, because the root can be a nested field,
+    # Traverse up the nesting levels from the leaf field, until we reach the root.
+    # Need to traverse until the root, because the root can be a nested field,
     # for example "samples". All the sub fields can be non-nested, like
     # "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.Main_project_LC_platform"
     # This field needs to be a NestedFacet because an ancestor("samples") is nested.
     while len(parts) > 1:
         parent = parts[0]
-        if parent in nested_paths:
+        if parent in current_app.config['NESTED_PATHS']:
             es_facet = NestedFacet(parent, es_facet)
         parts = parent.rsplit('.', 1)
 
@@ -275,8 +250,7 @@ def get_nested_paths(es):
     return nested_paths
 
 
-def get_elasticsearch_facet(es, elasticsearch_field_name, field_type,
-                            nested_paths):
+def get_elasticsearch_facet(es, elasticsearch_field_name, field_type):
     if field_type == 'text':
         # Use ".keyword" because we want aggregation on keyword field, not
         # term field. See
@@ -298,8 +272,7 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type,
             field=elasticsearch_field_name,
             interval=_get_bucket_interval(field_range))
 
-    nested_facet = _maybe_get_nested_facet(elasticsearch_field_name, es_facet,
-                                           nested_paths)
+    nested_facet = _maybe_get_nested_facet(elasticsearch_field_name, es_facet)
     if nested_facet:
         es_facet = nested_facet
     return es_facet
