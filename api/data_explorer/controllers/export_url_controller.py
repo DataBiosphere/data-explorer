@@ -277,11 +277,14 @@ def _get_filter_query(filters):
         for k, v in current_app.config['SAMPLE_FILE_COLUMNS'].iteritems()
     }
 
-    # Key all of the clauses by facet_id and table_name so that they can be AND'd
-    # together and where clauses coalesced by table.
+    # facet_table_clauses must have two levels of nesting (facet_id, table_name)
+    # because clauses from the same column are OR'ed together, whereas clauses
+    # from different columns are AND'ed together.
     facet_table_clauses = {}
     for filter_str in filters:
         splits = filter_str.rsplit('=', 1)
+        # facet_id is "Samples Overview" for the Samples Overview facet, and
+        # es_field_name for all other facets.
         facet_id = splits[0]
         value = splits[1]
         field_type = ''
@@ -299,6 +302,7 @@ def _get_filter_query(filters):
             facet_table_clauses[facet_id][table_name] = []
         facet_table_clauses[facet_id][table_name].append(clause)
 
+    # Map from table name to list of where clauses.
     table_wheres = {}
     table_num = 1
     table_select = '(SELECT %s FROM `%s` WHERE %s)'
@@ -308,29 +312,29 @@ def _get_filter_query(filters):
         return existing + join if table_num > 1 else existing + new
 
     # Handle the clauses on a per-facet level.
-    for facet_id in facet_table_clauses.keys():
-        wheres = {}
-        for table_name in facet_table_clauses[facet_id].keys():
+    for facet_id, table_clauses in facet_table_clauses.iteritems():
+        table_wheres_current_facet = {}
+        for table_name, clauses in table_clauses.iteritems():
             where = ''
-            for clause in facet_table_clauses[facet_id][table_name]:
+            for clause in clauses:
                 if len(where) > 0:
                     where += ' OR (%s)' % clause
                 else:
                     where = '(%s)' % clause
-            wheres[table_name] = where
+            table_wheres_current_facet[table_name] = where
 
-        if len(wheres) == 1:
-            # All of the facet where clauses are for the same table, so add
-            # it to the table_wheres to be merged with other table-contained
-            # facets.
+        if len(table_wheres_current_facet) == 1:
+            # If all of the facet where caluses are on the same table, add it
+            # to the table_wheres map for coalescing by table below.
             if table_name not in table_wheres:
                 table_wheres[table_name] = []
-            table_wheres[table_name].append(wheres[table_name])
+            table_wheres[table_name].append(
+                table_wheres_current_facet[table_name])
         else:
-            # The facet where clauses span multiple tables. In order to OR
-            # the filters, use a FULL JOIN on participant_id_col from the two
-            # select statements.
-            for table_name, where in wheres.iteritems():
+            # Normally, different columns are AND'ed together.
+            # Different columns within Samples Overview facet are OR'ed together.
+            # OR is done using FULL JOIN in case columns are from different tables.
+            for table_name, where in table_wheres_current_facet.iteritems():
                 select = table_select % (participant_id_column, table_name,
                                          where)
                 table = '%s t%d' % (select, table_num)
