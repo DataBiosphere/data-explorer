@@ -277,7 +277,7 @@ def _get_filter_query(filters):
         for k, v in current_app.config['SAMPLE_FILE_COLUMNS'].iteritems()
     }
 
-    # Key all of the clauses by facet_id and table_name so that they can be AND'd 
+    # Key all of the clauses by facet_id and table_name so that they can be AND'd
     # together and where clauses coalesced by table.
     facet_table_clauses = {}
     for filter_str in filters:
@@ -286,8 +286,7 @@ def _get_filter_query(filters):
         value = splits[1]
         field_type = ''
         if facet_id in current_app.config['FACET_INFO']:
-            field_type = current_app.config['FACET_INFO'][facet_id][
-                'type']
+            field_type = current_app.config['FACET_INFO'][facet_id]['type']
         elif facet_id in current_app.config['EXTRA_FACET_INFO']:
             field_type = current_app.config['EXTRA_FACET_INFO'][facet_id][
                 'type']
@@ -308,7 +307,7 @@ def _get_filter_query(filters):
     def _append_to_query(existing, new, join, table_num):
         return existing + join if table_num > 1 else existing + new
 
-    # Handle the clauses on a per-facet level.    
+    # Handle the clauses on a per-facet level.
     for facet_id in facet_table_clauses.keys():
         wheres = {}
         for table_name in facet_table_clauses[facet_id].keys():
@@ -332,13 +331,16 @@ def _get_filter_query(filters):
             # the filters, use a FULL JOIN on participant_id_col from the two
             # select statements.
             for table_name, where in wheres.iteritems():
-                select = table_select % (participant_id_column, table_name, where)
+                select = table_select % (participant_id_column, table_name,
+                                         where)
                 table = '%s t%d' % (select, table_num)
-                join = ' FULL JOIN %s ON t%d.%s = t%d.%s' % (table, table_num-1, participant_id_column, table_num, participant_id_column)
+                join = ' FULL JOIN %s ON t%d.%s = t%d.%s' % (
+                    table, table_num - 1, participant_id_column, table_num,
+                    participant_id_column)
                 query = _append_to_query(query, table, join, table_num)
                 table_num += 1
 
-    # Coalesce all where clauses for facet's which span a single table into 
+    # Coalesce all where clauses for facet's which span a single table into
     # one select per table.
     for table_name, wheres in table_wheres.iteritems():
         where_clause = ''
@@ -347,9 +349,12 @@ def _get_filter_query(filters):
                 where_clause += ' AND '
             where_clause += ' (%s)' % where
 
-        select = table_select % (participant_id_column, table_name, where_clause)
+        select = table_select % (participant_id_column, table_name,
+                                 where_clause)
         table = '%s t%d' % (select, table_num)
-        join = ' INNER JOIN %s ON t%d.%s = t%d.%s' % (table, table_num-1, participant_id_column, table_num, participant_id_column)
+        join = ' INNER JOIN %s ON t%d.%s = t%d.%s' % (
+            table, table_num - 1, participant_id_column, table_num,
+            participant_id_column)
         query = _append_to_query(query, table, join, table_num)
         table_num += 1
 
