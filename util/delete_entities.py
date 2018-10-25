@@ -1,6 +1,6 @@
 """Delete all entities in a workspace.
 
-This is useful when working on Export to Saturn feature.
+This is useful when working on the Send to Terra feature.
 
 To run:
 

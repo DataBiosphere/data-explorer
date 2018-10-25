@@ -3,7 +3,7 @@
 //   the Elasticsearch index will be given this name.
 // authorization_domain:
 //   FireCloud Authorization Domain. This must be set for access-controlled
-//   datasets. This is used to restrict which Saturn workspaces data can be
+//   datasets. This is used to restrict which Terra workspaces data can be
 //   sent to. See https://gatkforums.broadinstitute.org/firecloud/discussion/9524/authorization-domains
 
 {

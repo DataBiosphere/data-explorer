@@ -20,7 +20,7 @@ Run local Data Explorer with the 1000 Genomes dataset:
 
 * `docker-compose up --build`
 * Navigate to `localhost:4400`
-* If you want to use Export to Saturn feature, [do this one-time setup](https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature).
+* If you want to use the Send to Terra feature, [do this one-time setup](https://github.com/DataBiosphere/data-explorer#one-time-setup-for-send-to-terra-feature).
 
 ## Run local Data Explorer with a custom dataset
 
@@ -38,7 +38,7 @@ Run local Data Explorer with the 1000 Genomes dataset:
     and [here](https://github.com/DataBiosphere/data-explorer/tree/master/dataset_config/template).
     All files except `gcs.json` must be filled out.
 
-* If you want to use Export to Saturn feature, [do this one-time setup](https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature).
+* If you want to use the Send to Terra feature, [do this one-time setup](https://github.com/DataBiosphere/data-explorer#one-time-setup-for-send-to-terra-feature).
 * `DATASET_CONFIG_DIR=/app/dataset_config/<my dataset> docker-compose up --build -t 0`
   * The `-t 0` makes Kibana stop more quickly after `Ctrl-C`
 * Navigate to `localhost:4400`
@@ -124,9 +124,9 @@ created by `docker-compose` in this repo. Prior to 1.21.0, the network name was
   such as formatting tools.
 * [Set up git secrets.](https://github.com/DataBiosphere/data-explorer/tree/master/hooks)
 
-#### One-time setup for Export to Saturn feature
+#### One-time setup for Send to Terra feature
 
-The Export to Saturn feature temporarily stores data in a GCS bucket.
+The Send to Terra feature temporarily stores data in a GCS bucket.
 
 * If `~/.config/gcloud/application_default_credentials.json` doesn't exist,
 create it by running `gcloud auth application-default login`.
@@ -139,7 +139,7 @@ Explorer. Choose a project where you have at least Project Editor permissions.
 * Create export bucket. This only needs to be done once per deploy project.
 Run `deploy/create-export-url-bucket.sh DATASET` from the root of the repo,
 where `DATASET` is the name of the directory in `dataset_config`.
-* The Export to Saturn feature requires a service account private key. Follow
+* The Send to Terra feature requires a service account private key. Follow
 these instructions to download a key. This needs to be done once per person
 per deploy project. If three people run Data Explorer with the same deploy
 project, then all three need to download a key for the deploy project.

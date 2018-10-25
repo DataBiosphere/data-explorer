@@ -1,4 +1,4 @@
-/** Export to Saturn FAB */
+/** Export to Terra FAB */
 
 import CloudUpload from "@material-ui/icons/CloudUpload";
 import Button from "@material-ui/core/Button";
@@ -32,7 +32,7 @@ class ExportFab extends React.Component {
           https://github.com/mui-org/material-ui/issues/9275#issuecomment-350479467
         */}
         <div className="mui-fixed exportFab">
-          <Tooltip title="Send to Saturn">
+          <Tooltip title="Send to Terra">
             <Button
               variant="fab"
               color="secondary"
@@ -55,7 +55,7 @@ class ExportFab extends React.Component {
                 margin="dense"
                 id="name"
                 label="Cohort Name"
-                helperText="A cohort with this name will be created in Saturn"
+                helperText="A cohort with this name will be created in Terra"
                 type="text"
                 fullWidth
                 onKeyPress={ev => {
