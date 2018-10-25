@@ -244,7 +244,7 @@ describe("End-to-end", () => {
   }
 
   async function exportToSaturn_noSelectedCohort() {
-    await page.click("button[title='Send to Saturn']");
+    await page.click("button[title='Send to Terra']");
     // Jest documentation says to use waitForNavigation():
     // https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pageclickselector-options
     // Here we use waitForRequest() instead. waitForRequest() is slightly
@@ -254,7 +254,7 @@ describe("End-to-end", () => {
   }
 
   async function exportToSaturn_selectedCohort() {
-    await page.click("button[title='Send to Saturn']");
+    await page.click("button[title='Send to Terra']");
     // Wait for cohort name dialog
     await page.waitForSelector("#name");
 
