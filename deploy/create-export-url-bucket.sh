@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Creates GCS bucket for Export to Saturn feature.
+# Creates GCS bucket for the Send to Terra feature.
 #
 # See export_url_controller.py for more information.
 #
