@@ -119,7 +119,7 @@ describe("End-to-end", () => {
     let avuncular = await page.$x("//div[contains(text(), 'Avuncular')]");
     avuncular[0].click();
     // Wait for the facet card to be rendered and then assert.
-    await waitForFacetCard("Avuncular");
+    await waitForFacetCard("Avuncular", "HG00658");
     await assertFacet("Avuncular", "10", "HG00658 (aunt/uncle)", "1");
   });
 
@@ -235,8 +235,9 @@ describe("End-to-end", () => {
   /**
    * Waits for facet card to be rendered.
    */
-  async function waitForFacetCard(facetName) {
+  async function waitForFacetCard(facetName, facetValue) {
     await page.waitForXPath("//span[contains(text(), facetName)]");
+    await page.waitForXPath("//div[contains(text(), facetValue)]");
   }
 
   async function exportToSaturn_noSelectedCohort() {
