@@ -133,7 +133,7 @@ def _get_entities_dict(cohort_name, query, filter_arr):
         for doc in _get_doc_generator(filter_arr):
             sample_items.extend([{
                 'entityType': 'sample',
-                'entityName': s['sample_id']
+                'entityName': s[current_app.config['SAMPLE_ID_COLUMN']]
             } for s in doc.get('samples', [])])
         if len(sample_items) > 0:
             entities.append({
