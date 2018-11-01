@@ -237,6 +237,7 @@ def _process_facets(es):
     # Elasticsearch field type, optional UI facet description and Elasticsearch
     # facet.
     app.app.config['FACET_INFO'] = facets
+    app.app.config['EXTRA_FACET_INFO'] = {}
 
 
 def _process_export_url():
