@@ -129,9 +129,9 @@ class FacetCard extends Component {
     if (this.state.selectedValues.includes(facetValue)) {
       // User must have unchecked the checkbox.
       isSelected = false;
-      newValues.splice(newValues.indexOf(facetValue.name), 1);
+      newValues.splice(newValues.indexOf(facetValue), 1);
     } else {
-      // User must have unchecked the checkbox.
+      // User must have checked the checkbox.
       isSelected = true;
       newValues.push(facetValue);
     }
