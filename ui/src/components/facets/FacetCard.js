@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import { withStyles } from '@material-ui/core/styles';
-import Checkbox from '@material-ui/core/Checkbox';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
+import { withStyles } from "@material-ui/core/styles";
+import Checkbox from "@material-ui/core/Checkbox";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
-import * as Style from "libs/style"
+import * as Style from "libs/style";
 import "components/facets/FacetCard.css";
 
 const styles = theme => ({
@@ -14,9 +14,9 @@ const styles = theme => ({
     // hover CSS
     // (https://stackoverflow.com/questions/1033156/how-to-write-ahover-in-inline-css)
     // so we have to do it this way.
-    '&:hover': {
-      backgroundColor: 'unset',
-    },
+    "&:hover": {
+      backgroundColor: "unset"
+    }
   }
 });
 
@@ -58,37 +58,37 @@ class FacetCard extends Component {
         button
         dense
         disableRipple
-        onClick={(e) => this.onClick(facetValue.name)}
+        onClick={e => this.onClick(facetValue.name)}
       >
         <Checkbox
-          style={{ width:'24px', height:'24px' }}
+          style={{ width: "24px", height: "24px" }}
           checked={this.state.selectedValues.includes(facetValue.name)}
         />
-        <ListItemText primary={
-          <div className={this.isDimmed(facetValue) ? " grayText" : ""}>
-            <div className="facetValueName">{facetValue.name}</div>
-            <div className="facetValueCount">{facetValue.count}</div>
-          </div>
-        } />
+        <ListItemText
+          primary={
+            <div className={this.isDimmed(facetValue) ? " grayText" : ""}>
+              <div className="facetValueName">{facetValue.name}</div>
+              <div className="facetValueCount">{facetValue.count}</div>
+            </div>
+          }
+        />
       </ListItem>
     ));
     const totalFacetValueCount = (
-      <span className="totalFacetValueCount">
-        {this.totalFacetValueCount}
-      </span>
+      <span className="totalFacetValueCount">{this.totalFacetValueCount}</span>
     );
     return (
-      <div className="facetCard" style={ Style.elements.card }>
-          <div>
-            <span>{this.props.facet.name}</span>
-            {this.props.facet.name != "Samples Overview"
-              ? totalFacetValueCount
-              : null}
-          </div>
-          <span className="facetDescription">
-            {this.props.facet.description}
-          </span>
-        <List dense disablePadding>{facetValues}</List>
+      <div className="facetCard" style={Style.elements.card}>
+        <div>
+          <span>{this.props.facet.name}</span>
+          {this.props.facet.name != "Samples Overview"
+            ? totalFacetValueCount
+            : null}
+        </div>
+        <span className="facetDescription">{this.props.facet.description}</span>
+        <List dense disablePadding>
+          {facetValues}
+        </List>
       </div>
     );
   }
@@ -96,7 +96,7 @@ class FacetCard extends Component {
   isDimmed(facetValue) {
     return (
       this.state.selectedValues.length > 0 &&
-      !(this.state.selectedValues.includes(facetValue.name))
+      !this.state.selectedValues.includes(facetValue.name)
     );
   }
 
@@ -137,9 +137,12 @@ class FacetCard extends Component {
     }
 
     this.setState({ selectedValues: newValues });
-    this.props.updateFacets(this.props.facet.es_field_name, facetValue, isSelected);
+    this.props.updateFacets(
+      this.props.facet.es_field_name,
+      facetValue,
+      isSelected
+    );
   }
-
 }
 
 export default withStyles(styles)(FacetCard);
