@@ -154,7 +154,7 @@ def _process_bigquery():
     table_names = []
     participant_id_column = ''
     sample_id_column = ''
-    sample_file_columns = []
+    sample_file_columns = {}
     if os.path.isfile(config_path):
         bigquery_config = _parse_json_file(config_path)
         table_names = bigquery_config['table_names']
