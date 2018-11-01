@@ -10,7 +10,7 @@ import "components/facets/FacetCard.css";
 
 const styles = theme => ({
   root: {
-    // Disable gray background on ListItem hover. It's not possible to inlinesdfsdf
+    // Disable gray background on ListItem hover. It's not possible to inline
     // hover CSS
     // (https://stackoverflow.com/questions/1033156/how-to-write-ahover-in-inline-css)
     // so we have to do it this way.
