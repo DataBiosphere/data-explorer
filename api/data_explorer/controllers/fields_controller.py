@@ -16,10 +16,10 @@ def fields_get():
 
     es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
     search = Search(using=es, index=current_app.config['FIELDS_INDEX_NAME'])
-    # Default number of results is 10. We want to get 100.
     # TODO(malathir): Change this to case insensitive sorting.
     search = search.sort('name.keyword')
-    search = search[0:100]
+    # Default number of results is 10, which isn't enough.
+    search = search[0:10000]
     response = search.execute()
     response_fields = response.to_dict()
 
