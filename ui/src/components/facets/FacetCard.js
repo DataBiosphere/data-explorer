@@ -60,11 +60,6 @@ class FacetCard extends Component {
 
     this.facetValues = this.props.facet.values;
 
-    this.state = {
-      // List of strings, eg ["female"]
-      selectedValues: []
-    };
-
     this.totalFacetValueCount = this.sumFacetValueCounts(
       this.props.facet.values,
       []
@@ -77,7 +72,7 @@ class FacetCard extends Component {
   componentWillReceiveProps(nextProps) {
     this.totalFacetValueCount = this.sumFacetValueCounts(
       nextProps.facet.values,
-      this.state.selectedValues
+      this.props.selectedValues
     );
   }
 
@@ -95,8 +90,11 @@ class FacetCard extends Component {
         onClick={e => this.onClick(facetValue.name)}
       >
         <Checkbox
-          className={classes.facetValueCheckbox}
-          checked={this.state.selectedValues.includes(facetValue.name)}
+          style={{ width: "24px", height: "24px" }}
+          checked={
+            this.props.selectedValues != null &&
+            this.props.selectedValues.includes(facetValue.name)
+          }
         />
         <ListItemText
           primary={
@@ -127,8 +125,9 @@ class FacetCard extends Component {
 
   isDimmed(facetValue) {
     return (
-      this.state.selectedValues.length > 0 &&
-      !this.state.selectedValues.includes(facetValue.name)
+      this.props.selectedValues != null &&
+      this.props.selectedValues.length > 0 &&
+      !this.props.selectedValues.includes(facetValue.name)
     );
   }
 
@@ -139,7 +138,7 @@ class FacetCard extends Component {
    * */
   sumFacetValueCounts(facetValues, selectedValueNames) {
     let count = 0;
-    if (selectedValueNames.length === 0) {
+    if (selectedValueNames == null || selectedValueNames.length === 0) {
       facetValues.forEach(value => {
         count += value.count;
       });
@@ -156,19 +155,19 @@ class FacetCard extends Component {
 
   onClick(facetValue) {
     // facetValue is a string, eg "female"
-    let newValues = this.state.selectedValues.slice(0);
     let isSelected;
-    if (this.state.selectedValues.includes(facetValue)) {
+    if (
+      this.props.selectedValues != null &&
+      this.props.selectedValues.length > 0 &&
+      this.props.selectedValues.includes(facetValue)
+    ) {
       // User must have unchecked the checkbox.
       isSelected = false;
-      newValues.splice(newValues.indexOf(facetValue), 1);
     } else {
       // User must have checked the checkbox.
       isSelected = true;
-      newValues.push(facetValue);
     }
 
-    this.setState({ selectedValues: newValues });
     this.props.updateFacets(
       this.props.facet.es_field_name,
       facetValue,

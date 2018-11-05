@@ -5,8 +5,13 @@ class Search extends React.Component {
   constructor(props) {
     super(props);
   }
+
+  // renderOption is used to render the drop-down
   renderOption = option => {
-    // renderOption is used to render the drop-down
+    // Chips have a specific label, use that.
+    if (option.label != null) {
+      return option.label;
+    }
     if (option.facetDescription != null) {
       return (
         <div>
@@ -29,6 +34,9 @@ class Search extends React.Component {
   renderValue = option => {
     // renderValue is used for autocomplete. If I type "foo" into search box,
     // drop-down options whose renderValue contains "foo" will be shown in the drop-down.
+    if (option.value != null) {
+      return option.value;
+    }
     if (option.facetDescription != null) {
       return option.facetName + " " + option.facetDescription;
     } else {
@@ -44,7 +52,7 @@ class Search extends React.Component {
         options={this.props.searchResults}
         getOptionLabel={this.renderOption}
         getOptionValue={this.renderValue}
-        value={[]} // This will change in the next PR when we add chips from filters.
+        value={this.props.chips}
       />
     );
   }
