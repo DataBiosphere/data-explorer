@@ -12,7 +12,7 @@ const styles = {
   facetValueList: {
     gridColumn: '1 / 3',
     margin: '20px 0 0 0',
-    maxHeight: '600px',
+    maxHeight: '500px',
     overflow: 'auto',
   },
   facetValue: {
