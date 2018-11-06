@@ -6,7 +6,6 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 
 import * as Style from "libs/style";
-import "components/facets/FacetCard.css";
 
 const styles = {
   facetCard: {
