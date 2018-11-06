@@ -44,7 +44,7 @@ services:
       - GOOGLE_APPLICATION_CREDENTIALS
       - ELASTICSEARCH_URL=${ELASTICSEARCH_URL:-elasticsearch:9200}
       - PATH_PREFIX=/api
-      - DATASET_CONFIG_DIR=${DATASET_CONFIG_DIR:-/app/dataset_config/1000_genomes}
+      - DATASET_CONFIG_DIR=${DATASET_CONFIG_DIR:-dataset_config/1000_genomes}
       # Avoid writing .pyc files back to the volume. Files generated this way
       # have restricted permissions set which cause errors on subsequent docker
       # builds.
