@@ -135,16 +135,17 @@ def _get_entities_dict(cohort_name, query, filter_arr):
                 'entityType': 'sample',
                 'entityName': s['sample_id']
             } for s in doc.get('samples', [])])
-        entities.append({
-            'entityType': 'sample_set',
-            'name': cohort_name,
-            'attributes': {
-                'samples': {
-                    'itemsType': 'EntityReference',
-                    'items': sample_items
+        if len(sample_items) > 0:
+            entities.append({
+                'entityType': 'sample_set',
+                'name': cohort_name,
+                'attributes': {
+                    'samples': {
+                        'itemsType': 'EntityReference',
+                        'items': sample_items
+                    }
                 }
-            }
-        })
+            })
 
     return entities
 
