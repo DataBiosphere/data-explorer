@@ -124,7 +124,7 @@ describe("End-to-end", () => {
     expect(chip.length).toBe(1);
     // Wait for the facet card to be rendered and then assert.
     await waitForFacetCard("Avuncular");
-    await assertFacet("Avuncular", "10", "HG00658 (aunt/uncle)", "1");
+    await assertFacet("Avuncular", "46", "HG00658 (aunt/uncle)", "1");
   });
 
   async function waitForElasticsearchIndex() {
