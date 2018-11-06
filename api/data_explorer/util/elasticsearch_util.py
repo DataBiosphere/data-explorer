@@ -255,7 +255,8 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type):
         # Use ".keyword" because we want aggregation on keyword field, not
         # term field. See
         # https://www.elastic.co/guide/en/elasticsearch/reference/6.2/fielddata.html#before-enabling-fielddata
-        es_facet = TermsFacet(field=elasticsearch_field_name + '.keyword')
+        es_facet = TermsFacet(
+            field=elasticsearch_field_name + '.keyword', size=1000)
     elif field_type == 'boolean':
         es_facet = TermsFacet(field=elasticsearch_field_name)
     else:
