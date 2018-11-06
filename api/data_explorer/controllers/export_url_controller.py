@@ -188,10 +188,10 @@ def _write_gcs_file(entities):
         blob.upload_from_string(entities_json)
 
     current_app.logger.info(
-        'Wrote gs://%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'], blob.name))
+        'Wrote gs://%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'],
+                              blob.name))
     # Return in the format that signing a URL needs.
-    return '/%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'],
-                       blob.name)
+    return '/%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'], blob.name)
 
 
 def _create_signed_url(gcs_path):
