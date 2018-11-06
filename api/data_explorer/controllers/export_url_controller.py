@@ -165,30 +165,33 @@ def _write_gcs_file(entities):
     user = os.environ.get('USER')
     samples_file_name = '%s-%s-samples' % (current_app.config['INDEX_NAME'],
                                            user)
-    # Copy the samples blob to the export bucket in order to compose with the other
-    # object containing the rest of the entities JSON.
-    samples_blob = samples_bucket.get_blob(samples_file_name)
-    copied_samples_blob = export_bucket.blob(samples_file_name)
-    # Use the rewrite rather than the copy API because the copy can timeout.
-    copied_samples_blob.rewrite(samples_blob)
-
     blob = export_bucket.blob(_random_str())
     entities_json = json.dumps(entities)
-    # Remove the leading '[' character since this is being concatenated with the
-    # sample entities JSON, which has the trailing ']' stripped in the indexer.
-    entities_json = ',%s' % entities_json[1:]
-    blob.upload_from_string(entities_json)
 
-    merged = export_bucket.blob(_random_str())
-    merged.upload_from_string('')
-    merged.compose([copied_samples_blob, blob])
+    samples_blob = samples_bucket.get_blob(samples_file_name)
+    if samples_blob:
+        # Copy the samples blob to the export bucket in order to compose with the other
+        # object containing the rest of the entities JSON.
+        copied_samples_blob = export_bucket.blob(samples_file_name)
+        # Use the rewrite rather than the copy API because the copy can timeout.
+        copied_samples_blob.rewrite(samples_blob)
+
+        # Remove the leading '[' character since this is being concatenated with the
+        # sample entities JSON, which has the trailing ']' stripped in the indexer.
+        entities_json = ',%s' % entities_json[1:]
+        blob.upload_from_string(entities_json)
+        merged = export_bucket.blob(_random_str())
+        merged.upload_from_string('')
+        merged.compose([copied_samples_blob, blob])
+        blob = merged
+    else:
+        blob.upload_from_string(entities_json)
 
     current_app.logger.info(
         'Wrote gs://%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'],
-                              merged.name))
+                              blob.name))
     # Return in the format that signing a URL needs.
-    return '/%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'],
-                       merged.name)
+    return '/%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'], blob.name)
 
 
 def _create_signed_url(gcs_path):
