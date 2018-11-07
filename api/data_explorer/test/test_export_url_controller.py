@@ -58,6 +58,8 @@ class TestExportUrlController(BaseTestCase):
             'EXTRA_FACET_INFO': {},
             'ELASTICSEARCH_URL':
             'fakeurl:9200',
+            'SAMPLE_ID_COLUMN':
+            'sample_id',
         })
         return app
 
