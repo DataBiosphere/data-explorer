@@ -154,7 +154,7 @@ def _process_bigquery():
     table_names = []
     participant_id_column = ''
     sample_id_column = ''
-    sample_file_columns = []
+    sample_file_columns = {}
     if os.path.isfile(config_path):
         bigquery_config = _parse_json_file(config_path)
         table_names = bigquery_config['table_names']
@@ -237,6 +237,7 @@ def _process_facets(es):
     # Elasticsearch field type, optional UI facet description and Elasticsearch
     # facet.
     app.app.config['FACET_INFO'] = facets
+    app.app.config['EXTRA_FACET_INFO'] = {}
 
 
 def _process_export_url():
