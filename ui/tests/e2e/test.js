@@ -39,7 +39,8 @@ describe("End-to-end", () => {
 
     // Make sure non-selected facet values are gray.
     facetValueRow = await getFacetValueRow("Super Population", "European");
-    const grayDiv = await facetValueRow.$(".grayText");
+    const grayDiv = await facetValueRow.$("*[class*='FacetCard-grayText-']");
+
     expect(grayDiv).toBeTruthy();
   });
 
@@ -68,7 +69,7 @@ describe("End-to-end", () => {
       "Total Low Coverage Sequence",
       "0B-10B"
     );
-    const grayDiv = await facetValueRow.$(".grayText");
+    const grayDiv = await facetValueRow.$("*[class*='FacetCard-grayText-']");
     expect(grayDiv).toBeTruthy();
   });
 
@@ -90,7 +91,7 @@ describe("End-to-end", () => {
 
     // Make sure non-selected facet values are gray.
     facetValueRow = await getFacetValueRow("Samples Overview", "Has Exome BAM");
-    const grayDiv = await facetValueRow.$(".grayText");
+    const grayDiv = await facetValueRow.$("*[class*='FacetCard-grayText-']");
     expect(grayDiv).toBeTruthy();
 
     // Test exporting to saturn.
@@ -124,7 +125,7 @@ describe("End-to-end", () => {
     expect(chip.length).toBe(1);
     // Wait for the facet card to be rendered and then assert.
     await waitForFacetCard("Avuncular");
-    await assertFacet("Avuncular", "10", "HG00658 (aunt/uncle)", "1");
+    await assertFacet("Avuncular", "46", "HG00658 (aunt/uncle)", "1");
   });
 
   async function waitForElasticsearchIndex() {
@@ -180,13 +181,22 @@ describe("End-to-end", () => {
     const facetCard = await getFacetCard(facetName);
 
     expect(
-      await facetCard.$eval(".totalFacetValueCount", node => node.innerText)
+      await facetCard.$eval(
+        "*[class*='FacetCard-totalFacetValueCount-']",
+        node => node.innerText
+      )
     ).toBe(totalCount);
     expect(
-      await facetCard.$eval(".facetValueName", node => node.innerText)
+      await facetCard.$eval(
+        "*[class*='FacetCard-facetValueName-']",
+        node => node.innerText
+      )
     ).toBe(firstValueName);
     expect(
-      await facetCard.$eval(".facetValueCount", node => node.innerText)
+      await facetCard.$eval(
+        "*[class*='FacetCard-facetValueCount-']",
+        node => node.innerText
+      )
     ).toBe(firstValueCount);
   }
 
@@ -215,7 +225,9 @@ describe("End-to-end", () => {
    */
   async function getFacetCard(facetName) {
     const facetCard = (await page.evaluateHandle(innerFacetName => {
-      const divs = document.querySelectorAll("div.facetCard");
+      const divs = document.querySelectorAll(
+        "*[class*='FacetCard-facetCard-']"
+      );
       for (const div of divs) {
         const name = div.querySelector("span").innerText;
         if (name.includes(innerFacetName)) return div;

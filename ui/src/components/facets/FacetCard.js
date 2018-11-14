@@ -6,19 +6,53 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 
 import * as Style from "libs/style";
-import "components/facets/FacetCard.css";
 
-const styles = theme => ({
-  root: {
-    // Disable gray background on ListItem hover. It's not possible to inline
-    // hover CSS
-    // (https://stackoverflow.com/questions/1033156/how-to-write-ahover-in-inline-css)
-    // so we have to do it this way.
-    "&:hover": {
-      backgroundColor: "unset"
-    }
-  }
-});
+const styles = {
+  facetCard: {
+    margin: '2%',
+    paddingBottom: '8px',
+  },
+  facetValueList: {
+    gridColumn: '1 / 3',
+    margin: '20px 0 0 0',
+    maxHeight: '500px',
+    overflow: 'auto',
+  },
+  facetValue: {
+    // This is a nested div, so need to specify a new grid.
+    display: 'grid',
+    gridTemplateColumns: '50px auto 50px',
+    justifyContent: 'stretch',
+    padding: '0',
+    // Disable gray background on ListItem hover.
+    '&:hover': {
+      backgroundColor: 'unset',
+    },
+  },
+  facetDescription: {
+    color: 'gray',
+  },
+  facetValueCheckbox: {
+    height: '24px',
+    width: '24px',
+  },
+  facetValueCount: {
+    padding: '0',
+    float: 'right',
+    textAlign: 'right',
+  },
+  facetValueName: {
+    float: 'left',
+    textAlign: 'left',
+  },
+  totalFacetValueCount: {
+    color: 'gray',
+    float: 'right',
+  },
+  grayText: {
+    color: 'silver',
+  },
+}
 
 class FacetCard extends Component {
   constructor(props) {
@@ -53,7 +87,7 @@ class FacetCard extends Component {
     // facetValue is a dict, eg { name: "female", count: 1760 }
     const facetValues = this.props.facet.values.map(facetValue => (
       <ListItem
-        classes={{ root: classes.root }}
+        className={classes.facetValue}
         key={facetValue.name}
         button
         dense
@@ -61,34 +95,32 @@ class FacetCard extends Component {
         onClick={e => this.onClick(facetValue.name)}
       >
         <Checkbox
-          style={{ width: "24px", height: "24px" }}
+          className={classes.facetValueCheckbox}
           checked={this.state.selectedValues.includes(facetValue.name)}
         />
         <ListItemText
           primary={
-            <div className={this.isDimmed(facetValue) ? " grayText" : ""}>
-              <div className="facetValueName">{facetValue.name}</div>
-              <div className="facetValueCount">{facetValue.count}</div>
+            <div className={this.isDimmed(facetValue) ? classes.grayText : null}>
+              <div className={classes.facetValueName}>{facetValue.name}</div>
+              <div className={classes.facetValueCount}>{facetValue.count}</div>
             </div>
           }
         />
       </ListItem>
     ));
     const totalFacetValueCount = (
-      <span className="totalFacetValueCount">{this.totalFacetValueCount}</span>
+      <span className={classes.totalFacetValueCount}>{this.totalFacetValueCount}</span>
     );
     return (
-      <div className="facetCard" style={Style.elements.card}>
+      <div className={classes.facetCard} style={Style.elements.card}>
         <div>
           <span>{this.props.facet.name}</span>
           {this.props.facet.name != "Samples Overview"
             ? totalFacetValueCount
             : null}
         </div>
-        <span className="facetDescription">{this.props.facet.description}</span>
-        <List dense disablePadding>
-          {facetValues}
-        </List>
+        <span className={classes.facetDescription}>{this.props.facet.description}</span>
+        <List dense className={classes.facetValueList} >{facetValues}</List>
       </div>
     );
   }
