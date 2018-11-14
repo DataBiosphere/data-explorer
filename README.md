@@ -17,7 +17,8 @@ and [here](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/d
 ## Quickstart
 
 Run local Data Explorer with the 1000 Genomes dataset:
-
+- If `~/.config/gcloud/application_default_credentials.json` doesn't exist,
+  create it by running `gcloud auth application-default login`.
 - `docker-compose up --build`
 - Navigate to `localhost:4400`
 - If you want to use the Send to Terra feature, [do this one-time setup](https://github.com/DataBiosphere/data-explorer#one-time-setup-for-send-to-terra-feature).
@@ -39,6 +40,8 @@ Run local Data Explorer with the 1000 Genomes dataset:
     All files except `gcs.json` must be filled out.
 
 - If you want to use the Send to Terra feature, [do this one-time setup](https://github.com/DataBiosphere/data-explorer#one-time-setup-for-send-to-terra-feature).
+- If `~/.config/gcloud/application_default_credentials.json` doesn't exist,
+  create it by running `gcloud auth application-default login`.
 - `DATASET_CONFIG_DIR=dataset_config/<my dataset> docker-compose up --build -t 0`
   - The `-t 0` makes Kibana stop more quickly after `Ctrl-C`
 - Navigate to `localhost:4400`
@@ -128,8 +131,6 @@ update the server implementations:
 
 The Send to Terra feature temporarily stores data in a GCS bucket.
 
-- If `~/.config/gcloud/application_default_credentials.json` doesn't exist,
-  create it by running `gcloud auth application-default login`.
 - If you haven't already, fill out [deploy.json](https://github.com/DataBiosphere/data-explorer-indexers/blob/master/dataset_config/template/deploy.json)
   for your dataset.
   - Even if you don't plan on deploying Data Explorer to GCP,
