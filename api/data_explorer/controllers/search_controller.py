@@ -29,12 +29,13 @@ def search_get():
             fields.append(
                 SearchResult(
                     name=field["_source"]["name"],
-                    elasticsearch_name=field["_id"],
-                    description=field["_source"]["description"]))
+                    elasticsearch_field_name=field["_id"],
+                    facet_value=""))
         else:
             fields.append(
                 SearchResult(
                     name=field["_source"]["name"],
-                    elasticsearch_name=field["_id"]))
+                    elasticsearch_field_name=field["_id"],
+                    facet_value=""))
 
     return SearchResponse(fields=fields)

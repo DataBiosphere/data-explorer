@@ -187,30 +187,31 @@ definitions:
     description: "Dataset fields for field search."
     example:
       fields:
-      - name: "name"
-        description: "description"
-        elasticsearch_name: "elasticsearch_name"
-      - name: "name"
-        description: "description"
-        elasticsearch_name: "elasticsearch_name"
+      - facet_value: "facet_value"
+        elasticsearch_field_name: "elasticsearch_field_name"
+        display_text: "display_text"
+      - facet_value: "facet_value"
+        elasticsearch_field_name: "elasticsearch_field_name"
+        display_text: "display_text"
   SearchResult:
     properties:
-      name:
+      display_text:
         type: "string"
-        description: "Field name, for example, \"Gender\"."
-      description:
-        type: "string"
-        description: "Optional field description."
-      elasticsearch_name:
+        description: "The text displayed in the dropdown."
+      elasticsearch_field_name:
         type: "string"
         description: "The Elasticsearch field name."
-    description: "A field. For example, a BigQuery Gender column could include the\
-      \ field name \"Gender\", description \"Sex at birth\" and elasticsearch field\
-      \ name \"project_id.dataset_id.table_name.Gender\".\n"
+      facet_value:
+        type: "string"
+        description: "If this search result represents a field, facet_value is the\
+          \ empty string. If this search result represents a field and selected value,\
+          \ facet_value is the selected value."
+    description: "Can be a field (Gender), or a field and selected value (Gender =\
+      \ female).\n"
     example:
-      name: "name"
-      description: "description"
-      elasticsearch_name: "elasticsearch_name"
+      facet_value: "facet_value"
+      elasticsearch_field_name: "elasticsearch_field_name"
+      display_text: "display_text"
   exportUrlRequest:
     type: "object"
     properties:

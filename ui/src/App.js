@@ -38,9 +38,8 @@ class App extends Component {
       // is an Object with value and label. See
       // https://github.com/JedWatson/react-select#installation-and-usage
       fields: [],
-      // These represent fields selected via field search.
-      // This is an array of react-select options.
-      extraFacetsOptions: []
+      // This is an array of elasticsearch field names.
+      extraFacetNames: []
     };
 
     this.apiClient = new ApiClient();
@@ -65,17 +64,11 @@ class App extends Component {
       } else {
         this.setState({
           fields: data.fields.map(field => {
-            if (field.description) {
-              return {
-                label: field.name + " - " + field.description,
-                value: field.elasticsearch_name,
-                chipLabel: field.name
-              };
-            }
+            console.log(field);
             return {
-              label: field.name,
+              label: field.display_text,
               value: field.elasticsearch_name,
-              chipLabel: field.name
+              isFacetValue: field.is_facet_value
             };
           })
         });
@@ -102,7 +95,6 @@ class App extends Component {
           <FieldSearch
             fields={this.state.fields}
             handleChange={this.handleFieldSearchChange}
-            extraFacetsOptions={this.state.extraFacetsOptions}
           />
           <FacetsGrid
             updateFacets={this.updateFacets}
@@ -137,30 +129,23 @@ class App extends Component {
     datasetApi.datasetGet(datasetCallback);
   }
 
-  handleFieldSearchChange(extraFacetsOptions) {
-    // Remove deleted facets from filter, if necessary.
-    // - User adds extra facet A
-    // - User checks A_val in facet A. filter is now "A=A_val"
-    // - In FieldSearch component, user deletes chip for facet A. We need to
-    // remove "A=A_val" from filter.
-    let deletedFacets = this.state.extraFacetsOptions.filter(
-      x => !extraFacetsOptions.includes(x)
-    );
-    deletedFacets.forEach(removed => {
-      if (this.filterMap.get(removed.label) !== undefined) {
-        this.filterMap.delete(removed.label);
+  handleFieldSearchChange(searchOptions) {
+    let extraFacetNames = this.state.extraFacetNames;
+    for (let i = 0; i < searchOptions.length; i++) {
+      if (searchOptions[i].isFacetValue == false) {
+        extraFacetNames.push(searchOptions[i].value);
       }
-    });
+    }
 
     let filterArray = this.filterMapToArray(this.filterMap);
     this.setState({
-      extraFacetsOptions: extraFacetsOptions,
+      extraFacetNames: extraFacetNames,
       filter: filterArray
     });
     this.facetsApi.facetsGet(
       {
         filter: filterArray,
-        extraFacets: extraFacetsOptions.map(option => option.value)
+        extraFacets: extraFacetNames
       },
       this.facetsCallback
     );
@@ -195,7 +180,7 @@ class App extends Component {
     this.facetsApi.facetsGet(
       {
         filter: filterArray,
-        extraFacets: this.state.extraFacetsOptions.map(option => option.value)
+        extraFacets: this.state.extraFacetNames
       },
       this.facetsCallback
     );

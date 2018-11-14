@@ -165,16 +165,16 @@ definitions:
           $ref: '#/definitions/SearchResult'
   SearchResult:
     description: >
-      A field. For example, a BigQuery Gender column could include the field
-      name "Gender", description "Sex at birth" and elasticsearch field name
-      "project_id.dataset_id.table_name.Gender".
+      Can be a field (Gender), or a field and selected value (Gender = female).
     properties:
-      name:
+      display_text:
         type: string
-        description: Field name, for example, "Gender".
-      description:
-        type: string
-        description: Optional field description.
-      elasticsearch_name:
+        description: The text displayed in the dropdown.
+      elasticsearch_field_name:
         type: string
         description: The Elasticsearch field name.
+      facet_value:
+        type: string
+        description: >
+          If this search result represents a field, facet_value is the empty string.
+          If this search result represents a field and selected value, facet_value is the selected value.

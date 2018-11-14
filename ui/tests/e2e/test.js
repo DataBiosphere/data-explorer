@@ -119,10 +119,6 @@ describe("End-to-end", () => {
     await page.waitForXPath("//div[contains(text(), 'Avuncular')]");
     let avuncular = await page.$x("//div[contains(text(), 'Avuncular')]");
     avuncular[0].click();
-    // Wait for the chip to be added, and assert that there is only 1 such chip.
-    await page.waitForXPath("//div[text()='Avuncular']");
-    let chip = await page.$x("//div[text()='Avuncular']");
-    expect(chip.length).toBe(1);
     // Wait for the facet card to be rendered and then assert.
     await waitForFacetCard("Avuncular");
     await assertFacet("Avuncular", "46", "HG00658 (aunt/uncle)", "1");
@@ -244,7 +240,9 @@ describe("End-to-end", () => {
   async function waitForFacetsUpdate(newTotalCount) {
     // See #63 for why we can't wait for .grayText.
     await page.waitForXPath(
-      "//*[contains(@class, 'totalCountText') and contains(text(), newTotalCount)]"
+      "//*[contains(@class, 'totalCountText') and contains(text(),'" +
+        newTotalCount +
+        "')]"
     );
   }
 
@@ -252,7 +250,7 @@ describe("End-to-end", () => {
    * Waits for facet card to be rendered.
    */
   async function waitForFacetCard(facetName) {
-    await page.waitForXPath("//span[contains(text(), facetName)]");
+    await page.waitForXPath("//span[contains(text(),'" + facetName + "')]");
   }
 
   async function exportToSaturn_noSelectedCohort() {
