@@ -40,7 +40,8 @@ class App extends Component {
       //   value: // Used by react-select; text shown in search box chip
       //   facetValue:
       // }
-      fields: [],
+      // See https://github.com/JedWatson/react-select#installation-and-usage
+      searchResults: [],
       // These represent extra facets added via the search box.
       // This is an array of Elasticsearch field names
       extraFacetEsFieldNames: []
@@ -67,11 +68,11 @@ class App extends Component {
         console.error(error);
       } else {
         this.setState({
-          fields: data.search_results.map(field => {
+          searchResults: data.search_results.map(searchResult => {
             return {
-              label: field.display_text,
-              value: field.elasticsearch_field_name,
-              facetValue: field.facet_value
+              label: searchResult.display_text,
+              value: searchResult.elasticsearch_field_name,
+              facetValue: searchResult.facet_value
             };
           })
         });
@@ -96,7 +97,7 @@ class App extends Component {
             totalCount={this.state.totalCount}
           />
           <Search
-            searchResults={this.state.fields}
+            searchResults={this.state.searchResults}
             handleSearch={this.handleSearch}
           />
           <FacetsGrid
