@@ -1,5 +1,5 @@
-from data_explorer.models.field import Field
-from data_explorer.models.fields_response import FieldsResponse
+from data_explorer.models.search_result import SearchResult
+from data_explorer.models.search_response import SearchResponse
 
 from flask import current_app
 from elasticsearch import Elasticsearch

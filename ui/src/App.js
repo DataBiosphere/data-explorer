@@ -59,7 +59,7 @@ class App extends Component {
     }.bind(this);
 
     this.searchApi = new SearchApi(this.apiClient);
-    this.fieldsCallback = function(error, data) {
+    this.searchCallback = function(error, data) {
       if (error) {
         console.error(error);
       } else {
