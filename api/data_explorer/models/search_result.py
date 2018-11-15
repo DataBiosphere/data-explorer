@@ -16,31 +16,37 @@ class SearchResult(Model):
     """
 
     def __init__(self,
-                 display_text=None,
+                 facet_name=None,
+                 facet_description=None,
                  elasticsearch_field_name=None,
                  facet_value=None):  # noqa: E501
         """SearchResult - a model defined in Swagger
 
-        :param display_text: The display_text of this SearchResult.  # noqa: E501
-        :type display_text: str
+        :param facet_name: The facet_name of this SearchResult.  # noqa: E501
+        :type facet_name: str
+        :param facet_description: The facet_description of this SearchResult.  # noqa: E501
+        :type facet_description: str
         :param elasticsearch_field_name: The elasticsearch_field_name of this SearchResult.  # noqa: E501
         :type elasticsearch_field_name: str
         :param facet_value: The facet_value of this SearchResult.  # noqa: E501
         :type facet_value: str
         """
         self.swagger_types = {
-            'display_text': str,
+            'facet_name': str,
+            'facet_description': str,
             'elasticsearch_field_name': str,
             'facet_value': str
         }
 
         self.attribute_map = {
-            'display_text': 'display_text',
+            'facet_name': 'facet_name',
+            'facet_description': 'facet_description',
             'elasticsearch_field_name': 'elasticsearch_field_name',
             'facet_value': 'facet_value'
         }
 
-        self._display_text = display_text
+        self._facet_name = facet_name
+        self._facet_description = facet_description
         self._elasticsearch_field_name = elasticsearch_field_name
         self._facet_value = facet_value
 
@@ -56,27 +62,50 @@ class SearchResult(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def display_text(self):
-        """Gets the display_text of this SearchResult.
+    def facet_name(self):
+        """Gets the facet_name of this SearchResult.
 
-        The text displayed in the dropdown.  # noqa: E501
+        The name of the facet.  # noqa: E501
 
-        :return: The display_text of this SearchResult.
+        :return: The facet_name of this SearchResult.
         :rtype: str
         """
-        return self._display_text
+        return self._facet_name
 
-    @display_text.setter
-    def display_text(self, display_text):
-        """Sets the display_text of this SearchResult.
+    @facet_name.setter
+    def facet_name(self, facet_name):
+        """Sets the facet_name of this SearchResult.
 
-        The text displayed in the dropdown.  # noqa: E501
+        The name of the facet.  # noqa: E501
 
-        :param display_text: The display_text of this SearchResult.
-        :type display_text: str
+        :param facet_name: The facet_name of this SearchResult.
+        :type facet_name: str
         """
 
-        self._display_text = display_text
+        self._facet_name = facet_name
+
+    @property
+    def facet_description(self):
+        """Gets the facet_description of this SearchResult.
+
+        The description of the facet.  # noqa: E501
+
+        :return: The facet_description of this SearchResult.
+        :rtype: str
+        """
+        return self._facet_description
+
+    @facet_description.setter
+    def facet_description(self, facet_description):
+        """Sets the facet_description of this SearchResult.
+
+        The description of the facet.  # noqa: E501
+
+        :param facet_description: The facet_description of this SearchResult.
+        :type facet_description: str
+        """
+
+        self._facet_description = facet_description
 
     @property
     def elasticsearch_field_name(self):

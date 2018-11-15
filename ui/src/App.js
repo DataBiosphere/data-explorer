@@ -70,8 +70,9 @@ class App extends Component {
         this.setState({
           searchResults: data.search_results.map(searchResult => {
             return {
-              label: searchResult.display_text,
-              value: searchResult.elasticsearch_field_name,
+              facetName: searchResult.facet_name,
+              facetDescription: searchResult.facet_description,
+              esFieldName: searchResult.elasticsearch_field_name,
               facetValue: searchResult.facet_value
             };
           })
@@ -137,7 +138,7 @@ class App extends Component {
     let extraFacetEsFieldNames = this.state.extraFacetEsFieldNames;
     for (let i = 0; i < searchResults.length; i++) {
       if (searchResults[i].facetValue == "") {
-        extraFacetEsFieldNames.push(searchResults[i].value);
+        extraFacetEsFieldNames.push(searchResults[i].esFieldName);
       }
     }
 
