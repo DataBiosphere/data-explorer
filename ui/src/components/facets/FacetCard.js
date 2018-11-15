@@ -4,6 +4,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import Typography from "@material-ui/core/Typography";
 
 import * as Style from "libs/style";
 
@@ -11,6 +12,17 @@ const styles = {
   facetCard: {
     margin: "2%",
     paddingBottom: "8px"
+  },
+  facetName: {
+    display: "inline"
+  },
+  facetDescription: {
+    color: "gray"
+  },
+  totalFacetValueCount: {
+    color: "gray",
+    display: "inline",
+    float: "right"
   },
   facetValueList: {
     gridColumn: "1 / 3",
@@ -29,25 +41,18 @@ const styles = {
       backgroundColor: "unset"
     }
   },
-  facetDescription: {
-    color: "gray"
-  },
   facetValueCheckbox: {
     height: "24px",
     width: "24px"
-  },
-  facetValueCount: {
-    padding: "0",
-    float: "right",
-    textAlign: "right"
   },
   facetValueName: {
     float: "left",
     textAlign: "left"
   },
-  totalFacetValueCount: {
-    color: "gray",
-    float: "right"
+  facetValueCount: {
+    padding: "0",
+    float: "right",
+    textAlign: "right"
   },
   grayText: {
     color: "silver"
@@ -109,21 +114,23 @@ class FacetCard extends Component {
       </ListItem>
     ));
     const totalFacetValueCount = (
-      <span className={classes.totalFacetValueCount}>
-        {this.totalFacetValueCount}
-      </span>
+      <span className={classes.totalFacetValueCount}>{this.totalFacetValueCount}</span>
     );
     return (
       <div className={classes.facetCard} style={Style.elements.card}>
         <div>
-          <span>{this.props.facet.name}</span>
-          {this.props.facet.name != "Samples Overview"
-            ? totalFacetValueCount
-            : null}
+          <Typography className={classes.facetName}>
+            {this.props.facet.name}
+          </Typography>
+          {this.props.facet.name != "Samples Overview" ? (
+            <Typography className={classes.totalFacetValueCount}>
+              {this.totalFacetValueCount}
+            </Typography>
+          ) : null}
         </div>
-        <span className={classes.facetDescription}>
+        <Typography className={classes.facetDescription}>
           {this.props.facet.description}
-        </span>
+        </Typography>
         <List dense className={classes.facetValueList}>
           {facetValues}
         </List>

@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
 
 import "App.css";
 import {
@@ -13,8 +15,14 @@ import FacetsGrid from "components/facets/FacetsGrid";
 import Search from "components/Search";
 import Header from "components/Header";
 
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: ["Montserrat", "sans-serif"].join(",")
+  }
+});
+
 const Disclaimer = (
-  <div style={{ margin: "20px" }}>
+  <Typography style={{ margin: "20px" }}>
     This dataset is publicly available for anyone to use under the terms
     provided by the dataset source (<a href="http://www.internationalgenome.org/data">
       http://www.internationalgenome.org/data
@@ -22,7 +30,7 @@ const Disclaimer = (
     from Verily Life Sciences, LLC. Verily Life Sciences, LLC disclaims all
     liability for any damages, direct or indirect, resulting from the use of the
     dataset.
-  </div>
+  </Typography>
 );
 
 class App extends Component {
@@ -80,6 +88,8 @@ class App extends Component {
       }
     }.bind(this);
 
+    // Map from facet name to a list of facet values.
+    this.filterMap = new Map();
     this.updateFacets = this.updateFacets.bind(this);
     this.handleSearchBoxChange = this.handleSearchBoxChange.bind(this);
   }
@@ -90,28 +100,27 @@ class App extends Component {
       return <div />;
     } else {
       return (
-        <div className="app">
-          <Header
-            datasetName={this.state.datasetName}
-            totalCount={this.state.totalCount}
-          />
-          <Search
-            searchResults={this.state.searchResults}
-            handleSearchBoxChange={this.handleSearchBoxChange}
-            selectedFacetValues={this.state.selectedFacetValues}
-            facets={this.state.facets}
-          />
-          <FacetsGrid
-            updateFacets={this.updateFacets}
-            selectedFacetValues={this.state.selectedFacetValues}
-            facets={Array.from(this.state.facets.values())}
-          />
-          <ExportFab
-            exportUrlApi={new ExportUrlApi(this.apiClient)}
-            filter={this.filterMapToArray(this.state.selectedFacetValues)}
-          />
-          {this.state.datasetName == "1000 Genomes" ? Disclaimer : null}
-        </div>
+        <MuiThemeProvider theme={theme}>
+          <div className="app">
+            <Header
+              datasetName={this.state.datasetName}
+              totalCount={this.state.totalCount}
+            />
+            <Search
+              searchResults={this.state.searchResults}
+              handleSearch={this.handleSearch}
+            />
+            <FacetsGrid
+              updateFacets={this.updateFacets}
+              facets={this.state.facets}
+            />
+            <ExportFab
+              exportUrlApi={new ExportUrlApi(this.apiClient)}
+              filter={this.state.filter}
+            />
+            {this.state.datasetName == "1000 Genomes" ? Disclaimer : null}
+          </div>
+        </MuiThemeProvider>
       );
     }
   }
@@ -175,9 +184,6 @@ class App extends Component {
 
   /**
    * Updates the selection for a single facet value and refreshes the facets data from the server.
-   * @param esFieldName string containing the elasticsearch field name of the facet corresponding to this value
-   * @param facetValue string containing the name of this facet value
-   * @param isSelected bool indicating whether this facetValue should be added to or removed from the query
    * */
   updateFacets(esFieldName, facetValue, isSelected) {
     let currentFilterMap = this.state.selectedFacetValues;
