@@ -115,9 +115,11 @@ describe("End-to-end", () => {
     // Click on the drop down
     let initial_select = await page.$x("//div[text()='Select...']");
     initial_select[0].click();
-    // Click on the 'Avuncular' chip
-    await page.waitForXPath("//div[contains(text(), 'Avuncular')]");
-    let avuncular = await page.$x("//div[contains(text(), 'Avuncular')]");
+    // Click on the 'Avuncular' option
+    await page.waitForXPath("//span[contains(normalize-space(), 'Avuncular')]");
+    let avuncular = await page.$x(
+      "//span[contains(normalize-space(), 'Avuncular')]"
+    );
     avuncular[0].click();
     // Wait for the facet card to be rendered and then assert.
     await waitForFacetCard("Avuncular");
