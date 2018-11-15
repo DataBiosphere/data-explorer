@@ -5,7 +5,7 @@ import {
   ApiClient,
   DatasetApi,
   FacetsApi,
-  FieldsApi
+  SearchApi
 } from "data_explorer_service";
 import ExportFab from "components/ExportFab";
 import ExportUrlApi from "api/src/api/ExportUrlApi";
@@ -30,7 +30,6 @@ class App extends Component {
     super(props);
     this.state = {
       datasetName: "",
-      enableFieldSearch: false,
       facets: null,
       totalCount: null,
       filter: null,
@@ -59,7 +58,7 @@ class App extends Component {
       }
     }.bind(this);
 
-    this.fieldsApi = new FieldsApi(this.apiClient);
+    this.searchApi = new SearchApi(this.apiClient);
     this.fieldsCallback = function(error, data) {
       if (error) {
         console.error(error);
@@ -120,7 +119,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.fieldsApi.fieldsGet(this.fieldsCallback);
+    this.searchApi.searchGet(this.searchCallback);
     this.facetsApi.facetsGet({}, this.facetsCallback);
 
     // Call /api/dataset
@@ -131,8 +130,7 @@ class App extends Component {
         console.error(error);
       } else {
         this.setState({
-          datasetName: data.name,
-          enableFieldSearch: data.enableFieldSearch
+          datasetName: data.name
         });
       }
     }.bind(this);

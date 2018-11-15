@@ -9,5 +9,5 @@ from data_explorer.models.export_url_response import ExportUrlResponse
 from data_explorer.models.facet import Facet
 from data_explorer.models.facet_value import FacetValue
 from data_explorer.models.facets_response import FacetsResponse
-from data_explorer.models.field import Field
-from data_explorer.models.fields_response import FieldsResponse
+from data_explorer.models.search_response import SearchResponse
+from data_explorer.models.search_result import SearchResult

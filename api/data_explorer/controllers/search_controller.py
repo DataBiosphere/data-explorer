@@ -6,12 +6,12 @@ from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
 
 
-def fields_get():
-    """fields_get
+def search_get():
+    """search_get
 
-    Returns fields.
+    Returns searchResults.
 
-    rtype: FieldsResponse
+    rtype: SearchResponse
     """
 
     es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
@@ -27,14 +27,14 @@ def fields_get():
     for field in response_fields['hits']['hits']:
         if "description" in field["_source"]:
             fields.append(
-                Field(
+                SearchResult(
                     name=field["_source"]["name"],
                     elasticsearch_name=field["_id"],
                     description=field["_source"]["description"]))
         else:
             fields.append(
-                Field(
+                SearchResult(
                     name=field["_source"]["name"],
                     elasticsearch_name=field["_id"]))
 
-    return FieldsResponse(fields=fields)
+    return SearchResponse(fields=fields)
