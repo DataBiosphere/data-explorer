@@ -59,7 +59,7 @@ services:
       # deployments; bootstrap checks are still enabled for production
       # deployments.
       - "transport.host=localhost"
-      - ES_JAVA_OPTS=${ES_JAVA_OPTS:--Xms256m -Xmx256m}
+      - ES_JAVA_OPTS
   kibana:
     image: docker.elastic.co/kibana/kibana-oss:6.2.2
     ports:
