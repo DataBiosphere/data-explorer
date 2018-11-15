@@ -28,13 +28,15 @@ def search_get():
         if "description" in field["_source"]:
             fields.append(
                 SearchResult(
-                    name=field["_source"]["name"],
+                    display_text="Add %s facet with description %s" %
+                    (field["_source"]["name"],
+                     field["_source"]["description"]),
                     elasticsearch_field_name=field["_id"],
                     facet_value=""))
         else:
             fields.append(
                 SearchResult(
-                    name=field["_source"]["name"],
+                    display_text="Add %s facet" % field["_source"]["name"],
                     elasticsearch_field_name=field["_id"],
                     facet_value=""))
 
