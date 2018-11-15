@@ -23,18 +23,21 @@ def search_get():
     response = search.execute()
     response_fields = response.to_dict()
 
-    fields = []
+    search_results = []
     for field in response_fields['hits']['hits']:
         if "description" in field["_source"]:
-            fields.append(
+            search_results.append(
                 SearchResult(
-                    name=field["_source"]["name"],
-                    elasticsearch_name=field["_id"],
-                    description=field["_source"]["description"]))
+                    display_text="Add %s facet with description %s" %
+                    (field["_source"]["name"],
+                     field["_source"]["description"]),
+                    elasticsearch_field_name=field["_id"],
+                    facet_value=""))
         else:
-            fields.append(
+            search_results.append(
                 SearchResult(
-                    name=field["_source"]["name"],
-                    elasticsearch_name=field["_id"]))
+                    display_text="Add %s facet" % field["_source"]["name"],
+                    elasticsearch_field_name=field["_id"],
+                    facet_value=""))
 
-    return SearchResponse(fields=fields)
+    return SearchResponse(search_results=search_results)

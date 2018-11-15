@@ -22,7 +22,6 @@ import SearchResult from "./SearchResult";
 export default class SearchResponse {
   /**
    * Constructs a new <code>SearchResponse</code>.
-   * Dataset fields for field search.
    * @alias module:model/SearchResponse
    * @class
    */
@@ -40,15 +39,18 @@ export default class SearchResponse {
     if (data) {
       obj = obj || new SearchResponse();
 
-      if (data.hasOwnProperty("fields")) {
-        obj["fields"] = ApiClient.convertToType(data["fields"], [SearchResult]);
+      if (data.hasOwnProperty("search_results")) {
+        obj["search_results"] = ApiClient.convertToType(
+          data["search_results"],
+          [SearchResult]
+        );
       }
     }
     return obj;
   }
 
   /**
-   * @member {Array.<module:model/SearchResult>} fields
+   * @member {Array.<module:model/SearchResult>} search_results
    */
-  fields = undefined;
+  search_results = undefined;
 }
