@@ -157,9 +157,8 @@ definitions:
         type: string
         description: "Optional FireCloud authorization domain"
   SearchResponse:
-    description: Dataset fields for field search.
     properties:
-      fields:
+      search_results:
         type: array
         items:
           $ref: '#/definitions/SearchResult'

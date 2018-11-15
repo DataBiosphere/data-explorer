@@ -16,17 +16,17 @@ class SearchResponse(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, fields=None):  # noqa: E501
+    def __init__(self, search_results=None):  # noqa: E501
         """SearchResponse - a model defined in Swagger
 
-        :param fields: The fields of this SearchResponse.  # noqa: E501
-        :type fields: List[SearchResult]
+        :param search_results: The search_results of this SearchResponse.  # noqa: E501
+        :type search_results: List[SearchResult]
         """
-        self.swagger_types = {'fields': List[SearchResult]}
+        self.swagger_types = {'search_results': List[SearchResult]}
 
-        self.attribute_map = {'fields': 'fields'}
+        self.attribute_map = {'search_results': 'search_results'}
 
-        self._fields = fields
+        self._search_results = search_results
 
     @classmethod
     def from_dict(cls, dikt):
@@ -40,22 +40,22 @@ class SearchResponse(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def fields(self):
-        """Gets the fields of this SearchResponse.
+    def search_results(self):
+        """Gets the search_results of this SearchResponse.
 
 
-        :return: The fields of this SearchResponse.
+        :return: The search_results of this SearchResponse.
         :rtype: List[SearchResult]
         """
-        return self._fields
+        return self._search_results
 
-    @fields.setter
-    def fields(self, fields):
-        """Sets the fields of this SearchResponse.
+    @search_results.setter
+    def search_results(self, search_results):
+        """Sets the search_results of this SearchResponse.
 
 
-        :param fields: The fields of this SearchResponse.
-        :type fields: List[SearchResult]
+        :param search_results: The search_results of this SearchResponse.
+        :type search_results: List[SearchResult]
         """
 
-        self._fields = fields
+        self._search_results = search_results

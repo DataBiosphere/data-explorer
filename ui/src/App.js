@@ -10,7 +10,7 @@ import {
 import ExportFab from "components/ExportFab";
 import ExportUrlApi from "api/src/api/ExportUrlApi";
 import FacetsGrid from "components/facets/FacetsGrid";
-import FieldSearch from "components/FieldSearch";
+import Search from "components/Search";
 import Header from "components/Header";
 
 const Disclaimer = (
@@ -33,13 +33,17 @@ class App extends Component {
       facets: null,
       totalCount: null,
       filter: null,
-      // These are all fields which can be searched using field search.
-      // This is an array of react-select options. A react-select option
-      // is an Object with value and label. See
-      // https://github.com/JedWatson/react-select#installation-and-usage
+      // Search results shown in the search drop-down.
+      // This is an array of dicts:
+      // {
+      //   label: // Used by react-select; text shown in search box drop-down
+      //   value: // Used by react-select; text shown in search box chip
+      //   facetValue:
+      // }
       fields: [],
-      // This is an array of elasticsearch field names.
-      extraFacetNames: []
+      // These represent extra facets added via the search box.
+      // This is an array of Elasticsearch field names
+      extraFacetEsFieldNames: []
     };
 
     this.apiClient = new ApiClient();
@@ -63,7 +67,7 @@ class App extends Component {
         console.error(error);
       } else {
         this.setState({
-          fields: data.fields.map(field => {
+          fields: data.search_results.map(field => {
             return {
               label: field.display_text,
               value: field.elasticsearch_field_name,
@@ -77,7 +81,7 @@ class App extends Component {
     // Map from facet name to a list of facet values.
     this.filterMap = new Map();
     this.updateFacets = this.updateFacets.bind(this);
-    this.handleFieldSearchChange = this.handleFieldSearchChange.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
   render() {
@@ -91,9 +95,9 @@ class App extends Component {
             datasetName={this.state.datasetName}
             totalCount={this.state.totalCount}
           />
-          <FieldSearch
-            fields={this.state.fields}
-            handleChange={this.handleFieldSearchChange}
+          <Search
+            searchResults={this.state.fields}
+            handleSearch={this.handleSearch}
           />
           <FacetsGrid
             updateFacets={this.updateFacets}
@@ -128,23 +132,23 @@ class App extends Component {
     datasetApi.datasetGet(datasetCallback);
   }
 
-  handleFieldSearchChange(searchOptions) {
-    let extraFacetNames = this.state.extraFacetNames;
-    for (let i = 0; i < searchOptions.length; i++) {
-      if (searchOptions[i].facetValue == "") {
-        extraFacetNames.push(searchOptions[i].value);
+  handleSearch(searchResults) {
+    let extraFacetEsFieldNames = this.state.extraFacetEsFieldNames;
+    for (let i = 0; i < searchResults.length; i++) {
+      if (searchResults[i].facetValue == "") {
+        extraFacetEsFieldNames.push(searchResults[i].value);
       }
     }
 
     let filterArray = this.filterMapToArray(this.filterMap);
     this.setState({
-      extraFacetNames: extraFacetNames,
+      extraFacetEsFieldNames: extraFacetEsFieldNames,
       filter: filterArray
     });
     this.facetsApi.facetsGet(
       {
         filter: filterArray,
-        extraFacets: extraFacetNames
+        extraFacets: extraFacetEsFieldNames
       },
       this.facetsCallback
     );
@@ -179,7 +183,7 @@ class App extends Component {
     this.facetsApi.facetsGet(
       {
         filter: filterArray,
-        extraFacets: this.state.extraFacetNames
+        extraFacets: this.state.extraFacetEsFieldNames
       },
       this.facetsCallback
     );

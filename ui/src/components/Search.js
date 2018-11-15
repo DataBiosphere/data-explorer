@@ -1,7 +1,7 @@
 import React from "react";
 import Select, { components } from "react-select";
 
-class FieldSearch extends React.Component {
+class Search extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -10,12 +10,12 @@ class FieldSearch extends React.Component {
     return (
       <Select
         isMulti="true"
-        onChange={this.props.handleChange}
-        options={this.props.fields}
+        onChange={this.props.handleSearch}
+        options={this.props.searchResults}
         value={[]} // This will change in the next PR when we add chips from filters.
       />
     );
   }
 }
 
-export default FieldSearch;
+export default Search;

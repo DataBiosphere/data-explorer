@@ -180,13 +180,12 @@ definitions:
       url: "url"
   SearchResponse:
     properties:
-      fields:
+      search_results:
         type: "array"
         items:
           $ref: "#/definitions/SearchResult"
-    description: "Dataset fields for field search."
     example:
-      fields:
+      search_results:
       - facet_value: "facet_value"
         elasticsearch_field_name: "elasticsearch_field_name"
         display_text: "display_text"
