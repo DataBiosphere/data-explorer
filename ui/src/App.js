@@ -34,12 +34,11 @@ class App extends Component {
       totalCount: null,
       filter: null,
       // Search results shown in the search drop-down.
-      // This is an array of dicts:
-      // {
-      //   label: // Used by react-select; text shown in search box drop-down
-      //   value: // Used by react-select; text shown in search box chip
-      //   facetValue:
-      // }
+      // This is an array of dicts, where each dict has
+      // facetName - The name of the facet.
+      // facetDescription - The description of the facet.
+      // esFieldName - The elasticsearch field name of the facet.
+      // facetValue
       // See https://github.com/JedWatson/react-select#installation-and-usage
       searchResults: [],
       // These represent extra facets added via the search box.

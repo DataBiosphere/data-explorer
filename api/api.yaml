@@ -164,19 +164,19 @@ definitions:
           $ref: '#/definitions/SearchResult'
   SearchResult:
     description: >
-      Can be a field (Gender), or a field and selected value (Gender = female).
+      Can represent a facet (Gender), or a facet and selected value (Gender = female).
     properties:
       facet_name:
         type: string
         description: The name of the facet.
       facet_description:
         type: string
-        description: The description of the facet.
+        description: Optional. The description of the facet.
       elasticsearch_field_name:
         type: string
         description: The Elasticsearch field name.
       facet_value:
         type: string
         description: >
-          If this search result represents a field, facet_value is the empty string.
-          If this search result represents a field and selected value, facet_value is the selected value.
+          If this search result represents a facet, facet_value is the empty string.
+          If this search result represents a facet and selected value, facet_value is the selected value.

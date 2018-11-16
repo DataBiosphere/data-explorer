@@ -6,26 +6,29 @@ class Search extends React.Component {
     super(props);
   }
   renderOption = option => {
+    // renderOption is used to render the drop-down
     if (option.facetDescription != null) {
       return (
         <div>
-          <span style={{ color: "grey" }}>Add</span>
+          <span style={{ color: "silver" }}>Add</span>
           <span style={{ color: "black" }}> {option.facetName} </span>
-          <span style={{ color: "grey" }}>facet with description</span>
+          <span style={{ color: "silver" }}>facet with description</span>
           <span style={{ color: "black" }}> {option.facetDescription} </span>
         </div>
       );
     } else {
       return (
         <div>
-          <span style={{ color: "grey" }}>Add</span>
+          <span style={{ color: "silver" }}>Add</span>
           <span style={{ color: "black" }}> {option.facetName} </span>
-          <span style={{ color: "grey" }}>facet</span>
+          <span style={{ color: "silver" }}>facet</span>
         </div>
       );
     }
   };
   renderValue = option => {
+    // renderValue is used for autocomplete. If I type "foo" into search box,
+    // drop-down options whose renderValue contains "foo" will be shown in the drop-down.
     if (option.facetDescription != null) {
       return option.facetName + " " + option.facetDescription;
     } else {

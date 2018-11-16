@@ -201,17 +201,17 @@ definitions:
         description: "The name of the facet."
       facet_description:
         type: "string"
-        description: "The description of the facet."
+        description: "Optional. The description of the facet."
       elasticsearch_field_name:
         type: "string"
         description: "The Elasticsearch field name."
       facet_value:
         type: "string"
-        description: "If this search result represents a field, facet_value is the\
-          \ empty string. If this search result represents a field and selected value,\
+        description: "If this search result represents a facet, facet_value is the\
+          \ empty string. If this search result represents a facet and selected value,\
           \ facet_value is the selected value."
-    description: "Can be a field (Gender), or a field and selected value (Gender =\
-      \ female).\n"
+    description: "Can represent a facet (Gender), or a facet and selected value (Gender\
+      \ = female).\n"
     example:
       facet_value: "facet_value"
       elasticsearch_field_name: "elasticsearch_field_name"

@@ -21,7 +21,7 @@ import ApiClient from "../ApiClient";
 export default class SearchResult {
   /**
    * Constructs a new <code>SearchResult</code>.
-   * Can be a field (Gender), or a field and selected value (Gender &#x3D; female).
+   * Can represent a facet (Gender), or a facet and selected value (Gender &#x3D; female).
    * @alias module:model/SearchResult
    * @class
    */
@@ -73,7 +73,7 @@ export default class SearchResult {
    */
   facet_name = undefined;
   /**
-   * The description of the facet.
+   * Optional. The description of the facet.
    * @member {String} facet_description
    */
   facet_description = undefined;
@@ -83,7 +83,7 @@ export default class SearchResult {
    */
   elasticsearch_field_name = undefined;
   /**
-   * If this search result represents a field, facet_value is the empty string. If this search result represents a field and selected value, facet_value is the selected value.
+   * If this search result represents a facet, facet_value is the empty string. If this search result represents a facet and selected value, facet_value is the selected value.
    * @member {String} facet_value
    */
   facet_value = undefined;
