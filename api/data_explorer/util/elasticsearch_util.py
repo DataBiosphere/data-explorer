@@ -207,6 +207,31 @@ def _get_nested_paths_inner(prefix, mappings):
     return nested_field_paths
 
 
+# TODO: After we are using elasticsearch-dsl version with
+# https://github.com/elastic/elasticsearch-dsl-py/commit/845a2d6bc606e79d36fcebccca64a269ff10984e,
+# delete this method and current_app.config['NESTED_PATHS']. Instead of using
+# current_app.config['NESTED_PATHS'], use index.resolve_nested() instead.
+def get_nested_paths(es):
+    """
+    Returns nested paths, which can be used to created NestedFacet's.
+
+    When performing faceted search on nested fields within a document, NestedFacet must be used.
+    See https://elasticsearch-dsl.readthedocs.io/en/latest/faceted_search.html?highlight=nestedfacet#configuration
+
+    The first argument to NestedFacet is a path to the nested field. For example, the 1000 Genomes index has
+    one nested path: "samples". See https://github.com/DataBiosphere/data-explorer-indexers#main-dataset-index
+
+    This method crawls through index mappings and returns all nested paths.
+    """
+    nested_paths = []
+    mappings = es.indices.get_mapping(index=current_app.config['INDEX_NAME'])
+    nested_paths.extend(
+        _get_nested_paths_inner(
+            '', mappings[current_app.config['INDEX_NAME']]['mappings']['type']
+            ['properties']))
+    return nested_paths
+
+
 def _maybe_get_nested_facet(elasticsearch_field_name, es_facet):
     """
     Returns a NestedFacet for the Elasticsearch field, if the field is nested.
@@ -227,27 +252,6 @@ def _maybe_get_nested_facet(elasticsearch_field_name, es_facet):
         parts = parent.rsplit('.', 1)
 
     return es_facet
-
-
-def get_nested_paths(es):
-    """
-    Returns nested paths, which can be used to created NestedFacet's.
-
-    When performing faceted search on nested fields within a document, NestedFacet must be used.
-    See https://elasticsearch-dsl.readthedocs.io/en/latest/faceted_search.html?highlight=nestedfacet#configuration
-
-    The first argument to NestedFacet is a path to the nested field. For example, the 1000 Genomes index has
-    one nested path: "samples". See https://github.com/DataBiosphere/data-explorer-indexers#main-dataset-index
-
-    This method crawls through index mappings and returns all nested paths.
-    """
-    nested_paths = []
-    mappings = es.indices.get_mapping(index=current_app.config['INDEX_NAME'])
-    nested_paths.extend(
-        _get_nested_paths_inner(
-            '', mappings[current_app.config['INDEX_NAME']]['mappings']['type']
-            ['properties']))
-    return nested_paths
 
 
 def get_elasticsearch_facet(es, elasticsearch_field_name, field_type):
