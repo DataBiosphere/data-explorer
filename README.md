@@ -46,7 +46,7 @@ Run local Data Explorer with the 1000 Genomes dataset:
   - The `-t 0` makes Kibana stop more quickly after `Ctrl-C`
   - If ES crashes due to OOM, you can increase [heap size](https://www.elastic.co/guide/en/elasticsearch/reference/current/heap-size.html):
     ```
-    ES_JAVA_OPTS="-Xms10g -Xmx10g" docker-compose up -d elasticsearch
+    ES_JAVA_OPTS="-Xms10g -Xmx10g" docker-compose up --build -t 0
     ```
 
 - Navigate to `localhost:4400`
