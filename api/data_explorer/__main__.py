@@ -16,7 +16,6 @@ from elasticsearch import Elasticsearch
 from elasticsearch.client.cat import CatClient
 from elasticsearch.exceptions import ConnectionError
 from elasticsearch.exceptions import TransportError
-from google.cloud import bigquery
 
 # gunicorn flags are passed via env variables, so we use these as the default
 # values. These arguments will rarely be specified as flags directly, aside from
@@ -163,22 +162,7 @@ def _process_bigquery():
         sample_file_columns = bigquery_config.get('sample_file_columns', {})
         table_names.sort()
 
-    table_names_dict = OrderedDict()
-    for full_table_name in table_names:
-        splits = full_table_name.rsplit('.', 2)
-        if len(splits) != 3:
-            raise ValueError(
-                'Unknown format for table name %s. Expected BigQuery project_id.dataset_id.table_name'
-                % full_table_name)
-        project_id, dataset_id, table_name = splits
-        client = bigquery.Client(project=project_id)
-        dataset_ref = client.dataset(dataset_id, project=project_id)
-        table_ref = dataset_ref.table(table_name)
-        description = client.get_table(table_ref).description
-        table_names_dict[full_table_name] = description
-
-    # A dict from table name (project_id.dataset_id.table_name) to table description.
-    app.app.config['TABLES'] = table_names_dict
+    app.app.config['TABLES'] = table_names
     app.app.config['PARTICIPANT_ID_COLUMN'] = participant_id_column
     app.app.config['SAMPLE_ID_COLUMN'] = sample_id_column
     app.app.config['SAMPLE_FILE_COLUMNS'] = sample_file_columns
