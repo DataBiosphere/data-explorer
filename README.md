@@ -182,7 +182,7 @@ Troubleshooting tips for end-to-end tests:
 
 - [Uncomment headless](https://github.com/DataBiosphere/data-explorer/blob/master/ui/jest-puppeteer.config.js)
   to see the browser during test run.
-- Run a single test: `npm test -- -t "test name"`
+- Run a single test: `npm test -- -t Participant`
 - [More tips here](https://github.com/GoogleChrome/puppeteer#debugging-tips)
 
 ### Formatting
