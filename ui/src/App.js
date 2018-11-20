@@ -149,10 +149,16 @@ class App extends Component {
   handleSearchBoxChange(selectedOptions, action) {
     // selectedOptions is a list. The last element of the list is the drop-down row that was just selected.
     // The last element is a dict with esFieldName, facetName, facetValue (optional), and facetDescription (optional).
-    let extraFacetEsFieldNames = this.state.extraFacetEsFieldNames;
     if (action.action == "clear") {
       // x on right of search box was clicked.
       this.setState({ selectedFacetValues: new Map() });
+      this.facetsApi.facetsGet(
+        {
+          filter: this.filterMapToArray(new Map()),
+          extraFacets: this.state.extraFacetEsFieldNames
+        },
+        this.facetsCallback
+      );
     } else if (action.action == "remove-value") {
       // chip x was clicked.
       // selectedOptions contains remaining selected facet values (ie remaining chips).
@@ -163,16 +169,16 @@ class App extends Component {
     } else if (action.action == "select-option") {
       // Drop-down row was clicked.
       // selectedOptions contains current chips, plus one additional element representing the drop-down row that was clicked.
+      let extraFacetEsFieldNames = this.state.extraFacetEsFieldNames;
       extraFacetEsFieldNames.push(action.option.esFieldName);
+      this.facetsApi.facetsGet(
+        {
+          filter: this.filterMapToArray(this.state.selectedFacetValues),
+          extraFacets: extraFacetEsFieldNames
+        },
+        this.facetsCallback
+      );
     }
-
-    this.facetsApi.facetsGet(
-      {
-        filter: this.filterMapToArray(this.state.selectedFacetValues),
-        extraFacets: extraFacetEsFieldNames
-      },
-      this.facetsCallback
-    );
   }
 
   /**

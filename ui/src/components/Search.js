@@ -36,6 +36,7 @@ class Search extends React.Component {
     // renderValue is used for autocomplete. If I type "foo" into search box,
     // drop-down options whose renderValue contains "foo" will be shown in the drop-down.
     if (option.value != null) {
+      // Chips have a specific value, use that.
       return option.value;
     }
     if (option.facetDescription != null) {
