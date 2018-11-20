@@ -4,6 +4,7 @@ import Select, { components } from "react-select";
 class Search extends React.Component {
   constructor(props) {
     super(props);
+    this.chipsFromFilter = this.chipsFromFilter.bind(this);
   }
 
   // renderOption is used to render the drop-down
@@ -44,6 +45,25 @@ class Search extends React.Component {
     }
   };
 
+  chipsFromFilter(filterMap) {
+    let chips = [];
+    filterMap.forEach((values, key) => {
+      let facetName = this.props.facets.get(key).name;
+      if (values.length > 0) {
+        for (let value of values) {
+          chips.push({
+            label: facetName + "=" + value,
+            value: key + "=" + value,
+            esFieldName: key,
+            facetName: facetName,
+            facetValue: value
+          });
+        }
+      }
+    });
+    return chips;
+  }
+
   render() {
     return (
       <Select
@@ -52,7 +72,7 @@ class Search extends React.Component {
         options={this.props.searchResults}
         getOptionLabel={this.renderOption}
         getOptionValue={this.renderValue}
-        value={this.props.chips}
+        value={this.chipsFromFilter(this.props.selectedFacetValues)}
       />
     );
   }
