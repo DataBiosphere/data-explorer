@@ -9,50 +9,50 @@ import * as Style from "libs/style";
 
 const styles = {
   facetCard: {
-    margin: '2%',
-    paddingBottom: '8px',
+    margin: "2%",
+    paddingBottom: "8px"
   },
   facetValueList: {
-    gridColumn: '1 / 3',
-    margin: '20px 0 0 0',
-    maxHeight: '500px',
-    overflow: 'auto',
+    gridColumn: "1 / 3",
+    margin: "20px 0 0 0",
+    maxHeight: "500px",
+    overflow: "auto"
   },
   facetValue: {
     // This is a nested div, so need to specify a new grid.
-    display: 'grid',
-    gridTemplateColumns: '50px auto 50px',
-    justifyContent: 'stretch',
-    padding: '0',
+    display: "grid",
+    gridTemplateColumns: "50px auto 50px",
+    justifyContent: "stretch",
+    padding: "0",
     // Disable gray background on ListItem hover.
-    '&:hover': {
-      backgroundColor: 'unset',
-    },
+    "&:hover": {
+      backgroundColor: "unset"
+    }
   },
   facetDescription: {
-    color: 'gray',
+    color: "gray"
   },
   facetValueCheckbox: {
-    height: '24px',
-    width: '24px',
+    height: "24px",
+    width: "24px"
   },
   facetValueCount: {
-    padding: '0',
-    float: 'right',
-    textAlign: 'right',
+    padding: "0",
+    float: "right",
+    textAlign: "right"
   },
   facetValueName: {
-    float: 'left',
-    textAlign: 'left',
+    float: "left",
+    textAlign: "left"
   },
   totalFacetValueCount: {
-    color: 'gray',
-    float: 'right',
+    color: "gray",
+    float: "right"
   },
   grayText: {
-    color: 'silver',
-  },
-}
+    color: "silver"
+  }
+};
 
 class FacetCard extends Component {
   constructor(props) {
@@ -90,7 +90,7 @@ class FacetCard extends Component {
         onClick={e => this.onClick(facetValue.name)}
       >
         <Checkbox
-          style={{ width: "24px", height: "24px" }}
+          className={classes.facetValueCheckbox}
           checked={
             this.props.selectedValues != null &&
             this.props.selectedValues.includes(facetValue.name)
@@ -98,7 +98,9 @@ class FacetCard extends Component {
         />
         <ListItemText
           primary={
-            <div className={this.isDimmed(facetValue) ? classes.grayText : null}>
+            <div
+              className={this.isDimmed(facetValue) ? classes.grayText : null}
+            >
               <div className={classes.facetValueName}>{facetValue.name}</div>
               <div className={classes.facetValueCount}>{facetValue.count}</div>
             </div>
@@ -107,7 +109,9 @@ class FacetCard extends Component {
       </ListItem>
     ));
     const totalFacetValueCount = (
-      <span className={classes.totalFacetValueCount}>{this.totalFacetValueCount}</span>
+      <span className={classes.totalFacetValueCount}>
+        {this.totalFacetValueCount}
+      </span>
     );
     return (
       <div className={classes.facetCard} style={Style.elements.card}>
@@ -117,8 +121,12 @@ class FacetCard extends Component {
             ? totalFacetValueCount
             : null}
         </div>
-        <span className={classes.facetDescription}>{this.props.facet.description}</span>
-        <List dense className={classes.facetValueList} >{facetValues}</List>
+        <span className={classes.facetDescription}>
+          {this.props.facet.description}
+        </span>
+        <List dense className={classes.facetValueList}>
+          {facetValues}
+        </List>
       </div>
     );
   }

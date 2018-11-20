@@ -7,9 +7,9 @@ class Search extends React.Component {
     this.chipsFromFilter = this.chipsFromFilter.bind(this);
   }
 
-  // renderOption is used to render the drop-down
+  // renderOption is used to render 1) chip, 2) row in drop-down.
   renderOption = option => {
-    // Chips have a specific label, use that.
+    // If option.label is set, we are rendering a chip.
     if (option.label != null) {
       return option.label;
     }
@@ -69,7 +69,7 @@ class Search extends React.Component {
     return (
       <Select
         isMulti="true"
-        onChange={this.props.handleSearch}
+        onChange={this.props.handleSearchBoxChange}
         options={this.props.searchResults}
         getOptionLabel={this.renderOption}
         getOptionValue={this.renderValue}

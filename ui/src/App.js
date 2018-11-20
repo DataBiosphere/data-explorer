@@ -41,7 +41,6 @@ class App extends Component {
       // facetDescription - The description of the facet.
       // esFieldName - The elasticsearch field name of the facet.
       // facetValue
-      // See https://github.com/JedWatson/react-select#installation-and-usage
       searchResults: [],
       // These represent extra facets added via the search box.
       // This is an array of Elasticsearch field names
@@ -98,15 +97,13 @@ class App extends Component {
           />
           <Search
             searchResults={this.state.searchResults}
-            handleSearch={this.handleSearchBoxChange}
+            handleSearchBoxChange={this.handleSearchBoxChange}
             selectedFacetValues={this.state.selectedFacetValues}
             facets={this.state.facets}
           />
           <FacetsGrid
             updateFacets={this.updateFacets}
-            selectedFacetValues={Array.from(
-              this.state.selectedFacetValues.entries()
-            )}
+            selectedFacetValues={this.state.selectedFacetValues}
             facets={Array.from(this.state.facets.values())}
           />
           <ExportFab
@@ -147,8 +144,6 @@ class App extends Component {
   }
 
   handleSearchBoxChange(selectedOptions, action) {
-    // selectedOptions is a list. The last element of the list is the drop-down row that was just selected.
-    // The last element is a dict with esFieldName, facetName, facetValue (optional), and facetDescription (optional).
     if (action.action == "clear") {
       // x on right of search box was clicked.
       this.setState({ selectedFacetValues: new Map() });
@@ -163,18 +158,18 @@ class App extends Component {
       // chip x was clicked.
       // selectedOptions contains remaining selected facet values (ie remaining chips).
       // An array of existing selected facet values, of the form esFieldName=facetValue.
-      let removedValue = action.removedValue;
-      let parts = removedValue.value.split("=");
+      let parts = action.removedValue.value.split("=");
       this.updateFacets(parts[0], parts[1], false);
     } else if (action.action == "select-option") {
       // Drop-down row was clicked.
       // selectedOptions contains current chips, plus one additional element representing the drop-down row that was clicked.
-      let extraFacetEsFieldNames = this.state.extraFacetEsFieldNames;
-      extraFacetEsFieldNames.push(action.option.esFieldName);
+      let newExtraFacetEsFieldNames = this.state.extraFacetEsFieldNames;
+      newExtraFacetEsFieldNames.push(action.option.esFieldName);
+      this.setState({ selectedFacetValues: newExtraFacetEsFieldNames });
       this.facetsApi.facetsGet(
         {
           filter: this.filterMapToArray(this.state.selectedFacetValues),
-          extraFacets: extraFacetEsFieldNames
+          extraFacets: newExtraFacetEsFieldNames
         },
         this.facetsCallback
       );

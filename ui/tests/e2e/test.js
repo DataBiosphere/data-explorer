@@ -18,7 +18,7 @@ describe("End-to-end", () => {
     await page.goto("http://localhost:4400");
     await page.waitForSelector(".datasetName");
   });
-  /*
+
   test("Header", async () => {
     await expect(page).toMatch("1000 Genomes");
     await assertHeaderTotalCount("3500");
@@ -125,7 +125,7 @@ describe("End-to-end", () => {
     await waitForFacetCard("Avuncular");
     await assertFacet("Avuncular", "46", "HG00658 (aunt/uncle)", "1");
   });
-*/
+
   test("Search box - chips", async () => {
     // Select the 'Gender - female' facet value.
     let facetValueRow = await getFacetValueRow("Gender", "female");
@@ -145,6 +145,18 @@ describe("End-to-end", () => {
     // Assert chip is deleted.
     chip = await page.$x("//div[text()='Gender=female']");
     expect(chip.length).toBe(0);
+
+    // Select the 'Gender - female' facet value.
+    facetValueRow = await getFacetValueRow("Gender", "female");
+    await facetValueRow.click("input");
+    await waitForFacetsUpdate(1760);
+
+    // Click on 'x' on the chip.
+    let chipX = await page.$x(
+      "//div[text()[contains(.,'Gender=female')]]/../div[2]"
+    );
+    chipX[0].click();
+    await waitForFacetsUpdate(3500);
   });
 
   async function waitForElasticsearchIndex() {

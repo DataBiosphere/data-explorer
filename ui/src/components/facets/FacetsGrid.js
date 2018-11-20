@@ -6,6 +6,7 @@ import "components/facets/FacetsGrid.css";
 import FacetCard from "components/facets/FacetCard";
 
 function FacetsGrid(props) {
+  // An array of es field names
   const facets = props.facets;
   const updateFacets = props.updateFacets;
   const facetsList = facets.map(facet => (
@@ -29,9 +30,10 @@ function FacetsGrid(props) {
 
 // Returns the list of selected facet values for a particular facet.
 function getSelectedFacets(selectedFacetValues, es_field_name) {
-  for (let i = 0; i < selectedFacetValues.length; i++) {
-    if (selectedFacetValues[i][0] == es_field_name) {
-      return selectedFacetValues[i][1];
+  let selectedValuesArray = Array.from(selectedFacetValues.entries());
+  for (let i = 0; i < selectedValuesArray.length; i++) {
+    if (selectedValuesArray[i][0] == es_field_name) {
+      return selectedValuesArray[i][1];
     }
   }
   return [];
