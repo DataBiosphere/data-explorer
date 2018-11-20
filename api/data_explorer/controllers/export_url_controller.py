@@ -102,20 +102,21 @@ def _get_entities_dict(cohort_name, query, filter_arr):
     # the entity JSON passed into
     # https://rawls.dsde-prod.broadinstitute.org/#!/entities/create_entity
     entities = []
-    for name, description in current_app.config['TABLES'].iteritems():
-        attributes = {'table_name': name}
-        if description:
-            attributes['table_description'] = description
+    for table_name in current_app.config['TABLES']:
         entities.append({
             # FireCloud doesn't allow spaces, so use underscore.
-            'entityType': 'BigQuery_table',
+            'entityType':
+            'BigQuery_table',
             # This is the entity ID. Ideally this would be
             # project_id.dataset_id.table_name, and we wouldn't need the
             # table_name attribute. Unfortunately RAWLS doesn't allow
             # periods here. RAWLS does allow periods in attributes. So use
             # underscores here and periods in table_name attribute.
-            'name': name.replace('.', '_').replace(':', '_'),
-            'attributes': attributes
+            'name':
+            table_name.replace('.', '_').replace(':', '_'),
+            'attributes': {
+                'table_name': table_name
+            }
         })
 
     # If a cohort was selected, create a query entity and get Elasticsearch documents
@@ -200,8 +201,7 @@ def _create_signed_url(gcs_path):
     private_key_path = os.path.join(current_app.config['DATASET_CONFIG_DIR'],
                                     'private-key.json')
     creds = ServiceAccountCredentials.from_json_keyfile_name(private_key_path)
-    service_account_email = current_app.config[
-        'DEPLOY_PROJECT_ID'] + '@appspot.gserviceaccount.com'
+    service_account_email = current_app.config['DEPLOY_PROJECT_ID'] + '@appspot.gserviceaccount.com'
     # Signed URL will be valid for 5 minutes
     timestamp = str(int(time.time()) + 5 * 60)
     file_metadata = '\n'.join(['GET', '', '', timestamp, gcs_path])

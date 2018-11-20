@@ -245,8 +245,8 @@ def get_nested_paths(es):
     mappings = es.indices.get_mapping(index=current_app.config['INDEX_NAME'])
     nested_paths.extend(
         _get_nested_paths_inner(
-            '', mappings[current_app.config['INDEX_NAME']]['mappings']['type']
-            ['properties']))
+            '', mappings[current_app.config['INDEX_NAME']]['mappings']['type'][
+                'properties']))
     return nested_paths
 
 
