@@ -33,9 +33,7 @@ class TestExportUrlController(BaseTestCase):
             'project_id',
             'EXPORT_URL_GCS_BUCKET':
             'bucket',
-            'TABLES': {
-                'project_id.dataset_id.table_name': 'description'
-            },
+            'TABLES': ['project_id.dataset_id.table_name'],
             'PARTICIPANT_ID_COLUMN':
             'primary_key',
             'SAMPLE_FILE_COLUMNS': {
