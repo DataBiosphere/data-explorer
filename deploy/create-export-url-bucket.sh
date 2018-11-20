@@ -6,6 +6,9 @@
 #
 # jq, gsutil must be installed before running this script.
 
+set -o errexit
+set -o nounset
+
 if (( $# != 1 ))
 then
   echo "Usage: deploy/create-export-url-bucket.sh <dataset>"
