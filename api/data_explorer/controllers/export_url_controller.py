@@ -201,7 +201,8 @@ def _create_signed_url(gcs_path):
     private_key_path = os.path.join(current_app.config['DATASET_CONFIG_DIR'],
                                     'private-key.json')
     creds = ServiceAccountCredentials.from_json_keyfile_name(private_key_path)
-    service_account_email = current_app.config['DEPLOY_PROJECT_ID'] + '@appspot.gserviceaccount.com'
+    service_account_email = current_app.config[
+        'DEPLOY_PROJECT_ID'] + '@appspot.gserviceaccount.com'
     # Signed URL will be valid for 5 minutes
     timestamp = str(int(time.time()) + 5 * 60)
     file_metadata = '\n'.join(['GET', '', '', timestamp, gcs_path])
