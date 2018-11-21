@@ -108,15 +108,18 @@ class App extends Component {
             />
             <Search
               searchResults={this.state.searchResults}
-              handleSearch={this.handleSearch}
+              handleSearchBoxChange={this.handleSearchBoxChange}
+              selectedFacetValues={this.state.selectedFacetValues}
+              facets={this.state.facets}
             />
             <FacetsGrid
               updateFacets={this.updateFacets}
-              facets={this.state.facets}
+              selectedFacetValues={this.state.selectedFacetValues}
+              facets={Array.from(this.state.facets.values())}
             />
             <ExportFab
               exportUrlApi={new ExportUrlApi(this.apiClient)}
-              filter={this.state.filter}
+              filter={this.filterMapToArray(this.state.selectedFacetValues)}
             />
             {this.state.datasetName == "1000 Genomes" ? Disclaimer : null}
           </div>
