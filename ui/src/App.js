@@ -30,16 +30,17 @@ class App extends Component {
     super(props);
     this.state = {
       datasetName: "",
-      facets: null,
+      // A dict from es_field_name to facet data returned from API server /facets call.
+      facets: new Map(),
       totalCount: null,
-      filter: null,
+      // Map from facet name to a list of selected facet values.
+      selectedFacetValues: new Map(),
       // Search results shown in the search drop-down.
       // This is an array of dicts, where each dict has
       // facetName - The name of the facet.
       // facetDescription - The description of the facet.
       // esFieldName - The elasticsearch field name of the facet.
       // facetValue
-      // See https://github.com/JedWatson/react-select#installation-and-usage
       searchResults: [],
       // These represent extra facets added via the search box.
       // This is an array of Elasticsearch field names
@@ -55,7 +56,7 @@ class App extends Component {
         // TODO(alanhwang): Redirect to an error page
       } else {
         this.setState({
-          facets: data.facets,
+          facets: this.getFacetMap(data.facets),
           totalCount: data.count
         });
       }
@@ -79,10 +80,8 @@ class App extends Component {
       }
     }.bind(this);
 
-    // Map from facet name to a list of facet values.
-    this.filterMap = new Map();
     this.updateFacets = this.updateFacets.bind(this);
-    this.handleSearch = this.handleSearch.bind(this);
+    this.handleSearchBoxChange = this.handleSearchBoxChange.bind(this);
   }
 
   render() {
@@ -98,15 +97,18 @@ class App extends Component {
           />
           <Search
             searchResults={this.state.searchResults}
-            handleSearch={this.handleSearch}
+            handleSearchBoxChange={this.handleSearchBoxChange}
+            selectedFacetValues={this.state.selectedFacetValues}
+            facets={this.state.facets}
           />
           <FacetsGrid
             updateFacets={this.updateFacets}
-            facets={this.state.facets}
+            selectedFacetValues={this.state.selectedFacetValues}
+            facets={Array.from(this.state.facets.values())}
           />
           <ExportFab
             exportUrlApi={new ExportUrlApi(this.apiClient)}
-            filter={this.state.filter}
+            filter={this.filterMapToArray(this.state.selectedFacetValues)}
           />
           {this.state.datasetName == "1000 Genomes" ? Disclaimer : null}
         </div>
@@ -133,64 +135,82 @@ class App extends Component {
     datasetApi.datasetGet(datasetCallback);
   }
 
-  handleSearch(searchResults) {
-    let extraFacetEsFieldNames = this.state.extraFacetEsFieldNames;
-    for (let i = 0; i < searchResults.length; i++) {
-      if (searchResults[i].facetValue == "") {
-        extraFacetEsFieldNames.push(searchResults[i].esFieldName);
-      }
-    }
-
-    let filterArray = this.filterMapToArray(this.filterMap);
-    this.setState({
-      extraFacetEsFieldNames: extraFacetEsFieldNames,
-      filter: filterArray
+  getFacetMap(facets) {
+    var facetMap = new Map();
+    facets.forEach(function(facet) {
+      facetMap.set(facet.es_field_name, facet);
     });
-    this.facetsApi.facetsGet(
-      {
-        filter: filterArray,
-        extraFacets: extraFacetEsFieldNames
-      },
-      this.facetsCallback
-    );
+    return facetMap;
+  }
+
+  handleSearchBoxChange(selectedOptions, action) {
+    if (action.action == "clear") {
+      // x on right of search box was clicked.
+      this.setState({ selectedFacetValues: new Map() });
+      this.facetsApi.facetsGet(
+        {
+          filter: this.filterMapToArray(new Map()),
+          extraFacets: this.state.extraFacetEsFieldNames
+        },
+        this.facetsCallback
+      );
+    } else if (action.action == "remove-value") {
+      // chip x was clicked.
+      let parts = action.removedValue.value.split("=");
+      this.updateFacets(parts[0], parts[1], false);
+    } else if (action.action == "select-option") {
+      // Drop-down row was clicked.
+      let newExtraFacetEsFieldNames = this.state.extraFacetEsFieldNames;
+      newExtraFacetEsFieldNames.push(action.option.esFieldName);
+      this.setState({ extraFacetEsFieldNames: newExtraFacetEsFieldNames });
+      this.facetsApi.facetsGet(
+        {
+          filter: this.filterMapToArray(this.state.selectedFacetValues),
+          extraFacets: newExtraFacetEsFieldNames
+        },
+        this.facetsCallback
+      );
+    }
   }
 
   /**
    * Updates the selection for a single facet value and refreshes the facets data from the server.
-   * @param facetName string containing the name of the facet corresponding to this value
+   * @param esFieldName string containing the elasticsearch field name of the facet corresponding to this value
    * @param facetValue string containing the name of this facet value
    * @param isSelected bool indicating whether this facetValue should be added to or removed from the query
    * */
-  updateFacets(facetName, facetValue, isSelected) {
-    let currentFacetValues = this.filterMap.get(facetName);
+  updateFacets(esFieldName, facetValue, isSelected) {
+    let currentFilterMap = this.state.selectedFacetValues;
+    let currentFacetValues = currentFilterMap.get(esFieldName);
     if (isSelected) {
       // Add facetValue to the list of filters for facetName
       if (currentFacetValues === undefined) {
-        this.filterMap.set(facetName, [facetValue]);
+        currentFilterMap.set(esFieldName, [facetValue]);
       } else {
         currentFacetValues.push(facetValue);
       }
-    } else if (this.filterMap.get(facetName) !== undefined) {
+    } else if (currentFilterMap.get(esFieldName) !== undefined) {
       // Remove facetValue from the list of filters for facetName
-      this.filterMap.set(
-        facetName,
-        this.removeFacet(currentFacetValues, facetValue)
+      currentFilterMap.set(
+        esFieldName,
+        this.removeFacetValue(currentFacetValues, facetValue)
       );
     }
+    // Update the state
+    this.setState({ selectedFacetValues: currentFilterMap });
 
-    let filterArray = this.filterMapToArray(this.filterMap);
-    this.setState({ filter: filterArray });
-
+    // Update the facets grid.
     this.facetsApi.facetsGet(
       {
-        filter: filterArray,
+        filter: this.filterMapToArray(this.state.selectedFacetValues),
         extraFacets: this.state.extraFacetEsFieldNames
       },
       this.facetsCallback
     );
   }
 
-  removeFacet(valueList, facetValue) {
+  // Remove the given facet value from a list of facet values.
+  removeFacetValue(valueList, facetValue) {
     let newValueList = [];
     for (let i = 0; i < valueList.length; i++) {
       if (valueList[i] !== facetValue) {
@@ -203,8 +223,8 @@ class App extends Component {
   /**
    * Converts a Map of filters to an Array of filter strings interpretable by
    * the backend
-   * @param filterMap Map of facetName:[facetValues] pairs
-   * @return [string] Array of "facetName=facetValue" strings
+   * @param filterMap Map of esFieldName:[facetValues] pairs
+   * @return [string] Array of "esFieldName=facetValue" strings
    */
   filterMapToArray(filterMap) {
     let filterArray = [];

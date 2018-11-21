@@ -134,7 +134,7 @@ class SearchResult(Model):
     def facet_value(self):
         """Gets the facet_value of this SearchResult.
 
-        If this search result represents a facet, facet_value is the empty string. If this search result represents a facet and selected value, facet_value is the selected value.  # noqa: E501
+        If this search result represents a facet, facet_value is the empty string. If this search result represents a facet and selected value, facet_value is the selected value.   # noqa: E501
 
         :return: The facet_value of this SearchResult.
         :rtype: str
@@ -145,7 +145,7 @@ class SearchResult(Model):
     def facet_value(self, facet_value):
         """Sets the facet_value of this SearchResult.
 
-        If this search result represents a facet, facet_value is the empty string. If this search result represents a facet and selected value, facet_value is the selected value.  # noqa: E501
+        If this search result represents a facet, facet_value is the empty string. If this search result represents a facet and selected value, facet_value is the selected value.   # noqa: E501
 
         :param facet_value: The facet_value of this SearchResult.
         :type facet_value: str

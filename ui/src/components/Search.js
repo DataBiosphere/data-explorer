@@ -4,9 +4,24 @@ import Select, { components } from "react-select";
 class Search extends React.Component {
   constructor(props) {
     super(props);
+    this.facetNameMap = this.getFacetNameMap(this.props.facets);
+    this.chipsFromFilter = this.chipsFromFilter.bind(this);
   }
+
+  getFacetNameMap(facets) {
+    var facetNameMap = new Map();
+    facets.forEach(function(facet) {
+      facetNameMap.set(facet.es_field_name, facet.name);
+    });
+    return facetNameMap;
+  }
+
+  // renderOption is used to render 1) chip, 2) row in drop-down.
   renderOption = option => {
-    // renderOption is used to render the drop-down
+    // If option.label is set, we are rendering a chip.
+    if (option.label != null) {
+      return option.label;
+    }
     if (option.facetDescription != null) {
       return (
         <div>
@@ -29,6 +44,10 @@ class Search extends React.Component {
   renderValue = option => {
     // renderValue is used for autocomplete. If I type "foo" into search box,
     // drop-down options whose renderValue contains "foo" will be shown in the drop-down.
+    if (option.value != null) {
+      // Chips have a specific value, use that.
+      return option.value;
+    }
     if (option.facetDescription != null) {
       return option.facetName + " " + option.facetDescription;
     } else {
@@ -36,15 +55,34 @@ class Search extends React.Component {
     }
   };
 
+  chipsFromFilter(filterMap) {
+    let chips = [];
+    filterMap.forEach((values, key) => {
+      let facetName = this.facetNameMap.get(key);
+      if (values.length > 0) {
+        for (let value of values) {
+          chips.push({
+            label: facetName + "=" + value,
+            value: key + "=" + value,
+            esFieldName: key,
+            facetName: facetName,
+            facetValue: value
+          });
+        }
+      }
+    });
+    return chips;
+  }
+
   render() {
     return (
       <Select
         isMulti="true"
-        onChange={this.props.handleSearch}
+        onChange={this.props.handleSearchBoxChange}
         options={this.props.searchResults}
         getOptionLabel={this.renderOption}
         getOptionValue={this.renderValue}
-        value={[]} // This will change in the next PR when we add chips from filters.
+        value={this.chipsFromFilter(this.props.selectedFacetValues)}
       />
     );
   }

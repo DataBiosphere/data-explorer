@@ -9,61 +9,56 @@ import * as Style from "libs/style";
 
 const styles = {
   facetCard: {
-    margin: '2%',
-    paddingBottom: '8px',
+    margin: "2%",
+    paddingBottom: "8px"
   },
   facetValueList: {
-    gridColumn: '1 / 3',
-    margin: '20px 0 0 0',
-    maxHeight: '500px',
-    overflow: 'auto',
+    gridColumn: "1 / 3",
+    margin: "20px 0 0 0",
+    maxHeight: "500px",
+    overflow: "auto"
   },
   facetValue: {
     // This is a nested div, so need to specify a new grid.
-    display: 'grid',
-    gridTemplateColumns: '50px auto 50px',
-    justifyContent: 'stretch',
-    padding: '0',
+    display: "grid",
+    gridTemplateColumns: "50px auto 50px",
+    justifyContent: "stretch",
+    padding: "0",
     // Disable gray background on ListItem hover.
-    '&:hover': {
-      backgroundColor: 'unset',
-    },
+    "&:hover": {
+      backgroundColor: "unset"
+    }
   },
   facetDescription: {
-    color: 'gray',
+    color: "gray"
   },
   facetValueCheckbox: {
-    height: '24px',
-    width: '24px',
+    height: "24px",
+    width: "24px"
   },
   facetValueCount: {
-    padding: '0',
-    float: 'right',
-    textAlign: 'right',
+    padding: "0",
+    float: "right",
+    textAlign: "right"
   },
   facetValueName: {
-    float: 'left',
-    textAlign: 'left',
+    float: "left",
+    textAlign: "left"
   },
   totalFacetValueCount: {
-    color: 'gray',
-    float: 'right',
+    color: "gray",
+    float: "right"
   },
   grayText: {
-    color: 'silver',
-  },
-}
+    color: "silver"
+  }
+};
 
 class FacetCard extends Component {
   constructor(props) {
     super(props);
 
     this.facetValues = this.props.facet.values;
-
-    this.state = {
-      // List of strings, eg ["female"]
-      selectedValues: []
-    };
 
     this.totalFacetValueCount = this.sumFacetValueCounts(
       this.props.facet.values,
@@ -77,7 +72,7 @@ class FacetCard extends Component {
   componentWillReceiveProps(nextProps) {
     this.totalFacetValueCount = this.sumFacetValueCounts(
       nextProps.facet.values,
-      this.state.selectedValues
+      this.props.selectedValues
     );
   }
 
@@ -96,11 +91,16 @@ class FacetCard extends Component {
       >
         <Checkbox
           className={classes.facetValueCheckbox}
-          checked={this.state.selectedValues.includes(facetValue.name)}
+          checked={
+            this.props.selectedValues != null &&
+            this.props.selectedValues.includes(facetValue.name)
+          }
         />
         <ListItemText
           primary={
-            <div className={this.isDimmed(facetValue) ? classes.grayText : null}>
+            <div
+              className={this.isDimmed(facetValue) ? classes.grayText : null}
+            >
               <div className={classes.facetValueName}>{facetValue.name}</div>
               <div className={classes.facetValueCount}>{facetValue.count}</div>
             </div>
@@ -109,7 +109,9 @@ class FacetCard extends Component {
       </ListItem>
     ));
     const totalFacetValueCount = (
-      <span className={classes.totalFacetValueCount}>{this.totalFacetValueCount}</span>
+      <span className={classes.totalFacetValueCount}>
+        {this.totalFacetValueCount}
+      </span>
     );
     return (
       <div className={classes.facetCard} style={Style.elements.card}>
@@ -119,16 +121,21 @@ class FacetCard extends Component {
             ? totalFacetValueCount
             : null}
         </div>
-        <span className={classes.facetDescription}>{this.props.facet.description}</span>
-        <List dense className={classes.facetValueList} >{facetValues}</List>
+        <span className={classes.facetDescription}>
+          {this.props.facet.description}
+        </span>
+        <List dense className={classes.facetValueList}>
+          {facetValues}
+        </List>
       </div>
     );
   }
 
   isDimmed(facetValue) {
     return (
-      this.state.selectedValues.length > 0 &&
-      !this.state.selectedValues.includes(facetValue.name)
+      this.props.selectedValues != null &&
+      this.props.selectedValues.length > 0 &&
+      !this.props.selectedValues.includes(facetValue.name)
     );
   }
 
@@ -139,7 +146,7 @@ class FacetCard extends Component {
    * */
   sumFacetValueCounts(facetValues, selectedValueNames) {
     let count = 0;
-    if (selectedValueNames.length === 0) {
+    if (selectedValueNames == null || selectedValueNames.length === 0) {
       facetValues.forEach(value => {
         count += value.count;
       });
@@ -156,19 +163,19 @@ class FacetCard extends Component {
 
   onClick(facetValue) {
     // facetValue is a string, eg "female"
-    let newValues = this.state.selectedValues.slice(0);
     let isSelected;
-    if (this.state.selectedValues.includes(facetValue)) {
+    if (
+      this.props.selectedValues != null &&
+      this.props.selectedValues.length > 0 &&
+      this.props.selectedValues.includes(facetValue)
+    ) {
       // User must have unchecked the checkbox.
       isSelected = false;
-      newValues.splice(newValues.indexOf(facetValue), 1);
     } else {
       // User must have checked the checkbox.
       isSelected = true;
-      newValues.push(facetValue);
     }
 
-    this.setState({ selectedValues: newValues });
     this.props.updateFacets(
       this.props.facet.es_field_name,
       facetValue,

@@ -209,7 +209,7 @@ definitions:
         type: "string"
         description: "If this search result represents a facet, facet_value is the\
           \ empty string. If this search result represents a facet and selected value,\
-          \ facet_value is the selected value."
+          \ facet_value is the selected value.\n"
     description: "Can represent a facet (Gender), or a facet and selected value (Gender\
       \ = female).\n"
     example:
