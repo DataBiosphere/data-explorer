@@ -18,7 +18,6 @@ const styles = {
   },
   // By default, each div takes up one grid cell.
   // Don't specify gridColumn, just use default of one cell.
-  facetName: {},
   facetDescription: {
     color: "gray"
   },
@@ -83,49 +82,38 @@ class FacetCard extends Component {
   render() {
     const { classes } = this.props;
 
-    let facetValueDivs = [];
-    for (var i = 0; i < this.props.facet.values.length; i++) {
-      let value = this.props.facet.values[i];
-      //      let facetValueTextClasses = "facetValueText";
-      let facetValueTextClasses = "";
-      if (this.isDimmed(value)) {
-        facetValueTextClasses += facetValueTextClasses + " " + classes.grayText;
-      }
-
-      facetValueDivs[i] = (
-        <ListItem
-          className={classes.facetValue}
-          key={value.name}
-          button
-          dense
-          disableRipple
-          onClick={e => this.onClick(value.name)}
-        >
-          <Checkbox
-            className={classes.facetValueCheckbox}
-            checked={this.state.selectedValues.includes(value.name)}
-          />
-          <ListItemText
-            className={classes.facetValueNameAndCount}
-            classes={{ primary: facetValueTextClasses }}
-            primary={
-              <div
-                style={{ display: "grid", gridTemplateColumns: "auto 50px" }}
-              >
-                <div>{value.name}</div>
-                <div className={classes.facetValueCount}>{value.count}</div>
-              </div>
-            }
-          />
-        </ListItem>
-      );
-    }
+    const facetValueDivs = this.props.facet.values.map(value => (
+      <ListItem
+        className={classes.facetValue}
+        key={value.name}
+        button
+        dense
+        disableRipple
+        onClick={e => this.onClick(value.name)}
+      >
+        <Checkbox
+          className={classes.facetValueCheckbox}
+          checked={
+            this.props.selectedValues != null &&
+            this.props.selectedValues.includes(value.name)
+          }
+        />
+        <ListItemText
+          className={classes.facetValueNameAndCount}
+          classes={{ primary: this.isDimmed(value) ? classes.grayText : null }}
+          primary={
+            <div style={{ display: "grid", gridTemplateColumns: "auto 50px" }}>
+              <div>{value.name}</div>
+              <div className={classes.facetValueCount}>{value.count}</div>
+            </div>
+          }
+        />
+      </ListItem>
+    ));
 
     return (
       <div className={classes.facetCard}>
-        <Typography className={classes.facetName}>
-          {this.props.facet.name}
-        </Typography>
+        <Typography>{this.props.facet.name}</Typography>
         {this.props.facet.name != "Samples Overview" ? (
           <Typography className={classes.totalFacetValueCount}>
             {this.totalFacetValueCount}
