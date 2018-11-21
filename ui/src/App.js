@@ -17,7 +17,7 @@ import Header from "components/Header";
 
 const theme = createMuiTheme({
   typography: {
-    fontFamily: ["Montserrat", "sans-serif"].join(",")
+    fontFamily: ["Lato", "sans-serif"].join(",")
   }
 });
 

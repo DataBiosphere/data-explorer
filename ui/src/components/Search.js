@@ -4,7 +4,7 @@ import Select, { components } from "react-select";
 const customStyles = {
   container: (provided, state) => ({
     ...provided,
-    fontFamily: ["Montserrat", "sans-serif"].join(","),
+    fontFamily: ["Lato", "sans-serif"].join(","),
     fontSize: "13px"
   })
 };
