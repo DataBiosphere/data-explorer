@@ -49,6 +49,9 @@ const styles = {
   facetValueNameAndCount: {
     paddingRight: 0
   },
+  facetValueName: {
+    // Used by end-to-end tests
+  },
   facetValueCount: {
     textAlign: "right"
   },
@@ -103,7 +106,7 @@ class FacetCard extends Component {
           classes={{ primary: this.isDimmed(value) ? classes.grayText : null }}
           primary={
             <div style={{ display: "grid", gridTemplateColumns: "auto 50px" }}>
-              <div>{value.name}</div>
+              <div className={classes.facetValueName}>{value.name}</div>
               <div className={classes.facetValueCount}>{value.count}</div>
             </div>
           }
