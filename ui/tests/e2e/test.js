@@ -116,10 +116,9 @@ describe("End-to-end", () => {
     let initial_select = await page.$x("//div[text()='Select...']");
     initial_select[0].click();
     // Click on the 'Avuncular' option
-    await page.waitForXPath("//span[contains(normalize-space(), 'Avuncular')]");
-    let avuncular = await page.$x(
-      "//span[contains(normalize-space(), 'Avuncular')]"
-    );
+    let avuncular_xpath = "//span[text()[contains(., 'Avuncular')]]";
+    await page.waitForXPath(avuncular_xpath);
+    let avuncular = await page.$x(avuncular_xpath);
     avuncular[0].click();
     // Wait for the facet card to be rendered and then assert.
     await waitForFacetCard("Avuncular");
@@ -261,7 +260,7 @@ describe("End-to-end", () => {
         "*[class*='FacetCard-facetCard-']"
       );
       for (const div of divs) {
-        const name = div.querySelector("span").innerText;
+        const name = div.querySelector("p").innerText;
         if (name.includes(innerFacetName)) return div;
       }
       return null;
@@ -286,7 +285,7 @@ describe("End-to-end", () => {
    * Waits for facet card to be rendered.
    */
   async function waitForFacetCard(facetName) {
-    await page.waitForXPath("//span[contains(text(),'" + facetName + "')]");
+    await page.waitForXPath("//*[contains(text(),'" + facetName + "')]");
   }
 
   async function exportToSaturn_noSelectedCohort() {

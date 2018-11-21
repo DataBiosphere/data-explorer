@@ -1,6 +1,14 @@
 import React from "react";
 import Select, { components } from "react-select";
 
+const customStyles = {
+  container: (provided, state) => ({
+    ...provided,
+    fontFamily: ["Montserrat", "sans-serif"].join(","),
+    fontSize: "13px"
+  })
+};
+
 class Search extends React.Component {
   constructor(props) {
     super(props);
@@ -83,6 +91,7 @@ class Search extends React.Component {
         getOptionLabel={this.renderOption}
         getOptionValue={this.renderValue}
         value={this.chipsFromFilter(this.props.selectedFacetValues)}
+        styles={customStyles}
       />
     );
   }
