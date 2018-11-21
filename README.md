@@ -17,6 +17,7 @@ and [here](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/d
 ## Quickstart
 
 Run local Data Explorer with the 1000 Genomes dataset:
+
 - If `~/.config/gcloud/application_default_credentials.json` doesn't exist,
   create it by running `gcloud auth application-default login`.
 - `docker-compose up --build`
@@ -186,7 +187,7 @@ Troubleshooting tips for end-to-end tests:
 
 - [Uncomment headless](https://github.com/DataBiosphere/data-explorer/blob/master/ui/jest-puppeteer.config.js)
   to see the browser during test run.
-- Run a single test: `npm run test:e2e -- -t "test name"`
+- Run a single test: `npm test -- -t Participant`
 - [More tips here](https://github.com/GoogleChrome/puppeteer#debugging-tips)
 
 ### Formatting

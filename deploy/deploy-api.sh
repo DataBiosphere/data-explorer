@@ -8,6 +8,9 @@
 #
 # jq, gcloud, and kubectl must be installed before running this script.
 
+set -o errexit
+set -o nounset
+
 if (( $# != 1 ))
 then
   echo "Usage: deploy/deploy-api.sh <dataset>"
