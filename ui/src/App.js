@@ -165,7 +165,7 @@ class App extends Component {
       // selectedOptions contains current chips, plus one additional element representing the drop-down row that was clicked.
       let newExtraFacetEsFieldNames = this.state.extraFacetEsFieldNames;
       newExtraFacetEsFieldNames.push(action.option.esFieldName);
-      this.setState({ selectedFacetValues: newExtraFacetEsFieldNames });
+      this.setState({ extraFacetEsFieldNames: newExtraFacetEsFieldNames });
       this.facetsApi.facetsGet(
         {
           filter: this.filterMapToArray(this.state.selectedFacetValues),
