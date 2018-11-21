@@ -156,13 +156,10 @@ class App extends Component {
       );
     } else if (action.action == "remove-value") {
       // chip x was clicked.
-      // selectedOptions contains remaining selected facet values (ie remaining chips).
-      // An array of existing selected facet values, of the form esFieldName=facetValue.
       let parts = action.removedValue.value.split("=");
       this.updateFacets(parts[0], parts[1], false);
     } else if (action.action == "select-option") {
       // Drop-down row was clicked.
-      // selectedOptions contains current chips, plus one additional element representing the drop-down row that was clicked.
       let newExtraFacetEsFieldNames = this.state.extraFacetEsFieldNames;
       newExtraFacetEsFieldNames.push(action.option.esFieldName);
       this.setState({ extraFacetEsFieldNames: newExtraFacetEsFieldNames });

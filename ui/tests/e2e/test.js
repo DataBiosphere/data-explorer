@@ -156,6 +156,7 @@ describe("End-to-end", () => {
       "//div[text()[contains(.,'Gender=female')]]/../div[2]"
     );
     chipX[0].click();
+    // Assert that female is unselected. (3500 includes males and females).
     await waitForFacetsUpdate(3500);
   });
 

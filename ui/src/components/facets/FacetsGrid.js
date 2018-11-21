@@ -13,10 +13,7 @@ function FacetsGrid(props) {
     <GridListTile key={facet.name}>
       <FacetCard
         facet={facet}
-        selectedValues={getSelectedFacets(
-          props.selectedFacetValues,
-          facet.es_field_name
-        )}
+        selectedValues={props.selectedFacetValues.get(facet.es_field_name)}
         updateFacets={updateFacets}
       />
     </GridListTile>
@@ -26,17 +23,6 @@ function FacetsGrid(props) {
       {facetsList}
     </GridList>
   );
-}
-
-// Returns the list of selected facet values for a particular facet.
-function getSelectedFacets(selectedFacetValues, es_field_name) {
-  let selectedValuesArray = Array.from(selectedFacetValues.entries());
-  for (let i = 0; i < selectedValuesArray.length; i++) {
-    if (selectedValuesArray[i][0] == es_field_name) {
-      return selectedValuesArray[i][1];
-    }
-  }
-  return [];
 }
 
 export default FacetsGrid;
