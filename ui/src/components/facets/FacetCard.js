@@ -10,19 +10,20 @@ import * as Style from "libs/style";
 
 const styles = {
   facetCard: {
+    ...Style.elements.card,
     margin: "2%",
-    paddingBottom: "8px"
+    paddingBottom: "8px",
+    display: "grid",
+    gridTemplateColumns: "auto 50px"
   },
-  facetName: {
-    display: "inline"
-  },
+  // By default, each div takes up one grid cell.
+  // Don't specify gridColumn, just use default of one cell.
   facetDescription: {
     color: "gray"
   },
   totalFacetValueCount: {
     color: "gray",
-    display: "inline",
-    float: "right"
+    textAlign: "right"
   },
   facetValueList: {
     gridColumn: "1 / 3",
@@ -33,7 +34,7 @@ const styles = {
   facetValue: {
     // This is a nested div, so need to specify a new grid.
     display: "grid",
-    gridTemplateColumns: "50px auto 50px",
+    gridTemplateColumns: "24px auto",
     justifyContent: "stretch",
     padding: "0",
     // Disable gray background on ListItem hover.
@@ -45,13 +46,13 @@ const styles = {
     height: "24px",
     width: "24px"
   },
+  facetValueNameAndCount: {
+    paddingRight: 0
+  },
   facetValueName: {
-    float: "left",
-    textAlign: "left"
+    // Used by end-to-end tests
   },
   facetValueCount: {
-    padding: "0",
-    float: "right",
     textAlign: "right"
   },
   grayText: {
@@ -84,55 +85,48 @@ class FacetCard extends Component {
   render() {
     const { classes } = this.props;
 
-    // facetValue is a dict, eg { name: "female", count: 1760 }
-    const facetValues = this.props.facet.values.map(facetValue => (
+    const facetValueDivs = this.props.facet.values.map(value => (
       <ListItem
         className={classes.facetValue}
-        key={facetValue.name}
+        key={value.name}
         button
         dense
         disableRipple
-        onClick={e => this.onClick(facetValue.name)}
+        onClick={e => this.onClick(value.name)}
       >
         <Checkbox
           className={classes.facetValueCheckbox}
           checked={
             this.props.selectedValues != null &&
-            this.props.selectedValues.includes(facetValue.name)
+            this.props.selectedValues.includes(value.name)
           }
         />
         <ListItemText
+          className={classes.facetValueNameAndCount}
+          classes={{ primary: this.isDimmed(value) ? classes.grayText : null }}
           primary={
-            <div
-              className={this.isDimmed(facetValue) ? classes.grayText : null}
-            >
-              <div className={classes.facetValueName}>{facetValue.name}</div>
-              <div className={classes.facetValueCount}>{facetValue.count}</div>
+            <div style={{ display: "grid", gridTemplateColumns: "auto 50px" }}>
+              <div className={classes.facetValueName}>{value.name}</div>
+              <div className={classes.facetValueCount}>{value.count}</div>
             </div>
           }
         />
       </ListItem>
     ));
-    const totalFacetValueCount = (
-      <span className={classes.totalFacetValueCount}>{this.totalFacetValueCount}</span>
-    );
+
     return (
-      <div className={classes.facetCard} style={Style.elements.card}>
-        <div>
-          <Typography className={classes.facetName}>
-            {this.props.facet.name}
+      <div className={classes.facetCard}>
+        <Typography>{this.props.facet.name}</Typography>
+        {this.props.facet.name != "Samples Overview" ? (
+          <Typography className={classes.totalFacetValueCount}>
+            {this.totalFacetValueCount}
           </Typography>
-          {this.props.facet.name != "Samples Overview" ? (
-            <Typography className={classes.totalFacetValueCount}>
-              {this.totalFacetValueCount}
-            </Typography>
-          ) : null}
-        </div>
+        ) : null}
         <Typography className={classes.facetDescription}>
           {this.props.facet.description}
         </Typography>
         <List dense className={classes.facetValueList}>
-          {facetValues}
+          {facetValueDivs}
         </List>
       </div>
     );
