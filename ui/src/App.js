@@ -95,7 +95,7 @@ class App extends Component {
   }
 
   render() {
-    if (this.state.facets == null || this.state.datasetName === "") {
+    if (this.state.facets.size == 0 || this.state.datasetName === "") {
       // Server has not yet responded or returned an error
       return <div />;
     } else {
