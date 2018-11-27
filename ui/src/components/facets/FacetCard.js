@@ -14,7 +14,11 @@ const styles = {
     margin: "2%",
     paddingBottom: "8px",
     display: "grid",
-    gridTemplateColumns: "auto 50px"
+    gridTemplateColumns: "auto 50px",
+    // If there is a long word (eg facet name or facet value), break in the
+    // middle of the word. Without this, the word stays on one line and its CSS
+    // grid is wider than the facet card.
+    wordBreak: "break-word"
   },
   // By default, each div takes up one grid cell.
   // Don't specify gridColumn, just use default of one cell.
@@ -36,6 +40,8 @@ const styles = {
     display: "grid",
     gridTemplateColumns: "24px auto",
     justifyContent: "stretch",
+    // If facet value is two lines, align checkbox to the top
+    alignItems: "start",
     padding: "0",
     // Disable gray background on ListItem hover.
     "&:hover": {
@@ -105,7 +111,7 @@ class FacetCard extends Component {
           className={classes.facetValueNameAndCount}
           classes={{ primary: this.isDimmed(value) ? classes.grayText : null }}
           primary={
-            <div style={{ display: "grid", gridTemplateColumns: "auto 50px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "auto 40px" }}>
               <div className={classes.facetValueName}>{value.name}</div>
               <div className={classes.facetValueCount}>{value.count}</div>
             </div>
