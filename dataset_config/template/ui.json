@@ -1,14 +1,6 @@
-// Configuration for Data Explorer UI
-//
 // facets:
 //   Facets to be shown in the UI. Facets will appear in the order they are
-//   listed here
-// ui_facet_description:
-//   Optional facet description
-// enable_field_search:
-//   Field search is opt-in while it's under development. After this
-//   feature is done, this flag will be removed and the feature will be enabled
-//   for all Data Explorers.
+//   listed here. ui_facet_description is optional.
 {
   "facets": [
     {
