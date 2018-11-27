@@ -12,16 +12,9 @@ const customStyles = {
 class Search extends React.Component {
   constructor(props) {
     super(props);
-    this.facetNameMap = this.getFacetNameMap(this.props.facets);
-    this.chipsFromFilter = this.chipsFromFilter.bind(this);
-  }
-
-  getFacetNameMap(facets) {
-    var facetNameMap = new Map();
-    facets.forEach(function(facet) {
-      facetNameMap.set(facet.es_field_name, facet.name);
-    });
-    return facetNameMap;
+    this.chipsFromSelectedFacetValues = this.chipsFromSelectedFacetValues.bind(
+      this
+    );
   }
 
   // renderOption is used to render 1) chip, 2) row in drop-down.
@@ -63,10 +56,10 @@ class Search extends React.Component {
     }
   };
 
-  chipsFromFilter(filterMap) {
+  chipsFromSelectedFacetValues(selectedFacetValues) {
     let chips = [];
-    filterMap.forEach((values, key) => {
-      let facetName = this.facetNameMap.get(key);
+    selectedFacetValues.forEach((values, key) => {
+      let facetName = this.props.facets.get(key).name;
       if (values.length > 0) {
         for (let value of values) {
           chips.push({
@@ -90,7 +83,9 @@ class Search extends React.Component {
         options={this.props.searchResults}
         getOptionLabel={this.renderOption}
         getOptionValue={this.renderValue}
-        value={this.chipsFromFilter(this.props.selectedFacetValues)}
+        value={this.chipsFromSelectedFacetValues(
+          this.props.selectedFacetValues
+        )}
         styles={customStyles}
       />
     );

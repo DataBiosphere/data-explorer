@@ -84,7 +84,12 @@ def range_to_number(interval_str):
     if not '-' in interval_str:
         return int(interval_str)
 
-    number = interval_str.split('-')[0]
+    # If first character is -, X is a negative number
+    if interval_str.startswith('-'):
+        number = '-' + interval_str.split('-')[1]
+    else:
+        number = interval_str.split('-')[0]
+
     number = number.replace('M', '000000')
     number = number.replace('B', '000000000')
     if '.' in number:

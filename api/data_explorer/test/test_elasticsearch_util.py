@@ -16,3 +16,5 @@ def test_range_to_number():
     _inner('1', 1)
     _inner('10-20', 10)
     _inner('10M-20M', 10000000)
+    _inner('-20--10', -20)
+    _inner('-10-0', -10)
