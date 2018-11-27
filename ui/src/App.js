@@ -38,10 +38,10 @@ class App extends Component {
     super(props);
     this.state = {
       datasetName: "",
-      // A dict from es_field_name to facet data returned from API server /facets call.
+      // Map from es_field_name to facet data returned from API server /facets call.
       facets: new Map(),
       totalCount: null,
-      // Map from facet name to a list of selected facet values.
+      // Map from es_field_name to a list of selected facet values.
       selectedFacetValues: new Map(),
       // Search results shown in the search drop-down.
       // This is an array of dicts, where each dict has
