@@ -112,17 +112,28 @@ describe("End-to-end", () => {
   });
 
   test("Search box - click on drop-down row", async () => {
-    // Click on the drop down
+    // Click on Avuncular from drop-down
     let initial_select = await page.$x("//div[text()='Select...']");
     initial_select[0].click();
-    // Click on the 'Avuncular' option
     let avuncular_xpath = "//span[text()[contains(., 'Avuncular')]]";
     await page.waitForXPath(avuncular_xpath);
     let avuncular = await page.$x(avuncular_xpath);
     avuncular[0].click();
-    // Wait for the facet card to be rendered and then assert.
+
+    // Assert Avuncular facet is added
     await waitForFacetCard("Avuncular");
     await assertFacet("Avuncular", "46", "HG00658 (aunt/uncle)", "1");
+
+    // Select first Avuncular facet value
+    let facetValueRow = await getFacetValueRow(
+      "Avuncular",
+      "HG00658 (aunt/uncle)"
+    );
+    await facetValueRow.click("input");
+    await waitForFacetsUpdate(1);
+
+    // Assert chip is added
+    await waitForChip("Avuncular=HG00658 (aunt/uncle)");
   });
 
   test("Search box - chips", async () => {
@@ -132,9 +143,7 @@ describe("End-to-end", () => {
     await waitForFacetsUpdate(1760);
 
     // Assert chip is added
-    await page.waitForXPath("//div[text()='Gender=female']");
-    let chip = await page.$x("//div[text()='Gender=female']");
-    expect(chip.length).toBe(1);
+    await waitForChip("Gender=female");
 
     // Unselect the 'Gender - female' facet value.
     facetValueRow = await getFacetValueRow("Gender", "female");
@@ -286,6 +295,10 @@ describe("End-to-end", () => {
    */
   async function waitForFacetCard(facetName) {
     await page.waitForXPath("//*[contains(text(),'" + facetName + "')]");
+  }
+
+  async function waitForChip(chipText) {
+    await page.waitForXPath("//div[text()='" + chipText + "']");
   }
 
   async function exportToSaturn_noSelectedCohort() {
