@@ -95,8 +95,12 @@ definitions:
     properties:
       name:
         type: "string"
+      search_placeholder_text:
+        type: "string"
+        description: "What to show in the search box by default"
     description: "Dataset information."
     example:
+      search_placeholder_text: "search_placeholder_text"
       name: "name"
   FacetsResponse:
     properties:

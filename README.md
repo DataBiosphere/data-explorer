@@ -44,6 +44,7 @@ Run local Data Explorer with the 1000 Genomes dataset:
 - If `~/.config/gcloud/application_default_credentials.json` doesn't exist,
   create it by running `gcloud auth application-default login`.
 - `DATASET_CONFIG_DIR=dataset_config/<my dataset> docker-compose up --build -t 0`
+
   - The `-t 0` makes Kibana stop more quickly after `Ctrl-C`
   - If ES crashes due to OOM, you can increase [heap size](https://www.elastic.co/guide/en/elasticsearch/reference/current/heap-size.html):
     ```
@@ -101,7 +102,7 @@ update the server implementations:
     ```
     java -jar ~/swagger-codegen-cli.jar generate -i api/api.yaml -l python-flask -o api -DsupportPython2=true,packageName=data_explorer
     java -jar ~/swagger-codegen-cli.jar generate -i api/api.yaml -l javascript -o ui/src/api -DuseES6=true
-    yapf -ir . --exclude ui/node_modules
+    yapf -ir . --exclude ui/node_modules --exclude api/.tox
     ```
   - From the global script (macOS or other):
     ```

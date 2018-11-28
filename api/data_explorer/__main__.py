@@ -141,6 +141,8 @@ def _process_dataset():
 def _process_ui():
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'], 'ui.json')
     config = _parse_json_file(config_path)
+    app.app.config['SEARCH_PLACEHOLDER_TEXT'] = config[
+        'search_placeholder_text']
 
 
 def _process_bigquery():
