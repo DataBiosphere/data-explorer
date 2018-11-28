@@ -38,6 +38,9 @@ class App extends Component {
     super(props);
     this.state = {
       datasetName: "",
+      // What to show in search box by default. If this is the empty string, the
+      // react-select default of "Select..." is shown.
+      searchPlaceholderText: "",
       // Map from es_field_name to facet data returned from API server /facets call.
       facets: new Map(),
       totalCount: null,
@@ -107,6 +110,7 @@ class App extends Component {
               totalCount={this.state.totalCount}
             />
             <Search
+              searchPlaceholderText={this.state.searchPlaceholderText}
               searchResults={this.state.searchResults}
               handleSearchBoxChange={this.handleSearchBoxChange}
               selectedFacetValues={this.state.selectedFacetValues}
@@ -140,7 +144,8 @@ class App extends Component {
         console.error(error);
       } else {
         this.setState({
-          datasetName: data.name
+          datasetName: data.name,
+          searchPlaceholderText: data.search_placeholder_text
         });
       }
     }.bind(this);

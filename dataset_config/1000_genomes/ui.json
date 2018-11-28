@@ -1,5 +1,13 @@
-// Configuration for Data Explorer UI
+// search_placeholder_text:
+//   Optional. What to show in the search box by default. Adjust the terms for
+//   your dataset. For example, "exome" is good for 1000 Genomes because there
+//   are a bunch of exome-related facets that don't automatically appear (ie
+//   they aren't in this file).
+// facets:
+//   Facets to be shown in the UI. Facets will appear in the order they are
+//   listed here. ui_facet_description is optional.
 {
+  "search_placeholder_text": "Try typing exome or center",
   "facets": [
     {
       "ui_facet_name": "Gender",

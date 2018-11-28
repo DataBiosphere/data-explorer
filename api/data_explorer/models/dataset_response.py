@@ -15,17 +15,23 @@ class DatasetResponse(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name=None):  # noqa: E501
+    def __init__(self, name=None, search_placeholder_text=None):  # noqa: E501
         """DatasetResponse - a model defined in Swagger
 
         :param name: The name of this DatasetResponse.  # noqa: E501
         :type name: str
+        :param search_placeholder_text: The search_placeholder_text of this DatasetResponse.  # noqa: E501
+        :type search_placeholder_text: str
         """
-        self.swagger_types = {'name': str}
+        self.swagger_types = {'name': str, 'search_placeholder_text': str}
 
-        self.attribute_map = {'name': 'name'}
+        self.attribute_map = {
+            'name': 'name',
+            'search_placeholder_text': 'search_placeholder_text'
+        }
 
         self._name = name
+        self._search_placeholder_text = search_placeholder_text
 
     @classmethod
     def from_dict(cls, dikt):
@@ -58,3 +64,26 @@ class DatasetResponse(Model):
         """
 
         self._name = name
+
+    @property
+    def search_placeholder_text(self):
+        """Gets the search_placeholder_text of this DatasetResponse.
+
+        What to show in the search box by default  # noqa: E501
+
+        :return: The search_placeholder_text of this DatasetResponse.
+        :rtype: str
+        """
+        return self._search_placeholder_text
+
+    @search_placeholder_text.setter
+    def search_placeholder_text(self, search_placeholder_text):
+        """Sets the search_placeholder_text of this DatasetResponse.
+
+        What to show in the search box by default  # noqa: E501
+
+        :param search_placeholder_text: The search_placeholder_text of this DatasetResponse.
+        :type search_placeholder_text: str
+        """
+
+        self._search_placeholder_text = search_placeholder_text

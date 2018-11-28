@@ -87,6 +87,7 @@ class Search extends React.Component {
           this.props.selectedFacetValues
         )}
         styles={customStyles}
+        placeholder={this.props.searchPlaceholderText}
       />
     );
   }

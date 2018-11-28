@@ -108,6 +108,9 @@ definitions:
     properties:
       name:
         type: string
+      search_placeholder_text:
+        type: string
+        description: Optional. What to show in the search box by default
   FacetsResponse:
     description: "Results from a faceted search."
     properties:
