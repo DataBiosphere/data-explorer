@@ -13,6 +13,11 @@ def dataset_get():  # noqa: E501
 
     :rtype: DatasetResponse
     """
-    return DatasetResponse(
-        name=current_app.config['DATASET_NAME'],
-        search_placeholder_text=current_app.config['SEARCH_PLACEHOLDER_TEXT'])
+    dataset_response = DatasetResponse(name=current_app.config['DATASET_NAME'])
+
+    if 'SEARCH_PLACEHOLDER_TEXT' in current_app.config and current_app.config[
+            'SEARCH_PLACEHOLDER_TEXT']:
+        dataset_response.search_placeholder_text = current_app.config[
+            'SEARCH_PLACEHOLDER_TEXT']
+
+    return dataset_response

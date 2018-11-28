@@ -38,7 +38,8 @@ class App extends Component {
     super(props);
     this.state = {
       datasetName: "",
-      // What to show in search box by default
+      // What to show in search box by default. If this is the empty string, the
+      // react-select default of "Select..." is shown.
       searchPlaceholderText: "",
       // Map from es_field_name to facet data returned from API server /facets call.
       facets: new Map(),
