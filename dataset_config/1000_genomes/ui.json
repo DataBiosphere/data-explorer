@@ -1,5 +1,5 @@
 // search_placeholder_text:
-//   What to show by default in the search box. Adjust the terms for your
+//   What to show in the search box by default. Adjust the terms for your
 //   dataset. For example, "exome" is good for 1000 Genomes because there are a
 //   bunch of exome-related facets that don't automatically appear (ie they
 //   aren't in this file).
