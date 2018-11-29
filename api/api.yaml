@@ -59,7 +59,17 @@ paths:
         - Facets
   /search:
     get:
-      description: Free text search over dataset
+      description: >
+        Free text search over dataset. If query is empty, this returns all
+        dataset fields, to populate the search drop-down on initial page load.
+        If query is set, this returns only dataset fields that match the query.
+      parameters:
+        - name: query
+          description: >
+            What was typed into search box. Say user typed "foo". query is "foo";
+            Elasticsearch will be searched for "foo*".
+          in: query
+          type: string
       responses:
         200:
           description: Success

@@ -133,7 +133,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.searchApi.searchGet(this.searchCallback);
+    this.searchApi.searchGet({}, this.searchCallback);
     this.facetsApi.facetsGet({}, this.facetsCallback);
 
     // Call /api/dataset

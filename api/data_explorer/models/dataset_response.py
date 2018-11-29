@@ -69,7 +69,7 @@ class DatasetResponse(Model):
     def search_placeholder_text(self):
         """Gets the search_placeholder_text of this DatasetResponse.
 
-        What to show in the search box by default  # noqa: E501
+        Optional. What to show in the search box by default  # noqa: E501
 
         :return: The search_placeholder_text of this DatasetResponse.
         :rtype: str
@@ -80,7 +80,7 @@ class DatasetResponse(Model):
     def search_placeholder_text(self, search_placeholder_text):
         """Sets the search_placeholder_text of this DatasetResponse.
 
-        What to show in the search box by default  # noqa: E501
+        Optional. What to show in the search box by default  # noqa: E501
 
         :param search_placeholder_text: The search_placeholder_text of this DatasetResponse.
         :type search_placeholder_text: str

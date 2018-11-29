@@ -59,9 +59,17 @@ paths:
     get:
       tags:
       - "Search"
-      description: "Free text search over dataset"
+      description: "Free text search over dataset. If query is empty, this returns\
+        \ all dataset fields, to populate the search drop-down on initial page load.\
+        \ If query is set, this returns only dataset fields that match the query.\n"
       operationId: "search_get"
-      parameters: []
+      parameters:
+      - name: "query"
+        in: "query"
+        description: "What was typed into search box. Say user typed \"foo\". query\
+          \ is \"foo\"; Elasticsearch will be searched for \"foo*\".\n"
+        required: false
+        type: "string"
       responses:
         200:
           description: "Success"
@@ -97,7 +105,7 @@ definitions:
         type: "string"
       search_placeholder_text:
         type: "string"
-        description: "What to show in the search box by default"
+        description: "Optional. What to show in the search box by default"
     description: "Dataset information."
     example:
       search_placeholder_text: "search_placeholder_text"

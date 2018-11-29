@@ -1,12 +1,50 @@
+import re
+
 from data_explorer.models.search_result import SearchResult
 from data_explorer.models.search_response import SearchResponse
 
 from flask import current_app
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import Search
+from elasticsearch_dsl.query import MultiMatch
 
 
-def search_get():
+def _results_from_fields_index(fields):
+    results = []
+    for field in fields['hits']['hits']:
+        if "description" in field["_source"]:
+            results.append(
+                SearchResult(
+                    facet_name=field["_source"]["name"],
+                    facet_description=field["_source"]["description"],
+                    elasticsearch_field_name=field["_id"],
+                    facet_value=""))
+        else:
+            results.append(
+                SearchResult(
+                    facet_name=field["_source"]["name"],
+                    elasticsearch_field_name=field["_id"],
+                    facet_value=""))
+    return results
+
+
+def _results_from_main_index(fields, query_regex):
+    field_to_facet_values = dict()
+    for field_name, field_value in fields.items():
+        if isinstance(field_value, dict):
+            field_to_facet_values.update(
+                _results_from_main_index(field_value, query_regex))
+        elif isinstance(field_value, basestring) and re.findall(
+                query_regex, field_value.lower()):
+            if field_name in field_to_facet_values:
+                field_to_facet_values[field_name].add(field_value)
+            else:
+                field_to_facet_values[field_name] = set()
+                field_to_facet_values[field_name].add(field_value)
+    return field_to_facet_values
+
+
+def search_get(query=None):
     """search_get
 
     Returns searchResults.
@@ -15,28 +53,71 @@ def search_get():
     """
 
     es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
-    search = Search(using=es, index=current_app.config['FIELDS_INDEX_NAME'])
-    # TODO(malathir): Change this to case insensitive sorting.
-    search = search.sort('name.keyword')
-    # Default number of results is 10, which isn't enough.
-    search = search[0:10000]
-    response = search.execute()
-    response_fields = response.to_dict()
-
     search_results = []
-    for field in response_fields['hits']['hits']:
-        if "description" in field["_source"]:
-            search_results.append(
-                SearchResult(
-                    facet_name=field["_source"]["name"],
-                    facet_description=field["_source"]["description"],
-                    elasticsearch_field_name=field["_id"],
-                    facet_value=""))
-        else:
-            search_results.append(
-                SearchResult(
-                    facet_name=field["_source"]["name"],
-                    elasticsearch_field_name=field["_id"],
-                    facet_value=""))
+    # The number of results that Elasticsearch returns from Search queries to the main index.
+    # 100 is low and we'll miss some hits. But it is needed to keep search fast for large datasets.
+    # For example, for NHS:
+    # - With 100,`api/search?query=pre` takes 2s
+    # - With 1000,`api/search?query=pre` takes 7s
+    num_search_results = 100
+    # The number of results that Elasticsearch returns from Search queries to the fields index.
+    num_field_search_results = 10000
+
+    if not query:
+        # Return all dataset fields, to populate search box drop-down. Query fields index.
+        fields_search = Search(
+            using=es, index=current_app.config['FIELDS_INDEX_NAME']).sort(
+                'name.keyword')[0:num_field_search_results]
+        fields_search_response = fields_search.execute()
+        fields = fields_search_response.to_dict()
+        search_results.extend(_results_from_fields_index(fields))
+    else:
+        # Return only fields matching query.
+
+        # Part 1: Search main index. For the BigQuery indexer, this searches BigQuery column values.
+        # Store the query matches in a dict of es_field_name to a set of facet values.
+        field_to_facet_values = dict()
+
+        # Use MultiMatch to search across all fields. "phrase_prefix" matches with
+        # prefix of words in column values.
+        multi_match = MultiMatch(query=query, type="phrase_prefix")
+        search = Search(
+            using=es, index=current_app.config['INDEX_NAME']).query(
+                multi_match)[0:num_search_results]
+        import time
+        begin = time.time()
+        response = search.execute()
+        end = time.time()
+        current_app.logger.info("execute call %s" % (begin - end))
+        response_fields = response.to_dict()
+
+        # This regex matches if there is a word that starts with query
+        query_regex = r"\b" + re.escape(query.lower()) + "\w*"
+
+        # hits contains entire documents. Iterate over the fields to figure out which field matched query.
+        # Elasticsearch highlight can do this for us, but it makes the search too slow, so do it ourselves.
+        # See https://github.com/elastic/elasticsearch/issues/36452
+        begin = time.time()
+        for hit in response_fields['hits']['hits']:
+            field_to_facet_values.update(
+                _results_from_main_index(hit['_source'], query_regex))
+        end = time.time()
+        current_app.logger.info("search %s" % (begin - end))
+
+        for es_field_name in field_to_facet_values:
+            for facet_value in field_to_facet_values[es_field_name]:
+                search_results.append(
+                    SearchResult(
+                        elasticsearch_field_name=es_field_name,
+                        facet_name=es_field_name.split('.')[-1],
+                        facet_value=facet_value))
+
+        # Part 2: Search fields index. For the BigQuery indexer, this searches BigQuery column name and description.
+        fields_search = Search(
+            using=es, index=current_app.config['FIELDS_INDEX_NAME']).query(
+                multi_match)[0:num_field_search_results]
+        fields_search_response = fields_search.execute()
+        fields = fields_search_response.to_dict()
+        search_results.extend(_results_from_fields_index(fields))
 
     return SearchResponse(search_results=search_results)
