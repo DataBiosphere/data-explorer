@@ -55,16 +55,15 @@ def search_get(query=None):
     es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
     search_results = []
     # The number of results that Elasticsearch returns from Search queries to the main index.
-    # 100 is low and we'll miss some hits. But it is needed to keep search fast for large datasets.
-    # For example, for NHS:
-    # - With 100,`api/search?query=pre` takes 2s
-    # - With 1000,`api/search?query=pre` takes 7s
+    # This is low and we'll miss some hits. But it is needed to keep search not take forever for large datasets.
     num_search_results = 100
     # The number of results that Elasticsearch returns from Search queries to the fields index.
-    num_field_search_results = 10000
+    # If enable_search_values is true, if this is high (like 1000), it makes the UI sluggish (such as initial click in search box).
+    # If enable_search_values is false, this can be arbitrarily high, and UI won't be too sluggish.
+    num_field_search_results = 100
 
     if not query:
-        # Return all dataset fields, to populate search box drop-down. Query fields index.
+        # Return all dataset fields, to populate initial search box drop-down. Query fields index.
         fields_search = Search(
             using=es, index=current_app.config['FIELDS_INDEX_NAME']).sort(
                 'name.keyword')[0:num_field_search_results]
@@ -82,13 +81,15 @@ def search_get(query=None):
         # prefix of words in column values.
         multi_match = MultiMatch(query=query, type="phrase_prefix")
         search = Search(
-            using=es, index=current_app.config['INDEX_NAME']).query(
-                multi_match)[0:num_search_results]
+            using=es,
+            index=current_app.config['INDEX_NAME']).query(multi_match).params(
+                request_timeout=30)[0:num_search_results]
+
         import time
         begin = time.time()
         response = search.execute()
         end = time.time()
-        current_app.logger.info("execute call %s" % (begin - end))
+        current_app.logger.info("Elasticsearch query: %s sec" % (end - begin))
         response_fields = response.to_dict()
 
         # This regex matches if there is a word that starts with query
@@ -97,12 +98,17 @@ def search_get(query=None):
         # hits contains entire documents. Iterate over the fields to figure out which field matched query.
         # Elasticsearch highlight can do this for us, but it makes the search too slow, so do it ourselves.
         # See https://github.com/elastic/elasticsearch/issues/36452
+
         begin = time.time()
         for hit in response_fields['hits']['hits']:
-            field_to_facet_values.update(
-                _results_from_main_index(hit['_source'], query_regex))
+            results = _results_from_main_index(hit['_source'], query_regex)
+            for key in results:
+                if key in field_to_facet_values:
+                    field_to_facet_values[key].update(results[key])
+                else:
+                    field_to_facet_values[key] = results[key]
         end = time.time()
-        current_app.logger.info("search %s" % (begin - end))
+        current_app.logger.info("Post-processing: %s sec" % (end - begin))
 
         for es_field_name in field_to_facet_values:
             for facet_value in field_to_facet_values[es_field_name]:

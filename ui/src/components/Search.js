@@ -1,5 +1,6 @@
 import React from "react";
 import Select, { components } from "react-select";
+import AsyncSelect from "react-select/lib/Async";
 
 const customStyles = {
   container: (provided, state) => ({
@@ -23,7 +24,16 @@ class Search extends React.Component {
     if (option.label != null) {
       return option.label;
     }
-    if (option.facetDescription != null) {
+    if (option.facetValue != null && option.facetValue != "") {
+      return (
+        <div>
+          <span style={{ color: "silver" }}>Add</span>
+          <span style={{ color: "black" }}> {option.facetName} </span>
+          <span style={{ color: "silver" }}>facet and select</span>
+          <span style={{ color: "black" }}> {option.facetValue} </span>
+        </div>
+      );
+    } else if (option.facetDescription != null) {
       return (
         <div>
           <span style={{ color: "silver" }}>Add</span>
@@ -76,20 +86,38 @@ class Search extends React.Component {
   }
 
   render() {
-    return (
-      <Select
-        isMulti="true"
-        onChange={this.props.handleSearchBoxChange}
-        options={this.props.searchResults}
-        getOptionLabel={this.renderOption}
-        getOptionValue={this.renderValue}
-        value={this.chipsFromSelectedFacetValues(
-          this.props.selectedFacetValues
-        )}
-        styles={customStyles}
-        placeholder={this.props.searchPlaceholderText}
-      />
-    );
+    if (this.props.enableSearchValues) {
+      return (
+        <AsyncSelect
+          isMulti="true"
+          onChange={this.props.handleSearchBoxChange}
+          getOptionLabel={this.renderOption}
+          getOptionValue={this.renderValue}
+          value={this.chipsFromSelectedFacetValues(
+            this.props.selectedFacetValues
+          )}
+          styles={customStyles}
+          placeholder={this.props.searchPlaceholderText}
+          loadOptions={this.props.loadOptions}
+          defaultOptions={this.props.defaultOptions}
+        />
+      );
+    } else {
+      return (
+        <Select
+          isMulti="true"
+          onChange={this.props.handleSearchBoxChange}
+          getOptionLabel={this.renderOption}
+          getOptionValue={this.renderValue}
+          value={this.chipsFromSelectedFacetValues(
+            this.props.selectedFacetValues
+          )}
+          styles={customStyles}
+          placeholder={this.props.searchPlaceholderText}
+          options={this.props.defaultOptions}
+        />
+      );
+    }
   }
 }
 

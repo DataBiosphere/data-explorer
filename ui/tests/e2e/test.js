@@ -113,9 +113,7 @@ describe("End-to-end", () => {
 
   test("Search box - click on drop-down row", async () => {
     // Click on Avuncular from drop-down
-    let initial_select = await page.$x(
-      "//div[text()='Try typing exome or center']"
-    );
+    let initial_select = await page.$x("//div[text()='Search center or pat']");
     initial_select[0].click();
     let avuncular_xpath = "//span[text()[contains(., 'Avuncular')]]";
     await page.waitForXPath(avuncular_xpath);
