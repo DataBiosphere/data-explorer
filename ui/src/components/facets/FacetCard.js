@@ -40,8 +40,6 @@ const styles = {
     display: "grid",
     gridTemplateColumns: "24px auto",
     justifyContent: "stretch",
-    // If facet value is two lines, align checkbox to the top
-    alignItems: "start",
     padding: "0",
     // Disable gray background on ListItem hover.
     "&:hover": {
