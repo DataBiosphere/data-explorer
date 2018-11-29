@@ -32,7 +32,7 @@ const styles = {
   facetValueList: {
     gridColumn: "1 / 3",
     margin: "20px 0 0 0",
-    maxHeight: "500px",
+    maxHeight: "400px",
     overflow: "auto"
   },
   facetValue: {
@@ -111,7 +111,7 @@ class FacetCard extends Component {
           className={classes.facetValueNameAndCount}
           classes={{ primary: this.isDimmed(value) ? classes.grayText : null }}
           primary={
-            <div style={{ display: "grid", gridTemplateColumns: "auto 40px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "auto 50px" }}>
               <div className={classes.facetValueName}>{value.name}</div>
               <div className={classes.facetValueCount}>{value.count}</div>
             </div>
