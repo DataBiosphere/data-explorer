@@ -4,6 +4,7 @@ import GridListTile from "@material-ui/core/GridListTile";
 
 import "components/facets/FacetsGrid.css";
 import FacetCard from "components/facets/FacetCard";
+import FacetHistogram from "components/facets/FacetHistogram";
 
 function FacetsGrid(props) {
   // An array of es field names
@@ -19,9 +20,11 @@ function FacetsGrid(props) {
     </GridListTile>
   ));
   return (
-    <GridList className="gridList" cols={3} cellHeight="auto" padding={1}>
-      {facetsList}
-    </GridList>
+    <div>
+      <GridList className="gridList" cols={3} cellHeight="auto" padding={1}>
+        {facetsList}
+      </GridList>
+    </div>
   );
 }
 
