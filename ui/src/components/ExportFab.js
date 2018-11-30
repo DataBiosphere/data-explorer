@@ -103,7 +103,7 @@ class ExportFab extends React.Component {
         alert(error.response.body.detail);
       } else {
         let importUrl =
-          "https://bvdp-saturn-prod.appspot.com/#import-data?format=entitiesJson";
+          "https://app.terra.bio/#import-data?format=entitiesJson";
         if (data.authorization_domain) {
           importUrl += "&ad=" + data.authorization_domain;
         }
