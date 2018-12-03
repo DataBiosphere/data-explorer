@@ -45,9 +45,11 @@ def _get_field_range(es, field_name):
     return (aggs['max']['value'] - aggs['min']['value'])
 
 
-def _get_bucket_interval(es, field_name):
+def _get_bucket_interval(es, field_name, field_type):
     field_range = _get_field_range(es, field_name)
-    if field_range <= 1:
+    # If an integer field has 0s and 1s, return 1 instead of .1
+    is_integer_field = field_type == 'long' or field_type == 'integer' or field_type == 'short' or field_type == 'byte'
+    if field_range <= 1 and not is_integer_field:
         return .1
     if field_range < 8:
         return 1
@@ -283,9 +285,10 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type):
         # TODO: When https://github.com/elastic/elasticsearch/issues/31828
         # is fixed, use AutoHistogramFacet instead. Will no longer need 2
         # steps.
+        interval = _get_bucket_interval(es, elasticsearch_field_name,
+                                        field_type)
         es_facet = HistogramFacet(
-            field=elasticsearch_field_name,
-            interval=_get_bucket_interval(es, elasticsearch_field_name))
+            field=elasticsearch_field_name, interval=interval)
 
     nested_facet = _maybe_get_nested_facet(elasticsearch_field_name, es_facet)
     if nested_facet:
