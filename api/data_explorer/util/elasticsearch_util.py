@@ -48,7 +48,7 @@ def _get_field_range(es, field_name):
 def _get_bucket_interval(es, field_name, field_type):
     field_range = _get_field_range(es, field_name)
     # If an integer field has 0s and 1s, return 1 instead of .1
-    is_integer_field = field_type == 'long' or field_type == 'integer' or field_type == 'short' or field_type == 'byte'
+    is_integer_field = field_type in ['long', 'integer', 'short', 'byte']
     if field_range <= 1 and not is_integer_field:
         return .1
     if field_range < 8:
