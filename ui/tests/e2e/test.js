@@ -310,7 +310,7 @@ describe("End-to-end", () => {
     // Here we use waitForRequest() instead. waitForRequest() is slightly
     // faster because it doesn't wait for the Saturn page to finish (or start?)
     // loading.
-    await page.waitForRequest("https://bvdp-saturn-prod.appspot.com/");
+    await page.waitForRequest("https://app.terra.bio/");
   }
 
   async function exportToSaturn_selectedCohort() {
@@ -320,6 +320,6 @@ describe("End-to-end", () => {
 
     await page.type("#name", "c");
     await page.click("#save");
-    await page.waitForRequest("https://bvdp-saturn-prod.appspot.com/");
+    await page.waitForRequest("https://app.terra.bio/");
   }
 });

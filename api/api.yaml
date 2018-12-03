@@ -74,8 +74,8 @@ paths:
       description: >
         Creates and returns a signed URL to a GCS zip file of JSON files. The
         JSON files represent entities to be exported to a Terra workspace.
-        https://bvdp-saturn-prod.appspot.com/#import-data may be called with
-        the url parameter set to this url. For each JSON file,
+        https://app.terra.bio/#import-data may be called with the url parameter
+        set to this url. For each JSON file,
         https://rawls.dsde-prod.broadinstitute.org/#!/entities/create_entity
         may be called with the JSON as the POST body.
       parameters:
