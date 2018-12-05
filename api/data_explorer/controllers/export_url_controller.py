@@ -381,8 +381,9 @@ def export_url_post():  # noqa: E501
     current_app.logger.info('Export URL request data %s' % request.data)
 
     query = _get_filter_query(filter_arr)
+    cohort_name = data['cohortName']
     for c in ' .:=':
-        cohort_name = data['cohortName'].replace(c, '_')
+        cohort_name = cohort_name.replace(c, '_')
 
     entities = _get_entities_dict(cohort_name, query, filter_arr)
 
