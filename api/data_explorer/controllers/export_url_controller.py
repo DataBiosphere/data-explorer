@@ -22,7 +22,7 @@ from data_explorer.models.export_url_response import ExportUrlResponse  # noqa: 
 from data_explorer.util import elasticsearch_util
 from data_explorer.util.dataset_faceted_search import DatasetFacetedSearch
 
-# Export to Saturn flow
+# Send to Terra flow
 # - User clicks export button on bottom right of Data Explorer
 # - A dialog pops up, asking user to name cohort. User types "African females"
 #   and clicks Export button
@@ -32,7 +32,7 @@ from data_explorer.util.dataset_faceted_search import DatasetFacetedSearch
 #   - Concat that with an existing samples JSON entity file, which contains
 #     all the samples in the dataset and is created on indexing.
 #   - Creates a signed url for GCS file. Returns signed url to UI server
-# - UI server redirects to Saturn add-import?url=SIGNED_URL
+# - UI server redirects to Terra add-import?url=SIGNED_URL
 # - On add-import page, user selects Workspace. User clicks Import button.
 # - User is redirected to selected workspace Data tab, showing newly imported
 #   entities.
@@ -43,7 +43,7 @@ def _check_preconditions():
                                'deploy.json')
     if not os.path.isfile(config_path):
         error_msg = (
-            'deploy.json not found. Export to Saturn feature will not work. '
+            'deploy.json not found. Send to Terra feature will not work. '
             'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
         )
         current_app.logger.error(error_msg)
@@ -51,7 +51,7 @@ def _check_preconditions():
 
     if not current_app.config['DEPLOY_PROJECT_ID']:
         error_msg = (
-            'Project not set in deploy.json. Export to Saturn feature will not work. '
+            'Project not set in deploy.json. Send to Terra feature will not work. '
             'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature-for-export-to-saturn-feature'
         )
         current_app.logger.error(error_msg)
@@ -60,7 +60,7 @@ def _check_preconditions():
     if not current_app.config['EXPORT_URL_GCS_BUCKET']:
         error_msg = (
             'Project not set in deploy.json or export URL GCS bucket not '
-            'found. Export to Saturn feature will not work. '
+            'found. Send to Terra feature will not work. '
             'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
         )
         current_app.logger.error(error_msg)
@@ -70,7 +70,7 @@ def _check_preconditions():
                                     'private-key.json')
     if not os.path.isfile(private_key_path):
         error_msg = (
-            'Private key not found. Export to Saturn feature will not work. '
+            'Private key not found. Send to Terra feature will not work. '
             'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
         )
         current_app.logger.error(error_msg)
@@ -98,7 +98,7 @@ def _get_doc_generator(filter_arr):
 
 def _get_entities_dict(cohort_name, query, filter_arr):
     """Returns a dict representing the JSON list of entities."""
-    # Saturn add-import expects a JSON list of entities, where each entity is
+    # Terra add-import expects a JSON list of entities, where each entity is
     # the entity JSON passed into
     # https://rawls.dsde-prod.broadinstitute.org/#!/entities/create_entity
     entities = []
@@ -381,7 +381,10 @@ def export_url_post():  # noqa: E501
     current_app.logger.info('Export URL request data %s' % request.data)
 
     query = _get_filter_query(filter_arr)
-    cohort_name = data['cohortName'].replace(" ", "_")
+    cohort_name = data['cohortName']
+    for c in ' .:=':
+        cohort_name = cohort_name.replace(c, '_')
+
     entities = _get_entities_dict(cohort_name, query, filter_arr)
 
     # Don't actually write GCS file during unit test. If we wrote a file during
