@@ -202,24 +202,26 @@ def _process_facets(es):
     app.app.config['NESTED_PATHS'] = elasticsearch_util.get_nested_paths(es)
 
     for facet_config in facets_config:
-        elasticsearch_field_name = facet_config['elasticsearch_field_name']
-        field_type = elasticsearch_util.get_field_type(
-            es, elasticsearch_field_name)
+        es_field_name = facet_config['elasticsearch_field_name']
+        if es_field_name in facets:
+            raise EnvironmentError(
+                '%s appears more than once in ui.json' % es_field_name)
+        field_type = elasticsearch_util.get_field_type(es, es_field_name)
         ui_facet_name = facet_config['ui_facet_name']
-        if elasticsearch_field_name.startswith('samples.'):
+        if es_field_name.startswith('samples.'):
             ui_facet_name = '%s (samples)' % ui_facet_name
 
-        facets[elasticsearch_field_name] = {
+        facets[es_field_name] = {
             'ui_facet_name': ui_facet_name,
             'type': field_type
         }
         if 'ui_facet_description' in facet_config:
-            facets[elasticsearch_field_name]['description'] = facet_config[
+            facets[es_field_name]['description'] = facet_config[
                 'ui_facet_description']
 
-        facets[elasticsearch_field_name][
+        facets[es_field_name][
             'es_facet'] = elasticsearch_util.get_elasticsearch_facet(
-                es, elasticsearch_field_name, field_type)
+                es, es_field_name, field_type)
 
     # Map from Elasticsearch field name to dict with ui facet name,
     # Elasticsearch field type, optional UI facet description and Elasticsearch
