@@ -9,7 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import * as Style from "libs/style";
 
 const styles = {
-  facetCard: {
+  facetListView: {
     ...Style.elements.card,
     margin: "2%",
     paddingBottom: "8px",
@@ -119,7 +119,7 @@ class FacetListView extends Component {
     ));
 
     return (
-      <div className={classes.facetCard}>
+      <div className={classes.facetListView}>
         <Typography>{this.props.facet.name}</Typography>
         {this.props.facet.name != "Samples Overview" ? (
           <Typography className={classes.totalFacetValueCount}>

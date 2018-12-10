@@ -39,7 +39,7 @@ describe("End-to-end", () => {
 
     // Make sure non-selected facet values are gray.
     facetValueRow = await getFacetValueRow("Super Population", "European");
-    const grayDiv = await facetValueRow.$("*[class*='FacetCard-grayText-']");
+    const grayDiv = await facetValueRow.$("*[class*='FacetListView-grayText-']");
 
     expect(grayDiv).toBeTruthy();
   });
@@ -69,7 +69,7 @@ describe("End-to-end", () => {
       "Total Low Coverage Sequence",
       "0B-10B"
     );
-    const grayDiv = await facetValueRow.$("*[class*='FacetCard-grayText-']");
+    const grayDiv = await facetValueRow.$("*[class*='FacetListView-grayText-']");
     expect(grayDiv).toBeTruthy();
   });
 
@@ -91,7 +91,7 @@ describe("End-to-end", () => {
 
     // Make sure non-selected facet values are gray.
     facetValueRow = await getFacetValueRow("Samples Overview", "Has Exome BAM");
-    const grayDiv = await facetValueRow.$("*[class*='FacetCard-grayText-']");
+    const grayDiv = await facetValueRow.$("*[class*='FacetListView-grayText-']");
     expect(grayDiv).toBeTruthy();
 
     // Test exporting to saturn.
@@ -220,23 +220,23 @@ describe("End-to-end", () => {
     firstValueName,
     firstValueCount
   ) {
-    const facetCard = await getFacetCard(facetName);
+    const listView = await getFacetListView(facetName);
 
     expect(
-      await facetCard.$eval(
-        "*[class*='FacetCard-totalFacetValueCount-']",
+      await listView.$eval(
+        "*[class*='FacetListView-totalFacetValueCount-']",
         node => node.innerText
       )
     ).toBe(totalCount);
     expect(
-      await facetCard.$eval(
-        "*[class*='FacetCard-facetValueName-']",
+      await listView.$eval(
+        "*[class*='FacetListView-facetValueName-']",
         node => node.innerText
       )
     ).toBe(firstValueName);
     expect(
-      await facetCard.$eval(
-        "*[class*='FacetCard-facetValueCount-']",
+      await listView.$eval(
+        "*[class*='FacetListView-facetValueCount-']",
         node => node.innerText
       )
     ).toBe(firstValueCount);
@@ -246,16 +246,16 @@ describe("End-to-end", () => {
    * Returns Promise of JSHandle of facetValueRow label.
    */
   async function getFacetValueRow(facetName, valueName) {
-    let facetCard = await getFacetCard(facetName);
+    let listView = await getFacetListView(facetName);
     let facetValueRow = (await page.evaluateHandle(
-      (facetCard, valueName) => {
-        let divs = facetCard.querySelectorAll("*[class*='MuiListItem-']");
+      (listView, valueName) => {
+        let divs = listView.querySelectorAll("*[class*='MuiListItem-']");
         for (let div of divs) {
           if (div.innerText.includes(valueName)) return div;
         }
         return null;
       },
-      facetCard,
+      listView,
       valueName
     )).asElement();
     expect(facetValueRow).toBeTruthy();
@@ -263,12 +263,12 @@ describe("End-to-end", () => {
   }
 
   /**
-   * Returns Promise of JSHandle of facetCard div.
+   * Returns Promise of JSHandle of facetListView div.
    */
-  async function getFacetCard(facetName) {
-    const facetCard = (await page.evaluateHandle(innerFacetName => {
+  async function getFacetListView(facetName) {
+    const listView = (await page.evaluateHandle(innerFacetName => {
       const divs = document.querySelectorAll(
-        "*[class*='FacetCard-facetCard-']"
+        "*[class*='FacetListView-facetListView-']"
       );
       for (const div of divs) {
         const name = div.querySelector("p").innerText;
@@ -276,8 +276,8 @@ describe("End-to-end", () => {
       }
       return null;
     }, facetName)).asElement();
-    expect(facetCard).toBeTruthy();
-    return facetCard;
+    expect(listView).toBeTruthy();
+    return listView;
   }
 
   /**
