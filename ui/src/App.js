@@ -199,7 +199,7 @@ class App extends Component {
   }
 
   handleVisualizationChange(event, checked) {
-    this.setState({showVisualizations: checked})
+    this.setState({ showVisualizations: checked });
   }
 
   /**
