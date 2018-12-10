@@ -17,7 +17,7 @@ class TestDatasetController(BaseTestCase):
         """Test case for dataset_get"""
         expected_response = {
             'name': dataset_name,
-            'enableVisualizations': False
+            'enable_visualizations': False
         }
         actual_response = self.client.get('/dataset')
         self.assert200(actual_response)
