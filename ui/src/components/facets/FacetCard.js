@@ -8,6 +8,8 @@ import FacetHistogram from "components/facets/FacetHistogram";
 function FacetCard(props) {
   const { classes } = props
   const rand = Math.random() < 0.5
+  const showVisualizations = props.showVisualizations
+
   const histogram = (
     <FacetHistogram
         facet={props.facet}
@@ -21,7 +23,7 @@ function FacetCard(props) {
     />
   )
 
-  return Math.random() < 0.5 ? histogram : listView;
+  return showVisualizations ? histogram : listView;
 }
 
 export default FacetCard;

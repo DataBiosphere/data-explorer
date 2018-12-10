@@ -145,6 +145,9 @@ def _process_ui():
             'search_placeholder_text']:
         app.app.config['SEARCH_PLACEHOLDER_TEXT'] = config[
             'search_placeholder_text']
+    app.app.config['ENABLE_VISUALIZATIONS'] = False
+    if config.get('enable_visualizations'):
+        app.app.config['ENABLE_VISUALIZATIONS'] = True
 
 
 def _process_bigquery():

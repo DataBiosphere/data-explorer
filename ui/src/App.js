@@ -38,6 +38,7 @@ class App extends Component {
     super(props);
     this.state = {
       datasetName: "",
+      enableVisualizations: false,
       // What to show in search box by default. If this is the empty string, the
       // react-select default of "Select..." is shown.
       searchPlaceholderText: "",
@@ -55,7 +56,9 @@ class App extends Component {
       searchResults: [],
       // These represent extra facets added via the search box.
       // This is an array of Elasticsearch field names
-      extraFacetEsFieldNames: []
+      extraFacetEsFieldNames: [],
+      // Whether or not to display visualizations.
+      showVisualizations: false
     };
 
     this.apiClient = new ApiClient();
@@ -95,6 +98,7 @@ class App extends Component {
     this.filterMap = new Map();
     this.updateFacets = this.updateFacets.bind(this);
     this.handleSearchBoxChange = this.handleSearchBoxChange.bind(this);
+    this.handleVisualizationChange = this.handleVisualizationChange.bind(this);
   }
 
   render() {
@@ -108,6 +112,8 @@ class App extends Component {
             <Header
               datasetName={this.state.datasetName}
               totalCount={this.state.totalCount}
+              enableVisualizations={this.state.enableVisualizations}
+              handleVisualizationChange={this.handleVisualizationChange}
             />
             <Search
               searchPlaceholderText={this.state.searchPlaceholderText}
@@ -120,6 +126,7 @@ class App extends Component {
               updateFacets={this.updateFacets}
               selectedFacetValues={this.state.selectedFacetValues}
               facets={Array.from(this.state.facets.values())}
+              showVisualizations={this.state.showVisualizations}
             />
             <ExportFab
               exportUrlApi={new ExportUrlApi(this.apiClient)}
@@ -145,7 +152,8 @@ class App extends Component {
       } else {
         this.setState({
           datasetName: data.name,
-          searchPlaceholderText: data.search_placeholder_text
+          searchPlaceholderText: data.search_placeholder_text,
+          enableVisualizations: data.enable_visualizations
         });
       }
     }.bind(this);
@@ -188,6 +196,10 @@ class App extends Component {
         this.facetsCallback
       );
     }
+  }
+
+  handleVisualizationChange(event, checked) {
+    this.setState({showVisualizations: checked})
   }
 
   /**

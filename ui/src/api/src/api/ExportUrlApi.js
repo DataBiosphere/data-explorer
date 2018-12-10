@@ -44,7 +44,7 @@ export default class ExportUrlApi {
      */
 
     /**
-     * Creates and returns a signed URL to a GCS zip file of JSON files. The JSON files represent entities to be exported to a Terra workspace. https://app.terra.bio/#import-data may be called with the url parameter  set to this url. For each JSON file,  https://rawls.dsde-prod.broadinstitute.org/#!/entities/create_entity may be called with the JSON as the POST body.
+     * Creates and returns a signed URL to a GCS zip file of JSON files. The JSON files represent entities to be exported to a Terra workspace. https://app.terra.bio/#import-data may be called with the url parameter set to this url. For each JSON file, https://rawls.dsde-prod.broadinstitute.org/#!/entities/create_entity may be called with the JSON as the POST body. 
      * @param {Object} opts Optional parameters
      * @param {module:model/ExportUrlRequest} opts.exportUrlRequest 
      * @param {module:api/ExportUrlApi~exportUrlPostCallback} callback The callback function, accepting three arguments: error, data, response

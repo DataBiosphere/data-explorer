@@ -13,11 +13,13 @@ def dataset_get():  # noqa: E501
 
     :rtype: DatasetResponse
     """
-    dataset_response = DatasetResponse(name=current_app.config['DATASET_NAME'])
+    dataset_response = DatasetResponse(
+        name=current_app.config['DATASET_NAME'], enable_visualizations=False)
 
-    if 'SEARCH_PLACEHOLDER_TEXT' in current_app.config and current_app.config[
-            'SEARCH_PLACEHOLDER_TEXT']:
+    if current_app.config.get('SEARCH_PLACEHOLDER_TEXT'):
         dataset_response.search_placeholder_text = current_app.config[
             'SEARCH_PLACEHOLDER_TEXT']
+    if current_app.config.get('ENABLE_VISUALIZATIONS'):
+        dataset_response.enable_visualizations = True
 
     return dataset_response

@@ -10,12 +10,15 @@ function FacetsGrid(props) {
   // An array of es field names
   const facets = props.facets;
   const updateFacets = props.updateFacets;
+  const showVisualizations = props.showVisualizations
+
   const facetsList = facets.map(facet => (
     <GridListTile key={facet.name}>
       <FacetCard
         facet={facet}
         selectedValues={props.selectedFacetValues.get(facet.es_field_name)}
         updateFacets={updateFacets}
+        showVisualizations={showVisualizations}
       />
     </GridListTile>
   ));

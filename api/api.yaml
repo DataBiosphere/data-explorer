@@ -111,6 +111,8 @@ definitions:
       search_placeholder_text:
         type: string
         description: Optional. What to show in the search box by default
+      enable_visualizations:
+        type: boolean
   FacetsResponse:
     description: "Results from a faceted search."
     properties:
