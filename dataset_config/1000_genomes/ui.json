@@ -8,7 +8,7 @@
 //   listed here. ui_facet_description is optional.
 {
   "search_placeholder_text": "Try typing exome or center",
-  "enable_search": "false",
+  "enable_search": false,
   "facets": [
     {
       "ui_facet_name": "Gender",
