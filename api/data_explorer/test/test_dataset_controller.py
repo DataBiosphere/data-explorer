@@ -15,7 +15,7 @@ class TestDatasetController(BaseTestCase):
 
     def test_dataset_get(self):
         """Test case for dataset_get"""
-        expected_response = {'name': dataset_name, 'enable_search': False}
+        expected_response = {'name': dataset_name, 'enable_search_values': False}
         actual_response = self.client.get('/dataset')
         self.assert200(actual_response)
         self.assertEquals(expected_response, actual_response.json)
