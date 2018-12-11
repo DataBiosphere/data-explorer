@@ -145,9 +145,9 @@ def _process_ui():
             'search_placeholder_text']:
         app.app.config['SEARCH_PLACEHOLDER_TEXT'] = config[
             'search_placeholder_text']
-    app.app.config['ENABLE_SEARCH'] = False
-    if 'enable_search' in config and config['enable_search']:
-        app.app.config['ENABLE_SEARCH'] = True
+    app.app.config['ENABLE_SEARCH_VALUES'] = False
+    if 'enable_search_values' in config and config['enable_search_values']:
+        app.app.config['ENABLE_SEARCH_VALUES'] = True
 
 
 def _process_bigquery():

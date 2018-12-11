@@ -18,31 +18,31 @@ class DatasetResponse(Model):
     def __init__(self,
                  name=None,
                  search_placeholder_text=None,
-                 enable_search=None):  # noqa: E501
+                 enable_search_values=None):  # noqa: E501
         """DatasetResponse - a model defined in Swagger
 
         :param name: The name of this DatasetResponse.  # noqa: E501
         :type name: str
         :param search_placeholder_text: The search_placeholder_text of this DatasetResponse.  # noqa: E501
         :type search_placeholder_text: str
-        :param enable_search: The enable_search of this DatasetResponse.  # noqa: E501
-        :type enable_search: bool
+        :param enable_search_values: The enable_search_values of this DatasetResponse.  # noqa: E501
+        :type enable_search_values: bool
         """
         self.swagger_types = {
             'name': str,
             'search_placeholder_text': str,
-            'enable_search': bool
+            'enable_search_values': bool
         }
 
         self.attribute_map = {
             'name': 'name',
             'search_placeholder_text': 'search_placeholder_text',
-            'enable_search': 'enable_search'
+            'enable_search_values': 'enable_search_values'
         }
 
         self._name = name
         self._search_placeholder_text = search_placeholder_text
-        self._enable_search = enable_search
+        self._enable_search_values = enable_search_values
 
     @classmethod
     def from_dict(cls, dikt):
@@ -100,22 +100,22 @@ class DatasetResponse(Model):
         self._search_placeholder_text = search_placeholder_text
 
     @property
-    def enable_search(self):
-        """Gets the enable_search of this DatasetResponse.
+    def enable_search_values(self):
+        """Gets the enable_search_values of this DatasetResponse.
 
 
-        :return: The enable_search of this DatasetResponse.
+        :return: The enable_search_values of this DatasetResponse.
         :rtype: bool
         """
-        return self._enable_search
+        return self._enable_search_values
 
-    @enable_search.setter
-    def enable_search(self, enable_search):
-        """Sets the enable_search of this DatasetResponse.
+    @enable_search_values.setter
+    def enable_search_values(self, enable_search_values):
+        """Sets the enable_search_values of this DatasetResponse.
 
 
-        :param enable_search: The enable_search of this DatasetResponse.
-        :type enable_search: bool
+        :param enable_search_values: The enable_search_values of this DatasetResponse.
+        :type enable_search_values: bool
         """
 
-        self._enable_search = enable_search
+        self._enable_search_values = enable_search_values
