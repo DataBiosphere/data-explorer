@@ -6,6 +6,10 @@
 // facets:
 //   Facets to be shown in the UI. Facets will appear in the order they are
 //   listed here. ui_facet_description is optional.
+// enable_search:
+//   Search is opt-in while it's under development. After this
+//   feature is done, this flag will be removed and the feature will be enabled
+//   for all Data Explorers.
 {
   "search_placeholder_text": "Try typing exome or center",
   "facets": [
@@ -14,5 +18,6 @@
       "ui_facet_description": "",
       "elasticsearch_field_name": ""
     }
-  ]
+  ],
+  "enable_search": false
 }
