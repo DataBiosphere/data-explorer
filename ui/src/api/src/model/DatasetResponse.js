@@ -57,7 +57,7 @@ export default class DatasetResponse {
    */
   name = undefined;
   /**
-   * What to show in the search box by default
+   * Optional. What to show in the search box by default
    * @member {String} search_placeholder_text
    */
   search_placeholder_text = undefined;
