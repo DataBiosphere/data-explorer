@@ -15,23 +15,34 @@ class DatasetResponse(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name=None, search_placeholder_text=None):  # noqa: E501
+    def __init__(self,
+                 name=None,
+                 search_placeholder_text=None,
+                 enable_search=None):  # noqa: E501
         """DatasetResponse - a model defined in Swagger
 
         :param name: The name of this DatasetResponse.  # noqa: E501
         :type name: str
         :param search_placeholder_text: The search_placeholder_text of this DatasetResponse.  # noqa: E501
         :type search_placeholder_text: str
+        :param enable_search: The enable_search of this DatasetResponse.  # noqa: E501
+        :type enable_search: bool
         """
-        self.swagger_types = {'name': str, 'search_placeholder_text': str}
+        self.swagger_types = {
+            'name': str,
+            'search_placeholder_text': str,
+            'enable_search': bool
+        }
 
         self.attribute_map = {
             'name': 'name',
-            'search_placeholder_text': 'search_placeholder_text'
+            'search_placeholder_text': 'search_placeholder_text',
+            'enable_search': 'enable_search'
         }
 
         self._name = name
         self._search_placeholder_text = search_placeholder_text
+        self._enable_search = enable_search
 
     @classmethod
     def from_dict(cls, dikt):
@@ -87,3 +98,24 @@ class DatasetResponse(Model):
         """
 
         self._search_placeholder_text = search_placeholder_text
+
+    @property
+    def enable_search(self):
+        """Gets the enable_search of this DatasetResponse.
+
+
+        :return: The enable_search of this DatasetResponse.
+        :rtype: bool
+        """
+        return self._enable_search
+
+    @enable_search.setter
+    def enable_search(self, enable_search):
+        """Sets the enable_search of this DatasetResponse.
+
+
+        :param enable_search: The enable_search of this DatasetResponse.
+        :type enable_search: bool
+        """
+
+        self._enable_search = enable_search
