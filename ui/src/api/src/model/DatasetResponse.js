@@ -48,6 +48,12 @@ export default class DatasetResponse {
           "String"
         );
       }
+      if (data.hasOwnProperty("enable_search_values")) {
+        obj["enable_search_values"] = ApiClient.convertToType(
+          data["enable_search_values"],
+          "Boolean"
+        );
+      }
     }
     return obj;
   }
@@ -61,4 +67,8 @@ export default class DatasetResponse {
    * @member {String} search_placeholder_text
    */
   search_placeholder_text = undefined;
+  /**
+   * @member {Boolean} enable_search_values
+   */
+  enable_search_values = undefined;
 }
