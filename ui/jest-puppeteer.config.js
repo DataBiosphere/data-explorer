@@ -1,7 +1,7 @@
 module.exports = {
   launch: {
     // Uncomment to see browser.
-    headless: false,
+    // headless: false,
     // Uncomment to slow down execution. Unit is ms.
     // slowMo: 200
     // Needed for debugger, see
