@@ -6,6 +6,7 @@ dataset_config/1000_genomes/deploy.json
 dataset_config/1000_genomes/private-key.json
 
 api/app.yaml
+*.yaml-e
 
 *.py[cod]
 *$py.class
