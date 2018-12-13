@@ -11,7 +11,7 @@
 //   feature is done, this flag will be removed and the feature will be enabled
 //   for all Data Explorers.
 {
-  "search_placeholder_text": "Try typing exome or center",
+  "search_placeholder_text": "Search center or pat",
   "facets": [
     {
       "ui_facet_name": "",

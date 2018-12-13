@@ -7,7 +7,7 @@
 //   Facets to be shown in the UI. Facets will appear in the order they are
 //   listed here. ui_facet_description is optional.
 {
-  "search_placeholder_text": "Try typing exome or center",
+  "search_placeholder_text": "Search center or pat",
   "facets": [
     {
       "ui_facet_name": "Gender",
