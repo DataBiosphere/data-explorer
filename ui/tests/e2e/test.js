@@ -168,6 +168,27 @@ describe("End-to-end", () => {
     await waitForFacetsUpdate(3500);
   });
 
+  test("Search box - values", async () => {
+    // Type "pat" in search box.
+    let initial_select = await page.$x("//div[text()='Search center or pat']");
+    await initial_select[0].click();
+    await initial_select[0].type("pat");
+
+    // Select first result
+    await page.waitForXPath("//span[contains(text(), 'Add')]");
+    let results = await page.$x("//span[contains(text(), 'Add')]");
+    await results[0].click();
+
+    // Assert Relationship facet is added
+    await waitForFacetCard("Relationship");
+    await assertFacet("Relationship", "1", "mother", "831");
+
+    // Make sure non-selected facet values are gray.
+    facetValueRow = await getFacetValueRow("Relationship", "father");
+    const grayDiv = await facetValueRow.$("*[class*='FacetCard-grayText-']");
+    expect(grayDiv).toBeTruthy();
+  });
+
   async function waitForElasticsearchIndex() {
     var waitOneSec = function() {
       return new Promise(resolve => {
