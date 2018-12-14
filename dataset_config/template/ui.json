@@ -1,17 +1,19 @@
 // search_placeholder_text:
 //   Optional. What to show in the search box by default. Adjust the terms for
-//   your dataset. For example, "exome" is good for 1000 Genomes because there
-//   are a bunch of exome-related facets that don't automatically appear (ie
-//   they aren't in this file).
+//   your dataset. We recommend:
+// - A word that appears in BigQuery column descriptions, eg "center" for 1000 Genomes
+// - A prefix that appears in BigQuery column contents, eg "pat" for 1000 Genomes
 // facets:
 //   Facets to be shown in the UI. Facets will appear in the order they are
 //   listed here. ui_facet_description is optional.
 // enable_search_values:
-//   Search on values is opt-in while it's under development. After this
-//   feature is done, this flag will be removed and the feature will be enabled
-//   for all Data Explorers.
+//    Whether to search on facet values.
+//    If this is true, search box will search BigQuery column contents in addition to
+//    BigQuery column name and description. Search results will take time to appear.
+//    If this is false, search box will search BigQuery column name and description.
+//    Search results will appear instantly.
 {
-  "search_placeholder_text": "Try typing exome or center",
+  "search_placeholder_text": "Search center or pat",
   "facets": [
     {
       "ui_facet_name": "",
@@ -19,5 +21,5 @@
       "elasticsearch_field_name": ""
     }
   ],
-  "enable_search_values": false
+  "enable_search_values": true
 }
