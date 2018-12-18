@@ -111,31 +111,6 @@ describe("End-to-end", () => {
     await exportToSaturn_selectedCohort();
   });
 
-  test("Search box - click on drop-down row", async () => {
-    // Click on Avuncular from drop-down
-    let initial_select = await page.$x("//div[text()='Search center or pat']");
-    initial_select[0].click();
-    let avuncular_xpath = "//span[text()[contains(., 'Avuncular')]]";
-    await page.waitForXPath(avuncular_xpath);
-    let avuncular = await page.$x(avuncular_xpath);
-    avuncular[0].click();
-
-    // Assert Avuncular facet is added
-    await waitForFacetCard("Avuncular");
-    await assertFacet("Avuncular", "46", "HG00658 (aunt/uncle)", "1");
-
-    // Select first Avuncular facet value
-    let facetValueRow = await getFacetValueRow(
-      "Avuncular",
-      "HG00658 (aunt/uncle)"
-    );
-    await facetValueRow.click("input");
-    await waitForFacetsUpdate(1);
-
-    // Assert chip is added
-    await waitForChip("Avuncular=HG00658 (aunt/uncle)");
-  });
-
   test("Search box - chips", async () => {
     // Select the 'Gender - female' facet value.
     let facetValueRow = await getFacetValueRow("Gender", "female");
@@ -168,7 +143,7 @@ describe("End-to-end", () => {
     await waitForFacetsUpdate(3500);
   });
 
-  test("Search box - values", async () => {
+  test("Search box - select row with facet value", async () => {
     // Type "pat" in search box.
     let initial_select = await page.$x("//div[text()='Search center or pat']");
     await initial_select[0].click();
@@ -184,9 +159,14 @@ describe("End-to-end", () => {
     await assertFacet("Relationship", "1", "mother", "831");
 
     // Make sure non-selected facet values are gray.
-    facetValueRow = await getFacetValueRow("Relationship", "father");
-    const grayDiv = await facetValueRow.$("*[class*='FacetCard-grayText-']");
-    expect(grayDiv).toBeTruthy();
+    facetValueRow = await getFacetValueRow(
+      "Relationship",
+      "paternal grandmother"
+    );
+    const checkedBox = await facetValueRow.$(
+      "*[class*='MuiCheckbox-checked-']"
+    );
+    expect(checkedBox).toBeTruthy();
   });
 
   async function waitForElasticsearchIndex() {
