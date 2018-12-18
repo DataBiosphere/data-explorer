@@ -158,7 +158,7 @@ describe("End-to-end", () => {
     await waitForFacetCard("Relationship");
     await assertFacet("Relationship", "1", "mother", "831");
 
-    // Make sure non-selected facet values are gray.
+    // Make sure the selected facet value is checked.
     facetValueRow = await getFacetValueRow(
       "Relationship",
       "paternal grandmother"
