@@ -111,31 +111,6 @@ describe("End-to-end", () => {
     await exportToSaturn_selectedCohort();
   });
 
-  test("Search box - click on drop-down row", async () => {
-    // Click on Avuncular from drop-down
-    let initial_select = await page.$x("//div[text()='Search center or pat']");
-    initial_select[0].click();
-    let avuncular_xpath = "//span[text()[contains(., 'Avuncular')]]";
-    await page.waitForXPath(avuncular_xpath);
-    let avuncular = await page.$x(avuncular_xpath);
-    avuncular[0].click();
-
-    // Assert Avuncular facet is added
-    await waitForFacetCard("Avuncular");
-    await assertFacet("Avuncular", "46", "HG00658 (aunt/uncle)", "1");
-
-    // Select first Avuncular facet value
-    let facetValueRow = await getFacetValueRow(
-      "Avuncular",
-      "HG00658 (aunt/uncle)"
-    );
-    await facetValueRow.click("input");
-    await waitForFacetsUpdate(1);
-
-    // Assert chip is added
-    await waitForChip("Avuncular=HG00658 (aunt/uncle)");
-  });
-
   test("Search box - chips", async () => {
     // Select the 'Gender - female' facet value.
     let facetValueRow = await getFacetValueRow("Gender", "female");
@@ -166,6 +141,32 @@ describe("End-to-end", () => {
     chipX[0].click();
     // Assert that female is unselected. (3500 includes males and females).
     await waitForFacetsUpdate(3500);
+  });
+
+  test("Search box - select row with facet value", async () => {
+    // Type "pat" in search box.
+    let initial_select = await page.$x("//div[text()='Search center or pat']");
+    await initial_select[0].click();
+    await initial_select[0].type("pat");
+
+    // Select first result
+    await page.waitForXPath("//span[contains(text(), 'Add')]");
+    let results = await page.$x("//span[contains(text(), 'Add')]");
+    await results[0].click();
+
+    // Assert Relationship facet is added
+    await waitForFacetCard("Relationship");
+    await assertFacet("Relationship", "1", "mother", "831");
+
+    // Make sure the selected facet value is checked.
+    facetValueRow = await getFacetValueRow(
+      "Relationship",
+      "paternal grandmother"
+    );
+    const checkedBox = await facetValueRow.$(
+      "*[class*='MuiCheckbox-checked-']"
+    );
+    expect(checkedBox).toBeTruthy();
   });
 
   async function waitForElasticsearchIndex() {
