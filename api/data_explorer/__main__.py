@@ -247,31 +247,31 @@ def _process_export_url():
         app.app.config['AUTHORIZATION_DOMAIN'] = dataset_config[
             'authorization_domain']
 
-    # Check preconditions for Export to Saturn feature. If a precondition fails,
+    # Check preconditions for Export to Terra feature. If a precondition fails,
     # print a warning but allow app to continue. Someone may want to run Data
-    # Explorer UI locally and not use export to Saturn feature.
+    # Explorer UI locally and not use export to Terra feature.
     deploy_config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                       'deploy.json')
     if not os.path.isfile(deploy_config_path):
         app.app.logger.warning(
-            'deploy.json not found. Export to Saturn feature will not work. '
-            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
+            'deploy.json not found. Export to Terra feature will not work. '
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-send-to-terra-feature'
         )
         return
 
     deploy_config = _parse_json_file(deploy_config_path)
     if not 'project_id' in deploy_config:
         app.app.logger.warning(
-            'Project not set in deploy.json. Export to Saturn feature will not work. '
-            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature-for-export-to-saturn-feature'
+            'Project not set in deploy.json. Export to Terra feature will not work. '
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-send-to-terra-feature'
         )
         return
 
     project_id = deploy_config['project_id']
     if not project_id or project_id == 'PROJECT_ID_TO_DEPLOY_TO':
         app.app.logger.warning(
-            'Project not set in deploy.json. Export to Saturn feature will not work. '
-            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature-for-export-to-saturn-feature'
+            'Project not set in deploy.json. Export to Terra feature will not work. '
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-send-to-terra-feature'
         )
         return
     else:
