@@ -63,14 +63,6 @@ describe("End-to-end", () => {
     // Assert page updated correctly.
     await assertHeaderTotalCount("1122");
     await assertFacet("Gender", "1122", "female", "569");
-
-    // Make sure non-selected facet values are gray.
-    facetValueRow = await getFacetValueRow(
-      "Total Low Coverage Sequence",
-      "0B-10B"
-    );
-    const grayDiv = await facetValueRow.$("*[class*='FacetCard-grayText-']");
-    expect(grayDiv).toBeTruthy();
   });
 
   test("Samples Overview facet", async () => {
@@ -88,11 +80,6 @@ describe("End-to-end", () => {
     // Assert page updated correctly.
     await assertHeaderTotalCount("2535");
     await assertFacet("Gender", "2535", "female", "1291");
-
-    // Make sure non-selected facet values are gray.
-    facetValueRow = await getFacetValueRow("Samples Overview", "Has Exome BAM");
-    const grayDiv = await facetValueRow.$("*[class*='FacetCard-grayText-']");
-    expect(grayDiv).toBeTruthy();
 
     // Test exporting to saturn.
     await exportToSaturn_selectedCohort();
@@ -139,6 +126,7 @@ describe("End-to-end", () => {
       "//div[text()[contains(.,'Gender=female')]]/../div[2]"
     );
     chipX[0].click();
+
     // Assert that female is unselected. (3500 includes males and females).
     await waitForFacetsUpdate(3500);
   });
@@ -158,15 +146,8 @@ describe("End-to-end", () => {
     await waitForFacetCard("Relationship");
     await assertFacet("Relationship", "1", "mother", "831");
 
-    // Make sure the selected facet value is checked.
-    facetValueRow = await getFacetValueRow(
-      "Relationship",
-      "paternal grandmother"
-    );
-    const checkedBox = await facetValueRow.$(
-      "*[class*='MuiCheckbox-checked-']"
-    );
-    expect(checkedBox).toBeTruthy();
+    // Make sure facet value is selected
+    await assertFacetValueSelected("Relationship", "paternal grandmother");
   });
 
   async function waitForElasticsearchIndex() {
@@ -239,6 +220,14 @@ describe("End-to-end", () => {
         node => node.innerText
       )
     ).toBe(firstValueCount);
+  }
+
+  async function assertFacetValueSelected(facetName, valueName) {
+    facetValueRow = await getFacetValueRow(facetName, valueName);
+    const checkedBox = await facetValueRow.$(
+      "*[class*='MuiCheckbox-checked-']"
+    );
+    expect(checkedBox).toBeTruthy();
   }
 
   /**
