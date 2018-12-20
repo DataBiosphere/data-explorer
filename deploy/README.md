@@ -11,6 +11,9 @@
 
   - Make sure `dataset_config/MY_DATASET/deploy.json` is filled out.
 
+    - Remove the comments from deploy.json or you'll run into errors
+      running `deploy-api.sh`
+
 - Set gcloud project: `gcloud config set project PROJECT_ID`
 
 - Create the App Engine application: `gcloud app create`  
