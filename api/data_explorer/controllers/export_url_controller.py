@@ -44,7 +44,7 @@ def _check_preconditions():
     if not os.path.isfile(config_path):
         error_msg = (
             'deploy.json not found. Send to Terra feature will not work. '
-            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-send-to-terra-feature'
         )
         current_app.logger.error(error_msg)
         raise BadRequest(error_msg)
@@ -52,7 +52,7 @@ def _check_preconditions():
     if not current_app.config['DEPLOY_PROJECT_ID']:
         error_msg = (
             'Project not set in deploy.json. Send to Terra feature will not work. '
-            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature-for-export-to-saturn-feature'
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-send-to-terra-feature'
         )
         current_app.logger.error(error_msg)
         raise BadRequest(error_msg)
@@ -61,7 +61,7 @@ def _check_preconditions():
         error_msg = (
             'Project not set in deploy.json or export URL GCS bucket not '
             'found. Send to Terra feature will not work. '
-            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-send-to-terra-feature'
         )
         current_app.logger.error(error_msg)
         raise BadRequest(error_msg)
@@ -71,7 +71,7 @@ def _check_preconditions():
     if not os.path.isfile(private_key_path):
         error_msg = (
             'Private key not found. Send to Terra feature will not work. '
-            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-export-to-saturn-feature'
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-send-to-terra-feature'
         )
         current_app.logger.error(error_msg)
         raise BadRequest(error_msg)
