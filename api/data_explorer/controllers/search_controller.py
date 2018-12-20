@@ -54,16 +54,28 @@ def search_get(query=None):
 
     es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
     search_results = []
-    # The number of results that Elasticsearch returns from Search queries to the main index.
-    # This is low and we'll miss some hits. But it is needed to keep search not take forever for large datasets.
+
+    # The number of results that Elasticsearch returns from search queries to
+    # the main index.
+    # If enable_search_values is false, this is not used.
+    # This is low and we'll miss some hits. But it is needed to keep search not
+    # take forever for large datasets.
     num_search_results = 100
-    # The number of results that Elasticsearch returns from Search queries to the fields index.
-    # If enable_search_values is true, if this is high (like 1000), it makes the UI sluggish (such as initial click in search box).
-    # If enable_search_values is false, this can be arbitrarily high, and UI won't be too sluggish.
-    num_field_search_results = 100
+
+    # The number of results that Elasticsearch returns from search queries to
+    # the fields index.
+    # If enable_search_values is true, if this is high (like 1000), it makes the
+    # UI sluggish (such as initial click in search box).
+    # If enable_search_values is false, this can be arbitrarily high, and UI
+    # won't be too sluggish.
+    if current_app.config['ENABLE_SEARCH_VALUES']:
+        num_field_search_results = 100
+    else:
+        num_field_search_results = 10000
 
     if not query:
-        # Return all dataset fields, to populate initial search box drop-down. Query fields index.
+        # Return all dataset fields, to populate initial search box drop-down.
+        # Query fields index.
         fields_search = Search(
             using=es, index=current_app.config['FIELDS_INDEX_NAME']).sort(
                 'name.keyword')[0:num_field_search_results]
@@ -73,12 +85,14 @@ def search_get(query=None):
     else:
         # Return only fields matching query.
 
-        # Part 1: Search main index. For the BigQuery indexer, this searches BigQuery column values.
-        # Store the query matches in a dict of es_field_name to a set of facet values.
+        # Part 1: Search main index. For the BigQuery indexer, this searches
+        # BigQuery column values.
+        # Store the query matches in a dict of es_field_name to a set of facet
+        # values.
         field_to_facet_values = dict()
 
-        # Use MultiMatch to search across all fields. "phrase_prefix" matches with
-        # prefix of words in column values.
+        # Use MultiMatch to search across all fields. "phrase_prefix" matches
+        # with prefix of words in column values.
         multi_match = MultiMatch(query=query, type="phrase_prefix")
         search = Search(
             using=es,
@@ -95,8 +109,10 @@ def search_get(query=None):
         # This regex matches if there is a word that starts with query
         query_regex = r"\b" + re.escape(query.lower()) + "\w*"
 
-        # hits contains entire documents. Iterate over the fields to figure out which field matched query.
-        # Elasticsearch highlight can do this for us, but it makes the search too slow, so do it ourselves.
+        # hits contains entire documents. Iterate over the fields to figure out
+        # which field matched query.
+        # Elasticsearch highlight can do this for us, but it makes the search
+        # too slow, so do it ourselves.
         # See https://github.com/elastic/elasticsearch/issues/36452
 
         begin = time.time()
@@ -118,7 +134,8 @@ def search_get(query=None):
                         facet_name=es_field_name.split('.')[-1],
                         facet_value=facet_value))
 
-        # Part 2: Search fields index. For the BigQuery indexer, this searches BigQuery column name and description.
+        # Part 2: Search fields index. For the BigQuery indexer, this searches
+        # BigQuery column name and description.
         fields_search = Search(
             using=es, index=current_app.config['FIELDS_INDEX_NAME']).query(
                 multi_match)[0:num_field_search_results]
