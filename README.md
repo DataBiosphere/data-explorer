@@ -151,7 +151,7 @@ The Send to Terra feature temporarily stores data in a GCS bucket.
   these instructions to download a key. This needs to be done once per person
   per deploy project. If three people run Data Explorer with the same deploy
   project, then all three need to download a key for the deploy project.
-  - Go to the [Service Accounts page](http://cloud.console.google.com/iam-admin/serviceaccounts)
+  - Go to the [Service Accounts page](https://console.cloud.google.com/iam-admin/serviceaccounts)
     for your deploy project.
   - Click on the three-dot Actions menu for the
     `App Engine default service account` -> Create Key -> CREATE.
