@@ -7,6 +7,9 @@ dataset_config/1000_genomes/private-key.json
 
 api/app.yaml
 
+# For some reason these are created when deploying to GKE on Mac
+*.yaml-e
+
 *.py[cod]
 *$py.class
 build/
