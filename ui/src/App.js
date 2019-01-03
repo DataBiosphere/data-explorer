@@ -60,7 +60,8 @@ class App extends Component {
       // facetDescription - The description of the facet.
       // esFieldName - The elasticsearch field name of the facet.
       // facetValue
-      searchResults: []
+      searchResults: [],
+      awaitingApi: false
     };
 
     this.apiClient = new ApiClient();
@@ -68,12 +69,14 @@ class App extends Component {
     this.facetsApi = new FacetsApi(this.apiClient);
     this.facetsCallback = function(error, data) {
       if (error) {
+        this.setState({ awaitingApi: false });
         console.error(error);
         // TODO(alanhwang): Redirect to an error page
       } else {
         this.setState({
           facets: this.getFacetMap(data.facets),
-          totalCount: data.count
+          totalCount: data.count,
+          awaitingApi: false
         });
       }
     }.bind(this);
@@ -121,6 +124,10 @@ class App extends Component {
     this.updateFacets = this.updateFacets.bind(this);
     this.handleSearchBoxChange = this.handleSearchBoxChange.bind(this);
     this.loadOptions = this.loadOptions.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return !nextState.awaitingApi;
   }
 
   render() {
@@ -269,7 +276,10 @@ class App extends Component {
       isSelected
     );
     // Update the state
-    this.setState({ selectedFacetValues: selectedFacetValues });
+    this.setState({
+      selectedFacetValues: selectedFacetValues,
+      awaitingApi: true
+    });
     // Update the facets grid.
     this.facetsApi.facetsGet(
       {
