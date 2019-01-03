@@ -70,11 +70,6 @@ class FacetCard extends Component {
 
     this.facetValues = this.props.facet.values;
 
-    this.totalFacetValueCount = this.sumFacetValueCounts(
-      this.props.facet.values,
-      []
-    );
-
     this.onClick = this.onClick.bind(this);
     this.isDimmed = this.isDimmed.bind(this);
   }
