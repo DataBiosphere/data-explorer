@@ -61,7 +61,7 @@ class App extends Component {
       // esFieldName - The elasticsearch field name of the facet.
       // facetValue
       searchResults: [],
-      awaitingApi: false
+      awaitingFacetsApi: false
     };
 
     this.apiClient = new ApiClient();
@@ -69,14 +69,14 @@ class App extends Component {
     this.facetsApi = new FacetsApi(this.apiClient);
     this.facetsCallback = function(error, data) {
       if (error) {
-        this.setState({ awaitingApi: false });
+        this.setState({ awaitingFacetsApi: false });
         console.error(error);
         // TODO(alanhwang): Redirect to an error page
       } else {
         this.setState({
           facets: this.getFacetMap(data.facets),
           totalCount: data.count,
-          awaitingApi: false
+          awaitingFacetsApi: false
         });
       }
     }.bind(this);
@@ -127,7 +127,7 @@ class App extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !nextState.awaitingApi;
+    return !nextState.awaitingFacetsApi;
   }
 
   render() {
@@ -278,7 +278,7 @@ class App extends Component {
     // Update the state
     this.setState({
       selectedFacetValues: selectedFacetValues,
-      awaitingApi: true
+      awaitingFacetsApi: true
     });
     // Update the facets grid.
     this.facetsApi.facetsGet(

@@ -33,7 +33,7 @@ pyasn1-modules==0.2.2
 pyasn1==0.4.4
 python-dateutil==2.7.5
 pytz==2018.7
-PyYAML==3.13
+PyYAML==4.2b1
 requests==2.21.0
 rsa==4.0
 six==1.11.0
