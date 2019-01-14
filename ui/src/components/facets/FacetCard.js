@@ -70,20 +70,8 @@ class FacetCard extends Component {
 
     this.facetValues = this.props.facet.values;
 
-    this.totalFacetValueCount = this.sumFacetValueCounts(
-      this.props.facet.values,
-      []
-    );
-
     this.onClick = this.onClick.bind(this);
     this.isDimmed = this.isDimmed.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.totalFacetValueCount = this.sumFacetValueCounts(
-      nextProps.facet.values,
-      this.props.selectedValues
-    );
   }
 
   render() {
@@ -123,7 +111,10 @@ class FacetCard extends Component {
         <Typography>{this.props.facet.name}</Typography>
         {this.props.facet.name != "Samples Overview" ? (
           <Typography className={classes.totalFacetValueCount}>
-            {this.totalFacetValueCount}
+            {this.sumFacetValueCounts(
+              this.props.facet.values,
+              this.props.selectedValues
+            )}
           </Typography>
         ) : null}
         <Typography className={classes.facetDescription}>
@@ -162,7 +153,6 @@ class FacetCard extends Component {
         }
       });
     }
-
     return count;
   }
 
