@@ -1,15 +1,17 @@
 version: '3'
 services:
   nginx_proxy:
+    network_mode: "host"
     image: nginx
-    ports:
-      - 127.0.0.1:4400:4400
+#    ports:
+#      - 127.0.0.1:4400:4400
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-    links:
-      - ui
-      - apise
+#    links:
+#      - ui
+#      - apise
   ui:
+    network_mode: "host"
     build:
       context: ui
       dockerfile: Dockerfile.local
@@ -20,6 +22,7 @@ services:
   # Can't use "api" because it maps to something else on Google network.
   # Use "apise" for "api server". ("apis" is also taken.)
   apise:
+    network_mode: "host"
     build:
       # Run from project root to pick up dataset_config/.
       context: .
@@ -42,7 +45,7 @@ services:
       - USER
       # GOOGLE_APPLICATION_CREDENTIALS is only needed for CircleCI
       - GOOGLE_APPLICATION_CREDENTIALS
-      - ELASTICSEARCH_URL=${ELASTICSEARCH_URL:-elasticsearch:9200}
+      - ELASTICSEARCH_URL=${ELASTICSEARCH_URL:-localhost:9200}
       - PATH_PREFIX=/api
       - DATASET_CONFIG_DIR=${DATASET_CONFIG_DIR:-dataset_config/1000_genomes}
       # Avoid writing .pyc files back to the volume. Files generated this way
