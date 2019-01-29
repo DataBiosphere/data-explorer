@@ -23,7 +23,7 @@ const theme = createMuiTheme({
 });
 
 const Disclaimer = (
-  <Typography style={{ margin: "20px 20px 0px 20px" }}>
+  <Typography style={{ margin: "26px 26px 0px 26px" }}>
     This dataset is publicly available for anyone to use under the terms
     provided by the dataset source (
     <a href="http://www.internationalgenome.org/data">

@@ -1,28 +1,38 @@
 import React, { Component } from "react";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
+import { withStyles } from "@material-ui/core/styles";
 
-import "components/facets/FacetsGrid.css";
 import FacetCard from "components/facets/FacetCard";
 
+const styles = {
+  root: {
+    margin: "20px"
+  },
+  gridList: {
+    margin: "200px"
+  }
+};
+
 function FacetsGrid(props) {
-  // An array of es field names
-  const facets = props.facets;
-  const updateFacets = props.updateFacets;
-  const facetsList = facets.map(facet => (
+  const { classes } = props;
+
+  const facetsList = props.facets.map(facet => (
     <GridListTile key={facet.name}>
       <FacetCard
         facet={facet}
         selectedValues={props.selectedFacetValues.get(facet.es_field_name)}
-        updateFacets={updateFacets}
+        updateFacets={props.updateFacets}
       />
     </GridListTile>
   ));
   return (
-    <GridList className="gridList" cols={3} cellHeight="auto" padding={1}>
-      {facetsList}
-    </GridList>
+    <div className={classes.root}>
+      <GridList className={classes.gridList} cols={3} cellHeight="auto">
+        {facetsList}
+      </GridList>
+    </div>
   );
 }
 
-export default FacetsGrid;
+export default withStyles(styles)(FacetsGrid);
