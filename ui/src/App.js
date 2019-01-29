@@ -4,7 +4,6 @@ import debounce from "lodash.debounce";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
-import "App.css";
 import {
   ApiClient,
   DatasetApi,
@@ -24,7 +23,7 @@ const theme = createMuiTheme({
 });
 
 const Disclaimer = (
-  <Typography style={{ margin: "20px" }}>
+  <Typography style={{ margin: "20px 20px 0px 20px" }}>
     This dataset is publicly available for anyone to use under the terms
     provided by the dataset source (
     <a href="http://www.internationalgenome.org/data">
@@ -137,7 +136,7 @@ class App extends Component {
     } else {
       return (
         <MuiThemeProvider theme={theme}>
-          <div className="app">
+          <div style={{ backgroundColor: "#e5e5e5" }}>
             <Header
               datasetName={this.state.datasetName}
               totalCount={this.state.totalCount}

@@ -6,7 +6,11 @@ const customStyles = {
   container: (provided, state) => ({
     ...provided,
     fontFamily: ["Lato", "sans-serif"].join(","),
-    fontSize: "13px"
+    fontSize: 13
+  }),
+  control: (provided, state) => ({
+    ...provided,
+    border: 0
   })
 };
 
