@@ -6,7 +6,22 @@ const customStyles = {
   container: (provided, state) => ({
     ...provided,
     fontFamily: ["Lato", "sans-serif"].join(","),
-    fontSize: "13px"
+    fontSize: 13
+  }),
+  control: (provided, state) => ({
+    ...provided,
+    // Remove 1 pixel border to the left and right of search box
+    border: 0
+  }),
+  // Left-align search box text with dataset name
+  // To get readable class names, add classNamePrefix="foo" to <Search>
+  option: (provided, state) => ({
+    ...provided,
+    paddingLeft: 27
+  }),
+  valueContainer: (provided, state) => ({
+    ...provided,
+    marginLeft: 17
   })
 };
 
