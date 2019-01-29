@@ -10,7 +10,21 @@ const customStyles = {
   }),
   control: (provided, state) => ({
     ...provided,
+    // Remove 1 pixel border to the left and right of search box
     border: 0
+  }),
+  // Left-align search box text with dataset name
+  placeholder: (provided, state) => ({
+    ...provided,
+    paddingLeft: 18
+  }),
+  input: (provided, state) => ({
+    ...provided,
+    paddingLeft: 18
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    paddingLeft: 27
   })
 };
 
