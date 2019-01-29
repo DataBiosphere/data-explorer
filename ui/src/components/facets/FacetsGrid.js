@@ -7,10 +7,7 @@ import FacetCard from "components/facets/FacetCard";
 
 const styles = {
   root: {
-    margin: "20px"
-  },
-  gridList: {
-    margin: "200px"
+    padding: "20px"
   }
 };
 
