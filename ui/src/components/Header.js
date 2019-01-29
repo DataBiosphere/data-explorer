@@ -14,7 +14,7 @@ const styles = {
   totalCount: {
     fontSize: 17,
     // Make bottom of dataset name line up with bottom of total count
-    paddingTop: "3px"
+    paddingTop: "2.5px"
   }
 };
 

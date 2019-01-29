@@ -16,7 +16,7 @@ describe("End-to-end", () => {
 
   beforeEach(async () => {
     await page.goto("http://localhost:4400");
-    await page.waitForSelector(".datasetName");
+    await page.waitForSelector("[class*='datasetName']");
   });
 
   test("Header", async () => {
@@ -57,7 +57,7 @@ describe("End-to-end", () => {
     // Wait for data to be returned from backend.
     // See #63 for why we can't wait for .grayText.
     await page.waitForXPath(
-      "//*[contains(@class, 'totalCountText') and text() = '1122']"
+      "//*[contains(@class, 'totalCount') and text() = '1122']"
     );
 
     // Assert page updated correctly.
@@ -188,7 +188,7 @@ describe("End-to-end", () => {
   async function assertHeaderTotalCount(count) {
     // e.innerText looks like "3500 Participants"
     const totalCount = await page.$eval(
-      ".totalCountText",
+      "[class*='totalCount']",
       e => e.innerText.split(" ")[0]
     );
     await expect(totalCount).toBe(count);
@@ -274,7 +274,7 @@ describe("End-to-end", () => {
   async function waitForFacetsUpdate(newTotalCount) {
     // See #63 for why we can't wait for .grayText.
     await page.waitForXPath(
-      "//*[contains(@class, 'totalCountText') and contains(text(),'" +
+      "//*[contains(@class, 'totalCount') and contains(text(),'" +
         newTotalCount +
         "')]"
     );
