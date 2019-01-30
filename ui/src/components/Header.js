@@ -20,6 +20,12 @@ const styles = {
     // Make bottom of dataset name line up with bottom of total count
     paddingTop: "2.5px",
     flexGrow: 1
+  },
+  root: {
+    color: "red"
+  },
+  selected: {
+    color: "blue"
   }
 };
 
@@ -44,10 +50,18 @@ function Header(props) {
             exclusive
             onChange={props.handleVizToggleChange}
           >
-            <ToggleButton title="Show text" value="text">
+            <ToggleButton
+              value="text"
+              title="Show text"
+              classes={{ root: classes, root, selected: classes.selected }}
+            >
               <TextFieldsIcon />
             </ToggleButton>
-            <ToggleButton title="Show visualizations" value="viz">
+            <ToggleButton
+              value="viz"
+              title="Show visualizations"
+              classes={{ root: classes, root, selected: classes.selected }}
+            >
               <InsertChartIcon />
             </ToggleButton>
           </ToggleButtonGroup>
