@@ -57,27 +57,6 @@ def _process_extra_facets(extra_facets):
     current_app.config['EXTRA_FACET_INFO'] = facets
 
 
-def _number_to_range(interval_start, interval):
-    """Converts "X" -> "X-Y"."""
-    if interval < 1:
-        # Return something like "0.1-0.2"
-        return '%s-%s' % (interval_start, interval_start + interval)
-    elif interval == 1:
-        # Return something like "5"
-        return '%d' % interval_start
-    if interval < 1000000:
-        # Return something like "10-19"
-        return '%d-%d' % (interval_start, interval_start + interval)
-    elif interval < 1000000000:
-        # Return something like "10M-20M"
-        return '%dM-%dM' % (interval_start / 1000000,
-                            (interval_start + interval) / 1000000)
-    else:
-        # Return something like "10B-20B"
-        return '%dB-%dB' % (interval_start / 1000000000,
-                            (interval_start + interval) / 1000000000)
-
-
 def facets_get(filter=None, extraFacets=None):  # noqa: E501
     """facets_get
     Returns facets. # noqa: E501
@@ -117,8 +96,8 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
                 #   name 10: count 15     (There are 15 people aged 10-19)
                 #   name 20: count 33     (There are 33 people aged 20-29)
                 # Convert "10" -> "10-19".
-                value_name = _number_to_range(value_name,
-                                              _get_bucket_interval(es_facet))
+                value_name = elasticsearch_util.number_to_range(
+                    value_name, _get_bucket_interval(es_facet))
             else:
                 # elasticsearch-dsl returns boolean field keys as 0/1. Use the
                 # field's 'type' to convert back to boolean, if necessary.

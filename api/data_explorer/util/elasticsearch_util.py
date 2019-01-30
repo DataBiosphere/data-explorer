@@ -105,6 +105,27 @@ def range_to_number(interval_str):
         return int(number)
 
 
+def number_to_range(interval_start, interval):
+    """Converts "X" -> "X-Y"."""
+    if interval < 1:
+        # Return something like "0.1-0.2"
+        return '%s-%s' % (interval_start, interval_start + interval)
+    elif interval == 1:
+        # Return something like "5"
+        return '%d' % interval_start
+    if interval < 1000000:
+        # Return something like "10-19"
+        return '%d-%d' % (interval_start, interval_start + interval)
+    elif interval < 1000000000:
+        # Return something like "10M-20M"
+        return '%dM-%dM' % (interval_start / 1000000,
+                            (interval_start + interval) / 1000000)
+    else:
+        # Return something like "10B-20B"
+        return '%dB-%dB' % (interval_start / 1000000000,
+                            (interval_start + interval) / 1000000000)
+
+
 def convert_to_index_name(s):
     """Converts a string to an Elasticsearch index name."""
     # For Elasticsearch index name restrictions, see

@@ -1,4 +1,1 @@
-flask_testing
-mock
 pytest
-urllib3_mock
