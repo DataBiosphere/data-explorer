@@ -15,57 +15,36 @@ deactivate
 ```
 
 ### Troubleshooting tips
+
 - pdb with `docker-compose` [requires some setup](https://blog.lucasferreira.org/howto/2017/06/03/running-pdb-with-docker-and-gunicorn.html#adding-support-for-pdb-debug).
-  * Add to `api/Dockerfile`:
+
+  - Add to `api/Dockerfile`:
 
     ```
     ENTRYPOINT ["gunicorn", "-b", ":8390", "--reload", "-t", "36000", "data_explorer.__main__:app"]
     ```
-  * Add to `docker-compose.yml` `apise` section:
+
+  - Add to `docker-compose.yml` `apise` section:
 
     ```
         stdin_open: true
         tty: true
     ```
 
-  * Add to .py file:
+  - Add to .py file:
 
     ```
     import pdb; pdb.set_trace()
     ```
-  * Restart API server:
+
+  - Restart API server:
 
     ```
     docker-compose stop apise && docker-compose up --build -d apise && docker attach data-explorer_apise_1
     ```
+
 - If you want to run curl commands against Elasticsearch (localhost:9200),
-Kibana (localhost:5601) is the most convenient way.
+  Kibana (localhost:5601) is the most convenient way.
 - [Print Elasticsearch request and response Python object.](https://github.com/DataBiosphere/data-explorer/blob/1abfad964b01fc1b73b7e249a1078c26a9f21823/api/data_explorer/controllers/facets_controller.py#L88-L94)
 - [Print Elasticsearch REST request and response](https://github.com/DataBiosphere/data-explorer/blob/1abfad964b01fc1b73b7e249a1078c26a9f21823/api/data_explorer/__main__.py#L62-L67). The REST
-request can be used with `curl`.
-
-### Generating mock responses for API server unit tests
-
-In the [API server unit tests](https://github.com/DataBiosphere/data-explorer/blob/master/api/data_explorer/test/test_facets_controller.py),
-we mock Elasticsearch and API server responses using urllib3_mock. To get sample
-responses:
-
-* Run local servers
-* To print Elasticsearch response, add to `facets_controller.py` `facets_get()`:
-  ```
-  import json
-  dict_to_print = dict(es_response.to_dict())
-  # DatasetFacetedSearch object is not JSON serializable, so remove it
-  del dict_to_print['_faceted_search']
-  # Use json.dumps so double quotes are used instead of single quotes
-  current_app.logger.info(json.dumps(dict_to_print, indent=2))
-  ```
-  To print API server `facets/` response, add to `facets_controller.py` `facets_get()`
-  ```
-  resp = FacetsResponse(facets=facets, count=es_response._faceted_search.count())
-  current_app.logger.info(json.dumps(resp.to_dict(), indent=2))
-  return resp
-  ```
-* Load http://localhost:4400/ in browser
-* Copy/paste is easier with `docker logs data-explorer_apise_1`, versus
-  `docker-compose logs apise`
+  request can be used with `curl`.
