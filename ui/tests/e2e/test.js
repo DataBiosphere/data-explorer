@@ -51,7 +51,7 @@ describe("End-to-end", () => {
     // Click on facet value
     let facetValueRow = await getFacetValueRow(
       "Total Low Coverage Sequence",
-      "10B-20B"
+      "10B-19B"
     );
     await facetValueRow.click("input");
     // Wait for data to be returned from backend.
