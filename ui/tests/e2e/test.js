@@ -46,7 +46,7 @@ describe("End-to-end", () => {
 
   test("Sample facet", async () => {
     // Assert facet rendered correctly
-    await assertFacet("Total Low Coverage Sequence", "2688", "0B-10B", "10");
+    await assertFacet("Total Low Coverage Sequence", "2688", "0B-9B", "10");
 
     // Click on facet value
     let facetValueRow = await getFacetValueRow(
