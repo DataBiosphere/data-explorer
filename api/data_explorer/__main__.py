@@ -148,6 +148,9 @@ def _process_ui():
     app.app.config['ENABLE_SEARCH_VALUES'] = False
     if 'enable_search_values' in config and config['enable_search_values']:
         app.app.config['ENABLE_SEARCH_VALUES'] = True
+    app.app.config['SHOW_VIZ_TOGGLE'] = False
+    if 'show_viz_toggle' in config and config['show_viz_toggle']:
+        app.app.config['SHOW_VIZ_TOGGLE'] = True
 
 
 def _process_bigquery():

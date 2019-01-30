@@ -18,7 +18,8 @@ class DatasetResponse(Model):
     def __init__(self,
                  name=None,
                  search_placeholder_text=None,
-                 enable_search_values=None):  # noqa: E501
+                 enable_search_values=None,
+                 show_viz_toggle=None):  # noqa: E501
         """DatasetResponse - a model defined in Swagger
 
         :param name: The name of this DatasetResponse.  # noqa: E501
@@ -27,22 +28,27 @@ class DatasetResponse(Model):
         :type search_placeholder_text: str
         :param enable_search_values: The enable_search_values of this DatasetResponse.  # noqa: E501
         :type enable_search_values: bool
+        :param show_viz_toggle: The show_viz_toggle of this DatasetResponse.  # noqa: E501
+        :type show_viz_toggle: bool
         """
         self.swagger_types = {
             'name': str,
             'search_placeholder_text': str,
-            'enable_search_values': bool
+            'enable_search_values': bool,
+            'show_viz_toggle': bool
         }
 
         self.attribute_map = {
             'name': 'name',
             'search_placeholder_text': 'search_placeholder_text',
-            'enable_search_values': 'enable_search_values'
+            'enable_search_values': 'enable_search_values',
+            'show_viz_toggle': 'show_viz_toggle'
         }
 
         self._name = name
         self._search_placeholder_text = search_placeholder_text
         self._enable_search_values = enable_search_values
+        self._show_viz_toggle = show_viz_toggle
 
     @classmethod
     def from_dict(cls, dikt):
@@ -119,3 +125,24 @@ class DatasetResponse(Model):
         """
 
         self._enable_search_values = enable_search_values
+
+    @property
+    def show_viz_toggle(self):
+        """Gets the show_viz_toggle of this DatasetResponse.
+
+
+        :return: The show_viz_toggle of this DatasetResponse.
+        :rtype: bool
+        """
+        return self._show_viz_toggle
+
+    @show_viz_toggle.setter
+    def show_viz_toggle(self, show_viz_toggle):
+        """Sets the show_viz_toggle of this DatasetResponse.
+
+
+        :param show_viz_toggle: The show_viz_toggle of this DatasetResponse.
+        :type show_viz_toggle: bool
+        """
+
+        self._show_viz_toggle = show_viz_toggle

@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^1.5.1",
     "@material-ui/icons": "^2.0.3",
+    "@material-ui/lab": "^3.0.0-alpha.29",
     "axios": "^0.18.0",
     "data_explorer_service": "file:src/api",
     "lodash.debounce": "^4.0.8",

@@ -111,6 +111,7 @@ export default class ApiClient {
     if (!path.match(/^\//)) {
       path = "/" + path;
     }
+
     var url = this.basePath + path;
     url = url.replace(/\{([\w-]+)\}/g, (fullMatch, key) => {
       var value;

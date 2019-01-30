@@ -108,11 +108,14 @@ definitions:
         description: "Optional. What to show in the search box by default"
       enable_search_values:
         type: "boolean"
+      show_viz_toggle:
+        type: "boolean"
     description: "Dataset information."
     example:
       search_placeholder_text: "search_placeholder_text"
       enable_search_values: true
       name: "name"
+      show_viz_toggle: true
   FacetsResponse:
     properties:
       facets:
