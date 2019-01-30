@@ -115,15 +115,15 @@ def number_to_range(interval_start, interval):
         return '%d' % interval_start
     if interval < 1000000:
         # Return something like "10-19"
-        return '%d-%d' % (interval_start, interval_start + interval)
+        return '%d-%d' % (interval_start, interval_start + interval - 1)
     elif interval < 1000000000:
-        # Return something like "10M-20M"
+        # Return something like "10M-19M"
         return '%dM-%dM' % (interval_start / 1000000,
-                            (interval_start + interval) / 1000000)
+                            (interval_start + interval - 1) / 1000000)
     else:
-        # Return something like "10B-20B"
+        # Return something like "10B-19B"
         return '%dB-%dB' % (interval_start / 1000000000,
-                            (interval_start + interval) / 1000000000)
+                            (interval_start + interval - 1) / 1000000000)
 
 
 def convert_to_index_name(s):
