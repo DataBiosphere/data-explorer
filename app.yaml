@@ -1,0 +1,9 @@
+runtime: custom
+env: flex
+service: api
+entrypoint: gunicorn -b ":$PORT" data_explorer.__main__:app
+
+env_variables:
+  PATH_PREFIX: /api
+  ELASTICSEARCH_URL: http://10.168.15.209:9200/
+  DATASET_CONFIG_DIR: dataset_config/nurses_health_study
