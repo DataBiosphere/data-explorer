@@ -34,7 +34,9 @@ if ! gsutil ls "gs://${project_id}-export" &> /dev/null; then
 	exit 1
 fi
 
-echo "Deploying ${dataset} API Server to project ${project_id}"
+bold=$(tput bold)
+normal=$(tput sgr0)
+echo "Deploying API server for ${bold}dataset ${dataset}${normal} to ${bold}project ${project_id}${normal}"
 echo
 
 # Initialize gcloud and kubectl commands
