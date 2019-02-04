@@ -20,6 +20,7 @@ function FacetsGrid(props) {
         facet={facet}
         selectedValues={props.selectedFacetValues.get(facet.es_field_name)}
         updateFacets={props.updateFacets}
+        facetType={props.facetType}
       />
     </GridListTile>
   ));

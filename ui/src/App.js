@@ -166,6 +166,7 @@ class App extends Component {
               updateFacets={this.updateFacets}
               selectedFacetValues={this.state.selectedFacetValues}
               facets={Array.from(this.state.facets.values())}
+              facetType={this.state.facetType}
             />
             <ExportFab
               exportUrlApi={new ExportUrlApi(this.apiClient)}

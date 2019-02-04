@@ -9,7 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import * as Style from "libs/style";
 
 const styles = {
-  facetCard: {
+  textFacet: {
     ...Style.elements.card,
     margin: "2%",
     paddingBottom: "8px",
@@ -64,7 +64,7 @@ const styles = {
   }
 };
 
-class FacetCard extends Component {
+class TextFacet extends Component {
   constructor(props) {
     super(props);
 
@@ -107,7 +107,7 @@ class FacetCard extends Component {
     ));
 
     return (
-      <div className={classes.facetCard}>
+      <div className={classes.textFacet}>
         <Typography>{this.props.facet.name}</Typography>
         {this.props.facet.name != "Samples Overview" ? (
           <Typography className={classes.totalFacetValueCount}>
@@ -179,4 +179,4 @@ class FacetCard extends Component {
   }
 }
 
-export default withStyles(styles)(FacetCard);
+export default withStyles(styles)(TextFacet);
