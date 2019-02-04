@@ -53,14 +53,14 @@ function Header(props) {
             <ToggleButton
               value="text"
               title="Show text"
-              classes={{ root: classes, root, selected: classes.selected }}
+              classes={{ root: classes.root, selected: classes.selected }}
             >
               <TextFieldsIcon />
             </ToggleButton>
             <ToggleButton
               value="viz"
               title="Show visualizations"
-              classes={{ root: classes, root, selected: classes.selected }}
+              classes={{ root: classes.root, selected: classes.selected }}
             >
               <InsertChartIcon />
             </ToggleButton>
