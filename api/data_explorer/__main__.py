@@ -141,13 +141,15 @@ def _process_dataset():
 def _process_ui():
     config_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'], 'ui.json')
     config = _parse_json_file(config_path)
-    if 'search_placeholder_text' in config and config[
-            'search_placeholder_text']:
-        app.app.config['SEARCH_PLACEHOLDER_TEXT'] = config[
-            'search_placeholder_text']
+    if config.get('search_placeholder_text'):
+        app.app.config['SEARCH_PLACEHOLDER_TEXT'] = config.get(
+            'search_placeholder_text')
     app.app.config['ENABLE_SEARCH_VALUES'] = False
-    if 'enable_search_values' in config and config['enable_search_values']:
+    if config.get('enable_search_values'):
         app.app.config['ENABLE_SEARCH_VALUES'] = True
+    app.app.config['SHOW_VIZ_TOGGLE'] = False
+    if config.get('show_viz_toggle'):
+        app.app.config['SHOW_VIZ_TOGGLE'] = True
 
 
 def _process_bigquery():

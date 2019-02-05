@@ -12,6 +12,11 @@
 //    BigQuery column name and description. Search results will take time to appear.
 //    If this is false, search box will search BigQuery column name and description.
 //    Search results will appear instantly.
+// show_viz_toggle:
+//   If this is true, a toggle will appear allowing one to toggle between text
+//   and visualization facets. (If this is false, only text facets are shown.)
+//   This feature is under development. When this feature is done, this flag
+//   will be deleted.
 {
   "search_placeholder_text": "Search center or pat",
   "facets": [
@@ -21,5 +26,6 @@
       "elasticsearch_field_name": ""
     }
   ],
-  "enable_search_values": true
+  "enable_search_values": true,
+  "show_viz_toggle": false
 }

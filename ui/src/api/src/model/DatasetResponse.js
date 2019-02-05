@@ -54,6 +54,12 @@ export default class DatasetResponse {
           "Boolean"
         );
       }
+      if (data.hasOwnProperty("show_viz_toggle")) {
+        obj["show_viz_toggle"] = ApiClient.convertToType(
+          data["show_viz_toggle"],
+          "Boolean"
+        );
+      }
     }
     return obj;
   }
@@ -71,4 +77,8 @@ export default class DatasetResponse {
    * @member {Boolean} enable_search_values
    */
   enable_search_values = undefined;
+  /**
+   * @member {Boolean} show_viz_toggle
+   */
+  show_viz_toggle = undefined;
 }

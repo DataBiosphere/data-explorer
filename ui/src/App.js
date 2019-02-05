@@ -45,6 +45,13 @@ class App extends Component {
       searchPlaceholderText: "",
       // Whether to perform search on facet values.
       enableSearchValues: false,
+      // If this is true, a toggle will appear allowing one to toggle between
+      // text and visualization facets. (If this is false, only text facets are
+      // shown.) This feature is under development. When this feature is done,
+      // this flag will be deleted.
+      showVizToggle: false,
+      // Can be "text" or "viz"
+      facetType: "text",
       // Map from es_field_name to facet data returned from API server /facets call.
       facets: new Map(),
       totalCount: null,
@@ -122,6 +129,7 @@ class App extends Component {
 
     this.updateFacets = this.updateFacets.bind(this);
     this.handleSearchBoxChange = this.handleSearchBoxChange.bind(this);
+    this.handleVizToggleChange = this.handleVizToggleChange.bind(this);
     this.loadOptions = this.loadOptions.bind(this);
   }
 
@@ -140,6 +148,9 @@ class App extends Component {
             <Header
               datasetName={this.state.datasetName}
               totalCount={this.state.totalCount}
+              showVizToggle={this.state.showVizToggle}
+              facetType={this.state.facetType}
+              handleVizToggleChange={this.handleVizToggleChange}
             />
 
             <Search
@@ -181,7 +192,8 @@ class App extends Component {
         this.setState({
           datasetName: data.name,
           searchPlaceholderText: data.search_placeholder_text,
-          enableSearchValues: data.enable_search_values
+          enableSearchValues: data.enable_search_values,
+          showVizToggle: data.show_viz_toggle
         });
       }
     }.bind(this);
@@ -319,6 +331,10 @@ class App extends Component {
       }
     });
     return filterArray;
+  }
+
+  handleVizToggleChange(event, facetType) {
+    this.setState({ facetType: facetType });
   }
 }
 
