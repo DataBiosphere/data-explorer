@@ -31,18 +31,11 @@ const toggleButtonStyles = {
     color: 'blue',
   },
 };
-
-// Copied from https://stackoverflow.com/a/53125543/6447189
-// This is the only way I found to use withStyles() on a nested Component.
-const styledToggleButton = withStyles(toggleButtonStyles)((props) => {
-  const { classes } = props;
+//const StyledToggleButton = withStyles(toggleButtonStyles)(ToggleButton)
+const StyledToggleButton = withStyles(toggleButtonStyles)((props) => {
   return (
-    <div classNames={classes[bar]}>
-      Baz
-    </div>
-  )
-
-}
+  );
+});
 
 function Header(props) {
   const { classes } = props;
@@ -65,20 +58,20 @@ function Header(props) {
             exclusive
             onChange={props.handleVizToggleChange}
           >
-            {withStyles(toggleButtonStyles)(<ToggleButton
+            <StyledToggleButton
               value="text"
               title="Show text"
               classes={{ root: classes.root, selected: classes.selected }}
-            >)}
+            >
               <TextFieldsIcon />
-            </ToggleButton>
-            <ToggleButton
+            </StyledToggleButton>}
+            <StyledToggleButton
               value="viz"
               title="Show visualizations"
               classes={{ root: classes.root, selected: classes.selected }}
             >
               <InsertChartIcon />
-            </ToggleButton>
+            </StyledToggleButton>
           </ToggleButtonGroup>
         )}
       </Toolbar>
