@@ -19,9 +19,7 @@ def _get_bucket_interval(facet):
         return _get_bucket_interval(facet._inner)
 
 
-def _process_extra_facets(extra_facets):
-    es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
-
+def _process_extra_facets(es, extra_facets):
     facets = OrderedDict()
 
     if not extra_facets:
@@ -69,7 +67,8 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     :type extraFacets: List[str]
     :rtype: FacetsResponse
     """
-    _process_extra_facets(extraFacets)
+    es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
+    _process_extra_facets(es, extraFacets)
     combined_facets = OrderedDict(
         current_app.config['EXTRA_FACET_INFO'].items() +
         current_app.config['FACET_INFO'].items())
@@ -86,9 +85,12 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     #    'Elasticsearch response: %s' % pprint.pformat(es_response_facets))
     facets = []
     for es_field_name, facet_info in combined_facets.iteritems():
+        current_app.logger.info(
+            'FIELD: %s INFO: %s' % (es_field_name, facet_info))
         name = facet_info.get('ui_facet_name')
         description = facet_info.get('description')
         es_facet = facet_info.get('es_facet')
+        field_type = facet_info.get('type', 'text')
         values = []
         for value_name, count, _ in es_response_facets[es_field_name]:
             if elasticsearch_util.is_histogram_facet(es_facet):
@@ -109,7 +111,8 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
                 name=name,
                 description=description,
                 values=values,
-                es_field_name=es_field_name))
+                es_field_name=es_field_name,
+                es_field_type=field_type))
 
     return FacetsResponse(
         facets=facets, count=es_response._faceted_search.count())

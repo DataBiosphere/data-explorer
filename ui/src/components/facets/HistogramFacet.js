@@ -18,80 +18,66 @@ const baseSpec = {
       },
       legend: null,
     },
-    tooltip: [
-      {
-        title: "Facet Value",
-        field: "facet_value",
-        type: "nominal",
-      },
-      {
-        title: "Count",
-        field: "count",
-        type: "quantitative",
-      }
-    ],
+    tooltip: {
+      field: "text",
+      type: "nominal",
+    },
     x: {},
     y: {}
   }
 }
 
-function isRange(name) {
-  const match = name.match(/[\d\.]*-[\d\.]*/g);
-  return match != null && match.length > 0;
+const count_axis = {
+  field: "count",
+  type: "quantitative",
+  title: "",
 }
+
+
+function isCategorical(facet) {
+  return facet.es_field_type == "text" || facet.es_field_type == "samples_overview";
+}
+
 
 class FacetHistogram extends Component {
   constructor(props) {
     super(props);
     this.facetValues = this.props.facet.values;
-    this.isDimmed = this.isDimmed.bind(this);
+    this.isValueDimmed = this.isValueDimmed.bind(this);
   }
 
   render() {
-    // Loop over all facet values and create a data and sortOrder arrays.
-    // Also determine if this is a numeric/range type facet.
-    const data = {values: []}
-    const sortOrder = []
-    let rangeFacet = true
-    for (var i in this.facetValues) {
-      data.values.push({
-        facet_value: this.facetValues[i].name,
-        count: this.facetValues[i].count,
-        dimmed: this.isDimmed(this.facetValues[i])
-      })
-      sortOrder.push(this.facetValues[i].name)
-      rangeFacet = rangeFacet && isRange(this.facetValues[i].name)
-    }
-
     const spec = Object.assign({}, baseSpec);
-    // Range facets are shown as vertical histograms, while categorical
-    // ones are horizontal in order to allow for more space for text.
-    if (rangeFacet) {
-      spec.encoding.x = {
-        field: "facet_value",
-        type: "nominal",
-        title: this.props.facet.name,
-        sort: sortOrder,
-      }
-      spec.encoding.y = {
-        field: "count",
-        type: "quantitative",
-        title: "",
-      }
-    } else {
-      spec.encoding.x = {
-        field: "count",
-        type: "quantitative",
-        title: "",
-      }
-      spec.encoding.y = {
-        field: "facet_value",
-        type: "nominal",
-        title: this.props.facet.name,
-        sort: sortOrder,
+    // Categorical  facets are shown as horizontal histograms, 
+    // in order to allow for more space for text.
+    const value_axis = {
+      field: "facet_value",
+      type: "nominal",
+      title: this.props.facet.name,
+      sort: this.facetValues.map(v => v.name),
+      axis: {
+        labelAngle: 0,
+        labelOverlap: true,
       }
     }
+    if (isCategorical(this.props.facet)) {
+      spec.encoding.x = count_axis;
+      spec.encoding.y = value_axis;
+    } else {
+      spec.encoding.x = value_axis;
+      spec.encoding.y = count_axis;
+    }
 
+    const data = {
+      values: this.facetValues.map(v => {
+        return {
+          facet_value: v.name,
+          count: v.count,
+          dimmed: this.isValueDimmed(v),
+          text: `${v.name}: ${v.count}`,
+        }
+      })
+    }
     return (
       <VegaLite
         spec={spec}
@@ -101,7 +87,7 @@ class FacetHistogram extends Component {
     );
   }
 
-  isDimmed(facetValue) {
+  isValueDimmed(facetValue) {
     return (
       this.props.selectedValues != null &&
       this.props.selectedValues.length > 0 &&

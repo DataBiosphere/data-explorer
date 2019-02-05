@@ -71,7 +71,7 @@ class TextFacet extends Component {
     this.facetValues = this.props.facet.values;
 
     this.onClick = this.onClick.bind(this);
-    this.isDimmed = this.isDimmed.bind(this);
+    this.isValueDimmed = this.isValueDimmed.bind(this);
   }
 
   render() {
@@ -95,7 +95,7 @@ class TextFacet extends Component {
         />
         <ListItemText
           className={classes.facetValueNameAndCount}
-          classes={{ primary: this.isDimmed(value) ? classes.grayText : null }}
+          classes={{ primary: this.isValueDimmed(value) ? classes.grayText : null }}
           primary={
             <div style={{ display: "grid", gridTemplateColumns: "auto 50px" }}>
               <div className={classes.facetValueName}>{value.name}</div>
@@ -127,7 +127,7 @@ class TextFacet extends Component {
     );
   }
 
-  isDimmed(facetValue) {
+  isValueDimmed(facetValue) {
     return (
       this.props.selectedValues != null &&
       this.props.selectedValues.length > 0 &&
