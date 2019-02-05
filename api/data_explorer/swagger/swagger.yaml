@@ -11,7 +11,7 @@ paths:
   /dataset:
     get:
       tags:
-      - "Dataset"
+        - "Dataset"
       description: "Gets dataset information, such as name."
       operationId: "dataset_get"
       parameters: []
@@ -24,31 +24,33 @@ paths:
   /facets:
     get:
       tags:
-      - "Facets"
+        - "Facets"
       description: "Returns facets."
       operationId: "facets_get"
       parameters:
-      - name: "filter"
-        in: "query"
-        description: "filter represents selected facet values. Elasticsearch query\
-          \ will be run only over selected facet values. filter is an array of strings,\
-          \ where each string has the format \"esFieldName=facetValue\". Example url\
-          \ /facets?filter=Gender=female,Region=northwest,Region=southwest\n"
-        required: false
-        type: "array"
-        items:
-          type: "string"
-        collectionFormat: "pipes"
-      - name: "extraFacets"
-        in: "query"
-        description: "extraFacets represents the fields selected from the field search\
-          \ box. extraFacets is a list of Elasticsearch field names. In the returned\
-          \ list of facets, the extra facets will come before the facets from ui.json."
-        required: false
-        type: "array"
-        items:
-          type: "string"
-        collectionFormat: "pipes"
+        - name: "filter"
+          in: "query"
+          description:
+            "filter represents selected facet values. Elasticsearch query\
+            \ will be run only over selected facet values. filter is an array of strings,\
+            \ where each string has the format \"esFieldName=facetValue\". Example url\
+            \ /facets?filter=Gender=female,Region=northwest,Region=southwest\n"
+          required: false
+          type: "array"
+          items:
+            type: "string"
+          collectionFormat: "pipes"
+        - name: "extraFacets"
+          in: "query"
+          description:
+            "extraFacets represents the fields selected from the field search\
+            \ box. extraFacets is a list of Elasticsearch field names. In the returned\
+            \ list of facets, the extra facets will come before the facets from ui.json."
+          required: false
+          type: "array"
+          items:
+            type: "string"
+          collectionFormat: "pipes"
       responses:
         200:
           description: "Success"
@@ -58,18 +60,20 @@ paths:
   /search:
     get:
       tags:
-      - "Search"
-      description: "Free text search over dataset. If query is empty, this returns\
+        - "Search"
+      description:
+        "Free text search over dataset. If query is empty, this returns\
         \ all dataset fields, to populate the search drop-down on initial page load.\
         \ If query is set, this returns only dataset fields that match the query.\n"
       operationId: "search_get"
       parameters:
-      - name: "query"
-        in: "query"
-        description: "What was typed into search box. Say user typed \"foo\". query\
-          \ is \"foo\"; Elasticsearch will be searched for \"foo*\".\n"
-        required: false
-        type: "string"
+        - name: "query"
+          in: "query"
+          description:
+            "What was typed into search box. Say user typed \"foo\". query\
+            \ is \"foo\"; Elasticsearch will be searched for \"foo*\".\n"
+          required: false
+          type: "string"
       responses:
         200:
           description: "Success"
@@ -79,19 +83,20 @@ paths:
   /exportUrl:
     post:
       tags:
-      - "ExportUrl"
-      description: "Creates and returns a signed URL to a GCS zip file of JSON files.\
+        - "ExportUrl"
+      description:
+        "Creates and returns a signed URL to a GCS zip file of JSON files.\
         \ The JSON files represent entities to be exported to a Terra workspace. https://app.terra.bio/#import-data\
         \ may be called with the url parameter set to this url. For each JSON file,\
         \ https://rawls.dsde-prod.broadinstitute.org/#!/entities/create_entity may\
         \ be called with the JSON as the POST body.\n"
       operationId: "export_url_post"
       parameters:
-      - in: "body"
-        name: "exportUrlRequest"
-        required: false
-        schema:
-          $ref: "#/definitions/exportUrlRequest"
+        - in: "body"
+          name: "exportUrlRequest"
+          required: false
+          schema:
+            $ref: "#/definitions/exportUrlRequest"
       responses:
         200:
           description: "Success"
@@ -124,63 +129,71 @@ definitions:
           $ref: "#/definitions/Facet"
       count:
         type: "integer"
-        description: "Number of entities represented by current facet selection. For\
+        description:
+          "Number of entities represented by current facet selection. For\
           \ example, this could be 40, representing 40 people.\n"
     description: "Results from a faceted search."
     example:
       count: 6
       facets:
-      - values:
-        - name: "name"
-          count: 0
-        - name: "name"
-          count: 0
-        name: "name"
-        description: "description"
-        es_field_name: "es_field_name"
-      - values:
-        - name: "name"
-          count: 0
-        - name: "name"
-          count: 0
-        name: "name"
-        description: "description"
-        es_field_name: "es_field_name"
+        - values:
+            - name: "name"
+              count: 0
+            - name: "name"
+              count: 0
+          name: "name"
+          description: "description"
+          es_field_name: "es_field_name"
+          es_field_type: "es_field_type"
+        - values:
+            - name: "name"
+              count: 0
+            - name: "name"
+              count: 0
+          name: "name"
+          description: "description"
+          es_field_name: "es_field_name"
+          es_field_type: "es_field_type"
   Facet:
     properties:
       name:
         type: "string"
-        description: "Facet name, for example, \"Gender\"."
+        description: 'Facet name, for example, "Gender".'
       description:
         type: "string"
         description: "Optional facet description."
       es_field_name:
         type: "string"
         description: "The Elasticsearch field name."
+      es_field_type:
+        type: "string"
+        description: "The Elasticsearch field type."
       values:
         type: "array"
         items:
           $ref: "#/definitions/FacetValue"
-    description: "A facet. For example, the Gender facet would include the facet name\
+    description:
+      "A facet. For example, the Gender facet would include the facet name\
       \ \"Gender\", as well as counts for all possible values.\n"
     example:
       values:
-      - name: "name"
-        count: 0
-      - name: "name"
-        count: 0
+        - name: "name"
+          count: 0
+        - name: "name"
+          count: 0
       name: "name"
       description: "description"
       es_field_name: "es_field_name"
+      es_field_type: "es_field_type"
   FacetValue:
     properties:
       name:
         type: "string"
-        description: "Facet value name, for example, \"Male\"."
+        description: 'Facet value name, for example, "Male".'
       count:
         type: "integer"
         description: "Facet value count."
-    description: "A facet value, for example, \"Male\"/34."
+    description: 'A facet value, for example, "Male"/34.'
     example:
       name: "name"
       count: 0
@@ -204,14 +217,14 @@ definitions:
           $ref: "#/definitions/SearchResult"
     example:
       search_results:
-      - facet_value: "facet_value"
-        elasticsearch_field_name: "elasticsearch_field_name"
-        facet_name: "facet_name"
-        facet_description: "facet_description"
-      - facet_value: "facet_value"
-        elasticsearch_field_name: "elasticsearch_field_name"
-        facet_name: "facet_name"
-        facet_description: "facet_description"
+        - facet_value: "facet_value"
+          elasticsearch_field_name: "elasticsearch_field_name"
+          facet_name: "facet_name"
+          facet_description: "facet_description"
+        - facet_value: "facet_value"
+          elasticsearch_field_name: "elasticsearch_field_name"
+          facet_name: "facet_name"
+          facet_description: "facet_description"
   SearchResult:
     properties:
       facet_name:
@@ -225,10 +238,12 @@ definitions:
         description: "The Elasticsearch field name."
       facet_value:
         type: "string"
-        description: "If this search result represents a facet, facet_value is the\
+        description:
+          "If this search result represents a facet, facet_value is the\
           \ empty string. If this search result represents a facet and selected value,\
           \ facet_value is the selected value.\n"
-    description: "Can represent a facet (Gender), or a facet and selected value (Gender\
+    description:
+      "Can represent a facet (Gender), or a facet and selected value (Gender\
       \ = female).\n"
     example:
       facet_value: "facet_value"

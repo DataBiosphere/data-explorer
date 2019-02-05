@@ -1,11 +1,11 @@
-swagger: '2.0'
+swagger: "2.0"
 info:
   title: Data Explorer Service
   description: API Service that reads from Elasticsearch.
   license:
     name: BSD
-    url: 'http://opensource.org/licenses/BSD-3-Clause'
-  version: '0.0.1'
+    url: "http://opensource.org/licenses/BSD-3-Clause"
+  version: "0.0.1"
 paths:
   /dataset:
     get:
@@ -14,7 +14,7 @@ paths:
         200:
           description: Success
           schema:
-            $ref: '#/definitions/DatasetResponse'
+            $ref: "#/definitions/DatasetResponse"
       tags:
         # Put in dataset_controller.py instead of default_controller.py.
         - Dataset
@@ -41,7 +41,8 @@ paths:
           items:
             type: string
         - name: extraFacets
-          description: extraFacets represents the fields selected from the field search box.
+          description:
+            extraFacets represents the fields selected from the field search box.
             extraFacets is a list of Elasticsearch field names. In the returned
             list of facets, the extra facets will come before the facets from ui.json.
           in: query
@@ -53,7 +54,7 @@ paths:
         200:
           description: Success
           schema:
-            $ref: '#/definitions/FacetsResponse'
+            $ref: "#/definitions/FacetsResponse"
       tags:
         # Put in facets_controller.py instead of default_controller.py.
         - Facets
@@ -74,7 +75,7 @@ paths:
         200:
           description: Success
           schema:
-            $ref: '#/definitions/SearchResponse'
+            $ref: "#/definitions/SearchResponse"
       tags:
         # Put in search_controller.py instead of default_controller.py.
         - Search
@@ -108,7 +109,7 @@ paths:
         200:
           description: Success
           schema:
-            $ref: '#/definitions/ExportUrlResponse'
+            $ref: "#/definitions/ExportUrlResponse"
       tags:
         # Put in export_url_controller.py instead of default_controller.py.
         - ExportUrl
@@ -131,7 +132,7 @@ definitions:
       facets:
         type: array
         items:
-          $ref: '#/definitions/Facet'
+          $ref: "#/definitions/Facet"
       count:
         type: integer
         description: >
@@ -151,10 +152,13 @@ definitions:
       es_field_name:
         type: string
         description: The Elasticsearch field name.
+      es_field_type:
+        type: string
+        description: The Elasticsearch field type.
       values:
         type: array
         items:
-          $ref: '#/definitions/FacetValue'
+          $ref: "#/definitions/FacetValue"
   FacetValue:
     description: A facet value, for example, "Male"/34.
     properties:
@@ -178,7 +182,7 @@ definitions:
       search_results:
         type: array
         items:
-          $ref: '#/definitions/SearchResult'
+          $ref: "#/definitions/SearchResult"
   SearchResult:
     description: >
       Can represent a facet (Gender), or a facet and selected value (Gender = female).

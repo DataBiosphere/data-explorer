@@ -9,7 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import * as Style from "libs/style";
 
 const styles = {
-  facetCard: {
+  textFacet: {
     ...Style.elements.card,
     margin: "2%",
     paddingBottom: "8px",
@@ -64,14 +64,14 @@ const styles = {
   }
 };
 
-class FacetCard extends Component {
+class TextFacet extends Component {
   constructor(props) {
     super(props);
 
     this.facetValues = this.props.facet.values;
 
     this.onClick = this.onClick.bind(this);
-    this.isDimmed = this.isDimmed.bind(this);
+    this.isValueDimmed = this.isValueDimmed.bind(this);
   }
 
   render() {
@@ -95,7 +95,7 @@ class FacetCard extends Component {
         />
         <ListItemText
           className={classes.facetValueNameAndCount}
-          classes={{ primary: this.isDimmed(value) ? classes.grayText : null }}
+          classes={{ primary: this.isValueDimmed(value) ? classes.grayText : null }}
           primary={
             <div style={{ display: "grid", gridTemplateColumns: "auto 50px" }}>
               <div className={classes.facetValueName}>{value.name}</div>
@@ -107,7 +107,7 @@ class FacetCard extends Component {
     ));
 
     return (
-      <div className={classes.facetCard}>
+      <div className={classes.textFacet}>
         <Typography>{this.props.facet.name}</Typography>
         {this.props.facet.name != "Samples Overview" ? (
           <Typography className={classes.totalFacetValueCount}>
@@ -127,7 +127,7 @@ class FacetCard extends Component {
     );
   }
 
-  isDimmed(facetValue) {
+  isValueDimmed(facetValue) {
     return (
       this.props.selectedValues != null &&
       this.props.selectedValues.length > 0 &&
@@ -179,4 +179,4 @@ class FacetCard extends Component {
   }
 }
 
-export default withStyles(styles)(FacetCard);
+export default withStyles(styles)(TextFacet);

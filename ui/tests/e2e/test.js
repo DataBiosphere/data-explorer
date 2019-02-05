@@ -39,7 +39,7 @@ describe("End-to-end", () => {
 
     // Make sure non-selected facet values are gray.
     facetValueRow = await getFacetValueRow("Super Population", "European");
-    const grayDiv = await facetValueRow.$("*[class*='FacetCard-grayText-']");
+    const grayDiv = await facetValueRow.$("*[class*='TextFacet-grayText-']");
 
     expect(grayDiv).toBeTruthy();
   });
@@ -143,7 +143,7 @@ describe("End-to-end", () => {
     await results[0].click();
 
     // Assert Relationship facet is added
-    await waitForFacetCard("Relationship");
+    await waitForTextFacet("Relationship");
     await assertFacet("Relationship", "1", "mother", "831");
 
     // Make sure facet value is selected
@@ -200,23 +200,23 @@ describe("End-to-end", () => {
     firstValueName,
     firstValueCount
   ) {
-    const facetCard = await getFacetCard(facetName);
+    const textFacet = await getTextFacet(facetName);
 
     expect(
-      await facetCard.$eval(
-        "*[class*='FacetCard-totalFacetValueCount-']",
+      await textFacet.$eval(
+        "*[class*='TextFacet-totalFacetValueCount-']",
         node => node.innerText
       )
     ).toBe(totalCount);
     expect(
-      await facetCard.$eval(
-        "*[class*='FacetCard-facetValueName-']",
+      await textFacet.$eval(
+        "*[class*='TextFacet-facetValueName-']",
         node => node.innerText
       )
     ).toBe(firstValueName);
     expect(
-      await facetCard.$eval(
-        "*[class*='FacetCard-facetValueCount-']",
+      await textFacet.$eval(
+        "*[class*='TextFacet-facetValueCount-']",
         node => node.innerText
       )
     ).toBe(firstValueCount);
@@ -234,16 +234,16 @@ describe("End-to-end", () => {
    * Returns Promise of JSHandle of facetValueRow label.
    */
   async function getFacetValueRow(facetName, valueName) {
-    let facetCard = await getFacetCard(facetName);
+    let textFacet = await getTextFacet(facetName);
     let facetValueRow = (await page.evaluateHandle(
-      (facetCard, valueName) => {
-        let divs = facetCard.querySelectorAll("*[class*='MuiListItem-']");
+      (textFacet, valueName) => {
+        let divs = textFacet.querySelectorAll("*[class*='MuiListItem-']");
         for (let div of divs) {
           if (div.innerText.includes(valueName)) return div;
         }
         return null;
       },
-      facetCard,
+      textFacet,
       valueName
     )).asElement();
     expect(facetValueRow).toBeTruthy();
@@ -251,12 +251,12 @@ describe("End-to-end", () => {
   }
 
   /**
-   * Returns Promise of JSHandle of facetCard div.
+   * Returns Promise of JSHandle of textFacet div.
    */
-  async function getFacetCard(facetName) {
-    const facetCard = (await page.evaluateHandle(innerFacetName => {
+  async function getTextFacet(facetName) {
+    const textFacet = (await page.evaluateHandle(innerFacetName => {
       const divs = document.querySelectorAll(
-        "*[class*='FacetCard-facetCard-']"
+        "*[class*='TextFacet-textFacet-']"
       );
       for (const div of divs) {
         const name = div.querySelector("p").innerText;
@@ -264,8 +264,8 @@ describe("End-to-end", () => {
       }
       return null;
     }, facetName)).asElement();
-    expect(facetCard).toBeTruthy();
-    return facetCard;
+    expect(textFacet).toBeTruthy();
+    return textFacet;
   }
 
   /**
@@ -283,7 +283,7 @@ describe("End-to-end", () => {
   /**
    * Waits for facet card to be rendered.
    */
-  async function waitForFacetCard(facetName) {
+  async function waitForTextFacet(facetName) {
     await page.waitForXPath("//*[contains(text(),'" + facetName + "')]");
   }
 

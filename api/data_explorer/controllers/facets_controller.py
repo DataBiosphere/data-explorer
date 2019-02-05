@@ -86,18 +86,16 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     #    'Elasticsearch response: %s' % pprint.pformat(es_response_facets))
     facets = []
     for es_field_name, facet_info in combined_facets.iteritems():
-        name = facet_info.get('ui_facet_name')
-        description = facet_info.get('description')
-        es_facet = facet_info.get('es_facet')
         values = []
+        facet = facet_info.get('es_facet')
         for value_name, count, _ in es_response_facets[es_field_name]:
-            if elasticsearch_util.is_histogram_facet(es_facet):
+            if elasticsearch_util.is_histogram_facet(facet):
                 # For histograms, Elasticsearch returns:
                 #   name 10: count 15     (There are 15 people aged 10-19)
                 #   name 20: count 33     (There are 33 people aged 20-29)
                 # Convert "10" -> "10-19".
                 value_name = elasticsearch_util.number_to_range(
-                    value_name, _get_bucket_interval(es_facet))
+                    value_name, _get_bucket_interval(facet))
             else:
                 # elasticsearch-dsl returns boolean field keys as 0/1. Use the
                 # field's 'type' to convert back to boolean, if necessary.
@@ -106,10 +104,11 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
             values.append(FacetValue(name=value_name, count=count))
         facets.append(
             Facet(
-                name=name,
-                description=description,
+                name=facet_info.get('ui_facet_name'),
+                description=facet_info.get('description'),
                 values=values,
-                es_field_name=es_field_name))
+                es_field_name=es_field_name,
+                es_field_type=facet_info.get('type')))
 
     return FacetsResponse(
         facets=facets, count=es_response._faceted_search.count())
