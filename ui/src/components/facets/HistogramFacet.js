@@ -16,28 +16,28 @@ const baseSpec = {
       scale: {
         range: ["#4c78a8", "#aaafb7"]
       },
-      legend: null,
+      legend: null
     },
     tooltip: {
       field: "text",
-      type: "nominal",
+      type: "nominal"
     },
     x: {},
     y: {}
   }
-}
+};
 
 const count_axis = {
   field: "count",
   type: "quantitative",
-  title: "",
-}
-
+  title: ""
+};
 
 function isCategorical(facet) {
-  return facet.es_field_type == "text" || facet.es_field_type == "samples_overview";
+  return (
+    facet.es_field_type == "text" || facet.es_field_type == "samples_overview"
+  );
 }
-
 
 class FacetHistogram extends Component {
   constructor(props) {
@@ -48,7 +48,7 @@ class FacetHistogram extends Component {
 
   render() {
     const spec = Object.assign({}, baseSpec);
-    // Categorical  facets are shown as horizontal histograms, 
+    // Categorical facets are shown as horizontal histograms,
     // in order to allow for more space for text.
     const value_axis = {
       field: "facet_value",
@@ -57,9 +57,9 @@ class FacetHistogram extends Component {
       sort: this.facetValues.map(v => v.name),
       axis: {
         labelAngle: 0,
-        labelOverlap: true,
+        labelOverlap: true
       }
-    }
+    };
     if (isCategorical(this.props.facet)) {
       spec.encoding.x = count_axis;
       spec.encoding.y = value_axis;
@@ -74,17 +74,11 @@ class FacetHistogram extends Component {
           facet_value: v.name,
           count: v.count,
           dimmed: this.isValueDimmed(v),
-          text: `${v.name}: ${v.count}`,
-        }
+          text: `${v.name}: ${v.count}`
+        };
       })
-    }
-    return (
-      <VegaLite
-        spec={spec}
-        data={data}
-        tooltip={new Handler().call}
-      />
-    );
+    };
+    return <VegaLite spec={spec} data={data} tooltip={new Handler().call} />;
   }
 
   isValueDimmed(facetValue) {

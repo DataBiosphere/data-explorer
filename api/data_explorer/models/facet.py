@@ -141,7 +141,7 @@ class Facet(Model):
     def es_field_type(self):
         """Gets the es_field_type of this Facet.
 
-        The type of Elasticsearch field.  # noqa: E501
+        The Elasticsearch field type.  # noqa: E501
 
         :return: The es_field_type of this Facet.
         :rtype: str
@@ -152,7 +152,7 @@ class Facet(Model):
     def es_field_type(self, es_field_type):
         """Sets the es_field_type of this Facet.
 
-        The type of Elasticsearch field.  # noqa: E501
+        The Elasticsearch field type.  # noqa: E501
 
         :param es_field_type: The es_field_type of this Facet.
         :type es_field_type: str
