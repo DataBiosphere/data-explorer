@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import VegaLite from "react-vega-lite";
 import { Handler } from "vega-tooltip";
 
-const styles = {};
-
 const baseSpec = {
   $schema: "https://vega.github.io/schema/vega-lite/v3.json",
   mark: "bar",
@@ -42,8 +40,9 @@ function isCategorical(facet) {
 class FacetHistogram extends Component {
   constructor(props) {
     super(props);
-    this.facetValues = this.props.facet.values;
     this.isValueDimmed = this.isValueDimmed.bind(this);
+    this.onNewView = this.onNewView.bind(this);
+    this.onClick = this.onClick.bind(this);
   }
 
   render() {
@@ -54,7 +53,7 @@ class FacetHistogram extends Component {
       field: "facet_value",
       type: "nominal",
       title: this.props.facet.name,
-      sort: this.facetValues.map(v => v.name),
+      sort: this.props.facet.values.map(v => v.name),
       axis: {
         labelAngle: 0,
         labelOverlap: true
@@ -69,7 +68,7 @@ class FacetHistogram extends Component {
     }
 
     const data = {
-      values: this.facetValues.map(v => {
+      values: this.props.facet.values.map(v => {
         return {
           facet_value: v.name,
           count: v.count,
@@ -78,7 +77,15 @@ class FacetHistogram extends Component {
         };
       })
     };
-    return <VegaLite spec={spec} data={data} tooltip={new Handler().call} />;
+
+    return (
+      <VegaLite
+        spec={spec}
+        data={data}
+        tooltip={new Handler().call}
+        onNewView={this.onNewView}
+      />
+    );
   }
 
   isValueDimmed(facetValue) {
@@ -87,6 +94,35 @@ class FacetHistogram extends Component {
       this.props.selectedValues.length > 0 &&
       !this.props.selectedValues.includes(facetValue.name)
     );
+  }
+
+  onClick(event, item) {
+    // Ignore clicks which are not located on histogram
+    // bars.
+    if (item != null) {
+      // facetValue is a string, eg "female"
+      const facetValue = item.datum.facet_value;
+      let isSelected;
+      if (
+        this.props.selectedValues != null &&
+        this.props.selectedValues.length > 0 &&
+        this.props.selectedValues.includes(facetValue)
+      ) {
+        isSelected = false;
+      } else {
+        isSelected = true;
+      }
+
+      this.props.updateFacets(
+        this.props.facet.es_field_name,
+        facetValue,
+        isSelected
+      );
+    }
+  }
+
+  onNewView(view) {
+    view.addEventListener("click", this.onClick);
   }
 }
 
