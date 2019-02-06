@@ -12,7 +12,7 @@ COPY package.json /ui/package.json
 # data_explorer_service.
 COPY src/api /ui/src/api
 RUN npm install
-RUN npm install react-scripts@1.1.1 -g
+RUN npm install react-scripts@2.0.0 -g
 COPY . /ui
 RUN npm run build
 
