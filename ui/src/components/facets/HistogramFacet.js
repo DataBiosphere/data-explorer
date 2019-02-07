@@ -99,10 +99,12 @@ class FacetHistogram extends Component {
   onClick(event, item) {
     // Ignore clicks which are not located on histogram
     // bars.
-    if (item != null) {
+    if (item && item.datum) {
       // facetValue is a string, eg "female"
       const facetValue = item.datum.facet_value;
       let isSelected;
+      // this.props.selectedValues contains what was selected before the click.
+      // isSelected contains if facet value was selected after the click.
       if (
         this.props.selectedValues != null &&
         this.props.selectedValues.length > 0 &&
