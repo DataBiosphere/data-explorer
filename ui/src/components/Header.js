@@ -20,7 +20,20 @@ const styles = {
     // Make bottom of dataset name line up with bottom of total count
     paddingTop: "2.5px",
     flexGrow: 1
-  }
+  },
+  toggleButtonGroup: {
+    borderRadius: "20px",
+    // Fix border-radius bleed (https://stackoverflow.com/a/30356787/6447189)
+    backgroundColor: "#5aa6da"
+  },
+  toggleButtonRoot: {
+    backgroundColor: "#4b83be",
+    "&$toggleButtonSelected": {
+      color: "white",
+      backgroundColor: "#a9cce5"
+    }
+  },
+  toggleButtonSelected: {}
 };
 
 function Header(props) {
@@ -43,11 +56,26 @@ function Header(props) {
             value={props.facetType}
             exclusive
             onChange={props.handleVizToggleChange}
+            className={classes.toggleButtonGroup}
           >
-            <ToggleButton value="text" title="Show text">
+            <ToggleButton
+              value="text"
+              title="Show text"
+              classes={{
+                root: classes.toggleButtonRoot,
+                selected: classes.toggleButtonSelected
+              }}
+            >
               <TextFieldsIcon />
-            </ToggleButton>
-            <ToggleButton value="viz" title="Show visualizations">
+            </ToggleButton>}
+            <ToggleButton
+              value="viz"
+              title="Show visualizations"
+              classes={{
+                root: classes.toggleButtonRoot,
+                selected: classes.toggleButtonSelected
+              }}
+            >
               <InsertChartIcon />
             </ToggleButton>
           </ToggleButtonGroup>

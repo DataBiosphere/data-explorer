@@ -335,7 +335,15 @@ class App extends Component {
   }
 
   handleVizToggleChange(event, facetType) {
-    this.setState({ facetType: facetType });
+    if (facetType) {
+      this.setState({ facetType: facetType });
+    } else {
+      // If text button is selected and user clicks on text button again, by
+      // default the text button will unselect (and no buttons will be
+      // selected). Make it so that text button remains selected. For us, at
+      // least one of the buttons must be selected.
+      this.setState({ facetType: event.currentTarget.value });
+    }
   }
 }
 
