@@ -21,21 +21,20 @@ const styles = {
     paddingTop: "2.5px",
     flexGrow: 1
   },
-};
-
-const toggleButtonStyles = {
-  root: {
-    color: 'red',
+  toggleButtonGroup: {
+    borderRadius: "20px",
+    // Fix border-radius bleed (https://stackoverflow.com/a/30356787/6447189)
+    backgroundColor: "#5aa6da"
   },
-  selected: {
-    color: 'blue',
+  toggleButtonRoot: {
+    backgroundColor: "#4b83be",
+    "&$toggleButtonSelected": {
+      color: "white",
+      backgroundColor: "#a9cce5"
+    }
   },
+  toggleButtonSelected: {}
 };
-//const StyledToggleButton = withStyles(toggleButtonStyles)(ToggleButton)
-const StyledToggleButton = withStyles(toggleButtonStyles)((props) => {
-  return (
-  );
-});
 
 function Header(props) {
   const { classes } = props;
@@ -57,21 +56,28 @@ function Header(props) {
             value={props.facetType}
             exclusive
             onChange={props.handleVizToggleChange}
+            className={classes.toggleButtonGroup}
           >
-            <StyledToggleButton
+            <ToggleButton
               value="text"
               title="Show text"
-              classes={{ root: classes.root, selected: classes.selected }}
+              classes={{
+                root: classes.toggleButtonRoot,
+                selected: classes.toggleButtonSelected
+              }}
             >
               <TextFieldsIcon />
-            </StyledToggleButton>}
-            <StyledToggleButton
+            </ToggleButton>}
+            <ToggleButton
               value="viz"
               title="Show visualizations"
-              classes={{ root: classes.root, selected: classes.selected }}
+              classes={{
+                root: classes.toggleButtonRoot,
+                selected: classes.toggleButtonSelected
+              }}
             >
               <InsertChartIcon />
-            </StyledToggleButton>
+            </ToggleButton>
           </ToggleButtonGroup>
         )}
       </Toolbar>
