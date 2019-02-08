@@ -25,7 +25,8 @@ const baseSpec = {
       field: "dimmed",
       type: "nominal",
       scale: {
-        range: ["#4c78a8", "#aaafb7"]
+        // First color is default bar color. Second color for unselected bars.
+        range: ["#707986", "#cccfd4"]
       },
       legend: null
     },
