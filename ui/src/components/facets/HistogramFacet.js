@@ -7,6 +7,14 @@ const baseSpec = {
   mark: "bar",
   width: 250,
   height: 300,
+  config: {
+    axis: {
+      labelColor: "#000000de",
+      labelFont: "Lato",
+      labelFontSize: 11,
+      labelLimit: 100
+    }
+  },
   encoding: {
     color: {
       field: "dimmed",
