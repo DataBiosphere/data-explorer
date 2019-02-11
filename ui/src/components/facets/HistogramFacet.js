@@ -2,19 +2,28 @@ import React, { Component } from "react";
 import VegaLite from "react-vega-lite";
 import { Handler } from "vega-tooltip";
 
+const styles = {};
+
 const baseSpec = {
   $schema: "https://vega.github.io/schema/vega-lite/v3.json",
   mark: "bar",
   width: 250,
   height: 300,
   config: {
-    axis: {
-      labelColor: "#000000de",
-      labelFont: "Lato",
-      labelFontSize: 11,
-      labelLimit: 100
+    text: {
+      //labelColor: "#000000de",
+      font: "Lato"
+      //labelFontSize: 11,
+      //labelLimit: 120
     }
   },
+  //    style: {
+  //     labelColor: "#000000de",
+  //    labelFont: "Lato",
+  //   labelFontSize: 11,
+  //  labelLimit: 120
+  //}
+  //},
   encoding: {
     color: {
       field: "dimmed",
@@ -110,12 +119,10 @@ class FacetHistogram extends Component {
     );
 
     return (
-      <VegaLite
-        spec={spec}
-        data={data}
-        tooltip={new Handler().call}
-        onNewView={this.onNewView}
-      />
+      <div>
+        <Typography>{this.props.facet.name}</Typography>
+        <VegaLite spec={spec} data={data} tooltip={new Handler().call} />
+      </div>
     );
   }
 
