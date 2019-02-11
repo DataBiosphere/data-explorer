@@ -17,6 +17,7 @@ function facetCard(props, facet) {
     return (
       <HistogramFacet
         facet={facet}
+        updateFacets={props.updateFacets}
         selectedValues={props.selectedFacetValues.get(facet.es_field_name)}
       />
     );
@@ -36,9 +37,7 @@ function FacetsGrid(props) {
 
   const facetsList = props.facets.map(facet => {
     return (
-      <GridListTile key={facet.name}>
-        {facetCard(props, facet)}
-      </GridListTile>
+      <GridListTile key={facet.name}>{facetCard(props, facet)}</GridListTile>
     );
   });
   return (
