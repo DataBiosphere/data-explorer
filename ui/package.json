@@ -28,6 +28,7 @@
     "eject": "react-scripts eject"
   },
   "//": [
+    "vega-lib and vega-lite are peerDependencies of react-vega-lite.",
     "jest-environment-node is needed for CircleCI and not local runs."
   ],
   "devDependencies": {
@@ -45,11 +46,5 @@
   },
   "jest": {
     "preset": "jest-puppeteer"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  }
 }
