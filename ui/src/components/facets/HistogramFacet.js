@@ -22,6 +22,7 @@ const baseSpec = {
     },
     x: {},
     y: {},
+    // opacity is needed for creating transparent bars.
     opacity: {
       field: "opaque",
       type: "nominal",
@@ -88,19 +89,14 @@ class FacetHistogram extends Component {
       })
     };
 
-    // Add an additional copy of the with a count equal to the
-    // maximum count in this facet. This data is transparent, but
-    // makes it easier to select/hover tooltip for facets with
-    // very small bars.
-    const maxCount = data.values.reduce(
-      (acc, curr) => (acc > curr.count ? acc : curr.count),
-      0
-    );
+    // Create transparent bar that extends the entire length of the cart. This
+    // makes tooltip/selection easier for facet values that have very low count.
+    const maxFacetValue = Math.max(...data.values.map(v => v.count));
     data.values = data.values.concat(
       data.values.map(v => {
         const invisible = Object.assign({}, v);
         invisible.opaque = false;
-        invisible.count = maxCount;
+        invisible.count = maxFacetValue;
         return invisible;
       })
     );
