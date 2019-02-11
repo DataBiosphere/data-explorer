@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Typography from "@material-ui/core/Typography";
 import VegaLite from "react-vega-lite";
 import { Handler } from "vega-tooltip";
 
@@ -9,21 +10,6 @@ const baseSpec = {
   mark: "bar",
   width: 250,
   height: 300,
-  config: {
-    text: {
-      //labelColor: "#000000de",
-      font: "Lato"
-      //labelFontSize: 11,
-      //labelLimit: 120
-    }
-  },
-  //    style: {
-  //     labelColor: "#000000de",
-  //    labelFont: "Lato",
-  //   labelFontSize: 11,
-  //  labelLimit: 120
-  //}
-  //},
   encoding: {
     color: {
       field: "dimmed",
@@ -55,7 +41,12 @@ const countAxis = {
   field: "count",
   type: "quantitative",
   title: "",
-  stack: null
+  stack: null,
+  axis: {
+    labelColor: "#000000de",
+    labelFont: "Lato",
+    labelFontSize: 11
+  }
 };
 
 function isCategorical(facet) {
@@ -83,7 +74,11 @@ class FacetHistogram extends Component {
       sort: this.props.facet.values.map(v => v.name),
       axis: {
         labelAngle: 0,
-        labelOverlap: true
+        labelOverlap: true,
+        labelColor: "#000000de",
+        labelFont: "Lato",
+        labelFontSize: 11,
+        labelLimit: 120
       }
     };
     if (isCategorical(this.props.facet)) {
