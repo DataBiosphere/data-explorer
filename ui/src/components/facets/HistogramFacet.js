@@ -5,7 +5,7 @@ import { Handler } from "vega-tooltip";
 const baseSpec = {
   $schema: "https://vega.github.io/schema/vega-lite/v3.json",
   mark: "bar",
-  width: 400,
+  width: 250,
   height: 300,
   encoding: {
     color: {
@@ -21,14 +21,23 @@ const baseSpec = {
       type: "nominal"
     },
     x: {},
-    y: {}
+    y: {},
+    opacity: {
+      field: "opaque",
+      type: "nominal",
+      scale: {
+        range: [0, 1]
+      },
+      legend: null
+    }
   }
 };
 
-const count_axis = {
+const countAxis = {
   field: "count",
   type: "quantitative",
-  title: ""
+  title: "",
+  stack: null
 };
 
 function isCategorical(facet) {
@@ -49,7 +58,7 @@ class FacetHistogram extends Component {
     const spec = Object.assign({}, baseSpec);
     // Categorical facets are shown as horizontal histograms,
     // in order to allow for more space for text.
-    const value_axis = {
+    const valueAxis = {
       field: "facet_value",
       type: "nominal",
       title: this.props.facet.name,
@@ -60,11 +69,11 @@ class FacetHistogram extends Component {
       }
     };
     if (isCategorical(this.props.facet)) {
-      spec.encoding.x = count_axis;
-      spec.encoding.y = value_axis;
+      spec.encoding.x = countAxis;
+      spec.encoding.y = valueAxis;
     } else {
-      spec.encoding.x = value_axis;
-      spec.encoding.y = count_axis;
+      spec.encoding.x = valueAxis;
+      spec.encoding.y = countAxis;
     }
 
     const data = {
@@ -73,10 +82,28 @@ class FacetHistogram extends Component {
           facet_value: v.name,
           count: v.count,
           dimmed: this.isValueDimmed(v),
-          text: `${v.name}: ${v.count}`
+          text: `${v.name}: ${v.count}`,
+          opaque: true
         };
       })
     };
+
+    // Add an additional copy of the with a count equal to the
+    // maximum count in this facet. This data is transparent, but
+    // makes it easier to select/hover tooltip for facets with
+    // very small bars.
+    const maxCount = data.values.reduce(
+      (acc, curr) => (acc > curr.count ? acc : curr.count),
+      0
+    );
+    data.values = data.values.concat(
+      data.values.map(v => {
+        const invisible = Object.assign({}, v);
+        invisible.opaque = false;
+        invisible.count = maxCount;
+        return invisible;
+      })
+    );
 
     return (
       <VegaLite
