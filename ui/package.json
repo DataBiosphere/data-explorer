@@ -14,6 +14,8 @@
     "react-scripts": "^2.0.0",
     "react-select": "^2.0.0",
     "react-vega-lite": "^2.0.2",
+    "vega-lib": "^4.4.0",
+    "vega-lite": "^3.0.0-rc12",
     "vega-tooltip": "^0.15.0"
   },
   "scripts": {
@@ -43,5 +45,11 @@
   },
   "jest": {
     "preset": "jest-puppeteer"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
