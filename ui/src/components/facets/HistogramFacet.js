@@ -1,9 +1,14 @@
 import React, { Component } from "react";
 import Typography from "@material-ui/core/Typography";
+import { withStyles } from "@material-ui/core/styles";
 import VegaLite from "react-vega-lite";
 import { Handler } from "vega-tooltip";
 
-const styles = {};
+const styles = {
+  facetName: {
+    textAlign: "center"
+  }
+};
 
 const baseSpec = {
   $schema: "https://vega.github.io/schema/vega-lite/v3.json",
@@ -55,7 +60,7 @@ function isCategorical(facet) {
   );
 }
 
-class FacetHistogram extends Component {
+class HistogramFacet extends Component {
   constructor(props) {
     super(props);
     this.isValueDimmed = this.isValueDimmed.bind(this);
@@ -64,6 +69,8 @@ class FacetHistogram extends Component {
   }
 
   render() {
+    const { classes } = this.props;
+
     const spec = Object.assign({}, baseSpec);
     // Categorical facets are shown as horizontal histograms,
     // in order to allow for more space for text.
@@ -115,7 +122,9 @@ class FacetHistogram extends Component {
 
     return (
       <div>
-        <Typography>{this.props.facet.name}</Typography>
+        <Typography className={classes.facetName}>
+          {this.props.facet.name}
+        </Typography>
         <VegaLite spec={spec} data={data} tooltip={new Handler().call} />
       </div>
     );
@@ -161,4 +170,4 @@ class FacetHistogram extends Component {
   }
 }
 
-export default FacetHistogram;
+export default withStyles(styles)(HistogramFacet);
