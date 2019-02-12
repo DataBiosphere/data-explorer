@@ -1,6 +1,7 @@
 import React from "react";
 import AppBar from "@material-ui/core/AppBar";
 import InsertChartIcon from "@material-ui/icons/InsertChart";
+import Snackbar from "@material-ui/core/Snackbar";
 import TextFieldsIcon from "@material-ui/icons/TextFields";
 import Toolbar from "@material-ui/core/Toolbar";
 import ToggleButton from "@material-ui/lab/ToggleButton";
@@ -23,7 +24,7 @@ const styles = {
   },
   toggleButtonGroup: {
     borderRadius: "20px",
-    // Must be same color as header background to fix border-radius bleed
+    // Must be same color as appBar background to fix border-radius bleed
     // (https://stackoverflow.com/a/30356787/6447189)
     backgroundColor: "#55a146"
   },
@@ -42,6 +43,7 @@ function Header(props) {
   return (
     <AppBar position="static" className={classes.appBar}>
       <Toolbar>
+        <Snackbar open={true} message="yo" />
         <Typography
           className={classes.datasetName}
           variant="headline"
