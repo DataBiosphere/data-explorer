@@ -52,7 +52,7 @@ class FacetHeader extends Component {
    * @param facetValues FacetValue[] to sum counts over
    * @param selectedValueNames Optional string[] to select a subset of facetValues to sum counts for
    * @return number count the total sum of all facetValue counts, optionally filtered by selectedValueNames
-   * */
+   */
   sumFacetValueCounts(facetValues, selectedValueNames) {
     let count = 0;
     if (selectedValueNames == null || selectedValueNames.length === 0) {
