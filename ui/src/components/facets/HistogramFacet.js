@@ -103,6 +103,7 @@ class HistogramFacet extends Component {
         labelLimit: 120
       },
       scale: {
+        paddingInner: 0.02,
         rangeStep: 20
       }
     };
