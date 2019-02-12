@@ -19,6 +19,11 @@ const customStyles = {
     ...provided,
     paddingLeft: 27
   }),
+  // Chip background color
+  multiValue: (provided, state) => ({
+    ...provided,
+    backgroundColor: "#ebedef"
+  }),
   valueContainer: (provided, state) => ({
     ...provided,
     marginLeft: 17
