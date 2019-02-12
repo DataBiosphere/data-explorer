@@ -19,7 +19,8 @@ const styles = {
     gridTemplateColumns: "auto 50px"
   },
   vega: {
-    gridColumn: "1 / 3"
+    gridColumn: "1 / 3",
+    textAlign: "center"
   }
 };
 
