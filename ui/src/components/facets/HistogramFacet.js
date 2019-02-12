@@ -1,6 +1,19 @@
 import React, { Component } from "react";
+import Typography from "@material-ui/core/Typography";
+import { withStyles } from "@material-ui/core/styles";
 import VegaLite from "react-vega-lite";
 import { Handler } from "vega-tooltip";
+
+import * as Style from "libs/style";
+
+const styles = {
+  histogramFacet: {
+    ...Style.elements.card
+  },
+  facetName: {
+    textAlign: "center"
+  }
+};
 
 const baseSpec = {
   $schema: "https://vega.github.io/schema/vega-lite/v3.json",
@@ -38,7 +51,12 @@ const countAxis = {
   field: "count",
   type: "quantitative",
   title: "",
-  stack: null
+  stack: null,
+  axis: {
+    labelColor: "#000000de",
+    labelFont: "Lato",
+    labelFontSize: 11
+  }
 };
 
 function isCategorical(facet) {
@@ -47,7 +65,7 @@ function isCategorical(facet) {
   );
 }
 
-class FacetHistogram extends Component {
+class HistogramFacet extends Component {
   constructor(props) {
     super(props);
     this.isValueDimmed = this.isValueDimmed.bind(this);
@@ -56,17 +74,23 @@ class FacetHistogram extends Component {
   }
 
   render() {
+    const { classes } = this.props;
+
     const spec = Object.assign({}, baseSpec);
     // Categorical facets are shown as horizontal histograms,
     // in order to allow for more space for text.
     const valueAxis = {
       field: "facet_value",
       type: "nominal",
-      title: this.props.facet.name,
+      title: null,
       sort: this.props.facet.values.map(v => v.name),
       axis: {
         labelAngle: 0,
-        labelOverlap: true
+        labelOverlap: true,
+        labelColor: "#000000de",
+        labelFont: "Lato",
+        labelFontSize: 11,
+        labelLimit: 120
       }
     };
     if (isCategorical(this.props.facet)) {
@@ -102,12 +126,17 @@ class FacetHistogram extends Component {
     );
 
     return (
-      <VegaLite
-        spec={spec}
-        data={data}
-        tooltip={new Handler().call}
-        onNewView={this.onNewView}
-      />
+      <div className={classes.histogramFacet}>
+        <Typography className={classes.facetName}>
+          {this.props.facet.name}
+        </Typography>
+        <VegaLite
+          spec={spec}
+          data={data}
+          tooltip={new Handler().call}
+          onNewView={this.onNewView}
+        />
+      </div>
     );
   }
 
@@ -151,4 +180,4 @@ class FacetHistogram extends Component {
   }
 }
 
-export default FacetHistogram;
+export default withStyles(styles)(HistogramFacet);
