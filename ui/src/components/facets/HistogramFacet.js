@@ -130,7 +130,12 @@ class HistogramFacet extends Component {
         <Typography className={classes.facetName}>
           {this.props.facet.name}
         </Typography>
-        <VegaLite spec={spec} data={data} tooltip={new Handler().call} />
+        <VegaLite
+          spec={spec}
+          data={data}
+          tooltip={new Handler().call}
+          onNewView={this.onNewView}
+        />
       </div>
     );
   }
