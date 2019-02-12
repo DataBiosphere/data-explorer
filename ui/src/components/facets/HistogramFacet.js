@@ -5,14 +5,21 @@ import VegaLite from "react-vega-lite";
 import { Handler } from "vega-tooltip";
 
 import * as Style from "libs/style";
+import FacetHeader from "components/facets/FacetHeader";
 
 const styles = {
   histogramFacet: {
     ...Style.elements.card,
-    textAlign: "center"
+    margin: "2%",
+    paddingBottom: "8px",
+    // Grid is defined in TextFacet so facet value counts can appear on right,
+    // in addition to total facet value count.
+    // Also define here to be consistent.
+    display: "grid",
+    gridTemplateColumns: "auto 50px"
   },
-  facetName: {
-    marginBottom: 15
+  vega: {
+    gridColumn: "1 / 3"
   }
 };
 
@@ -133,15 +140,15 @@ class HistogramFacet extends Component {
 
     return (
       <div className={classes.histogramFacet}>
-        <Typography className={classes.facetName}>
-          {this.props.facet.name}
-        </Typography>
-        <VegaLite
-          spec={spec}
-          data={data}
-          tooltip={new Handler().call}
-          onNewView={this.onNewView}
-        />
+        <FacetHeader facet={this.props.facet} />
+        <div className={classes.vega}>
+          <VegaLite
+            spec={spec}
+            data={data}
+            tooltip={new Handler().call}
+            onNewView={this.onNewView}
+          />
+        </div>
       </div>
     );
   }
