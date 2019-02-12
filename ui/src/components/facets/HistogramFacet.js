@@ -144,7 +144,10 @@ class HistogramFacet extends Component {
 
     return (
       <div className={classes.histogramFacet}>
-        <FacetHeader facet={this.props.facet} />
+        <FacetHeader
+          facet={this.props.facet}
+          selectedValues={this.props.selectedValues}
+        />
         <div className={classes.vega}>
           <VegaLite
             spec={spec}

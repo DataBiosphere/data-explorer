@@ -99,7 +99,10 @@ class TextFacet extends Component {
 
     return (
       <div className={classes.textFacet}>
-        <FacetHeader facet={this.props.facet} />
+        <FacetHeader
+          facet={this.props.facet}
+          selectedValues={this.props.selectedValues}
+        />
         <List dense className={classes.facetValueList}>
           {facetValueDivs}
         </List>
