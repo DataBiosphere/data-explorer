@@ -4,9 +4,9 @@ import Checkbox from "@material-ui/core/Checkbox";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import Typography from "@material-ui/core/Typography";
 
 import * as Style from "libs/style";
+import FacetHeader from "components/facets/FacetHeader";
 
 const styles = {
   textFacet: {
@@ -20,18 +20,9 @@ const styles = {
     // grid is wider than the facet card.
     wordBreak: "break-word"
   },
-  // By default, each div takes up one grid cell.
-  // Don't specify gridColumn, just use default of one cell.
-  facetDescription: {
-    color: "gray"
-  },
-  totalFacetValueCount: {
-    color: "gray",
-    textAlign: "right"
-  },
   facetValueList: {
     gridColumn: "1 / 3",
-    margin: "20px 0 0 0",
+    //    margin: "20px 0 0 0",
     maxHeight: "400px",
     overflow: "auto"
   },
@@ -68,8 +59,6 @@ class TextFacet extends Component {
   constructor(props) {
     super(props);
 
-    this.facetValues = this.props.facet.values;
-
     this.onClick = this.onClick.bind(this);
     this.isValueDimmed = this.isValueDimmed.bind(this);
   }
@@ -95,7 +84,9 @@ class TextFacet extends Component {
         />
         <ListItemText
           className={classes.facetValueNameAndCount}
-          classes={{ primary: this.isValueDimmed(value) ? classes.grayText : null }}
+          classes={{
+            primary: this.isValueDimmed(value) ? classes.grayText : null
+          }}
           primary={
             <div style={{ display: "grid", gridTemplateColumns: "auto 50px" }}>
               <div className={classes.facetValueName}>{value.name}</div>
@@ -108,18 +99,10 @@ class TextFacet extends Component {
 
     return (
       <div className={classes.textFacet}>
-        <Typography>{this.props.facet.name}</Typography>
-        {this.props.facet.name != "Samples Overview" ? (
-          <Typography className={classes.totalFacetValueCount}>
-            {this.sumFacetValueCounts(
-              this.props.facet.values,
-              this.props.selectedValues
-            )}
-          </Typography>
-        ) : null}
-        <Typography className={classes.facetDescription}>
-          {this.props.facet.description}
-        </Typography>
+        <FacetHeader
+          facet={this.props.facet}
+          selectedValues={this.props.selectedValues}
+        />
         <List dense className={classes.facetValueList}>
           {facetValueDivs}
         </List>
@@ -133,27 +116,6 @@ class TextFacet extends Component {
       this.props.selectedValues.length > 0 &&
       !this.props.selectedValues.includes(facetValue.name)
     );
-  }
-
-  /**
-   * @param facetValues FacetValue[] to sum counts over
-   * @param selectedValueNames Optional string[] to select a subset of facetValues to sum counts for
-   * @return number count the total sum of all facetValue counts, optionally filtered by selectedValueNames
-   * */
-  sumFacetValueCounts(facetValues, selectedValueNames) {
-    let count = 0;
-    if (selectedValueNames == null || selectedValueNames.length === 0) {
-      facetValues.forEach(value => {
-        count += value.count;
-      });
-    } else {
-      facetValues.forEach(value => {
-        if (selectedValueNames.indexOf(value.name) > -1) {
-          count += value.count;
-        }
-      });
-    }
-    return count;
   }
 
   onClick(facetValue) {

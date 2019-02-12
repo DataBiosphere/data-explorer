@@ -10,7 +10,7 @@ import { withStyles } from "@material-ui/core/styles";
 
 const styles = {
   appBar: {
-    backgroundColor: "#5aa6da"
+    background: "linear-gradient(180deg, #74ae43 0%, #359448 100%);"
   },
   datasetName: {
     marginRight: 100
@@ -23,14 +23,15 @@ const styles = {
   },
   toggleButtonGroup: {
     borderRadius: "20px",
-    // Fix border-radius bleed (https://stackoverflow.com/a/30356787/6447189)
-    backgroundColor: "#5aa6da"
+    // Must be same color as header background to fix border-radius bleed
+    // (https://stackoverflow.com/a/30356787/6447189)
+    backgroundColor: "#55a146"
   },
   toggleButtonRoot: {
-    backgroundColor: "#4b83be",
+    backgroundColor: "#5c912e",
     "&$toggleButtonSelected": {
       color: "white",
-      backgroundColor: "#a9cce5"
+      backgroundColor: "#c8dfb4"
     }
   },
   toggleButtonSelected: {}

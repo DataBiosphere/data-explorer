@@ -204,7 +204,7 @@ describe("End-to-end", () => {
 
     expect(
       await textFacet.$eval(
-        "*[class*='TextFacet-totalFacetValueCount-']",
+        "*[class*='FacetHeader-totalFacetValueCount-']",
         node => node.innerText
       )
     ).toBe(totalCount);

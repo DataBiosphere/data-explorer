@@ -5,12 +5,23 @@ import VegaLite from "react-vega-lite";
 import { Handler } from "vega-tooltip";
 
 import * as Style from "libs/style";
+import FacetHeader from "components/facets/FacetHeader";
 
 const styles = {
   histogramFacet: {
-    ...Style.elements.card
+    ...Style.elements.card,
+    margin: "2%",
+    paddingBottom: "8px",
+    // Grid is defined in TextFacet so facet value counts can appear on right,
+    // in addition to total facet value count.
+    // Also define here to be consistent.
+    display: "grid",
+    gridTemplateColumns: "auto 50px",
+    maxHeight: "400px",
+    overflowY: "auto"
   },
-  facetName: {
+  vega: {
+    gridColumn: "1 / 3",
     textAlign: "center"
   }
 };
@@ -18,14 +29,13 @@ const styles = {
 const baseSpec = {
   $schema: "https://vega.github.io/schema/vega-lite/v3.json",
   mark: "bar",
-  width: 250,
-  height: 300,
   encoding: {
     color: {
       field: "dimmed",
       type: "nominal",
       scale: {
-        range: ["#4c78a8", "#aaafb7"]
+        // First color is default bar color. Second color for unselected bars.
+        range: ["#707986", "#cccfd4"]
       },
       legend: null
     },
@@ -56,6 +66,9 @@ const countAxis = {
     labelColor: "#000000de",
     labelFont: "Lato",
     labelFontSize: 11
+  },
+  scale: {
+    rangeStep: 20
   }
 };
 
@@ -91,6 +104,10 @@ class HistogramFacet extends Component {
         labelFont: "Lato",
         labelFontSize: 11,
         labelLimit: 120
+      },
+      scale: {
+        paddingInner: 0.02,
+        rangeStep: 20
       }
     };
     if (isCategorical(this.props.facet)) {
@@ -127,15 +144,18 @@ class HistogramFacet extends Component {
 
     return (
       <div className={classes.histogramFacet}>
-        <Typography className={classes.facetName}>
-          {this.props.facet.name}
-        </Typography>
-        <VegaLite
-          spec={spec}
-          data={data}
-          tooltip={new Handler().call}
-          onNewView={this.onNewView}
+        <FacetHeader
+          facet={this.props.facet}
+          selectedValues={this.props.selectedValues}
         />
+        <div className={classes.vega}>
+          <VegaLite
+            spec={spec}
+            data={data}
+            tooltip={new Handler().call}
+            onNewView={this.onNewView}
+          />
+        </div>
       </div>
     );
   }
