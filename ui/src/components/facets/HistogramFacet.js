@@ -16,7 +16,9 @@ const styles = {
     // in addition to total facet value count.
     // Also define here to be consistent.
     display: "grid",
-    gridTemplateColumns: "auto 50px"
+    gridTemplateColumns: "auto 50px",
+    maxHeight: "400px",
+    overflowY: "auto"
   },
   vega: {
     gridColumn: "1 / 3",
