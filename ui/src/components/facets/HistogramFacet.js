@@ -8,18 +8,17 @@ import * as Style from "libs/style";
 
 const styles = {
   histogramFacet: {
-    ...Style.elements.card
+    ...Style.elements.card,
+    textAlign: "center"
   },
   facetName: {
-    textAlign: "center"
+    marginBottom: 15
   }
 };
 
 const baseSpec = {
   $schema: "https://vega.github.io/schema/vega-lite/v3.json",
   mark: "bar",
-  width: 250,
-  height: 300,
   encoding: {
     color: {
       field: "dimmed",
@@ -57,6 +56,9 @@ const countAxis = {
     labelColor: "#000000de",
     labelFont: "Lato",
     labelFontSize: 11
+  },
+  scale: {
+    rangeStep: 20
   }
 };
 
@@ -92,6 +94,9 @@ class HistogramFacet extends Component {
         labelFont: "Lato",
         labelFontSize: 11,
         labelLimit: 120
+      },
+      scale: {
+        rangeStep: 20
       }
     };
     if (isCategorical(this.props.facet)) {
