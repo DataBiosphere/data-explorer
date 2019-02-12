@@ -4,7 +4,12 @@ import { withStyles } from "@material-ui/core/styles";
 import VegaLite from "react-vega-lite";
 import { Handler } from "vega-tooltip";
 
+import * as Style from "libs/style";
+
 const styles = {
+  histogramFacet: {
+    ...Style.elements.card
+  },
   facetName: {
     textAlign: "center"
   }
@@ -77,7 +82,7 @@ class HistogramFacet extends Component {
     const valueAxis = {
       field: "facet_value",
       type: "nominal",
-      title: this.props.facet.name,
+      title: null,
       sort: this.props.facet.values.map(v => v.name),
       axis: {
         labelAngle: 0,
@@ -121,7 +126,7 @@ class HistogramFacet extends Component {
     );
 
     return (
-      <div>
+      <div className={classes.histogramFacet}>
         <Typography className={classes.facetName}>
           {this.props.facet.name}
         </Typography>
