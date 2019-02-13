@@ -16,12 +16,6 @@ def dataset_get():  # noqa: E501
 
     dataset_response = DatasetResponse(name=current_app.config['DATASET_NAME'])
 
-    if current_app.config.get('ENABLE_SEARCH_VALUES'):
-        dataset_response.enable_search_values = True
-
-    if current_app.config.get('SHOW_VIZ_TOGGLE'):
-        dataset_response.show_viz_toggle = True
-
     if current_app.config.get('SEARCH_PLACEHOLDER_TEXT'):
         dataset_response.search_placeholder_text = current_app.config[
             'SEARCH_PLACEHOLDER_TEXT']

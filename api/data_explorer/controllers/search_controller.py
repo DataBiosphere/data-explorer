@@ -57,21 +57,14 @@ def search_get(query=None):
 
     # The number of results that Elasticsearch returns from search queries to
     # the main index.
-    # If enable_search_values is false, this is not used.
     # This is low and we'll miss some hits. But it is needed to keep search not
     # take forever for large datasets.
     num_search_results = 100
 
     # The number of results that Elasticsearch returns from search queries to
-    # the fields index.
-    # If enable_search_values is true, if this is high (like 1000), it makes the
+    # the fields index. If this is high (like 1000), it makes the
     # UI sluggish (such as initial click in search box).
-    # If enable_search_values is false, this can be arbitrarily high, and UI
-    # won't be too sluggish.
-    if current_app.config['ENABLE_SEARCH_VALUES']:
-        num_field_search_results = 100
-    else:
-        num_field_search_results = 10000
+    num_field_search_results = 100
 
     if not query:
         # Return all dataset fields, to populate initial search box drop-down.

@@ -1,5 +1,4 @@
 import React from "react";
-import Select, { components } from "react-select";
 import AsyncSelect from "react-select/lib/Async";
 
 const customStyles = {
@@ -106,38 +105,21 @@ class Search extends React.Component {
   }
 
   render() {
-    if (this.props.enableSearchValues) {
-      return (
-        <AsyncSelect
-          isMulti="true"
-          onChange={this.props.handleSearchBoxChange}
-          getOptionLabel={this.renderOption}
-          getOptionValue={this.renderValue}
-          value={this.chipsFromSelectedFacetValues(
-            this.props.selectedFacetValues
-          )}
-          styles={customStyles}
-          placeholder={this.props.searchPlaceholderText}
-          loadOptions={this.props.loadOptions}
-          defaultOptions={this.props.defaultOptions}
-        />
-      );
-    } else {
-      return (
-        <Select
-          isMulti="true"
-          onChange={this.props.handleSearchBoxChange}
-          getOptionLabel={this.renderOption}
-          getOptionValue={this.renderValue}
-          value={this.chipsFromSelectedFacetValues(
-            this.props.selectedFacetValues
-          )}
-          styles={customStyles}
-          placeholder={this.props.searchPlaceholderText}
-          options={this.props.defaultOptions}
-        />
-      );
-    }
+    return (
+      <AsyncSelect
+        isMulti="true"
+        onChange={this.props.handleSearchBoxChange}
+        getOptionLabel={this.renderOption}
+        getOptionValue={this.renderValue}
+        value={this.chipsFromSelectedFacetValues(
+          this.props.selectedFacetValues
+        )}
+        styles={customStyles}
+        placeholder={this.props.searchPlaceholderText}
+        loadOptions={this.props.loadOptions}
+        defaultOptions={this.props.defaultOptions}
+      />
+    );
   }
 }
 

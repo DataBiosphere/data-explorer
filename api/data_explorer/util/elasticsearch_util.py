@@ -174,8 +174,8 @@ def get_facet_value_dict(filter_arr, facets):
 
 def get_field_description(es, field_name):
     s = Search(using=es, index=current_app.config['INDEX_NAME'] + '_fields')
-    s.update_from_dict(
-        {"query": {
+    s.update_from_dict({
+        "query": {
             "bool": {
                 "must": [{
                     "match": {
@@ -183,7 +183,8 @@ def get_field_description(es, field_name):
                     }
                 }]
             }
-        }})
+        }
+    })
     hits = s.execute()['hits']['hits']
     if len(hits) == 0:
         raise ValueError(
