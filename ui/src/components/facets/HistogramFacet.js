@@ -4,6 +4,7 @@ import { withStyles } from "@material-ui/core/styles";
 import VegaLite from "react-vega-lite";
 import { Handler } from "vega-tooltip";
 
+import "./HistogramFacet.css";
 import * as Style from "libs/style";
 import FacetHeader from "components/facets/FacetHeader";
 

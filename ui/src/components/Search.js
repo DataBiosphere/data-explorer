@@ -1,6 +1,7 @@
 import React from "react";
 import AsyncSelect from "react-select/lib/Async";
 
+// To get readable class names, add classNamePrefix="foo" to <AsyncSelect>
 const customStyles = {
   container: (provided, state) => ({
     ...provided,
@@ -13,7 +14,6 @@ const customStyles = {
     border: 0
   }),
   // Left-align search box text with dataset name
-  // To get readable class names, add classNamePrefix="foo" to <Search>
   option: (provided, state) => ({
     ...provided,
     paddingLeft: 27
@@ -22,6 +22,14 @@ const customStyles = {
   multiValue: (provided, state) => ({
     ...provided,
     backgroundColor: "#ebedef"
+  }),
+  // Chip "x" hover color
+  multiValueRemove: (provided, state) => ({
+    ...provided,
+    "&:hover": {
+      backgroundColor: "#f6ccc5",
+      color: "#db3214"
+    }
   }),
   valueContainer: (provided, state) => ({
     ...provided,
