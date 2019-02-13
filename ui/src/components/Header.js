@@ -52,35 +52,33 @@ function Header(props) {
         <Typography className={classes.totalCount} color="inherit">
           {props.totalCount} Participants
         </Typography>
-        {props.showVizToggle && (
-          <ToggleButtonGroup
-            value={props.facetType}
-            exclusive
-            onChange={props.handleVizToggleChange}
-            className={classes.toggleButtonGroup}
+        <ToggleButtonGroup
+          value={props.facetType}
+          exclusive
+          onChange={props.handleVizToggleChange}
+          className={classes.toggleButtonGroup}
+        >
+          <ToggleButton
+            value="text"
+            title="Show text"
+            classes={{
+              root: classes.toggleButtonRoot,
+              selected: classes.toggleButtonSelected
+            }}
           >
-            <ToggleButton
-              value="text"
-              title="Show text"
-              classes={{
-                root: classes.toggleButtonRoot,
-                selected: classes.toggleButtonSelected
-              }}
-            >
-              <TextFieldsIcon />
-            </ToggleButton>}
-            <ToggleButton
-              value="viz"
-              title="Show visualizations"
-              classes={{
-                root: classes.toggleButtonRoot,
-                selected: classes.toggleButtonSelected
-              }}
-            >
-              <InsertChartIcon />
-            </ToggleButton>
-          </ToggleButtonGroup>
-        )}
+            <TextFieldsIcon />
+          </ToggleButton>
+          <ToggleButton
+            value="viz"
+            title="Show visualizations"
+            classes={{
+              root: classes.toggleButtonRoot,
+              selected: classes.toggleButtonSelected
+            }}
+          >
+            <InsertChartIcon />
+          </ToggleButton>
+        </ToggleButtonGroup>
       </Toolbar>
     </AppBar>
   );

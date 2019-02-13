@@ -144,12 +144,6 @@ def _process_ui():
     if config.get('search_placeholder_text'):
         app.app.config['SEARCH_PLACEHOLDER_TEXT'] = config.get(
             'search_placeholder_text')
-    app.app.config['ENABLE_SEARCH_VALUES'] = False
-    if config.get('enable_search_values'):
-        app.app.config['ENABLE_SEARCH_VALUES'] = True
-    app.app.config['SHOW_VIZ_TOGGLE'] = False
-    if config.get('show_viz_toggle'):
-        app.app.config['SHOW_VIZ_TOGGLE'] = True
 
 
 def _process_bigquery():

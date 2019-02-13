@@ -5,72 +5,82 @@
 // - A prefix that appears in BigQuery column contents, eg "pat" for 1000 Genomes
 // facets:
 //   Facets to be shown in the UI. Facets will appear in the order they are
-//   listed here. ui_facet_description is optional.
-// enable_search_values:
-//    Whether to search on facet values.
-//    If this is true, search box will search BigQuery column contents in addition to
-//    BigQuery column name and description. Search results will take time to appear.
-//    If this is false, search box will search BigQuery column name and description.
-//    Search results will appear instantly.
-// show_viz_toggle:
-//   If this is true, a toggle will appear allowing one to toggle between text
-//   and visualization facets. (If this is false, only text facets are shown.)
-//   This feature is under development. When this feature is done, this flag
-//   will be deleted.
+//   listed here.
+// ui_facet_name:
+//   Required. Facet name.
+// ui_facet_description:
+//   Optional. Facet description.
+// elasticsearch_field_name:
+//   Required. Elasticsearch field name.
 {
   "search_placeholder_text": "Search center or pat",
   "facets": [
     {
       "ui_facet_name": "Gender",
-      "elasticsearch_field_name": "verily-public-data.human_genome_variants.1000_genomes_participant_info.Gender"
+      "elasticsearch_field_name":
+        "verily-public-data.human_genome_variants.1000_genomes_participant_info.Gender"
     },
     {
       "ui_facet_name": "Super Population",
-      "elasticsearch_field_name": "verily-public-data.human_genome_variants.1000_genomes_participant_info.Super_Population_Description"
+      "elasticsearch_field_name":
+        "verily-public-data.human_genome_variants.1000_genomes_participant_info.Super_Population_Description"
     },
     {
       "ui_facet_name": "Population",
-      "elasticsearch_field_name": "verily-public-data.human_genome_variants.1000_genomes_participant_info.Population_Description"
+      "elasticsearch_field_name":
+        "verily-public-data.human_genome_variants.1000_genomes_participant_info.Population_Description"
     },
     {
       "ui_facet_name": "Total Exome Sequence",
-      "elasticsearch_field_name": "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.Total_Exome_Sequence"
+      "elasticsearch_field_name":
+        "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.Total_Exome_Sequence"
     },
     {
       "ui_facet_name": "Total Low Coverage Sequence",
-      "elasticsearch_field_name": "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.Total_LC_Sequence"
+      "elasticsearch_field_name":
+        "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.Total_LC_Sequence"
     },
     {
       "ui_facet_name": "In Final Phase Variant Calling",
-      "ui_facet_description": "Any sample which has both LC and E QC passed bams is in the final analysis set",
-      "elasticsearch_field_name": "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.In_Final_Phase_Variant_Calling"
+      "ui_facet_description":
+        "Any sample which has both LC and E QC passed bams is in the final analysis set",
+      "elasticsearch_field_name":
+        "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.In_Final_Phase_Variant_Calling"
     },
     {
       "ui_facet_name": "% covered 20x or greater",
-      "ui_facet_description": "The percentage of targets covered to 20x or greater as calculated by the picard function CalculateHsMetrics using these targets",
-      "elasticsearch_field_name": "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.X_Targets_Covered_to_20x_or_greater"
+      "ui_facet_description":
+        "The percentage of targets covered to 20x or greater as calculated by the picard function CalculateHsMetrics using these targets",
+      "elasticsearch_field_name":
+        "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.X_Targets_Covered_to_20x_or_greater"
     },
     {
       "ui_facet_name": "Exome Center",
-      "ui_facet_description": "Exome sequencing centers for the final sequencing round",
-      "elasticsearch_field_name": "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.Main_Project_E_Centers"
+      "ui_facet_description":
+        "Exome sequencing centers for the final sequencing round",
+      "elasticsearch_field_name":
+        "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.Main_Project_E_Centers"
     },
     {
       "ui_facet_name": "Low Coverage Center",
-      "ui_facet_description": "Low coverage sequencing centers for final sequencing round",
-      "elasticsearch_field_name": "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.Main_project_LC_Centers"
+      "ui_facet_description":
+        "Low coverage sequencing centers for final sequencing round",
+      "elasticsearch_field_name":
+        "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.Main_project_LC_Centers"
     },
     {
       "ui_facet_name": "Exome Platform",
-      "ui_facet_description": "Exome sequencing platform for the final sequencing round",
-      "elasticsearch_field_name": "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.Main_Project_E_Platform"
+      "ui_facet_description":
+        "Exome sequencing platform for the final sequencing round",
+      "elasticsearch_field_name":
+        "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.Main_Project_E_Platform"
     },
     {
       "ui_facet_name": "Low Coverage Platform",
-      "ui_facet_description": "Low coverage sequencing platform for final sequencing round",
-      "elasticsearch_field_name": "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.Main_project_LC_platform"
+      "ui_facet_description":
+        "Low coverage sequencing platform for final sequencing round",
+      "elasticsearch_field_name":
+        "samples.verily-public-data.human_genome_variants.1000_genomes_sample_info.Main_project_LC_platform"
     }
-  ],
-  "enable_search_values": true,
-  "show_viz_toggle": false
+  ]
 }

@@ -5,18 +5,13 @@
 // - A prefix that appears in BigQuery column contents, eg "pat" for 1000 Genomes
 // facets:
 //   Facets to be shown in the UI. Facets will appear in the order they are
-//   listed here. ui_facet_description is optional.
-// enable_search_values:
-//    Whether to search on facet values.
-//    If this is true, search box will search BigQuery column contents in addition to
-//    BigQuery column name and description. Search results will take time to appear.
-//    If this is false, search box will search BigQuery column name and description.
-//    Search results will appear instantly.
-// show_viz_toggle:
-//   If this is true, a toggle will appear allowing one to toggle between text
-//   and visualization facets. (If this is false, only text facets are shown.)
-//   This feature is under development. When this feature is done, this flag
-//   will be deleted.
+//   listed here.
+// ui_facet_name:
+//   Required. Facet name.
+// ui_facet_description:
+//   Optional. Facet description.
+// elasticsearch_field_name:
+//   Required. Elasticsearch field name.
 {
   "search_placeholder_text": "Search center or pat",
   "facets": [
@@ -25,7 +20,5 @@
       "ui_facet_description": "",
       "elasticsearch_field_name": ""
     }
-  ],
-  "enable_search_values": true,
-  "show_viz_toggle": false
+  ]
 }

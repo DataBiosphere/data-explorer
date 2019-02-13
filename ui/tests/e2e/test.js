@@ -17,6 +17,8 @@ describe("End-to-end", () => {
   beforeEach(async () => {
     await page.goto("http://localhost:4400");
     await page.waitForSelector("[class*='datasetName']");
+    // Set viz toggle to "text"
+    await page.click("button[value='text']");
   });
 
   test("Header", async () => {

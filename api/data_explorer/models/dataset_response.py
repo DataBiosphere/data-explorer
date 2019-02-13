@@ -15,40 +15,23 @@ class DatasetResponse(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self,
-                 name=None,
-                 search_placeholder_text=None,
-                 enable_search_values=None,
-                 show_viz_toggle=None):  # noqa: E501
+    def __init__(self, name=None, search_placeholder_text=None):  # noqa: E501
         """DatasetResponse - a model defined in Swagger
 
         :param name: The name of this DatasetResponse.  # noqa: E501
         :type name: str
         :param search_placeholder_text: The search_placeholder_text of this DatasetResponse.  # noqa: E501
         :type search_placeholder_text: str
-        :param enable_search_values: The enable_search_values of this DatasetResponse.  # noqa: E501
-        :type enable_search_values: bool
-        :param show_viz_toggle: The show_viz_toggle of this DatasetResponse.  # noqa: E501
-        :type show_viz_toggle: bool
         """
-        self.swagger_types = {
-            'name': str,
-            'search_placeholder_text': str,
-            'enable_search_values': bool,
-            'show_viz_toggle': bool
-        }
+        self.swagger_types = {'name': str, 'search_placeholder_text': str}
 
         self.attribute_map = {
             'name': 'name',
-            'search_placeholder_text': 'search_placeholder_text',
-            'enable_search_values': 'enable_search_values',
-            'show_viz_toggle': 'show_viz_toggle'
+            'search_placeholder_text': 'search_placeholder_text'
         }
 
         self._name = name
         self._search_placeholder_text = search_placeholder_text
-        self._enable_search_values = enable_search_values
-        self._show_viz_toggle = show_viz_toggle
 
     @classmethod
     def from_dict(cls, dikt):
@@ -104,45 +87,3 @@ class DatasetResponse(Model):
         """
 
         self._search_placeholder_text = search_placeholder_text
-
-    @property
-    def enable_search_values(self):
-        """Gets the enable_search_values of this DatasetResponse.
-
-
-        :return: The enable_search_values of this DatasetResponse.
-        :rtype: bool
-        """
-        return self._enable_search_values
-
-    @enable_search_values.setter
-    def enable_search_values(self, enable_search_values):
-        """Sets the enable_search_values of this DatasetResponse.
-
-
-        :param enable_search_values: The enable_search_values of this DatasetResponse.
-        :type enable_search_values: bool
-        """
-
-        self._enable_search_values = enable_search_values
-
-    @property
-    def show_viz_toggle(self):
-        """Gets the show_viz_toggle of this DatasetResponse.
-
-
-        :return: The show_viz_toggle of this DatasetResponse.
-        :rtype: bool
-        """
-        return self._show_viz_toggle
-
-    @show_viz_toggle.setter
-    def show_viz_toggle(self, show_viz_toggle):
-        """Sets the show_viz_toggle of this DatasetResponse.
-
-
-        :param show_viz_toggle: The show_viz_toggle of this DatasetResponse.
-        :type show_viz_toggle: bool
-        """
-
-        self._show_viz_toggle = show_viz_toggle
