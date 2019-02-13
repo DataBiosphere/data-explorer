@@ -13,7 +13,7 @@
 // elasticsearch_field_name:
 //   Required. Elasticsearch field name.
 {
-  "search_placeholder_text": "Search center or pat",
+  "search_placeholder_text": "Search to add a facet. Try \"center\" or \"pat\"",
   "facets": [
     {
       "ui_facet_name": "Gender",
