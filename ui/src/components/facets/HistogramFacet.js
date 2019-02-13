@@ -58,7 +58,7 @@ const baseSpec = {
   }
 };
 
-const countAxis = {
+const facetValueCountAxis = {
   field: "count",
   type: "quantitative",
   title: "",
@@ -73,12 +73,6 @@ const countAxis = {
   }
 };
 
-function isCategorical(facet) {
-  return (
-    facet.es_field_type == "text" || facet.es_field_type == "samples_overview"
-  );
-}
-
 class HistogramFacet extends Component {
   constructor(props) {
     super(props);
@@ -91,16 +85,12 @@ class HistogramFacet extends Component {
     const { classes } = this.props;
 
     const spec = Object.assign({}, baseSpec);
-    // Categorical facets are shown as horizontal histograms,
-    // in order to allow for more space for text.
-    const valueAxis = {
+    const facetValueNameAxis = {
       field: "facet_value",
       type: "nominal",
       title: null,
       sort: this.props.facet.values.map(v => v.name),
       axis: {
-        labelAngle: 0,
-        labelOverlap: true,
         labelColor: "#000000de",
         labelFont: "Lato",
         labelFontSize: 11,
@@ -111,13 +101,10 @@ class HistogramFacet extends Component {
         rangeStep: 20
       }
     };
-    if (isCategorical(this.props.facet)) {
-      spec.encoding.x = countAxis;
-      spec.encoding.y = valueAxis;
-    } else {
-      spec.encoding.x = valueAxis;
-      spec.encoding.y = countAxis;
-    }
+    // Make bars horizontal, to allow for more space for facet value names for
+    // categorical facets.
+    spec.encoding.x = facetValueCountAxis;
+    spec.encoding.y = facetValueNameAxis;
 
     const data = {
       values: this.props.facet.values.map(v => {

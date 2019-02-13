@@ -20,7 +20,6 @@ class Facet(Model):
                  name=None,
                  description=None,
                  es_field_name=None,
-                 es_field_type=None,
                  values=None):  # noqa: E501
         """Facet - a model defined in Swagger
 
@@ -30,8 +29,6 @@ class Facet(Model):
         :type description: str
         :param es_field_name: The es_field_name of this Facet.  # noqa: E501
         :type es_field_name: str
-        :param es_field_type: The es_field_type of this Facet.  # noqa: E501
-        :type es_field_type: str
         :param values: The values of this Facet.  # noqa: E501
         :type values: List[FacetValue]
         """
@@ -39,7 +36,6 @@ class Facet(Model):
             'name': str,
             'description': str,
             'es_field_name': str,
-            'es_field_type': str,
             'values': List[FacetValue]
         }
 
@@ -47,14 +43,12 @@ class Facet(Model):
             'name': 'name',
             'description': 'description',
             'es_field_name': 'es_field_name',
-            'es_field_type': 'es_field_type',
             'values': 'values'
         }
 
         self._name = name
         self._description = description
         self._es_field_name = es_field_name
-        self._es_field_type = es_field_type
         self._values = values
 
     @classmethod
@@ -136,29 +130,6 @@ class Facet(Model):
         """
 
         self._es_field_name = es_field_name
-
-    @property
-    def es_field_type(self):
-        """Gets the es_field_type of this Facet.
-
-        The Elasticsearch field type.  # noqa: E501
-
-        :return: The es_field_type of this Facet.
-        :rtype: str
-        """
-        return self._es_field_type
-
-    @es_field_type.setter
-    def es_field_type(self, es_field_type):
-        """Sets the es_field_type of this Facet.
-
-        The Elasticsearch field type.  # noqa: E501
-
-        :param es_field_type: The es_field_type of this Facet.
-        :type es_field_type: str
-        """
-
-        self._es_field_type = es_field_type
 
     @property
     def values(self):

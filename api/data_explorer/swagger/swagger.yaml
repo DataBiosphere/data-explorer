@@ -132,7 +132,6 @@ definitions:
         name: "name"
         description: "description"
         es_field_name: "es_field_name"
-        es_field_type: "es_field_type"
       - values:
         - name: "name"
           count: 0
@@ -141,7 +140,6 @@ definitions:
         name: "name"
         description: "description"
         es_field_name: "es_field_name"
-        es_field_type: "es_field_type"
   Facet:
     properties:
       name:
@@ -153,9 +151,6 @@ definitions:
       es_field_name:
         type: "string"
         description: "The Elasticsearch field name."
-      es_field_type:
-        type: "string"
-        description: "The Elasticsearch field type."
       values:
         type: "array"
         items:
@@ -171,7 +166,6 @@ definitions:
       name: "name"
       description: "description"
       es_field_name: "es_field_name"
-      es_field_type: "es_field_type"
   FacetValue:
     properties:
       name:

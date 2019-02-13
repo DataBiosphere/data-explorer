@@ -148,9 +148,6 @@ definitions:
       es_field_name:
         type: string
         description: The Elasticsearch field name.
-      es_field_type:
-        type: string
-        description: The Elasticsearch field type.
       values:
         type: array
         items:
