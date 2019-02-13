@@ -76,41 +76,46 @@ class Header extends React.Component {
   render() {
     const { classes } = this.props;
 
-    const snackbar = (
-      <Snackbar
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "center"
-        }}
-        open={this.state.snackbarOpen}
-        //            autoHideDuration={6000}
-        onClose={this.handleSnackbarClose}
-      >
-        <SnackbarContent
-          className={classes.snackbarContent}
-          message={
-            <span className={classes.snackbarMessage}>
-              <InfoIcon className={classes.snackbarInfoIcon} />
-              <div>Click on a bar to select it</div>
-              <div>
-                <i>Hint:&nbsp;</i> Clicking on whitespace also works
-              </div>
-            </span>
-          }
-          action={[
-            <IconButton
-              key="close"
-              aria-label="Close"
-              color="inherit"
-              onClick={this.handleSnackbarClose}
-              className={classes.snackbarCloseButton}
-            >
-              <CloseIcon className={classes.snackbarCloseIcon} />
-            </IconButton>
-          ]}
-        />
-      </Snackbar>
-    );
+    const snackbarKey = "hasShownSnackbar";
+    let snackbar = null;
+    if (localStorage.getItem(snackbarKey) === null) {
+      localStorage.setItem(snackbarKey, "true");
+      snackbar = (
+        <Snackbar
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "center"
+          }}
+          open={this.state.snackbarOpen}
+          autoHideDuration={6000}
+          onClose={this.handleSnackbarClose}
+        >
+          <SnackbarContent
+            className={classes.snackbarContent}
+            message={
+              <span className={classes.snackbarMessage}>
+                <InfoIcon className={classes.snackbarInfoIcon} />
+                <div>Click on a bar to select it</div>
+                <div>
+                  <i>Hint:&nbsp;</i> Clicking on whitespace also works
+                </div>
+              </span>
+            }
+            action={[
+              <IconButton
+                key="close"
+                aria-label="Close"
+                color="inherit"
+                onClick={this.handleSnackbarClose}
+                className={classes.snackbarCloseButton}
+              >
+                <CloseIcon className={classes.snackbarCloseIcon} />
+              </IconButton>
+            ]}
+          />
+        </Snackbar>
+      );
+    }
 
     return (
       <AppBar position="static" className={classes.appBar}>
