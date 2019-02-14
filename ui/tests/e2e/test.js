@@ -135,7 +135,9 @@ describe("End-to-end", () => {
 
   test("Search box - select row with facet value", async () => {
     // Type "pat" in search box.
-    let initial_select = await page.$x("//div[text()='Search center or pat']");
+    let initial_select = await page.$x(
+      "//div[contains(text(), 'Search to add a facet')]"
+    );
     await initial_select[0].click();
     await initial_select[0].type("pat");
 
