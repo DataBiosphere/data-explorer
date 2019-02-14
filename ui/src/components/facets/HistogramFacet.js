@@ -29,7 +29,10 @@ const styles = {
 
 const baseSpec = {
   $schema: "https://vega.github.io/schema/vega-lite/v3.json",
-  mark: "bar",
+  mark: {
+    type: "bar",
+    cursor: "pointer"
+  },
   encoding: {
     color: {
       field: "dimmed",
