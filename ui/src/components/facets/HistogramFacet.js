@@ -73,6 +73,12 @@ const facetValueCountAxis = {
   }
 };
 
+function isCategorical(facet) {
+  return (
+    facet.es_field_type == "text" || facet.es_field_type == "samples_overview"
+  );
+}
+
 class HistogramFacet extends Component {
   constructor(props) {
     super(props);
@@ -85,11 +91,16 @@ class HistogramFacet extends Component {
     const { classes } = this.props;
 
     const spec = Object.assign({}, baseSpec);
+    let facetValueNames = this.props.facet.values.map(v => v.name);
+    if (!isCategorical(this.props.facet)) {
+      // For numeric facets, higher numbers should be higher on the y-axis
+      facetValueNames.reverse();
+    }
     const facetValueNameAxis = {
       field: "facet_value",
       type: "nominal",
       title: null,
-      sort: this.props.facet.values.map(v => v.name),
+      sort: facetValueNames,
       axis: {
         labelColor: "#000000de",
         labelFont: "Lato",

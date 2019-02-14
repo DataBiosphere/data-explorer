@@ -107,7 +107,8 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
                 name=facet_info.get('ui_facet_name'),
                 description=facet_info.get('description'),
                 values=values,
-                es_field_name=es_field_name))
+                es_field_name=es_field_name,
+                es_field_type=facet_info.get('type')))
 
     return FacetsResponse(
         facets=facets, count=es_response._faceted_search.count())
