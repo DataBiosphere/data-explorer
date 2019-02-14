@@ -28,8 +28,9 @@ const styles = {
   },
   toggleButtonGroup: {
     borderRadius: "20px",
-    // Must be same color as appBar background to fix border-radius bleed
-    // (https://stackoverflow.com/a/30356787/6447189)
+    // Must be same color as appBar background to fix border-radius bleed; see
+    // https://stackoverflow.com/a/30356787/6447189i
+    // appBar background is a gradient; use midpoint color
     backgroundColor: "#55a146"
   },
   toggleButtonRoot: {
