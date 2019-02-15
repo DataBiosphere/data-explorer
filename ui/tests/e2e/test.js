@@ -21,12 +21,12 @@ describe("End-to-end", () => {
     await page.click("button[value='text']");
   });
 
-  test("Header", async () => {
+  test("[TextFacet] Header", async () => {
     await expect(page).toMatch("1000 Genomes");
     await assertHeaderTotalCount("3500");
   });
 
-  test("Participant facet", async () => {
+  test("[TextFacet] Participant facet", async () => {
     // Assert facet rendered correctly
     await assertFacet("Super Population", "3500", "African", "1018");
 
@@ -46,7 +46,7 @@ describe("End-to-end", () => {
     expect(grayDiv).toBeTruthy();
   });
 
-  test("Sample facet", async () => {
+  test("[TextFacet] Sample facet", async () => {
     // Assert facet rendered correctly
     await assertFacet("Total Low Coverage Sequence", "2688", "0B-9B", "10");
 
@@ -67,7 +67,7 @@ describe("End-to-end", () => {
     await assertFacet("Gender", "1122", "female", "569");
   });
 
-  test("Samples Overview facet", async () => {
+  test("[TextFacet] Samples Overview facet", async () => {
     // Skip asserting facet rendered correctly, because this facet doesn't have
     // totalFacetValueCount span.
 
@@ -87,11 +87,11 @@ describe("End-to-end", () => {
     await exportToSaturn_selectedCohort();
   });
 
-  test("Export to Saturn - no selected cohort", async () => {
+  test("[TextFacet] Export to Saturn - no selected cohort", async () => {
     await exportToSaturn_noSelectedCohort();
   });
 
-  test("Export to Saturn - selected cohort", async () => {
+  test("[TextFacet] Export to Saturn - selected cohort", async () => {
     // Click first Super Population facet value.
     let facetValueRow = await getFacetValueRow("Super Population", "African");
     await facetValueRow.click("input");
@@ -100,7 +100,7 @@ describe("End-to-end", () => {
     await exportToSaturn_selectedCohort();
   });
 
-  test("Search box - chips", async () => {
+  test("[TextFacet] Search box - chips", async () => {
     // Select the 'Gender - female' facet value.
     let facetValueRow = await getFacetValueRow("Gender", "female");
     await facetValueRow.click("input");
@@ -133,7 +133,7 @@ describe("End-to-end", () => {
     await waitForFacetsUpdate(3500);
   });
 
-  test("Search box - select row with facet value", async () => {
+  test("[TextFacet] Search box - select row with facet value", async () => {
     // Type "pat" in search box.
     let initial_select = await page.$x(
       "//div[contains(text(), 'Search to add a facet')]"
@@ -152,6 +152,26 @@ describe("End-to-end", () => {
 
     // Make sure facet value is selected
     await assertFacetValueSelected("Relationship", "paternal grandmother");
+  });
+
+  test("[HistogramFacet] Participant facet", async () => {
+    // Assert facet rendered correctly
+    await assertFacet("Super Population", "3500", "African", "1018");
+
+    // Click on facet value
+    let facetValueRow = await getFacetValueRow("Super Population", "African");
+    await facetValueRow.click("input");
+    await waitForFacetsUpdate(1018);
+
+    // Assert page updated correctly.
+    await assertHeaderTotalCount("1018");
+    await assertFacet("Gender", "1018", "male", "518");
+
+    // Make sure non-selected facet values are gray.
+    facetValueRow = await getFacetValueRow("Super Population", "European");
+    const grayDiv = await facetValueRow.$("*[class*='TextFacet-grayText-']");
+
+    expect(grayDiv).toBeTruthy();
   });
 
   async function waitForElasticsearchIndex() {
