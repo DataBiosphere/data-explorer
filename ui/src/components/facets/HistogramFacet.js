@@ -68,7 +68,7 @@ const facetValueCountAxis = {
   stack: null,
   axis: {
     labelColor: "#000000de",
-    labelFont: "Lato",
+    labelFont: "Montserrat",
     labelFontSize: 11
   },
   scale: {
@@ -106,7 +106,7 @@ class HistogramFacet extends Component {
       sort: facetValueNames,
       axis: {
         labelColor: "#000000de",
-        labelFont: "Lato",
+        labelFont: "Montserrat",
         labelFontSize: 11,
         labelLimit: 120
       },
