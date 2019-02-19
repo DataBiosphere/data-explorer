@@ -15,15 +15,15 @@ import { withStyles } from "@material-ui/core/styles";
 
 const styles = {
   appBar: {
-    background: "linear-gradient(180deg, #74ae43 0%, #359448 100%);"
+    backgroundColor: "#74ae43"
   },
   datasetName: {
+    fontSize: 18,
+    fontWeight: 600,
     marginRight: 100
   },
   totalCount: {
-    fontSize: 17,
-    // Make bottom of dataset name line up with bottom of total count
-    paddingTop: "2.5px",
+    fontSize: 18,
     flexGrow: 1
   },
   toggleButtonGroup: {
