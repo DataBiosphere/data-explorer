@@ -5,6 +5,7 @@ from elasticsearch import helpers
 from elasticsearch_dsl import Search
 from elasticsearch_dsl import HistogramFacet
 from elasticsearch_dsl import TermsFacet
+from elasticsearch_dsl.aggs import Cardinality
 from elasticsearch_dsl.aggs import Max
 from elasticsearch_dsl.aggs import Min
 from elasticsearch_dsl.aggs import Nested
@@ -18,7 +19,7 @@ from filters_facet import FiltersFacet
 from flask import current_app
 
 
-def _get_field_range(es, field_name):
+def _get_field_range_and_cardinality(es, field_name):
     search = Search(using=es, index=current_app.config['INDEX_NAME'])
     # Traverse down the nesting levels from the root field, until we reach the leaf.
     # Need to traverse until the root, because we have to build the search object
@@ -37,21 +38,27 @@ def _get_field_range(es, field_name):
 
     bucket.metric('max', Max(field=field_name))
     bucket.metric('min', Min(field=field_name))
+    bucket.metric('cardinality', Cardinality(field=field_name))
 
     aggs = search.params(size=0).execute().aggregations.to_dict()
     for nesting in nestings:
         aggs = aggs.get(nesting)
 
-    return (aggs['max']['value'] - aggs['min']['value'])
+    return (aggs['max']['value'] - aggs['min']['value'],
+            aggs['cardinality']['value'])
 
 
-def _get_bucket_interval(es, field_name, field_type):
-    field_range = _get_field_range(es, field_name)
-    # If an integer field has 0s and 1s, return 1 instead of .1
-    is_integer_field = field_type in ['long', 'integer', 'short', 'byte']
-    if field_range <= 1 and not is_integer_field:
+def _get_bucket_interval(es, field_name):
+    field_range, cardinality = _get_field_range_and_cardinality(es, field_name)
+    if field_range < 1:
         return .1
-    if field_range < 8:
+    elif field_range == 1 and cardinality > 2:
+        return .1
+    elif field_range == 1 and cardinality == 2:
+        # Some datasets have (0, 1) instead of booleans. Return 1 for that case
+        # instead of .1.
+        return 1
+    elif field_range < 8:
         return 1
     elif field_range < 20:
         return 2
@@ -305,8 +312,7 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type):
         # TODO: When https://github.com/elastic/elasticsearch/issues/31828
         # is fixed, use AutoHistogramFacet instead. Will no longer need 2
         # steps.
-        interval = _get_bucket_interval(es, elasticsearch_field_name,
-                                        field_type)
+        interval = _get_bucket_interval(es, elasticsearch_field_name)
         es_facet = HistogramFacet(
             field=elasticsearch_field_name, interval=interval)
 
