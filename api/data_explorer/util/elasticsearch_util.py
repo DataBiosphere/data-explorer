@@ -44,7 +44,8 @@ def _get_field_range_and_cardinality(es, field_name):
     for nesting in nestings:
         aggs = aggs.get(nesting)
 
-    return (aggs['max']['value'] - aggs['min']['value'], aggs['cardinality']['value'])
+    return (aggs['max']['value'] - aggs['min']['value'],
+            aggs['cardinality']['value'])
 
 
 def _get_bucket_interval(es, field_name):
