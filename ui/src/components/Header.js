@@ -49,6 +49,41 @@ const styles = {
   snackbarCloseIcon: {
     fontSize: "20px",
     opacity: 0.9
+  },
+  vizSwitchBase: {
+    "&$vizSwitchChecked": {
+      color: "white",
+      "& + $vizSwitchBar": {
+        backgroundColor: "#b0d239"
+      }
+    }
+  },
+  vizSwitchChecked: {
+    transform: "translateX(15px)",
+    "& + $vizSwitchBar": {
+      opacity: 1,
+      border: "none"
+    }
+  },
+  vizSwitchBar: {
+    borderRadius: 13,
+    boxShadow: "0px 0px 8px 3px rgba(0,0,0,0.12)",
+    width: 36,
+    height: 20,
+    marginTop: -10,
+    marginLeft: -17,
+    backgroundColor: "#cccfd4",
+    opacity: 1
+  },
+  vizSwitchIcon: {
+    width: 16,
+    height: 16
+  },
+  vizSwitchLabel: {
+    color: "white",
+    fontSize: 12,
+    fontWeight: 600,
+    marginTop: -1
   }
 };
 
@@ -116,8 +151,15 @@ class Header extends React.Component {
             {this.props.totalCount} Participants
           </Typography>
           <FormControlLabel
+            classes={{ label: classes.vizSwitchLabel }}
             control={
               <Switch
+                classes={{
+                  switchBase: classes.vizSwitchBase,
+                  bar: classes.vizSwitchBar,
+                  icon: classes.vizSwitchIcon,
+                  checked: classes.vizSwitchChecked
+                }}
                 checked={this.props.showViz}
                 onChange={this.props.handleVizSwitchChange}
               />
