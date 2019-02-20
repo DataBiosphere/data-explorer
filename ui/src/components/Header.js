@@ -6,10 +6,9 @@ import InfoIcon from "@material-ui/icons/Info";
 import InsertChartIcon from "@material-ui/icons/InsertChart";
 import Snackbar from "@material-ui/core/Snackbar";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
+import Switch from '@material-ui/core/Switch';
 import TextFieldsIcon from "@material-ui/icons/TextFields";
 import Toolbar from "@material-ui/core/Toolbar";
-import ToggleButton from "@material-ui/lab/ToggleButton";
-import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 
@@ -26,21 +25,6 @@ const styles = {
     fontSize: 18,
     flexGrow: 1
   },
-  toggleButtonGroup: {
-    borderRadius: "20px",
-    // Must be same color as appBar background to fix border-radius bleed; see
-    // https://stackoverflow.com/a/30356787/6447189i
-    // appBar background is a gradient; use midpoint color
-    backgroundColor: "#55a146"
-  },
-  toggleButtonRoot: {
-    backgroundColor: "#5c912e",
-    "&$toggleButtonSelected": {
-      color: "white",
-      backgroundColor: "#c8dfb4"
-    }
-  },
-  toggleButtonSelected: {},
   snackbarMessage: {
     display: "grid",
     gridTemplateColumns: "30px auto"
@@ -132,11 +116,9 @@ class Header extends React.Component {
           <Typography className={classes.totalCount} color="inherit">
             {this.props.totalCount} Participants
           </Typography>
-          <ToggleButtonGroup
+          <Switch
             value={this.props.facetType}
-            exclusive
-            onChange={this.props.handleVizToggleChange}
-            className={classes.toggleButtonGroup}
+            onChange={this.props.handleVizSwitchChange}
           >
             <ToggleButton
               value="text"
