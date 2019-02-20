@@ -1,13 +1,12 @@
 import React from "react";
 import AppBar from "@material-ui/core/AppBar";
 import CloseIcon from "@material-ui/icons/Close";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import IconButton from "@material-ui/core/IconButton";
 import InfoIcon from "@material-ui/icons/Info";
-import InsertChartIcon from "@material-ui/icons/InsertChart";
 import Snackbar from "@material-ui/core/Snackbar";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
-import Switch from '@material-ui/core/Switch';
-import TextFieldsIcon from "@material-ui/icons/TextFields";
+import Switch from "@material-ui/core/Switch";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
@@ -116,31 +115,15 @@ class Header extends React.Component {
           <Typography className={classes.totalCount} color="inherit">
             {this.props.totalCount} Participants
           </Typography>
-          <Switch
-            value={this.props.facetType}
-            onChange={this.props.handleVizSwitchChange}
-          >
-            <ToggleButton
-              value="text"
-              title="Show text"
-              classes={{
-                root: classes.toggleButtonRoot,
-                selected: classes.toggleButtonSelected
-              }}
-            >
-              <TextFieldsIcon />
-            </ToggleButton>
-            <ToggleButton
-              value="viz"
-              title="Show visualizations"
-              classes={{
-                root: classes.toggleButtonRoot,
-                selected: classes.toggleButtonSelected
-              }}
-            >
-              <InsertChartIcon />
-            </ToggleButton>
-          </ToggleButtonGroup>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={this.props.showViz}
+                onChange={this.props.handleVizSwitchChange}
+              />
+            }
+            label="Visualizations"
+          />
         </Toolbar>
       </AppBar>
     );

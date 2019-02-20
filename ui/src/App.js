@@ -43,8 +43,8 @@ class App extends Component {
       // What to show in search box by default. If this is the empty string, the
       // react-select default of "Select..." is shown.
       searchPlaceholderText: "",
-      // Can be "text" or "viz"
-      facetType: "viz",
+      // Whether to show visualization facets or text facets
+      showViz: true,
       // Map from es_field_name to facet data returned from API server /facets call.
       facets: new Map(),
       totalCount: null,
@@ -122,7 +122,7 @@ class App extends Component {
 
     this.updateFacets = this.updateFacets.bind(this);
     this.handleSearchBoxChange = this.handleSearchBoxChange.bind(this);
-    this.handleVizToggleChange = this.handleVizToggleChange.bind(this);
+    this.handleVizSwitchChange = this.handleVizSwitchChange.bind(this);
     this.loadOptions = this.loadOptions.bind(this);
   }
 
@@ -141,8 +141,8 @@ class App extends Component {
             <Header
               datasetName={this.state.datasetName}
               totalCount={this.state.totalCount}
-              facetType={this.state.facetType}
-              handleVizToggleChange={this.handleVizToggleChange}
+              showViz={this.state.showViz}
+              handleVizSwitchChange={this.handleVizSwitchChange}
             />
 
             <Search
@@ -157,7 +157,7 @@ class App extends Component {
               updateFacets={this.updateFacets}
               selectedFacetValues={this.state.selectedFacetValues}
               facets={Array.from(this.state.facets.values())}
-              facetType={this.state.facetType}
+              showViz={this.state.showViz}
             />
             <ExportFab
               exportUrlApi={new ExportUrlApi(this.apiClient)}
@@ -323,17 +323,9 @@ class App extends Component {
     return filterArray;
   }
 
-  handleVizToggleChange(event, facetType) {
-    if (facetType) {
-      this.setState({ facetType: facetType });
-    } else {
-      // If text button is selected and user clicks on text button again, by
-      // default the text button will unselect (and no buttons will be
-      // selected). Make it so that text button remains selected. For us, at
-      // least one of the buttons must be selected.
-      this.setState({ facetType: event.currentTarget.value });
-    }
-  }
+  handleVizSwitchChange = event => {
+    this.setState({ showViz: event.target.checked });
+  };
 }
 
 export default App;

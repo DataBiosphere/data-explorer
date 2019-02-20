@@ -13,7 +13,7 @@ const styles = {
 };
 
 function facetCard(props, facet) {
-  if (props.facetType == "viz") {
+  if (props.showViz) {
     return (
       <HistogramFacet
         facet={facet}
