@@ -113,8 +113,19 @@ class Search extends React.Component {
   }
 
   render() {
+    const placeholder = (
+      <div>
+        <img
+          src="https://cdn1.iconfinder.com/data/icons/hawcons/32/698956-icon-111-search-512.png"
+          width="10"
+        />
+        {this.props.searchPlaceholderText}
+      </div>
+    );
+
     return (
       <AsyncSelect
+        classNamePrefix="foo"
         isMulti="true"
         onChange={this.props.handleSearchBoxChange}
         getOptionLabel={this.renderOption}
@@ -123,7 +134,7 @@ class Search extends React.Component {
           this.props.selectedFacetValues
         )}
         styles={customStyles}
-        placeholder={this.props.searchPlaceholderText}
+        placeholder={placeholder}
         loadOptions={this.props.loadOptions}
         defaultOptions={this.props.defaultOptions}
       />
