@@ -16,6 +16,9 @@ describe("End-to-end", () => {
 
   beforeEach(async () => {
     await page.goto("http://localhost:4400");
+    await page.evaluate(() => {
+      localStorage.setItem("hasShownSnackbar", "true");
+    });
     await page.waitForSelector("[class*='datasetName']");
   });
 
@@ -25,13 +28,16 @@ describe("End-to-end", () => {
   });
 
   test("[TextFacet] Participant facet", async () => {
-    // Set viz toggle to "text"
-    await page.click("button[value='text']");
+    await showTextFacets();
+
     // Assert facet rendered correctly
     await assertTextFacet("Super Population", "3500", "African", "1018");
 
     // Click on facet value
-    let facetValueRow = await getTextFacetValueRow("Super Population", "African");
+    let facetValueRow = await getTextFacetValueRow(
+      "Super Population",
+      "African"
+    );
     await facetValueRow.click("input");
     await waitForFacetsUpdate(1018);
 
@@ -47,8 +53,8 @@ describe("End-to-end", () => {
   });
 
   test("[TextFacet] Sample facet", async () => {
-    // Set viz toggle to "text"
-    await page.click("button[value='text']");
+    await showTextFacets();
+
     // Assert facet rendered correctly
     await assertTextFacet("Total Low Coverage Sequence", "2688", "0B-9B", "10");
 
@@ -70,8 +76,8 @@ describe("End-to-end", () => {
   });
 
   test("[TextFacet] Samples Overview facet", async () => {
-    // Set viz toggle to "text"
-    await page.click("button[value='text']");
+    await showTextFacets();
+
     // Skip asserting facet rendered correctly, because this facet doesn't have
     // totalFacetValueCount span.
 
@@ -96,10 +102,13 @@ describe("End-to-end", () => {
   });
 
   test("[TextFacet] Export to Saturn - selected cohort", async () => {
-    // Set viz toggle to "text"
-    await page.click("button[value='text']");
+    await showTextFacets();
+
     // Click first Super Population facet value.
-    let facetValueRow = await getTextFacetValueRow("Super Population", "African");
+    let facetValueRow = await getTextFacetValueRow(
+      "Super Population",
+      "African"
+    );
     await facetValueRow.click("input");
     await waitForFacetsUpdate(1018);
 
@@ -107,8 +116,8 @@ describe("End-to-end", () => {
   });
 
   test("[TextFacet] Search box - chips", async () => {
-    // Set viz toggle to "text"
-    await page.click("button[value='text']");
+    await showTextFacets();
+
     // Select the 'Gender - female' facet value.
     let facetValueRow = await getTextFacetValueRow("Gender", "female");
     await facetValueRow.click("input");
@@ -142,8 +151,8 @@ describe("End-to-end", () => {
   });
 
   test("[TextFacet] Search box - select row with facet value", async () => {
-    // Set viz toggle to "text"
-    await page.click("button[value='text']");
+    await showTextFacets();
+
     // Type "pat" in search box.
     let initial_select = await page.$x(
       "//div[contains(text(), 'Search to add a facet')]"
@@ -181,7 +190,7 @@ describe("End-to-end", () => {
     facetBar = await getHistogramFacetBar("Super Population", "European");
     const barColor = await page.evaluate(bar => bar.style.fill, facetBar);
     // Vega translates our hex colors to rgb so it must be validated this way.
-    expect(barColor).toBe("rgb(204, 207, 212)")
+    expect(barColor).toBe("rgb(204, 207, 212)");
   });
 
   async function waitForElasticsearchIndex() {
@@ -217,6 +226,10 @@ describe("End-to-end", () => {
       " seconds.";
     console.log(errorMsg);
     return Promise.reject(errorMsg);
+  }
+
+  async function showTextFacets() {
+    await page.click("input[type='checkbox']");
   }
 
   async function assertHeaderTotalCount(count) {
@@ -271,20 +284,20 @@ describe("End-to-end", () => {
     ).toBe(totalCount);
 
     // Get the first bar element in the facet and hover over it.
-    const firstBar = (await page.evaluateHandle(
-      facet => {
-        const barsContainer = facet.querySelector("*[class*='mark-rect role-mark marks']");
-        return barsContainer.querySelector("path");
-      },
-      histogramFacet,
-    )).asElement();
+    const firstBar = (await page.evaluateHandle(facet => {
+      const barsContainer = facet.querySelector(
+        "*[class*='mark-rect role-mark marks']"
+      );
+      return barsContainer.querySelector("path");
+    }, histogramFacet)).asElement();
     await firstBar.hover();
 
     // Wait for the tooltip to show up and assert the text is correct.
     await page.waitForXPath("//*[contains(text(), 'cursor: pointer')]");
     const tooltipText = await page.evaluate(
-      () => document.querySelector("*[class*='vg-tooltip']").innerHTML);
-    expect(tooltipText).toBe(firstValueName + ": " + firstValueCount)
+      () => document.querySelector("*[class*='vg-tooltip']").innerHTML
+    );
+    expect(tooltipText).toBe(firstValueName + ": " + firstValueCount);
   }
 
   async function assertTextFacetValueSelected(facetName, valueName) {
@@ -342,7 +355,9 @@ describe("End-to-end", () => {
     let facetIdx = await page.evaluate(
       (facet, value) => {
         // The first labels class is the 'tick marks' axis, the labels are the second.
-        const labelsContainer = facet.querySelectorAll("*[class*='mark-text role-axis-label']")[1];
+        const labelsContainer = facet.querySelectorAll(
+          "*[class*='mark-text role-axis-label']"
+        )[1];
         const labels = labelsContainer.querySelectorAll("text");
         for (let i = 0; i <= labels.length; i++) {
           if (labels[i].innerHTML == value) return i;
@@ -350,16 +365,18 @@ describe("End-to-end", () => {
         return null;
       },
       histogramFacet,
-      valueName,
+      valueName
     );
     // Select the path element at the correct index.
     const facetBar = (await page.evaluateHandle(
       (facet, idx) => {
-        const barsContainer = facet.querySelector("*[class*='mark-rect role-mark marks']");
+        const barsContainer = facet.querySelector(
+          "*[class*='mark-rect role-mark marks']"
+        );
         return barsContainer.querySelectorAll("path")[idx];
       },
       histogramFacet,
-      facetIdx,
+      facetIdx
     )).asElement();
     expect(facetBar).toBeTruthy();
     return facetBar;
