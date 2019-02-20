@@ -177,9 +177,10 @@ describe("End-to-end", () => {
     await assertHeaderTotalCount("1018");
     await assertHistogramFacet("Gender", "1018", "male", "518");
 
-    // // Make sure non-selected facet values are gray.
+    // // Make sure non-selected facet values are dimmed.
     facetBar = await getHistogramFacetBar("Super Population", "European");
     const barColor = await page.evaluate(bar => bar.style.fill, facetBar);
+    // Vega translates our hex colors to rgb so it must be validated this way.
     expect(barColor).toBe("rgb(204, 207, 212)")
   });
 
