@@ -1,4 +1,6 @@
 import React from "react";
+import "@clr/icons";
+import "@clr/icons/clr-icons.css";
 import AsyncSelect from "react-select/lib/Async";
 
 // To get readable class names, add classNamePrefix="foo" to <AsyncSelect>
@@ -115,13 +117,10 @@ class Search extends React.Component {
 
   render() {
     const placeholder = (
-      <div>
-        <img
-          src="https://cdn1.iconfinder.com/data/icons/hawcons/32/698956-icon-111-search-512.png"
-          width="10"
-        />
+      <React.Fragment>
+        <clr-icon shape="search" size="22" />
         {this.props.searchPlaceholderText}
-      </div>
+      </React.Fragment>
     );
 
     return (
