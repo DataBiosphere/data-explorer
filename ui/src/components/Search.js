@@ -11,7 +11,8 @@ const customStyles = {
   control: (provided, state) => ({
     ...provided,
     // Remove 1 pixel border to the left and right of search box
-    border: 0
+    border: 0,
+    margin: "9px 15px 0px 15px"
   }),
   // Left-align search box text with dataset name
   option: (provided, state) => ({

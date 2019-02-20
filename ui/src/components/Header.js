@@ -13,19 +13,13 @@ import { withStyles } from "@material-ui/core/styles";
 
 const styles = {
   appBar: {
-    backgroundColor: "#74ae43"
+    backgroundColor: "#74ae43",
+    borderBottom: "2px solid #b0d239"
   },
   datasetName: {
     fontSize: 18,
     fontWeight: 600,
     marginRight: 100
-  },
-  lineUnderBar: {
-    boxSizing: "border-box",
-    height: 1,
-    border: "1px solid #b0d239",
-    boxShadow:
-      "box-shadow: 0 2px 5px 0 rgba(0,0,0,0.26), 0 2px 10px 0 rgba(0,0,0,0.16);"
   },
   totalCount: {
     fontSize: 18,
@@ -144,40 +138,37 @@ class Header extends React.Component {
     }
 
     return (
-      <React.Fragment>
-        <AppBar position="static" className={classes.appBar}>
-          <Toolbar>
-            {snackbar}
-            <Typography
-              className={classes.datasetName}
-              variant="headline"
-              color="inherit"
-            >
-              {this.props.datasetName}
-            </Typography>
-            <Typography className={classes.totalCount} color="inherit">
-              {this.props.totalCount} Participants
-            </Typography>
-            <FormControlLabel
-              classes={{ label: classes.vizSwitchLabel }}
-              control={
-                <Switch
-                  classes={{
-                    switchBase: classes.vizSwitchBase,
-                    bar: classes.vizSwitchBar,
-                    icon: classes.vizSwitchIcon,
-                    checked: classes.vizSwitchChecked
-                  }}
-                  checked={this.props.showViz}
-                  onChange={this.props.handleVizSwitchChange}
-                />
-              }
-              label="Visualizations"
-            />
-          </Toolbar>
-        </AppBar>
-        <div style={styles.lineUnderBar} />
-      </React.Fragment>
+      <AppBar position="static" className={classes.appBar}>
+        <Toolbar>
+          {snackbar}
+          <Typography
+            className={classes.datasetName}
+            variant="headline"
+            color="inherit"
+          >
+            {this.props.datasetName}
+          </Typography>
+          <Typography className={classes.totalCount} color="inherit">
+            {this.props.totalCount} Participants
+          </Typography>
+          <FormControlLabel
+            classes={{ label: classes.vizSwitchLabel }}
+            control={
+              <Switch
+                classes={{
+                  switchBase: classes.vizSwitchBase,
+                  bar: classes.vizSwitchBar,
+                  icon: classes.vizSwitchIcon,
+                  checked: classes.vizSwitchChecked
+                }}
+                checked={this.props.showViz}
+                onChange={this.props.handleVizSwitchChange}
+              />
+            }
+            label="Visualizations"
+          />
+        </Toolbar>
+      </AppBar>
     );
   }
 
