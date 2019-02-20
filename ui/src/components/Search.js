@@ -5,7 +5,7 @@ import AsyncSelect from "react-select/lib/Async";
 const customStyles = {
   container: (provided, state) => ({
     ...provided,
-    fontFamily: ["Lato", "sans-serif"].join(","),
+    fontFamily: ["Montserrat", "sans-serif"].join(","),
     fontSize: 13
   }),
   control: (provided, state) => ({

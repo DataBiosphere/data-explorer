@@ -1,46 +1,36 @@
 import React from "react";
 import AppBar from "@material-ui/core/AppBar";
 import CloseIcon from "@material-ui/icons/Close";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import IconButton from "@material-ui/core/IconButton";
 import InfoIcon from "@material-ui/icons/Info";
-import InsertChartIcon from "@material-ui/icons/InsertChart";
 import Snackbar from "@material-ui/core/Snackbar";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
-import TextFieldsIcon from "@material-ui/icons/TextFields";
+import Switch from "@material-ui/core/Switch";
 import Toolbar from "@material-ui/core/Toolbar";
-import ToggleButton from "@material-ui/lab/ToggleButton";
-import ToggleButtonGroup from "@material-ui/lab/ToggleButtonGroup";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 
 const styles = {
   appBar: {
-    background: "linear-gradient(180deg, #74ae43 0%, #359448 100%);"
+    backgroundColor: "#74ae43"
   },
   datasetName: {
+    fontSize: 18,
+    fontWeight: 600,
     marginRight: 100
   },
+  lineUnderBar: {
+    boxSizing: "border-box",
+    height: 1,
+    border: "1px solid #b0d239",
+    boxShadow:
+      "box-shadow: 0 2px 5px 0 rgba(0,0,0,0.26), 0 2px 10px 0 rgba(0,0,0,0.16);"
+  },
   totalCount: {
-    fontSize: 17,
-    // Make bottom of dataset name line up with bottom of total count
-    paddingTop: "2.5px",
+    fontSize: 18,
     flexGrow: 1
   },
-  toggleButtonGroup: {
-    borderRadius: "20px",
-    // Must be same color as appBar background to fix border-radius bleed; see
-    // https://stackoverflow.com/a/30356787/6447189i
-    // appBar background is a gradient; use midpoint color
-    backgroundColor: "#55a146"
-  },
-  toggleButtonRoot: {
-    backgroundColor: "#5c912e",
-    "&$toggleButtonSelected": {
-      color: "white",
-      backgroundColor: "#c8dfb4"
-    }
-  },
-  toggleButtonSelected: {},
   snackbarMessage: {
     display: "grid",
     gridTemplateColumns: "30px auto"
@@ -66,6 +56,41 @@ const styles = {
   snackbarCloseIcon: {
     fontSize: "20px",
     opacity: 0.9
+  },
+  vizSwitchBase: {
+    "&$vizSwitchChecked": {
+      color: "white",
+      "& + $vizSwitchBar": {
+        backgroundColor: "#b0d239"
+      }
+    }
+  },
+  vizSwitchChecked: {
+    transform: "translateX(15px)",
+    "& + $vizSwitchBar": {
+      opacity: 1,
+      border: "none"
+    }
+  },
+  vizSwitchBar: {
+    borderRadius: 13,
+    boxShadow: "0px 0px 8px 3px rgba(0,0,0,0.12)",
+    width: 36,
+    height: 20,
+    marginTop: -10,
+    marginLeft: -17,
+    backgroundColor: "#cccfd4",
+    opacity: 1
+  },
+  vizSwitchIcon: {
+    width: 16,
+    height: 16
+  },
+  vizSwitchLabel: {
+    color: "white",
+    fontSize: 12,
+    fontWeight: 600,
+    marginTop: -1
   }
 };
 
@@ -119,48 +144,40 @@ class Header extends React.Component {
     }
 
     return (
-      <AppBar position="static" className={classes.appBar}>
-        <Toolbar>
-          {snackbar}
-          <Typography
-            className={classes.datasetName}
-            variant="headline"
-            color="inherit"
-          >
-            {this.props.datasetName}
-          </Typography>
-          <Typography className={classes.totalCount} color="inherit">
-            {this.props.totalCount} Participants
-          </Typography>
-          <ToggleButtonGroup
-            value={this.props.facetType}
-            exclusive
-            onChange={this.props.handleVizToggleChange}
-            className={classes.toggleButtonGroup}
-          >
-            <ToggleButton
-              value="text"
-              title="Show text"
-              classes={{
-                root: classes.toggleButtonRoot,
-                selected: classes.toggleButtonSelected
-              }}
+      <React.Fragment>
+        <AppBar position="static" className={classes.appBar}>
+          <Toolbar>
+            {snackbar}
+            <Typography
+              className={classes.datasetName}
+              variant="headline"
+              color="inherit"
             >
-              <TextFieldsIcon />
-            </ToggleButton>
-            <ToggleButton
-              value="viz"
-              title="Show visualizations"
-              classes={{
-                root: classes.toggleButtonRoot,
-                selected: classes.toggleButtonSelected
-              }}
-            >
-              <InsertChartIcon />
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </Toolbar>
-      </AppBar>
+              {this.props.datasetName}
+            </Typography>
+            <Typography className={classes.totalCount} color="inherit">
+              {this.props.totalCount} Participants
+            </Typography>
+            <FormControlLabel
+              classes={{ label: classes.vizSwitchLabel }}
+              control={
+                <Switch
+                  classes={{
+                    switchBase: classes.vizSwitchBase,
+                    bar: classes.vizSwitchBar,
+                    icon: classes.vizSwitchIcon,
+                    checked: classes.vizSwitchChecked
+                  }}
+                  checked={this.props.showViz}
+                  onChange={this.props.handleVizSwitchChange}
+                />
+              }
+              label="Visualizations"
+            />
+          </Toolbar>
+        </AppBar>
+        <div style={styles.lineUnderBar} />
+      </React.Fragment>
     );
   }
 
