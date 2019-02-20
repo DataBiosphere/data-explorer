@@ -20,6 +20,13 @@ const styles = {
     fontWeight: 600,
     marginRight: 100
   },
+  lineUnderBar: {
+    boxSizing: "border-box",
+    height: 1,
+    border: "1px solid #b0d239",
+    boxShadow:
+      "box-shadow: 0 2px 5px 0 rgba(0,0,0,0.26), 0 2px 10px 0 rgba(0,0,0,0.16);"
+  },
   totalCount: {
     fontSize: 18,
     flexGrow: 1
@@ -137,37 +144,40 @@ class Header extends React.Component {
     }
 
     return (
-      <AppBar position="static" className={classes.appBar}>
-        <Toolbar>
-          {snackbar}
-          <Typography
-            className={classes.datasetName}
-            variant="headline"
-            color="inherit"
-          >
-            {this.props.datasetName}
-          </Typography>
-          <Typography className={classes.totalCount} color="inherit">
-            {this.props.totalCount} Participants
-          </Typography>
-          <FormControlLabel
-            classes={{ label: classes.vizSwitchLabel }}
-            control={
-              <Switch
-                classes={{
-                  switchBase: classes.vizSwitchBase,
-                  bar: classes.vizSwitchBar,
-                  icon: classes.vizSwitchIcon,
-                  checked: classes.vizSwitchChecked
-                }}
-                checked={this.props.showViz}
-                onChange={this.props.handleVizSwitchChange}
-              />
-            }
-            label="Visualizations"
-          />
-        </Toolbar>
-      </AppBar>
+      <React.Fragment>
+        <AppBar position="static" className={classes.appBar}>
+          <Toolbar>
+            {snackbar}
+            <Typography
+              className={classes.datasetName}
+              variant="headline"
+              color="inherit"
+            >
+              {this.props.datasetName}
+            </Typography>
+            <Typography className={classes.totalCount} color="inherit">
+              {this.props.totalCount} Participants
+            </Typography>
+            <FormControlLabel
+              classes={{ label: classes.vizSwitchLabel }}
+              control={
+                <Switch
+                  classes={{
+                    switchBase: classes.vizSwitchBase,
+                    bar: classes.vizSwitchBar,
+                    icon: classes.vizSwitchIcon,
+                    checked: classes.vizSwitchChecked
+                  }}
+                  checked={this.props.showViz}
+                  onChange={this.props.handleVizSwitchChange}
+                />
+              }
+              label="Visualizations"
+            />
+          </Toolbar>
+        </AppBar>
+        <div style={styles.lineUnderBar} />
+      </React.Fragment>
     );
   }
 
