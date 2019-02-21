@@ -4,6 +4,8 @@ import "@clr/icons/clr-icons.css";
 import AsyncSelect from "react-select/lib/Async";
 import { components } from "react-select";
 
+import DownAngleIcon from "libs/icons";
+
 // To get readable class names, add classNamePrefix="foo" to <AsyncSelect>
 const styles = {
   container: (provided, state) => ({
@@ -24,6 +26,14 @@ const styles = {
     marginRight: 11,
     width: 30
   },
+  dropdownIndicator: (provided, state) => ({
+    ...provided,
+    padding: "8px 16px 8px 14px"
+  }),
+  indicatorSeparator: (provided, state) => ({
+    ...provided,
+    height: 32
+  }),
   // Left-align search box text with dataset name
   option: (provided, state) => ({
     ...provided,
@@ -150,7 +160,7 @@ class Search extends React.Component {
     ) => {
       return (
         <components.DropdownIndicator {...props}>
-          <clr-icon shape="angle" flip="vertical" style={styles.dropdownIcon} />
+          {DownAngleIcon}
         </components.DropdownIndicator>
       );
     };
