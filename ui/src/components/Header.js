@@ -14,7 +14,8 @@ import { withStyles } from "@material-ui/core/styles";
 const styles = {
   appBar: {
     backgroundColor: "#74ae43",
-    borderBottom: "2px solid #b0d239"
+    borderBottom: "2px solid #b0d239",
+    boxShadow: "none"
   },
   datasetName: {
     fontSize: 18,

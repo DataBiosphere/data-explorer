@@ -2,9 +2,10 @@ import React from "react";
 import "@clr/icons";
 import "@clr/icons/clr-icons.css";
 import AsyncSelect from "react-select/lib/Async";
+import { components } from "react-select";
 
 // To get readable class names, add classNamePrefix="foo" to <AsyncSelect>
-const customStyles = {
+const styles = {
   container: (provided, state) => ({
     ...provided,
     fontFamily: ["Montserrat", "sans-serif"].join(","),
@@ -14,6 +15,7 @@ const customStyles = {
     ...provided,
     // Remove 1 pixel border to the left and right of search box
     border: 0,
+    height: 45,
     margin: "9px 15px 0px 15px"
   }),
   // Left-align search box text with dataset name
@@ -34,9 +36,21 @@ const customStyles = {
       color: "#db3214"
     }
   }),
+  placeholder: (provided, state) => ({
+    ...provided,
+    color: "#333f52",
+    fontSize: 14,
+    margin: "1px 0 0 40px"
+  }),
+  searchIcon: {
+    color: "#5c912e",
+    height: 22,
+    marginRight: 18,
+    width: 22
+  },
   valueContainer: (provided, state) => ({
     ...provided,
-    marginLeft: 17
+    paddingLeft: 13
   })
 };
 
@@ -116,11 +130,13 @@ class Search extends React.Component {
   }
 
   render() {
-    const placeholder = (
-      <React.Fragment>
-        <clr-icon shape="search" size="22" />
-        {this.props.searchPlaceholderText}
-      </React.Fragment>
+    // Put search icon before placeholder text. Note that after clicking in
+    // search box, cursor should be right before "S" in "Search".
+    const ValueContainer = ({ children, ...props }) => (
+      <components.ValueContainer {...props}>
+        <clr-icon shape="search" style={styles.searchIcon} />
+        {children}
+      </components.ValueContainer>
     );
 
     return (
@@ -133,10 +149,11 @@ class Search extends React.Component {
         value={this.chipsFromSelectedFacetValues(
           this.props.selectedFacetValues
         )}
-        styles={customStyles}
-        placeholder={placeholder}
+        styles={styles}
+        placeholder={this.props.searchPlaceholderText}
         loadOptions={this.props.loadOptions}
         defaultOptions={this.props.defaultOptions}
+        components={{ ValueContainer }}
       />
     );
   }
