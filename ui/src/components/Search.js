@@ -13,7 +13,7 @@ const styles = {
   }),
   control: (provided, state) => ({
     ...provided,
-    // Remove 1 pixel border to the left and right of search box
+    backgroundColor: "#ebedef",
     border: 0,
     height: 45,
     margin: "9px 15px 0px 15px"
