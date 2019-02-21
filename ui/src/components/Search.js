@@ -42,14 +42,25 @@ const styles = {
   option: (provided, state) => ({
     ...provided,
     backgroundColor: state.isFocused ? "#f1f4f8" : "white",
+    borderBottom: "1px solid #e2e7ee",
     color: "#333f52",
     fontSize: 14,
-    fontWeight: 600
+    fontWeight: 600,
+    lineHeight: "21px",
+    paddingLeft: 13
   }),
   menu: (provided, state) => ({
     ...provided,
-    margin: "3px 15px 0 15px",
-    width: "inherit"
+    margin: "5px 15px 0 15px",
+    width: "-webkit-calc(100% - 30px)",
+    width: "-moz-calc(100% - 30px)",
+    width: "calc(100% - 30px)"
+  }),
+  menuList: (provided, state) => ({
+    ...provided,
+    // Don't show horizontal scrollbar
+    overflowX: "hidden",
+    paddingTop: 0
   }),
   // Chip background color
   multiValue: (provided, state) => ({
@@ -99,27 +110,27 @@ class Search extends React.Component {
     if (option.facetValue != null && option.facetValue != "") {
       return (
         <div>
-          <span style={{ color: "silver" }}>Add</span>
-          <span style={{ color: "black" }}> {option.facetName} </span>
-          <span style={{ color: "silver" }}>facet and select</span>
-          <span style={{ color: "black" }}> {option.facetValue} </span>
+          <span style={{ color: "#cccfd4" }}>Add</span>
+          <span> {option.facetName} </span>
+          <span style={{ color: "#cccfd4" }}>facet and select</span>
+          <span> {option.facetValue} </span>
         </div>
       );
     } else if (option.facetDescription != null) {
       return (
         <div>
-          <span style={{ color: "silver" }}>Add</span>
-          <span style={{ color: "black" }}> {option.facetName} </span>
-          <span style={{ color: "silver" }}>facet with description</span>
-          <span style={{ color: "black" }}> {option.facetDescription} </span>
+          <span style={{ color: "#cccfd4" }}>Add</span>
+          <span> {option.facetName} </span>
+          <span style={{ color: "#cccfd4" }}>facet with description</span>
+          <span> {option.facetDescription} </span>
         </div>
       );
     } else {
       return (
         <div>
-          <span style={{ color: "silver" }}>Add</span>
-          <span style={{ color: "black" }}> {option.facetName} </span>
-          <span style={{ color: "silver" }}>facet</span>
+          <span style={{ color: "#cccfd4" }}>Add</span>
+          <span> {option.facetName} </span>
+          <span style={{ color: "#cccfd4" }}>facet</span>
         </div>
       );
     }
