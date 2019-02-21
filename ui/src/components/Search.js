@@ -41,7 +41,15 @@ const styles = {
   // Left-align search box text with dataset name
   option: (provided, state) => ({
     ...provided,
-    paddingLeft: 27
+    backgroundColor: state.isFocused ? "#f1f4f8" : "white",
+    color: "#333f52",
+    fontSize: 14,
+    fontWeight: 600
+  }),
+  menu: (provided, state) => ({
+    ...provided,
+    margin: "3px 15px 0 15px",
+    width: "inherit"
   }),
   // Chip background color
   multiValue: (provided, state) => ({
