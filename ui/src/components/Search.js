@@ -34,6 +34,10 @@ const styles = {
     ...provided,
     height: 32
   }),
+  input: (provided, state) => ({
+    ...provided,
+    marginLeft: 0
+  }),
   // Left-align search box text with dataset name
   option: (provided, state) => ({
     ...provided,
