@@ -18,6 +18,12 @@ const styles = {
     height: 45,
     margin: "9px 15px 0px 15px"
   }),
+  dropdownIcon: {
+    color: "#5c912e",
+    height: 30,
+    marginRight: 11,
+    width: 30
+  },
   // Left-align search box text with dataset name
   option: (provided, state) => ({
     ...provided,
@@ -139,6 +145,16 @@ class Search extends React.Component {
       </components.ValueContainer>
     );
 
+    const DropdownIndicator = (
+      props: ElementConfig<typeof components.DropdownIndicator>
+    ) => {
+      return (
+        <components.DropdownIndicator {...props}>
+          <clr-icon shape="angle" flip="vertical" style={styles.dropdownIcon} />
+        </components.DropdownIndicator>
+      );
+    };
+
     return (
       <AsyncSelect
         classNamePrefix="foo"
@@ -153,7 +169,7 @@ class Search extends React.Component {
         placeholder={this.props.searchPlaceholderText}
         loadOptions={this.props.loadOptions}
         defaultOptions={this.props.defaultOptions}
-        components={{ ValueContainer }}
+        components={{ ValueContainer, DropdownIndicator }}
       />
     );
   }
