@@ -18,10 +18,7 @@ import Header from "components/Header";
 
 const theme = createMuiTheme({
   typography: {
-    fontFamily: ["Montserrat", "sans-serif"].join(","),
-    fontVariantNumeric: "tabular-nums",
-    WebkitFontSmoothing: "antialiased",
-    MozOsxFontSmoothing: "grayscale"
+    fontFamily: ["Montserrat", "sans-serif"].join(",")
   }
 });
 
