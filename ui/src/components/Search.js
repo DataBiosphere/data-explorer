@@ -8,6 +8,13 @@ import DownAngleIcon from "libs/icons";
 
 // To get readable class names, add classNamePrefix="foo" to <AsyncSelect>
 const styles = {
+  clearIndicator: (provided, state) => ({
+    ...provided,
+    color: "#5c912e",
+    "&:hover": {
+      color: "red"
+    }
+  }),
   container: (provided, state) => ({
     ...provided,
     fontFamily: ["Montserrat", "sans-serif"].join(","),
@@ -190,11 +197,28 @@ class Search extends React.Component {
       </components.ValueContainer>
     );
 
+    const ClearIndicator = props => {
+      const {
+        getStyles,
+        innerProps: { ref, ...restInnerProps }
+      } = props;
+      return (
+        <div
+          {...restInnerProps}
+          ref={ref}
+          style={getStyles("clearIndicator", props)}
+        >
+          <clr-icon shape="times" style={styles.clearIcon} size="29" />
+        </div>
+      );
+    };
+
     const DropdownIndicator = (
       props: ElementConfig<typeof components.DropdownIndicator>
     ) => {
+      const { getStyles } = props;
       return (
-        <components.DropdownIndicator {...props}>
+        <components.DropdownIndicator {...props} style={styles.dropdownIcon}>
           {DownAngleIcon}
         </components.DropdownIndicator>
       );
@@ -214,7 +238,7 @@ class Search extends React.Component {
         placeholder={this.props.searchPlaceholderText}
         loadOptions={this.props.loadOptions}
         defaultOptions={this.props.defaultOptions}
-        components={{ ValueContainer, DropdownIndicator }}
+        components={{ ValueContainer, ClearIndicator, DropdownIndicator }}
       />
     );
   }
