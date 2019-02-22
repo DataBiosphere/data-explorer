@@ -62,10 +62,22 @@ const styles = {
     overflowX: "hidden",
     paddingTop: 0
   }),
-  // Chip background color
+  // Chip styling
   multiValue: (provided, state) => ({
     ...provided,
-    backgroundColor: "#ebedef"
+    backgroundColor: "#74ae43",
+    borderRadius: "15.5px",
+    height: "31",
+    marginTop: 0
+  }),
+  multiValueLabel: (provided, state) => ({
+    ...provided,
+    color: "white",
+    fontSize: 12,
+    fontWeight: 500,
+    padding: "8px 21px 0 20px",
+    // For some reason paddingLeft from above is ignored; put again here
+    paddingLeft: "20px"
   }),
   // Chip "x" hover color
   multiValueRemove: (provided, state) => ({
