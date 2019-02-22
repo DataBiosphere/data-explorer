@@ -10,10 +10,7 @@ import DownAngleIcon from "libs/icons";
 const styles = {
   clearIndicator: (provided, state) => ({
     ...provided,
-    color: "#5c912e",
-    "&:hover": {
-      color: "red"
-    }
+    color: "#5c912e"
   }),
   container: (provided, state) => ({
     ...provided,
