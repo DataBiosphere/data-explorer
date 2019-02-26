@@ -244,7 +244,6 @@ class Search extends React.Component {
 
     return (
       <AsyncSelect
-        classNamePrefix="foo"
         isMulti="true"
         onChange={this.props.handleSearchBoxChange}
         getOptionLabel={this.renderOption}
