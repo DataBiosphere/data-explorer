@@ -66,13 +66,13 @@ const styles = {
     overflowX: "hidden",
     paddingTop: 0
   }),
-  // Chip styling
+  // multiValue = Chip styling
   multiValue: (provided, state) => ({
     ...provided,
     backgroundColor: "#74ae43",
     borderRadius: "15.5px",
     height: "31",
-    marginTop: 0
+    margin: "0 15px 0 0"
   }),
   multiValueLabel: (provided, state) => ({
     ...provided,
@@ -83,14 +83,18 @@ const styles = {
     // For some reason paddingLeft from above is ignored; put again here
     paddingLeft: "20px"
   }),
-  // Chip "x" hover color
   multiValueRemove: (provided, state) => ({
     ...provided,
+    padding: "0 9px 0 0",
     "&:hover": {
-      backgroundColor: "#f6ccc5",
-      color: "#db3214"
+      backgroundColor: "transparent"
     }
   }),
+  multiValueRemoveIcon: {
+    backgroundColor: "white",
+    borderRadius: 15,
+    color: "#74ae43"
+  },
   placeholder: (provided, state) => ({
     ...provided,
     color: "#333f52",
@@ -194,6 +198,18 @@ class Search extends React.Component {
       </components.ValueContainer>
     );
 
+    const MultiValueRemove = props => {
+      return (
+        <components.MultiValueRemove {...props}>
+          <clr-icon
+            shape="times"
+            style={styles.multiValueRemoveIcon}
+            size="15"
+          />
+        </components.MultiValueRemove>
+      );
+    };
+
     const ClearIndicator = props => {
       const {
         getStyles,
@@ -235,7 +251,12 @@ class Search extends React.Component {
         placeholder={this.props.searchPlaceholderText}
         loadOptions={this.props.loadOptions}
         defaultOptions={this.props.defaultOptions}
-        components={{ ValueContainer, ClearIndicator, DropdownIndicator }}
+        components={{
+          ValueContainer,
+          MultiValueRemove,
+          ClearIndicator,
+          DropdownIndicator
+        }}
       />
     );
   }
