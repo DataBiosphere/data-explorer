@@ -34,6 +34,10 @@ const styles = {
     ...provided,
     padding: "8px 16px 8px 14px"
   }),
+  indicatorsContainer: (provided, state) => ({
+    ...provided,
+    height: 45
+  }),
   indicatorSeparator: (provided, state) => ({
     ...provided,
     height: 32
@@ -42,7 +46,6 @@ const styles = {
     ...provided,
     marginLeft: 0
   }),
-  // Left-align search box text with dataset name
   option: (provided, state) => ({
     ...provided,
     backgroundColor: state.isFocused ? "#f1f4f8" : "white",
@@ -109,7 +112,7 @@ const styles = {
   },
   valueContainer: (provided, state) => ({
     ...provided,
-    paddingLeft: 13
+    paddingLeft: 14
   })
 };
 
@@ -191,12 +194,14 @@ class Search extends React.Component {
   render() {
     // Put search icon before placeholder text. Note that after clicking in
     // search box, cursor should be right before "S" in "Search".
-    const ValueContainer = ({ children, ...props }) => (
-      <components.ValueContainer {...props}>
-        <clr-icon shape="search" style={styles.searchIcon} />
-        {children}
-      </components.ValueContainer>
-    );
+    const Placeholder = props => {
+      return (
+        <>
+          <clr-icon shape="search" style={styles.searchIcon} />
+          <components.Placeholder {...props} />
+        </>
+      );
+    };
 
     const MultiValueRemove = props => {
       return (
@@ -252,7 +257,7 @@ class Search extends React.Component {
         loadOptions={this.props.loadOptions}
         defaultOptions={this.props.defaultOptions}
         components={{
-          ValueContainer,
+          Placeholder,
           MultiValueRemove,
           ClearIndicator,
           DropdownIndicator
