@@ -1,5 +1,6 @@
 import React from "react";
 import "@clr/icons";
+import "@clr/icons/shapes/essential-shapes.min.js";
 import "@clr/icons/clr-icons.css";
 import AsyncSelect from "react-select/lib/Async";
 import { components } from "react-select";
@@ -94,9 +95,7 @@ const styles = {
     }
   }),
   multiValueRemoveIcon: {
-    backgroundColor: "white",
-    borderRadius: 15,
-    color: "#74ae43"
+    color: "white"
   },
   placeholder: (provided, state) => ({
     ...provided,
@@ -207,7 +206,8 @@ class Search extends React.Component {
       return (
         <components.MultiValueRemove {...props}>
           <clr-icon
-            shape="times"
+            shape="times-circle"
+            class="is-solid"
             style={styles.multiValueRemoveIcon}
             size="15"
           />
