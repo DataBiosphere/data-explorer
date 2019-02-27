@@ -137,7 +137,7 @@ class App extends Component {
     } else {
       return (
         <MuiThemeProvider theme={theme}>
-          <div style={{ backgroundColor: "#e5e5e5" }}>
+          <div style={{ backgroundColor: "#fafbfc" }}>
             <Header
               datasetName={this.state.datasetName}
               totalCount={this.state.totalCount}

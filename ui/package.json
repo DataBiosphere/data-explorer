@@ -3,9 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "//": [
+      "vega-lib and vega-lite are peerDependencies of react-vega-lite.",
+      "@webcomponents/custom-elements is needed for @clr/icons"
+    ],
+    "@clr/icons": "^0.13.10",
     "@material-ui/core": "^1.5.1",
     "@material-ui/icons": "^2.0.3",
     "@material-ui/lab": "^3.0.0-alpha.29",
+    "@webcomponents/custom-elements": "^1.2.1",
     "axios": "^0.18.0",
     "data_explorer_service": "file:src/api",
     "lodash.debounce": "^4.0.8",
@@ -14,9 +20,6 @@
     "react-scripts": "^2.0.0",
     "react-select": "^2.0.0",
     "react-vega-lite": "^2.0.2",
-    "//": [
-      "vega-lib and vega-lite are peerDependencies of react-vega-lite."
-    ],
     "vega-lib": "^4.4.0",
     "vega-lite": "^3.0.0-rc12",
     "vega-tooltip": "^0.15.0"
