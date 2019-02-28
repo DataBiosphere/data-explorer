@@ -24,6 +24,9 @@ class ExportFab extends React.Component {
   }
 
   render() {
+    var filter = this.props.filter;
+    var defaultTextValue =
+      filter != null && filter.length > 0 ? "" : "all participants";
     return (
       <div>
         {/*
@@ -51,18 +54,19 @@ class ExportFab extends React.Component {
             <DialogContent>
               <TextField
                 autoFocus
-                onChange={this.setTextValue}
-                margin="dense"
+                defaultValue={defaultTextValue}
+                fullWidth
+                helperText="A cohort with this name will be created in Terra"
                 id="name"
                 label="Cohort Name"
-                helperText="A cohort with this name will be created in Terra"
-                type="text"
-                fullWidth
+                margin="dense"
+                onChange={this.setTextValue}
                 onKeyPress={ev => {
                   if (ev.key === "Enter") {
                     this.handleSave();
                   }
                 }}
+                type="text"
               />
             </DialogContent>
             <DialogActions>
@@ -84,12 +88,7 @@ class ExportFab extends React.Component {
   }
 
   handleClick() {
-    var filter = this.props.filter;
-    if (filter != null && filter.length > 0) {
-      this.setState(state => ({ open: true }));
-    } else {
-      this.handleSave();
-    }
+    this.setState(state => ({ open: true }));
   }
 
   handleCancel() {
