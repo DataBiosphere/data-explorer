@@ -94,14 +94,10 @@ describe("End-to-end", () => {
     await assertTextFacet("Gender", "2535", "female", "1291");
 
     // Test exporting to saturn.
-    await exportToSaturn_selectedCohort();
+    await exportToSaturn;
   });
 
-  test("[TextFacet] Export to Saturn - no selected cohort", async () => {
-    await exportToSaturn_noSelectedCohort();
-  });
-
-  test("[TextFacet] Export to Saturn - selected cohort", async () => {
+  test("[TextFacet] Export to Saturn", async () => {
     await showTextFacets();
 
     // Click first Super Population facet value.
@@ -112,7 +108,7 @@ describe("End-to-end", () => {
     await facetValueRow.click("input");
     await waitForFacetsUpdate(1018);
 
-    await exportToSaturn_selectedCohort();
+    await exportToSaturn();
   });
 
   test("[TextFacet] Search box - chips", async () => {
@@ -423,17 +419,7 @@ describe("End-to-end", () => {
     await page.waitForXPath("//div[text()='" + chipText + "']");
   }
 
-  async function exportToSaturn_noSelectedCohort() {
-    await page.click("button[title='Send to Terra']");
-    // Jest documentation says to use waitForNavigation():
-    // https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pageclickselector-options
-    // Here we use waitForRequest() instead. waitForRequest() is slightly
-    // faster because it doesn't wait for the Saturn page to finish (or start?)
-    // loading.
-    await page.waitForRequest("https://app.terra.bio/");
-  }
-
-  async function exportToSaturn_selectedCohort() {
+  async function exportToSaturn() {
     await page.click("button[title='Send to Terra']");
     // Wait for cohort name dialog
     await page.waitForSelector("#name");
