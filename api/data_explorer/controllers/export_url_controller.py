@@ -96,7 +96,7 @@ def _get_doc_generator(filter_arr):
         yield result.to_dict()
 
 
-def _get_entities_dict(cohort_name, query, filter_arr, send_samples):
+def _get_entities_dict(cohort_name, query, filter_arr):
     """Returns a dict representing the JSON list of entities."""
     # Terra add-import expects a JSON list of entities, where each entity is
     # the entity JSON passed into
@@ -113,40 +113,21 @@ def _get_entities_dict(cohort_name, query, filter_arr, send_samples):
             # underscores here and periods in table_name attribute.
             'name': table_name.replace('.', '_').replace(':', '_'),
             'attributes': {
-                'table_name': table_name
+                'table_name': table_name,
+                'dataset_id': table_name.split('.')[1],
             }
         })
 
-    # If a cohort was selected, create a query entity and get Elasticsearch documents
-    # for the cohort so we can create sample_set entity.
+    # If a cohort was selected, create a query entity
     if cohort_name:
         entities.append({
             'entityType': 'cohort',
             'name': cohort_name,
             'attributes': {
-                'query': query
+                'query': query,
+                'dataset_id': table_name.split('.')[1],
             }
         })
-
-        if send_samples and current_app.config['SAMPLE_ID_COLUMN']:
-            sample_id_column = current_app.config['SAMPLE_ID_COLUMN']
-            sample_items = []
-            for doc in _get_doc_generator(filter_arr):
-                sample_items.extend([{
-                    'entityType': 'sample',
-                    'entityName': s[sample_id_column]
-                } for s in doc.get('samples', [])])
-            if len(sample_items) > 0:
-                entities.append({
-                    'entityType': 'sample_set',
-                    'name': cohort_name,
-                    'attributes': {
-                        'samples': {
-                            'itemsType': 'EntityReference',
-                            'items': sample_items
-                        }
-                    }
-                })
 
     return entities
 
@@ -157,37 +138,15 @@ def _random_str():
         random.choice(string.ascii_letters + string.digits) for _ in range(10))
 
 
-def _write_gcs_file(entities, send_samples):
+def _write_gcs_file(entities):
     """Returns GCS file path of the format /bucket/object."""
     client = storage.Client(project=current_app.config['DEPLOY_PROJECT_ID'])
     export_bucket = client.get_bucket(
         current_app.config['EXPORT_URL_GCS_BUCKET'])
-    samples_bucket = client.get_bucket(
-        current_app.config['EXPORT_URL_SAMPLES_GCS_BUCKET'])
     user = os.environ.get('USER')
-    samples_file_name = '%s-%s-samples' % (current_app.config['INDEX_NAME'],
-                                           user)
     blob = export_bucket.blob(_random_str())
     entities_json = json.dumps(entities)
-
-    samples_blob = samples_bucket.get_blob(samples_file_name)
-    if send_samples and samples_blob:
-        # Copy the samples blob to the export bucket in order to compose with the other
-        # object containing the rest of the entities JSON.
-        copied_samples_blob = export_bucket.blob(samples_file_name)
-        # Use the rewrite rather than the copy API because the copy can timeout.
-        copied_samples_blob.rewrite(samples_blob)
-
-        # Remove the leading '[' character since this is being concatenated with the
-        # sample entities JSON, which has the trailing ']' stripped in the indexer.
-        entities_json = ',%s' % entities_json[1:]
-        blob.upload_from_string(entities_json)
-        merged = export_bucket.blob(_random_str())
-        merged.upload_from_string('')
-        merged.compose([copied_samples_blob, blob])
-        blob = merged
-    else:
-        blob.upload_from_string(entities_json)
+    blob.upload_from_string(entities_json)
 
     current_app.logger.info(
         'Wrote gs://%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'],
@@ -375,7 +334,6 @@ def export_url_post():  # noqa: E501
     _check_preconditions()
     data = json.loads(request.data)
     filter_arr = data['filter']
-    send_samples = data['sendSamples']
 
     current_app.logger.info('Export URL request data %s' % request.data)
 
@@ -384,7 +342,7 @@ def export_url_post():  # noqa: E501
     for c in ' .:=':
         cohort_name = cohort_name.replace(c, '_')
 
-    entities = _get_entities_dict(cohort_name, query, filter_arr, send_samples)
+    entities = _get_entities_dict(cohort_name, query, filter_arr)
 
     # Don't actually write GCS file during unit test. If we wrote a file during
     # unit test, in order to make it easy for anyone to run this test, we would
@@ -392,7 +350,7 @@ def export_url_post():  # noqa: E501
     if 'pytest' in sys.modules:
         return 'foo'
 
-    gcs_path = _write_gcs_file(entities, send_samples)
+    gcs_path = _write_gcs_file(entities)
     signed_url = _create_signed_url(gcs_path)
     return ExportUrlResponse(
         url=signed_url,

@@ -9,8 +9,6 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import React from "react";
 
 import "components/ExportFab.css";
@@ -18,15 +16,11 @@ import "components/ExportFab.css";
 class ExportFab extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      open: false,
-      checked: false
-    };
+    this.state = { open: false };
     this.handleClick = this.handleClick.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.setTextValue = this.setTextValue.bind(this);
-    this.handleCheck = this.handleCheck.bind(this);
   }
 
   render() {
@@ -70,15 +64,6 @@ class ExportFab extends React.Component {
                   }
                 }}
               />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={this.state.checked}
-                    onChange={this.handleCheck}
-                  />
-                }
-                label="Check to export sample data."
-              />
             </DialogContent>
             <DialogActions>
               <Button onClick={this.handleCancel} color="primary">
@@ -111,10 +96,6 @@ class ExportFab extends React.Component {
     this.setState(state => ({ open: false }));
   }
 
-  handleCheck(event, checked) {
-    this.setState(state => ({ checked: checked }));
-  }
-
   handleSave() {
     this.setState(state => ({ open: false }));
     let exportUrlCallback = function(error, data) {
@@ -141,7 +122,6 @@ class ExportFab extends React.Component {
     let params = new Object();
     params.cohortName = cohortName;
     params.filter = filter;
-    params.sendSamples = this.state.checked;
     this.props.exportUrlApi.exportUrlPost(
       { exportUrlRequest: params },
       exportUrlCallback
