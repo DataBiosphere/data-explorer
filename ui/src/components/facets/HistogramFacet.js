@@ -150,14 +150,16 @@ class HistogramFacet extends Component {
           facet={this.props.facet}
           selectedValues={this.props.selectedValues}
         />
-        <div className={classes.vega}>
-          <VegaLite
-            spec={spec}
-            data={data}
-            tooltip={new Handler().call}
-            onNewView={this.onNewView}
-          />
-        </div>
+        {this.props.facet.values && this.props.facet.values.length > 0 && (
+          <div className={classes.vega}>
+            <VegaLite
+              spec={spec}
+              data={data}
+              tooltip={new Handler().call}
+              onNewView={this.onNewView}
+            />
+          </div>
+        )}
       </div>
     );
   }

@@ -43,9 +43,12 @@ def _get_field_range_and_cardinality(es, field_name):
     aggs = search.params(size=0).execute().aggregations.to_dict()
     for nesting in nestings:
         aggs = aggs.get(nesting)
+    if aggs['max']['value'] and aggs['max']['value']:
+        field_range = aggs['max']['value'] - aggs['min']['value']
+    else:
+        field_range = 0
 
-    return (aggs['max']['value'] - aggs['min']['value'],
-            aggs['cardinality']['value'])
+    return (field_range, aggs['cardinality']['value'])
 
 
 def _get_bucket_interval(es, field_name):
