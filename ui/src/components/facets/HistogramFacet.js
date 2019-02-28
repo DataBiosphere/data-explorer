@@ -144,12 +144,14 @@ class HistogramFacet extends Component {
       })
     );
 
-    return (
-      <div className={classes.histogramFacet}>
-        <FacetHeader
-          facet={this.props.facet}
-          selectedValues={this.props.selectedValues}
-        />
+    let vegaDiv;
+    if (
+      this.props.facet.values === undefined ||
+      this.props.facet.values.length == 0
+    ) {
+      vegaDiv = null;
+    } else {
+      vegaDiv = (
         <div className={classes.vega}>
           <VegaLite
             spec={spec}
@@ -158,6 +160,16 @@ class HistogramFacet extends Component {
             onNewView={this.onNewView}
           />
         </div>
+      );
+    }
+
+    return (
+      <div className={classes.histogramFacet}>
+        <FacetHeader
+          facet={this.props.facet}
+          selectedValues={this.props.selectedValues}
+        />
+        {vegaDiv}
       </div>
     );
   }
