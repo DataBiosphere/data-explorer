@@ -64,7 +64,7 @@ const styles = {
     opacity: 0.9
   },
   toolbar: {
-    paddingLeft: 0
+    padding: 0
   },
   totalCount: {
     backgroundColor: "#b0d239",
@@ -116,6 +116,10 @@ const styles = {
     fontSize: 12,
     fontWeight: 600,
     marginTop: -1
+  },
+  vizSwitchRoot: {
+    marginLeft: "auto",
+    marginRight: 32
   }
 };
 
@@ -180,7 +184,10 @@ class Header extends React.Component {
             {this.props.totalCount} Participants
           </div>
           <FormControlLabel
-            classes={{ label: classes.vizSwitchLabel }}
+            classes={{
+              label: classes.vizSwitchLabel,
+              root: classes.vizSwitchRoot
+            }}
             control={
               <Switch
                 classes={{
