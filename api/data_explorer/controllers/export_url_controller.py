@@ -109,44 +109,26 @@ def _get_entities_dict(cohort_name, query, filter_arr):
             # This is the entity ID. Ideally this would be
             # project_id.dataset_id.table_name, and we wouldn't need the
             # table_name attribute. Unfortunately RAWLS doesn't allow
-            # periods here. RAWLS does allow periods in attributes. So use
-            # underscores here and periods in table_name attribute.
-            'name': table_name.replace('.', '_').replace(':', '_'),
+            # periods here. RAWLS does allow periods in attributes. So put
+            # just table name here, and put full project.dataset.table in
+            # table_name attribute.
+            # Use rsplit instead of split because project id may have ".", eg
+            # "google.com:api-project-123".
+            'name': table_name.rsplit('.', 1)[1],
             'attributes': {
-                'table_name': table_name
+                'dataset_name': current_app.config['DATASET_NAME'],
+                'table_name': table_name,
             }
         })
 
-    # If a cohort was selected, create a query entity and get Elasticsearch documents
-    # for the cohort so we can create sample_set entity.
-    if cohort_name:
-        entities.append({
-            'entityType': 'cohort',
-            'name': cohort_name,
-            'attributes': {
-                'query': query
-            }
-        })
-
-        if current_app.config['SAMPLE_ID_COLUMN']:
-            sample_id_column = current_app.config['SAMPLE_ID_COLUMN']
-            sample_items = []
-            for doc in _get_doc_generator(filter_arr):
-                sample_items.extend([{
-                    'entityType': 'sample',
-                    'entityName': s[sample_id_column]
-                } for s in doc.get('samples', [])])
-            if len(sample_items) > 0:
-                entities.append({
-                    'entityType': 'sample_set',
-                    'name': cohort_name,
-                    'attributes': {
-                        'samples': {
-                            'itemsType': 'EntityReference',
-                            'items': sample_items
-                        }
-                    }
-                })
+    entities.append({
+        'entityType': 'cohort',
+        'name': cohort_name,
+        'attributes': {
+            'dataset_name': current_app.config['DATASET_NAME'],
+            'query': query,
+        }
+    })
 
     return entities
 
@@ -162,32 +144,10 @@ def _write_gcs_file(entities):
     client = storage.Client(project=current_app.config['DEPLOY_PROJECT_ID'])
     export_bucket = client.get_bucket(
         current_app.config['EXPORT_URL_GCS_BUCKET'])
-    samples_bucket = client.get_bucket(
-        current_app.config['EXPORT_URL_SAMPLES_GCS_BUCKET'])
     user = os.environ.get('USER')
-    samples_file_name = '%s-%s-samples' % (current_app.config['INDEX_NAME'],
-                                           user)
     blob = export_bucket.blob(_random_str())
     entities_json = json.dumps(entities)
-
-    samples_blob = samples_bucket.get_blob(samples_file_name)
-    if samples_blob:
-        # Copy the samples blob to the export bucket in order to compose with the other
-        # object containing the rest of the entities JSON.
-        copied_samples_blob = export_bucket.blob(samples_file_name)
-        # Use the rewrite rather than the copy API because the copy can timeout.
-        copied_samples_blob.rewrite(samples_blob)
-
-        # Remove the leading '[' character since this is being concatenated with the
-        # sample entities JSON, which has the trailing ']' stripped in the indexer.
-        entities_json = ',%s' % entities_json[1:]
-        blob.upload_from_string(entities_json)
-        merged = export_bucket.blob(_random_str())
-        merged.upload_from_string('')
-        merged.compose([copied_samples_blob, blob])
-        blob = merged
-    else:
-        blob.upload_from_string(entities_json)
+    blob.upload_from_string(entities_json)
 
     current_app.logger.info(
         'Wrote gs://%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'],
@@ -272,15 +232,22 @@ def _get_table_and_clause(es_field_name, field_type, value,
     return table_name, column, clause
 
 
-def _get_filter_query(filters):
-    if not filters or not len(filters):
-        return ''
-
+def _get_sql_query(filters):
     participant_id_column = current_app.config['PARTICIPANT_ID_COLUMN']
     sample_file_column_fields = {
         k.lower().replace(" ", "_"): v
         for k, v in current_app.config['SAMPLE_FILE_COLUMNS'].iteritems()
     }
+
+    if not filters or not len(filters):
+        # TODO: _get_sql_query() assumes that all tables have all participant
+        # ids. Make _get_sql_query() work if that's not the case. participant
+        # ids should be aggregated from all tables.
+
+        # Arbitrarily choosing first table
+        table_name = current_app.config['TABLES'][0]
+        return 'SELECT DISTINCT {} FROM `{}`'.format(participant_id_column,
+                                                     table_name)
 
     # facet_table_clauses must have two levels of nesting (facet_id, table_name)
     # because clauses from the same column are OR'ed together, whereas clauses
@@ -378,7 +345,7 @@ def export_url_post():  # noqa: E501
 
     current_app.logger.info('Export URL request data %s' % request.data)
 
-    query = _get_filter_query(filter_arr)
+    query = _get_sql_query(filter_arr)
     cohort_name = data['cohortName']
     for c in ' .:=':
         cohort_name = cohort_name.replace(c, '_')
