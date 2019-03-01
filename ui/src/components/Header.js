@@ -8,7 +8,6 @@ import Snackbar from "@material-ui/core/Snackbar";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 import Switch from "@material-ui/core/Switch";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 
 import colors from "libs/colors";
@@ -25,17 +24,18 @@ const styles = {
     boxShadow: "rgba(0, 0, 0, 0.12) 0px 3px 2px 0px",
     height: 66
   },
+  dataExplorerText: {
+    fontSize: 18,
+    fontWeight: 600,
+    marginRight: 15
+  },
   datasetName: {
     fontSize: 18,
     fontWeight: 600,
-    marginRight: 100
+    marginLeft: 15
   },
   logoGlow: {
     marginRight: 2
-  },
-  totalCount: {
-    fontSize: 18,
-    flexGrow: 1
   },
   snackbarMessage: {
     display: "grid",
@@ -65,6 +65,22 @@ const styles = {
   },
   toolbar: {
     paddingLeft: 0
+  },
+  totalCount: {
+    backgroundColor: "#b0d239",
+    borderRadius: 15.5,
+    fontSize: 16,
+    fontWeight: 500,
+    height: 31,
+    lineHeight: 2,
+    marginLeft: 40,
+    padding: "0 20px 0 20px"
+  },
+  verticalSeparator: {
+    boxSizing: "border-box",
+    height: 34,
+    width: 2,
+    border: "1px solid #97c543"
   },
   vizSwitchBase: {
     "&$vizSwitchChecked": {
@@ -157,16 +173,12 @@ class Header extends React.Component {
         <Toolbar className={classes.toolbar}>
           {snackbar}
           <div className={classes.logoGlow}> {logoGlow} </div>
-          <Typography
-            className={classes.datasetName}
-            variant="headline"
-            color="inherit"
-          >
-            {this.props.datasetName}
-          </Typography>
-          <Typography className={classes.totalCount} color="inherit">
+          <div className={classes.dataExplorerText}>Data Explorer</div>
+          <div className={classes.verticalSeparator} />
+          <div className={classes.datasetName}>{this.props.datasetName}</div>
+          <div className={classes.totalCount}>
             {this.props.totalCount} Participants
-          </Typography>
+          </div>
           <FormControlLabel
             classes={{ label: classes.vizSwitchLabel }}
             control={
