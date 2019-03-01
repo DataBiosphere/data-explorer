@@ -5,7 +5,7 @@ import "@clr/icons/clr-icons.css";
 import AsyncSelect from "react-select/lib/Async";
 import { components } from "react-select";
 
-import { DownAngleIcon } from "libs/icons";
+import { downAngle } from "libs/icons";
 
 // To get readable class names, add classNamePrefix="foo" to <AsyncSelect>
 const styles = {
@@ -237,7 +237,7 @@ class Search extends React.Component {
       const { getStyles } = props;
       return (
         <components.DropdownIndicator {...props} style={styles.dropdownIcon}>
-          {DownAngleIcon}
+          {downAngle}
         </components.DropdownIndicator>
       );
     };
