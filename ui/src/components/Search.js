@@ -5,7 +5,7 @@ import "@clr/icons/clr-icons.css";
 import AsyncSelect from "react-select/lib/Async";
 import { components } from "react-select";
 
-import DownAngleIcon from "libs/icons";
+import { DownAngleIcon } from "libs/icons";
 
 // To get readable class names, add classNamePrefix="foo" to <AsyncSelect>
 const styles = {

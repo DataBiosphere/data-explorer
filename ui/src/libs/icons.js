@@ -1,7 +1,21 @@
+// Partially copied from https://github.com/DataBiosphere/saturn-ui/blob/dev/src/components/icons.js
+
+import "@webcomponents/custom-elements"; // must be before icons
+
+import "@clr/icons/clr-icons.css";
+import { ClarityIcons } from "@clr/icons";
 import React from "react";
 
+import logowShadow from "./icons/logo-wShadow.svg";
+
+ClarityIcons.add({
+  logowShadow: "<img src='" + logowShadow + "' />"
+});
+
+export const logoGlow = <clr-icon shape="logowShadow" size="75" />;
+
 // Clarity angle icon was too thick for Lou.
-const DownAngleIcon = (
+export const DownAngleIcon = (
   <svg
     width="20px"
     height="12px"
@@ -39,5 +53,3 @@ const DownAngleIcon = (
     </g>
   </svg>
 );
-
-export default DownAngleIcon;

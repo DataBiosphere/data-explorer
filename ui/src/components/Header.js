@@ -11,16 +11,22 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 
+import { logoGlow } from "libs/icons";
+
 const styles = {
   appBar: {
     backgroundColor: "#74ae43",
     borderBottom: "2px solid #b0d239",
-    boxShadow: "none"
+    boxShadow: "rgba(0, 0, 0, 0.12) 0px 3px 2px 0px",
+    height: 66
   },
   datasetName: {
     fontSize: 18,
     fontWeight: 600,
     marginRight: 100
+  },
+  logoGlow: {
+    marginRight: 2
   },
   totalCount: {
     fontSize: 18,
@@ -51,6 +57,9 @@ const styles = {
   snackbarCloseIcon: {
     fontSize: "20px",
     opacity: 0.9
+  },
+  toolbar: {
+    paddingLeft: 0
   },
   vizSwitchBase: {
     "&$vizSwitchChecked": {
@@ -140,8 +149,9 @@ class Header extends React.Component {
 
     return (
       <AppBar position="static" className={classes.appBar}>
-        <Toolbar>
+        <Toolbar className={classes.toolbar}>
           {snackbar}
+          <div className={classes.logoGlow}> {logoGlow} </div>
           <Typography
             className={classes.datasetName}
             variant="headline"
