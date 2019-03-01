@@ -109,25 +109,26 @@ def _get_entities_dict(cohort_name, query, filter_arr):
             # This is the entity ID. Ideally this would be
             # project_id.dataset_id.table_name, and we wouldn't need the
             # table_name attribute. Unfortunately RAWLS doesn't allow
-            # periods here. RAWLS does allow periods in attributes. So use
-            # underscores here and periods in table_name attribute.
-            'name': table_name.replace('.', '_').replace(':', '_'),
+            # periods here. RAWLS does allow periods in attributes. So put
+            # just table name here, and put full project.dataset.table in
+            # table_name attribute.
+            # Use rsplit instead of split because project id may have ".", eg
+            # "google.com:api-project-123".
+            'name': table_name.rsplit('.', 1)[1],
             'attributes': {
+                'dataset_name': current_app.config['DATASET_NAME'],
                 'table_name': table_name,
-                'dataset_id': table_name.split('.')[1],
             }
         })
 
-    # If a cohort was selected, create a query entity
-    if cohort_name:
-        entities.append({
-            'entityType': 'cohort',
-            'name': cohort_name,
-            'attributes': {
-                'query': query,
-                'dataset_id': table_name.split('.')[1],
-            }
-        })
+    entities.append({
+        'entityType': 'cohort',
+        'name': cohort_name,
+        'attributes': {
+            'dataset_name': current_app.config['DATASET_NAME'],
+            'query': query,
+        }
+    })
 
     return entities
 
@@ -231,15 +232,22 @@ def _get_table_and_clause(es_field_name, field_type, value,
     return table_name, column, clause
 
 
-def _get_filter_query(filters):
-    if not filters or not len(filters):
-        return ''
-
+def _get_sql_query(filters):
     participant_id_column = current_app.config['PARTICIPANT_ID_COLUMN']
     sample_file_column_fields = {
         k.lower().replace(" ", "_"): v
         for k, v in current_app.config['SAMPLE_FILE_COLUMNS'].iteritems()
     }
+
+    if not filters or not len(filters):
+        # TODO: _get_sql_query() assumes that all tables have all participant
+        # ids. Make _get_sql_query() work if that's not the case. participant
+        # ids should be aggregated from all tables.
+
+        # Arbitrarily choosing first table
+        table_name = current_app.config['TABLES'][0]
+        return 'SELECT DISTINCT {} FROM `{}`'.format(participant_id_column,
+                                                   table_name)
 
     # facet_table_clauses must have two levels of nesting (facet_id, table_name)
     # because clauses from the same column are OR'ed together, whereas clauses
@@ -337,7 +345,7 @@ def export_url_post():  # noqa: E501
 
     current_app.logger.info('Export URL request data %s' % request.data)
 
-    query = _get_filter_query(filter_arr)
+    query = _get_sql_query(filter_arr)
     cohort_name = data['cohortName']
     for c in ' .:=':
         cohort_name = cohort_name.replace(c, '_')

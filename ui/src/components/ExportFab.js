@@ -116,7 +116,7 @@ class ExportFab extends React.Component {
       filter = [];
     }
     if (cohortName == null) {
-      cohortName = "";
+      cohortName = "all participants";
     }
     let params = new Object();
     params.cohortName = cohortName;
