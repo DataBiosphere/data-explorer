@@ -247,7 +247,7 @@ def _get_sql_query(filters):
         # Arbitrarily choosing first table
         table_name = current_app.config['TABLES'][0]
         return 'SELECT DISTINCT {} FROM `{}`'.format(participant_id_column,
-                                                   table_name)
+                                                     table_name)
 
     # facet_table_clauses must have two levels of nesting (facet_id, table_name)
     # because clauses from the same column are OR'ed together, whereas clauses
