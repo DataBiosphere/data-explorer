@@ -118,8 +118,7 @@ const styles = {
     marginTop: -1
   },
   vizSwitchRoot: {
-    marginLeft: "auto",
-    marginRight: 32
+    margin: "2px 32px 0 auto"
   }
 };
 
