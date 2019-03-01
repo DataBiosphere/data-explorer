@@ -11,11 +11,16 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 
+import colors from "libs/colors";
+import headerLeftHexes from "libs/images/header-left-hexes.svg";
+import headerRightHexes from "libs/images/header-right-hexes.svg";
 import { logoGlow } from "libs/icons";
 
 const styles = {
   appBar: {
-    backgroundColor: "#74ae43",
+    background: `81px url(${headerLeftHexes}) no-repeat, right url(${headerRightHexes}) no-repeat, ${
+      colors.green[1]
+    }`,
     borderBottom: "2px solid #b0d239",
     boxShadow: "rgba(0, 0, 0, 0.12) 0px 3px 2px 0px",
     height: 66
