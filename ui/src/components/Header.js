@@ -8,23 +8,34 @@ import Snackbar from "@material-ui/core/Snackbar";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 import Switch from "@material-ui/core/Switch";
 import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
+
+import colors from "libs/colors";
+import headerLeftHexes from "libs/images/header-left-hexes.svg";
+import headerRightHexes from "libs/images/header-right-hexes.svg";
+import { logoGlow } from "libs/icons";
 
 const styles = {
   appBar: {
-    backgroundColor: "#74ae43",
+    background: `81px url(${headerLeftHexes}) no-repeat, right url(${headerRightHexes}) no-repeat, ${
+      colors.green[1]
+    }`,
     borderBottom: "2px solid #b0d239",
-    boxShadow: "none"
+    boxShadow: "rgba(0, 0, 0, 0.12) 0px 3px 2px 0px",
+    height: 66
+  },
+  dataExplorerText: {
+    fontSize: 18,
+    fontWeight: 600,
+    marginRight: 15
   },
   datasetName: {
     fontSize: 18,
     fontWeight: 600,
-    marginRight: 100
+    marginLeft: 15
   },
-  totalCount: {
-    fontSize: 18,
-    flexGrow: 1
+  logoGlow: {
+    marginRight: 2
   },
   snackbarMessage: {
     display: "grid",
@@ -51,6 +62,25 @@ const styles = {
   snackbarCloseIcon: {
     fontSize: "20px",
     opacity: 0.9
+  },
+  toolbar: {
+    padding: 0
+  },
+  totalCount: {
+    backgroundColor: "#b0d239",
+    borderRadius: 15.5,
+    fontSize: 16,
+    fontWeight: 500,
+    height: 31,
+    lineHeight: 2,
+    marginLeft: 40,
+    padding: "0 20px 0 20px"
+  },
+  verticalSeparator: {
+    boxSizing: "border-box",
+    height: 34,
+    width: 2,
+    border: "1px solid #97c543"
   },
   vizSwitchBase: {
     "&$vizSwitchChecked": {
@@ -86,6 +116,9 @@ const styles = {
     fontSize: 12,
     fontWeight: 600,
     marginTop: -1
+  },
+  vizSwitchRoot: {
+    margin: "2px 32px 0 auto"
   }
 };
 
@@ -140,20 +173,20 @@ class Header extends React.Component {
 
     return (
       <AppBar position="static" className={classes.appBar}>
-        <Toolbar>
+        <Toolbar className={classes.toolbar}>
           {snackbar}
-          <Typography
-            className={classes.datasetName}
-            variant="headline"
-            color="inherit"
-          >
-            {this.props.datasetName}
-          </Typography>
-          <Typography className={classes.totalCount} color="inherit">
+          <div className={classes.logoGlow}> {logoGlow} </div>
+          <div className={classes.dataExplorerText}>Data Explorer</div>
+          <div className={classes.verticalSeparator} />
+          <div className={classes.datasetName}>{this.props.datasetName}</div>
+          <div className={classes.totalCount}>
             {this.props.totalCount} Participants
-          </Typography>
+          </div>
           <FormControlLabel
-            classes={{ label: classes.vizSwitchLabel }}
+            classes={{
+              label: classes.vizSwitchLabel,
+              root: classes.vizSwitchRoot
+            }}
             control={
               <Switch
                 classes={{
