@@ -1,70 +1,95 @@
 /**
  * Copied from https://github.com/DataBiosphere/saturn-ui/blob/master/src/libs/colors.js
  */
+
 export default {
-  blue: [
-    '#2691d0',
-    '#5aa6da',
-    '#85bde4',
-    '#afd3ed',
-    '#d7eaf6',
-    '#eaf4fb'
-  ],
-
-  darkBlue: [
-    '#224f83',
-    '#51719c',
-    '#7d95b5',
-    '#a8b8ce',
-    '#d4dce6',
-    '#eaedf3'
-  ],
-
-  gray: [
-    '#4a4a4a',
-    '#6e6e6e',
-    '#929292',
-    '#b7b7b7',
-    '#dbdbdb',
-    '#ededed'
-  ],
-
-  purple: [
-    '#8a6194',
-    '#a180a9',
-    '#b8a0be',
-    '#d1bfd4',
-    '#e8dfea',
-    '#f3eff4'
+  lightGreen: [
+    "#b0d239",
+    "#bcd957",
+    "#c8e075",
+    "#d4e793",
+    "#e0edb0",
+    "#ecf4ce",
+    "#f8fbec"
   ],
 
   green: [
-    '#7dc69c',
-    '#97d1b0',
-    '#b0dcc4',
-    '#cbe9d7',
-    '#e4f4eb',
-    '#f1f9f5'
+    "#5c912e",
+    "#74ae43",
+    "#89bb60",
+    "#9ec77c",
+    "#b3d398",
+    "#c8dfb4",
+    "#ddebd0",
+    "#f2f8ed"
   ],
 
-  red: [
-    '#c72314',
-    '#d24e39',
-    '#dd7a69',
-    '#e8a69b',
-    '#f3d3cd',
-    '#f9e8e5'
+  darkGreen: [
+    "#359448",
+    "#54a464",
+    "#72b47f",
+    "#91c59b",
+    "#afd5b6",
+    "#cde5d2",
+    "#ecf5ee"
   ],
 
   orange: [
-    '#e08334',
-    '#e69b59',
-    '#edb481',
-    '#f2cdab',
-    '#f8e6d5',
-    '#fcf2e9'
+    "#f7981c",
+    "#f9a83e",
+    "#fab760",
+    "#fbc783",
+    "#fcd6a5",
+    "#fde6c7",
+    "#fff5e9"
   ],
 
-  slate: '#8399a4',
-  brick: '#c35b69'
-}
+  red: [
+    "#db3214",
+    "#e15138",
+    "#e6705b",
+    "#ec8f7e",
+    "#f1ada1",
+    "#f6ccc5",
+    "#fcebe8"
+  ],
+
+  grayBlue: [
+    "#c5d0de",
+    "#ced8e3",
+    "#d7dfe8",
+    "#e0e6ed",
+    "#e8edf2",
+    "#f1f4f7",
+    "#fafbfc"
+  ],
+
+  gray: [
+    "#333f52",
+    "#525c6c",
+    "#707986",
+    "#8f96a1",
+    "#aeb3ba",
+    "#cccfd4",
+    "#ebedef"
+  ],
+
+  blue: [
+    "#0086c1",
+    "#2699cb",
+    "#4cabd4",
+    "#73bddd",
+    "#99cfe7",
+    "#bfe1f0",
+    "#e6f4f9"
+  ],
+
+  darkBlue: ["#224f83", "#51719c", "#7d95b5", "#a8b8ce", "#d4dce6", "#eaedf3"],
+
+  purple: ["#8a6194", "#a180a9", "#b8a0be", "#d1bfd4", "#e8dfea", "#f3eff4"],
+
+  slate: "#8399a4",
+  brick: "#c35b69",
+
+  gradient: "linear-gradient(180deg, #74ae43 0%, #359448 100%)"
+};
