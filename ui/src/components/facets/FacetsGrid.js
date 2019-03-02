@@ -8,7 +8,12 @@ import HistogramFacet from "components/facets/HistogramFacet";
 
 const styles = {
   root: {
-    padding: "20px"
+    // Needed to make left box shadow show up for all left-most tiles
+    overflow: "unset"
+  },
+  tile: {
+    // Needed to make left box shadow show up for all tiles
+    overflow: "unset"
   }
 };
 
@@ -37,15 +42,28 @@ function FacetsGrid(props) {
 
   const facetsList = props.facets.map(facet => {
     return (
-      <GridListTile key={facet.name}>{facetCard(props, facet)}</GridListTile>
+      // Can't set padding the normal way because it's overridden by
+      // GridListTile's built-in "style=padding:2".
+      <GridListTile
+        classes={{ tile: classes.tile }}
+        key={facet.name}
+        style={{ padding: 0 }}
+      >
+        {facetCard(props, facet)}
+      </GridListTile>
     );
   });
   return (
-    <div className={classes.root}>
-      <GridList className={classes.gridList} cols={3} cellHeight="auto">
-        {facetsList}
-      </GridList>
-    </div>
+    // Can't set margin the normal way because it's overridden by
+    // GridList's built-in "style=margin:-2px".
+    <GridList
+      classes={{ root: classes.root }}
+      cols={3}
+      cellHeight="auto"
+      style={{ margin: "23px -10px -5px 15px" }}
+    >
+      {facetsList}
+    </GridList>
   );
 }
 

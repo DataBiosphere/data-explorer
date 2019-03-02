@@ -11,8 +11,7 @@ import FacetHeader from "components/facets/FacetHeader";
 const styles = {
   textFacet: {
     ...Style.elements.card,
-    margin: "2%",
-    paddingBottom: "8px",
+    margin: "0 25px 28px 0",
     display: "grid",
     gridTemplateColumns: "auto 50px",
     // If there is a long word (eg facet name or facet value), break in the
