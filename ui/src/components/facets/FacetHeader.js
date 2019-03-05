@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+
+import colors from "libs/colors";
 
 const styles = {
   // Grid from TextFacet/HistogramFacet applies. (Grid is defined in TextFacet
@@ -9,11 +10,17 @@ const styles = {
   // By default, each div takes up one grid cell.
   // Don't specify gridColumn, just use default of one cell.
   facetDescription: {
-    color: "gray",
+    color: colors.gray[1],
+    fontSize: 14,
     marginBottom: 20
   },
+  facetName: {
+    color: colors.gray[1],
+    fontSize: 16,
+    fontWeight: 600
+  },
   totalFacetValueCount: {
-    color: "gray",
+    color: colors.gray[1],
     textAlign: "right"
   }
 };
@@ -30,20 +37,20 @@ class FacetHeader extends Component {
       // Use React.Fragment instead of div. div messes up grid formatting:
       // Facet name would be grandchild of TextFacet rather than child.
       <React.Fragment>
-        <Typography>{this.props.facet.name}</Typography>
+        <div className={classes.facetName}>{this.props.facet.name}</div>
         {this.props.facet.name != "Samples Overview" ? (
-          <Typography className={classes.totalFacetValueCount}>
+          <div className={classes.totalFacetValueCount}>
             {this.sumFacetValueCounts(
               this.props.facet.values,
               this.props.selectedValues
             )}
-          </Typography>
+          </div>
         ) : (
           <div />
         )}
-        <Typography className={classes.facetDescription}>
+        <div className={classes.facetDescription}>
           {this.props.facet.description}
-        </Typography>
+        </div>
       </React.Fragment>
     );
   }
