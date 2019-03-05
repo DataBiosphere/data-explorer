@@ -65,6 +65,8 @@ class App extends Component {
 
     this.apiClient = new ApiClient();
     this.apiClient.basePath = "/api";
+    // Needed for CORS to work with Zscaler
+    this.apiClient.enableCookies = true;
     this.facetsApi = new FacetsApi(this.apiClient);
     this.facetsCallback = function(error, data) {
       if (error) {
