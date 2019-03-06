@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "//": [
-      "vega-lib and vega-lite are peerDependencies of react-vega-lite.",
+      "See https://github.com/vega/react-vega-lite#install for react-vega-lite",
       "@webcomponents/custom-elements is needed for @clr/icons"
     ],
     "@clr/icons": "^0.13.10",
@@ -19,6 +19,7 @@
     "react-dom": "^16.3.0",
     "react-scripts": "^2.0.0",
     "react-select": "^2.0.0",
+    "react-vega": "^4.0.2",
     "react-vega-lite": "^2.0.2",
     "vega-lib": "^4.4.0",
     "vega-lite": "^3.0.0-rc12",
