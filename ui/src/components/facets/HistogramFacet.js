@@ -13,7 +13,8 @@ const styles = {
     ...Style.elements.card,
     margin: "0 25px 28px 0",
     maxHeight: "400px",
-    overflowY: "auto"
+    overflowY: "auto",
+    padding: 0
   },
   vega: {
     textAlign: "center"
