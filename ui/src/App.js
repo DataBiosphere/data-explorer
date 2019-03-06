@@ -15,6 +15,7 @@ import ExportUrlApi from "api/src/api/ExportUrlApi";
 import FacetsGrid from "components/facets/FacetsGrid";
 import Search from "components/Search";
 import Header from "components/Header";
+import Montserrat from "libs/fonts/Montserrat-Regular.woff";
 
 const theme = createMuiTheme({
   typography: {
@@ -60,7 +61,8 @@ class App extends Component {
       // esFieldName - The elasticsearch field name of the facet.
       // facetValue
       searchResults: [],
-      awaitingFacetsApi: false
+      facetsApiDone: false,
+      fontLoaded: false
     };
 
     this.apiClient = new ApiClient();
@@ -68,14 +70,13 @@ class App extends Component {
     this.facetsApi = new FacetsApi(this.apiClient);
     this.facetsCallback = function(error, data) {
       if (error) {
-        this.setState({ awaitingFacetsApi: false });
+        this.setState({ facetsApiDone: true });
         console.error(error);
-        // TODO(alanhwang): Redirect to an error page
       } else {
         this.setState({
+          facetsApiDone: true,
           facets: this.getFacetMap(data.facets),
-          totalCount: data.count,
-          awaitingFacetsApi: false
+          totalCount: data.count
         });
       }
     }.bind(this);
@@ -120,6 +121,8 @@ class App extends Component {
         .catch(error => callback(error, null));
     }, 500).bind(this);
 
+    this.loadFont();
+
     this.updateFacets = this.updateFacets.bind(this);
     this.handleSearchBoxChange = this.handleSearchBoxChange.bind(this);
     this.handleVizSwitchChange = this.handleVizSwitchChange.bind(this);
@@ -127,7 +130,7 @@ class App extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !nextState.awaitingFacetsApi;
+    return nextState.facetsApiDone && nextState.fontLoaded;
   }
 
   render() {
@@ -188,6 +191,16 @@ class App extends Component {
       }
     }.bind(this);
     datasetApi.datasetGet(datasetCallback);
+  }
+
+  loadFont() {
+    // Force load font before vega rendering to prevent truncation bug. See
+    // https://github.com/vega/vega/issues/1671
+    var font = new FontFace("Montserrat", "url(" + Montserrat + ")");
+    font.load().then(loadedFace => {
+      document.fonts.add(loadedFace);
+      this.setState({ fontLoaded: true });
+    });
   }
 
   getFacetMap(facets) {
@@ -276,12 +289,10 @@ class App extends Component {
       facetValue,
       isSelected
     );
-    // Update the state
     this.setState({
-      selectedFacetValues: selectedFacetValues,
-      awaitingFacetsApi: true
+      facetsApiDone: false,
+      selectedFacetValues: selectedFacetValues
     });
-    // Update the facets grid.
     this.facetsApi.facetsGet(
       {
         filter: this.filterMapToArray(this.state.selectedFacetValues),
