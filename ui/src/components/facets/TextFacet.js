@@ -42,10 +42,12 @@ const styles = {
     paddingRight: 0
   },
   facetValueName: {
+    color: colors.gray[0],
     fontSize: 14,
     fontWeight: 500
   },
   facetValueCount: {
+    color: colors.gray[0],
     fontSize: 14,
     fontWeight: 500,
     textAlign: "right"
