@@ -6,6 +6,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 
 import * as Style from "libs/style";
+import colors from "libs/colors";
 import FacetHeader from "components/facets/FacetHeader";
 
 const styles = {
@@ -53,7 +54,7 @@ const styles = {
     padding: "0 0 0 14px"
   },
   grayText: {
-    color: "silver"
+    color: colors.gray[4]
   }
 };
 

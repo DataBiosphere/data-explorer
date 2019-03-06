@@ -21,6 +21,7 @@
     "react-select": "^2.0.0",
     "react-vega": "^4.0.2",
     "react-vega-lite": "^2.0.2",
+    "vega": "^5.0.0",
     "vega-lib": "^4.4.0",
     "vega-lite": "^3.0.0-rc12",
     "vega-tooltip": "^0.15.0"
