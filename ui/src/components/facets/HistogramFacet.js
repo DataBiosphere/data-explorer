@@ -12,16 +12,10 @@ const styles = {
   histogramFacet: {
     ...Style.elements.card,
     margin: "0 25px 28px 0",
-    // Grid is defined in TextFacet so facet value counts can appear on right,
-    // in addition to total facet value count.
-    // Also define here to be consistent.
-    display: "grid",
-    gridTemplateColumns: "auto 50px",
     maxHeight: "400px",
     overflowY: "auto"
   },
   vega: {
-    gridColumn: "1 / 3",
     textAlign: "center"
   }
 };

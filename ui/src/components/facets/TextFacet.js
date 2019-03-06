@@ -12,23 +12,16 @@ const styles = {
   textFacet: {
     ...Style.elements.card,
     margin: "0 25px 28px 0",
-    display: "grid",
-    gridTemplateColumns: "auto 50px",
     // If there is a long word (eg facet name or facet value), break in the
     // middle of the word. Without this, the word stays on one line and its CSS
     // grid is wider than the facet card.
     wordBreak: "break-word"
   },
   facetValueList: {
-    gridColumn: "1 / 3",
-    //    margin: "20px 0 0 0",
     maxHeight: "400px",
     overflow: "auto"
   },
   facetValue: {
-    // This is a nested div, so need to specify a new grid.
-    display: "grid",
-    gridTemplateColumns: "24px auto",
     justifyContent: "stretch",
     padding: "0",
     // Disable gray background on ListItem hover.
@@ -41,6 +34,8 @@ const styles = {
     width: "24px"
   },
   facetValueNameAndCount: {
+    display: "grid",
+    gridTemplateColumns: "auto 50px",
     paddingRight: 0
   },
   facetValueName: {
@@ -48,6 +43,9 @@ const styles = {
   },
   facetValueCount: {
     textAlign: "right"
+  },
+  listItemText: {
+    paddingRight: 0
   },
   grayText: {
     color: "silver"
@@ -62,6 +60,11 @@ class TextFacet extends Component {
     this.isValueDimmed = this.isValueDimmed.bind(this);
   }
 
+  /*
+          classes={{
+            primary: this.isValueDimmed(value) ? classes.grayText : null
+          }}
+*/
   render() {
     const { classes } = this.props;
 
@@ -82,15 +85,17 @@ class TextFacet extends Component {
           }
         />
         <ListItemText
-          className={classes.facetValueNameAndCount}
           classes={{
-            primary: this.isValueDimmed(value) ? classes.grayText : null
+            primary: this.isValueDimmed(value)
+              ? classes.facetValueNameAndCount + " " + classes.grayText
+              : classes.facetValueNameAndCount,
+            root: classes.listItemText
           }}
           primary={
-            <div style={{ display: "grid", gridTemplateColumns: "auto 50px" }}>
+            <>
               <div className={classes.facetValueName}>{value.name}</div>
               <div className={classes.facetValueCount}>{value.count}</div>
-            </div>
+            </>
           }
         />
       </ListItem>

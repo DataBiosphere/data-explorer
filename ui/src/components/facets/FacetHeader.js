@@ -4,15 +4,15 @@ import { withStyles } from "@material-ui/core/styles";
 import colors from "libs/colors";
 
 const styles = {
-  // Grid from TextFacet/HistogramFacet applies. (Grid is defined in TextFacet
-  // instead of here, so facet value counts can be in same column as total facet
-  // value count.)
-  // By default, each div takes up one grid cell.
-  // Don't specify gridColumn, just use default of one cell.
   facetDescription: {
+    gridColumn: "1/3",
     color: colors.gray[1],
     fontSize: 14,
     marginBottom: 20
+  },
+  facetHeader: {
+    display: "grid",
+    gridTemplateColumns: "auto 50px"
   },
   facetName: {
     color: colors.gray[1],
@@ -34,9 +34,7 @@ class FacetHeader extends Component {
     const { classes } = this.props;
 
     return (
-      // Use React.Fragment instead of div. div messes up grid formatting:
-      // Facet name would be grandchild of TextFacet rather than child.
-      <React.Fragment>
+      <div className={classes.facetHeader}>
         <div className={classes.facetName}>{this.props.facet.name}</div>
         {this.props.facet.name != "Samples Overview" ? (
           <div className={classes.totalFacetValueCount}>
@@ -51,7 +49,7 @@ class FacetHeader extends Component {
         <div className={classes.facetDescription}>
           {this.props.facet.description}
         </div>
-      </React.Fragment>
+      </div>
     );
   }
 
