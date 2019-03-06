@@ -337,7 +337,7 @@ describe("End-to-end", () => {
         "*[class*='TextFacet-textFacet-']"
       );
       for (const div of divs) {
-        const name = div.querySelector("p").innerText;
+        const name = div.querySelector("div").innerText;
         if (name.includes(innerFacetName)) return div;
       }
       return null;
@@ -391,7 +391,7 @@ describe("End-to-end", () => {
         "*[class*='HistogramFacet-histogramFacet-']"
       );
       for (const div of divs) {
-        const name = div.querySelector("p").innerText;
+        const name = div.querySelector("div").innerText;
         if (name.includes(innerFacetName)) return div;
       }
       return null;
