@@ -12,26 +12,28 @@ const styles = {
   textFacet: {
     ...Style.elements.card,
     margin: "0 25px 28px 0",
+    padding: 0,
     // If there is a long word (eg facet name or facet value), break in the
     // middle of the word. Without this, the word stays on one line and its CSS
     // grid is wider than the facet card.
     wordBreak: "break-word"
   },
   facetValueList: {
-    maxHeight: "400px",
-    overflow: "auto"
+    maxHeight: "500px",
+    overflow: "auto",
+    padding: "0 20px 16px 14px"
   },
   facetValue: {
     justifyContent: "stretch",
-    padding: "0",
+    padding: "10px 0 0 0",
     // Disable gray background on ListItem hover.
     "&:hover": {
       backgroundColor: "unset"
     }
   },
   facetValueCheckbox: {
-    height: "24px",
-    width: "24px"
+    height: 16,
+    width: 16
   },
   facetValueNameAndCount: {
     display: "grid",
@@ -39,13 +41,16 @@ const styles = {
     paddingRight: 0
   },
   facetValueName: {
-    // Used by end-to-end tests
+    fontSize: 14,
+    fontWeight: 500
   },
   facetValueCount: {
+    fontSize: 14,
+    fontWeight: 500,
     textAlign: "right"
   },
   listItemText: {
-    paddingRight: 0
+    padding: "0 0 0 14px"
   },
   grayText: {
     color: "silver"
@@ -60,11 +65,6 @@ class TextFacet extends Component {
     this.isValueDimmed = this.isValueDimmed.bind(this);
   }
 
-  /*
-          classes={{
-            primary: this.isValueDimmed(value) ? classes.grayText : null
-          }}
-*/
   render() {
     const { classes } = this.props;
 
