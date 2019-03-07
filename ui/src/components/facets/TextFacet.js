@@ -6,52 +6,57 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 
 import * as Style from "libs/style";
+import colors from "libs/colors";
 import FacetHeader from "components/facets/FacetHeader";
 
 const styles = {
   textFacet: {
     ...Style.elements.card,
-    margin: "2%",
-    paddingBottom: "8px",
-    display: "grid",
-    gridTemplateColumns: "auto 50px",
+    margin: "0 25px 28px 0",
+    padding: 0,
     // If there is a long word (eg facet name or facet value), break in the
     // middle of the word. Without this, the word stays on one line and its CSS
     // grid is wider than the facet card.
     wordBreak: "break-word"
   },
   facetValueList: {
-    gridColumn: "1 / 3",
-    //    margin: "20px 0 0 0",
-    maxHeight: "400px",
-    overflow: "auto"
+    maxHeight: "500px",
+    overflow: "auto",
+    padding: "0 20px 16px 14px"
   },
   facetValue: {
-    // This is a nested div, so need to specify a new grid.
-    display: "grid",
-    gridTemplateColumns: "24px auto",
     justifyContent: "stretch",
-    padding: "0",
+    padding: "10px 0 0 0",
     // Disable gray background on ListItem hover.
     "&:hover": {
       backgroundColor: "unset"
     }
   },
   facetValueCheckbox: {
-    height: "24px",
-    width: "24px"
+    height: 16,
+    width: 16
   },
   facetValueNameAndCount: {
+    display: "grid",
+    gridTemplateColumns: "auto 50px",
     paddingRight: 0
   },
   facetValueName: {
-    // Used by end-to-end tests
+    color: colors.gray[0],
+    fontSize: 14,
+    fontWeight: 500
   },
   facetValueCount: {
+    color: colors.gray[0],
+    fontSize: 14,
+    fontWeight: 500,
     textAlign: "right"
   },
+  listItemText: {
+    padding: "0 0 0 14px"
+  },
   grayText: {
-    color: "silver"
+    color: colors.gray[4]
   }
 };
 
@@ -83,15 +88,17 @@ class TextFacet extends Component {
           }
         />
         <ListItemText
-          className={classes.facetValueNameAndCount}
           classes={{
-            primary: this.isValueDimmed(value) ? classes.grayText : null
+            primary: this.isValueDimmed(value)
+              ? classes.facetValueNameAndCount + " " + classes.grayText
+              : classes.facetValueNameAndCount,
+            root: classes.listItemText
           }}
           primary={
-            <div style={{ display: "grid", gridTemplateColumns: "auto 50px" }}>
+            <>
               <div className={classes.facetValueName}>{value.name}</div>
               <div className={classes.facetValueCount}>{value.count}</div>
-            </div>
+            </>
           }
         />
       </ListItem>

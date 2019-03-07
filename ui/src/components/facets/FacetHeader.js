@@ -1,19 +1,33 @@
 import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+
+import colors from "libs/colors";
 
 const styles = {
-  // Grid from TextFacet/HistogramFacet applies. (Grid is defined in TextFacet
-  // instead of here, so facet value counts can be in same column as total facet
-  // value count.)
-  // By default, each div takes up one grid cell.
-  // Don't specify gridColumn, just use default of one cell.
   facetDescription: {
-    color: "gray",
-    marginBottom: 20
+    gridColumn: "1/3",
+    color: colors.gray[1],
+    fontSize: 14,
+    fontWeight: 500,
+    marginTop: "-7px",
+    padding: "0px 18px 12px 14px"
+  },
+  facetHeader: {
+    backgroundColor: colors.grayBlue[5],
+    display: "grid",
+    gridTemplateColumns: "auto 80px"
+  },
+  facetName: {
+    color: colors.gray[1],
+    fontSize: 16,
+    fontWeight: 600,
+    padding: "11px 0 12px 14px"
   },
   totalFacetValueCount: {
-    color: "gray",
+    color: colors.gray[1],
+    fontSize: 16,
+    fontWeight: 600,
+    padding: "11px 18px 0 0",
     textAlign: "right"
   }
 };
@@ -27,24 +41,22 @@ class FacetHeader extends Component {
     const { classes } = this.props;
 
     return (
-      // Use React.Fragment instead of div. div messes up grid formatting:
-      // Facet name would be grandchild of TextFacet rather than child.
-      <React.Fragment>
-        <Typography>{this.props.facet.name}</Typography>
-        {this.props.facet.name != "Samples Overview" ? (
-          <Typography className={classes.totalFacetValueCount}>
+      <div className={classes.facetHeader}>
+        <div className={classes.facetName}>{this.props.facet.name}</div>
+        {this.props.facet.name != "Samples Overview" && (
+          <div className={classes.totalFacetValueCount}>
             {this.sumFacetValueCounts(
               this.props.facet.values,
               this.props.selectedValues
             )}
-          </Typography>
-        ) : (
-          <div />
+          </div>
         )}
-        <Typography className={classes.facetDescription}>
-          {this.props.facet.description}
-        </Typography>
-      </React.Fragment>
+        {this.props.facet.description && (
+          <div className={classes.facetDescription}>
+            {this.props.facet.description}
+          </div>
+        )}
+      </div>
     );
   }
 

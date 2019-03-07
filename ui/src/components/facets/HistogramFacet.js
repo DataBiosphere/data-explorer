@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 import VegaLite from "react-vega-lite";
 import { Handler } from "vega-tooltip";
@@ -11,18 +10,12 @@ import FacetHeader from "components/facets/FacetHeader";
 const styles = {
   histogramFacet: {
     ...Style.elements.card,
-    margin: "2%",
-    paddingBottom: "8px",
-    // Grid is defined in TextFacet so facet value counts can appear on right,
-    // in addition to total facet value count.
-    // Also define here to be consistent.
-    display: "grid",
-    gridTemplateColumns: "auto 50px",
+    margin: "0 25px 28px 0",
     maxHeight: "400px",
-    overflowY: "auto"
+    overflowY: "auto",
+    padding: 0
   },
   vega: {
-    gridColumn: "1 / 3",
     textAlign: "center"
   }
 };
@@ -150,16 +143,17 @@ class HistogramFacet extends Component {
           facet={this.props.facet}
           selectedValues={this.props.selectedValues}
         />
-        {this.props.facet.values && this.props.facet.values.length > 0 && (
-          <div className={classes.vega}>
-            <VegaLite
-              spec={spec}
-              data={data}
-              tooltip={new Handler().call}
-              onNewView={this.onNewView}
-            />
-          </div>
-        )}
+        {this.props.facet.values &&
+          this.props.facet.values.length > 0 && (
+            <div className={classes.vega}>
+              <VegaLite
+                spec={spec}
+                data={data}
+                tooltip={new Handler().call}
+                onNewView={this.onNewView}
+              />
+            </div>
+          )}
       </div>
     );
   }

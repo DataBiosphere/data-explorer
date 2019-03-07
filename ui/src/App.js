@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import axios from "axios";
 import debounce from "lodash.debounce";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+import {
+  MuiThemeProvider,
+  createMuiTheme,
+  withStyles
+} from "@material-ui/core/styles";
 
 import {
   ApiClient,
@@ -10,11 +13,25 @@ import {
   FacetsApi,
   SearchApi
 } from "data_explorer_service";
+import colors from "libs/colors";
 import ExportFab from "components/ExportFab";
 import ExportUrlApi from "api/src/api/ExportUrlApi";
 import FacetsGrid from "components/facets/FacetsGrid";
 import Search from "components/Search";
 import Header from "components/Header";
+import Montserrat from "libs/fonts/Montserrat-Regular.woff";
+
+const styles = {
+  disclaimer: {
+    color: colors.gray[3],
+    fontSize: 14,
+    padding: "15px 15px 5px 15px"
+  },
+  disclaimerLink: {
+    color: colors.green[0],
+    textDecoration: "none"
+  }
+};
 
 const theme = createMuiTheme({
   typography: {
@@ -22,22 +39,29 @@ const theme = createMuiTheme({
   }
 });
 
-const Disclaimer = (
-  <Typography style={{ margin: "27px 27px 0px 27px" }}>
-    This dataset is publicly available for anyone to use under the terms
-    provided by the dataset source (
-    <a href="http://www.internationalgenome.org/data">
-      http://www.internationalgenome.org/data
-    </a>
-    ) and are provided "AS IS" without any warranty, express or implied, from
-    Verily Life Sciences, LLC. Verily Life Sciences, LLC disclaims all liability
-    for any damages, direct or indirect, resulting from the use of the dataset.
-  </Typography>
-);
+const Disclaimer = function(classes) {
+  return (
+    <div className={classes.disclaimer}>
+      This dataset is publicly available for anyone to use under the terms
+      provided by the dataset source (
+      <a
+        href="http://www.internationalgenome.org/data"
+        className={classes.disclaimerLink}
+      >
+        http://www.internationalgenome.org/data
+      </a>
+      ) and are provided "AS IS" without any warranty, express or implied, from
+      Verily Life Sciences, LLC. Verily Life Sciences, LLC disclaims all
+      liability for any damages, direct or indirect, resulting from the use of
+      the dataset.
+    </div>
+  );
+};
 
 class App extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       datasetName: "",
       // What to show in search box by default. If this is the empty string, the
@@ -60,7 +84,8 @@ class App extends Component {
       // esFieldName - The elasticsearch field name of the facet.
       // facetValue
       searchResults: [],
-      awaitingFacetsApi: false
+      facetsApiDone: false,
+      fontLoaded: false
     };
 
     this.apiClient = new ApiClient();
@@ -68,14 +93,13 @@ class App extends Component {
     this.facetsApi = new FacetsApi(this.apiClient);
     this.facetsCallback = function(error, data) {
       if (error) {
-        this.setState({ awaitingFacetsApi: false });
+        this.setState({ facetsApiDone: true });
         console.error(error);
-        // TODO(alanhwang): Redirect to an error page
       } else {
         this.setState({
+          facetsApiDone: true,
           facets: this.getFacetMap(data.facets),
-          totalCount: data.count,
-          awaitingFacetsApi: false
+          totalCount: data.count
         });
       }
     }.bind(this);
@@ -120,6 +144,8 @@ class App extends Component {
         .catch(error => callback(error, null));
     }, 500).bind(this);
 
+    this.loadFont();
+
     this.updateFacets = this.updateFacets.bind(this);
     this.handleSearchBoxChange = this.handleSearchBoxChange.bind(this);
     this.handleVizSwitchChange = this.handleVizSwitchChange.bind(this);
@@ -127,10 +153,12 @@ class App extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    return !nextState.awaitingFacetsApi;
+    return nextState.facetsApiDone && nextState.fontLoaded;
   }
 
   render() {
+    const { classes } = this.props;
+
     if (this.state.facets.size == 0 || this.state.datasetName === "") {
       // Server has not yet responded or returned an error
       return <div />;
@@ -163,7 +191,9 @@ class App extends Component {
               exportUrlApi={new ExportUrlApi(this.apiClient)}
               filter={this.filterMapToArray(this.state.selectedFacetValues)}
             />
-            {this.state.datasetName == "1000 Genomes" ? Disclaimer : null}
+            {this.state.datasetName == "1000 Genomes"
+              ? Disclaimer(classes)
+              : null}
           </div>
         </MuiThemeProvider>
       );
@@ -188,6 +218,19 @@ class App extends Component {
       }
     }.bind(this);
     datasetApi.datasetGet(datasetCallback);
+  }
+
+  loadFont() {
+    // Force load font before vega rendering to prevent truncation bug. See
+    // https://github.com/vega/vega/issues/1671
+    // If we preloaded the font in HistogramFacet.js, then the page would render
+    // in two stages: 1) header and search box, 2) facets. Preload here so the
+    // entire page renders at once.
+    var font = new FontFace("Montserrat", "url(" + Montserrat + ")");
+    font.load().then(loadedFace => {
+      document.fonts.add(loadedFace);
+      this.setState({ fontLoaded: true });
+    });
   }
 
   getFacetMap(facets) {
@@ -276,12 +319,10 @@ class App extends Component {
       facetValue,
       isSelected
     );
-    // Update the state
     this.setState({
-      selectedFacetValues: selectedFacetValues,
-      awaitingFacetsApi: true
+      facetsApiDone: false,
+      selectedFacetValues: selectedFacetValues
     });
-    // Update the facets grid.
     this.facetsApi.facetsGet(
       {
         filter: this.filterMapToArray(this.state.selectedFacetValues),
@@ -328,4 +369,4 @@ class App extends Component {
   };
 }
 
-export default App;
+export default withStyles(styles)(App);
