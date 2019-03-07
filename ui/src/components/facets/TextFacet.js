@@ -3,14 +3,14 @@ import { withStyles } from "@material-ui/core/styles";
 import Checkbox from "@material-ui/core/Checkbox";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 
 import * as Style from "libs/style";
 import colors from "libs/colors";
 import FacetHeader from "components/facets/FacetHeader";
-import { CheckboxIcon } from "libs/icons";
+import { CheckboxRootStyles } from "libs/icons";
 
 const styles = {
+  checkboxRoot: CheckboxRootStyles,
   textFacet: {
     ...Style.elements.card,
     color: colors.gray[0],
@@ -78,12 +78,12 @@ class TextFacet extends Component {
         onClick={e => this.onClick(value.name)}
       >
         <Checkbox
-          className={classes.facetValueCheckbox}
+          classes={{ root: classes.checkboxRoot }}
           checked={
             this.props.selectedValues != null &&
             this.props.selectedValues.includes(value.name)
           }
-          icon={CheckboxIcon}
+          icon=<div />
         />
         <div
           className={
