@@ -223,6 +223,9 @@ class App extends Component {
   loadFont() {
     // Force load font before vega rendering to prevent truncation bug. See
     // https://github.com/vega/vega/issues/1671
+    // If we preloaded the font in HistogramFacet.js, then the page would render
+    // in two stages: 1) header and search box, 2) facets. Preload here so the
+    // entire page renders at once.
     var font = new FontFace("Montserrat", "url(" + Montserrat + ")");
     font.load().then(loadedFace => {
       document.fonts.add(loadedFace);
