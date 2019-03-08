@@ -7,7 +7,8 @@ import ListItem from "@material-ui/core/ListItem";
 import * as Style from "libs/style";
 import colors from "libs/colors";
 import FacetHeader from "components/facets/FacetHeader";
-import { CheckboxStyles, CheckSquare } from "libs/icons";
+import { CheckboxStyles } from "libs/icons";
+import { ReactComponent as CheckSquare } from "libs/icons/check-square.svg";
 
 const styles = {
   ...CheckboxStyles,
@@ -87,7 +88,7 @@ class TextFacet extends Component {
             this.props.selectedValues.includes(value.name)
           }
           icon=<div />
-          checkedIcon=<CheckSquare />
+          checkedIcon=<CheckSquare className={classes.checkedIcon} />
         />
         <div
           className={

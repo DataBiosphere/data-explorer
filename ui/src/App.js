@@ -68,7 +68,7 @@ class App extends Component {
       // react-select default of "Select..." is shown.
       searchPlaceholderText: "",
       // Whether to show visualization facets or text facets
-      showViz: true,
+      showViz: false,
       // Map from es_field_name to facet data returned from API server /facets call.
       facets: new Map(),
       totalCount: null,
