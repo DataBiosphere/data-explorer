@@ -5,7 +5,6 @@ import "@webcomponents/custom-elements"; // must be before icons
 import "@clr/icons/clr-icons.css";
 import { ClarityIcons } from "@clr/icons";
 import React from "react";
-import { renderToString } from "react-dom/server";
 
 import colors from "libs/colors";
 import downAngleSvg from "./icons/down-angle.svg";

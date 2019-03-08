@@ -11,23 +11,6 @@ import { CheckboxStyles, CheckSquare } from "libs/icons";
 
 const styles = {
   ...CheckboxStyles,
-  checkboxRoot: {
-    border: "1px solid " + colors.gray[5],
-    borderRadius: 3,
-    height: 14,
-    width: 14,
-    "&:hover": {
-      border: "1px solid " + colors.green[1]
-    },
-    "&$checkboxChecked": {
-      border: "1px solid " + colors.green[0],
-      color: colors.green[1],
-      "&:hover": {
-        color: colors.green[2]
-      }
-    }
-  },
-  checkboxChecked: {},
   textFacet: {
     ...Style.elements.card,
     color: colors.gray[0],
