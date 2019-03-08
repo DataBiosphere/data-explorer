@@ -3,15 +3,18 @@ import { withStyles } from "@material-ui/core/styles";
 import Checkbox from "@material-ui/core/Checkbox";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 
 import * as Style from "libs/style";
 import colors from "libs/colors";
 import FacetHeader from "components/facets/FacetHeader";
+import { CheckboxStyles } from "libs/icons";
+import { ReactComponent as CheckSquare } from "libs/icons/check-square.svg";
 
 const styles = {
+  ...CheckboxStyles,
   textFacet: {
     ...Style.elements.card,
+    color: colors.gray[0],
     margin: "0 25px 28px 0",
     padding: 0,
     // If there is a long word (eg facet name or facet value), break in the
@@ -38,24 +41,19 @@ const styles = {
   },
   facetValueNameAndCount: {
     display: "grid",
-    gridTemplateColumns: "auto 50px",
-    paddingRight: 0
-  },
-  facetValueName: {
-    color: colors.gray[0],
-    fontSize: 14,
-    fontWeight: 500
-  },
-  facetValueCount: {
-    color: colors.gray[0],
     fontSize: 14,
     fontWeight: 500,
+    gridTemplateColumns: "auto 50px",
+    padding: "0 0 0 14px",
+    width: "100%"
+  },
+  facetValueName: {
+    // Used by integration test
+  },
+  facetValueCount: {
     textAlign: "right"
   },
-  listItemText: {
-    padding: "0 0 0 14px"
-  },
-  grayText: {
+  lightGrayText: {
     color: colors.gray[4]
   }
 };
@@ -81,26 +79,27 @@ class TextFacet extends Component {
         onClick={e => this.onClick(value.name)}
       >
         <Checkbox
-          className={classes.facetValueCheckbox}
+          classes={{
+            root: classes.checkboxRoot,
+            checked: classes.checkboxChecked
+          }}
           checked={
             this.props.selectedValues != null &&
             this.props.selectedValues.includes(value.name)
           }
+          icon=<div />
+          checkedIcon=<CheckSquare className={classes.checkedIcon} />
         />
-        <ListItemText
-          classes={{
-            primary: this.isValueDimmed(value)
-              ? classes.facetValueNameAndCount + " " + classes.grayText
-              : classes.facetValueNameAndCount,
-            root: classes.listItemText
-          }}
-          primary={
-            <>
-              <div className={classes.facetValueName}>{value.name}</div>
-              <div className={classes.facetValueCount}>{value.count}</div>
-            </>
+        <div
+          className={
+            this.isValueDimmed(value)
+              ? classes.facetValueNameAndCount + " " + classes.lightGrayText
+              : classes.facetValueNameAndCount
           }
-        />
+        >
+          <div className={classes.facetValueName}>{value.name}</div>
+          <div className={classes.facetValueCount}>{value.count}</div>
+        </div>
       </ListItem>
     ));
 

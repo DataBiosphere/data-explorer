@@ -47,7 +47,9 @@ describe("End-to-end", () => {
 
     // Make sure non-selected facet values are gray.
     facetValueRow = await getTextFacetValueRow("Super Population", "European");
-    const grayDiv = await facetValueRow.$("*[class*='TextFacet-grayText-']");
+    const grayDiv = await facetValueRow.$(
+      "*[class*='TextFacet-lightGrayText-']"
+    );
 
     expect(grayDiv).toBeTruthy();
   });

@@ -4,9 +4,16 @@ import "@clr/icons/shapes/essential-shapes.min.js";
 import "@clr/icons/clr-icons.css";
 import AsyncSelect from "react-select/lib/Async";
 import { components } from "react-select";
+import { withStyles } from "@material-ui/core/styles";
 
-import { downAngle } from "libs/icons";
+import { ReactComponent as DownAngle } from "libs/icons/down-angle.svg";
+import { DownAngleStyles } from "libs/icons";
 
+const materialUiStyles = {
+  ...DownAngleStyles
+};
+
+// styles passed to <AsyncSelect>
 // To get readable class names, add classNamePrefix="foo" to <AsyncSelect>
 const styles = {
   clearIndicator: (provided, state) => ({
@@ -22,7 +29,6 @@ const styles = {
     ...provided,
     backgroundColor: "#ebedef",
     border: 0,
-    height: 45,
     margin: "9px 15px 0px 15px"
   }),
   dropdownIcon: {
@@ -76,7 +82,7 @@ const styles = {
     backgroundColor: "#74ae43",
     borderRadius: "15.5px",
     height: "31",
-    margin: "0 15px 0 0"
+    margin: "0 15px 7px 0"
   }),
   multiValueLabel: (provided, state) => ({
     ...provided,
@@ -106,12 +112,12 @@ const styles = {
   searchIcon: {
     color: "#5c912e",
     height: 22,
-    marginRight: 18,
+    margin: "-7px 18px 0 0",
     width: 22
   },
   valueContainer: (provided, state) => ({
     ...provided,
-    paddingLeft: 14
+    padding: "7px 0 0 14px"
   })
 };
 
@@ -191,6 +197,8 @@ class Search extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
+
     // Put search icon before placeholder text. Note that after clicking in
     // search box, cursor should be right before "S" in "Search".
     const Placeholder = props => {
@@ -237,7 +245,7 @@ class Search extends React.Component {
       const { getStyles } = props;
       return (
         <components.DropdownIndicator {...props} style={styles.dropdownIcon}>
-          {downAngle}
+          <DownAngle className={classes.downAngle} />
         </components.DropdownIndicator>
       );
     };
@@ -266,4 +274,4 @@ class Search extends React.Component {
   }
 }
 
-export default Search;
+export default withStyles(materialUiStyles)(Search);

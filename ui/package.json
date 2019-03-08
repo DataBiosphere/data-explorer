@@ -4,14 +4,11 @@
   "private": true,
   "dependencies": {
     "//": [
-      "See https://github.com/vega/react-vega-lite#install for react-vega-lite",
-      "@webcomponents/custom-elements is needed for @clr/icons"
+      "See https://github.com/vega/react-vega-lite#install for react-vega-lite"
     ],
     "@clr/icons": "^0.13.10",
     "@material-ui/core": "^1.5.1",
     "@material-ui/icons": "^2.0.3",
-    "@material-ui/lab": "^3.0.0-alpha.29",
-    "@webcomponents/custom-elements": "^1.2.1",
     "axios": "^0.18.0",
     "data_explorer_service": "file:src/api",
     "lodash.debounce": "^4.0.8",
