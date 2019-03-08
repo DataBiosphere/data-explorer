@@ -105,7 +105,7 @@ const styles = {
   searchIcon: {
     color: "#5c912e",
     height: 22,
-    marginRight: 18,
+    margin: "-7px 18px 0 0",
     width: 22
   },
   valueContainer: (provided, state) => ({
