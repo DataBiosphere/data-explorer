@@ -5,13 +5,14 @@ import { Handler } from "vega-tooltip";
 
 import "./HistogramFacet.css";
 import * as Style from "libs/style";
+import colors from "libs/colors";
 import FacetHeader from "components/facets/FacetHeader";
 
 const styles = {
   histogramFacet: {
     ...Style.elements.card,
     margin: "0 25px 28px 0",
-    maxHeight: "400px",
+    maxHeight: "500px",
     overflowY: "auto",
     padding: 0
   },
@@ -22,17 +23,26 @@ const styles = {
 
 const baseSpec = {
   $schema: "https://vega.github.io/schema/vega-lite/v3.json",
-  mark: {
-    type: "bar",
-    cursor: "pointer"
+  config: {
+    axis: {
+      labelColor: colors.gray[0],
+      labelFont: "Montserrat",
+      labelFontWeight: 500,
+      labelPadding: 9,
+      ticks: false
+    }
   },
   encoding: {
     color: {
       field: "dimmed",
       type: "nominal",
       scale: {
-        // First color is default bar color. Second color for unselected bars.
-        range: ["#707986", "#cccfd4"]
+        range: [
+          // Default bar color
+          colors.blue[2],
+          // Unselected bar
+          colors.blue[5]
+        ]
       },
       legend: null
     },
@@ -51,22 +61,27 @@ const baseSpec = {
       },
       legend: null
     }
+  },
+  mark: {
+    type: "bar",
+    cursor: "pointer"
+  },
+  padding: {
+    left: 0,
+    top: 17,
+    right: 0,
+    bottom: 16
   }
 };
 
 const facetValueCountAxis = {
+  axis: {
+    labelFontSize: 10
+  },
   field: "count",
   type: "quantitative",
   title: "",
-  stack: null,
-  axis: {
-    labelColor: "#000000de",
-    labelFont: "Montserrat",
-    labelFontSize: 11
-  },
-  scale: {
-    rangeStep: 20
-  }
+  stack: null
 };
 
 function isCategorical(facet) {
@@ -98,14 +113,13 @@ class HistogramFacet extends Component {
       title: null,
       sort: facetValueNames,
       axis: {
-        labelColor: "#000000de",
-        labelFont: "Montserrat",
-        labelFontSize: 11,
+        labelFontSize: 12,
         labelLimit: 120
       },
       scale: {
-        paddingInner: 0.02,
-        rangeStep: 20
+        paddingInner: 0.419,
+        paddingOuter: 0,
+        rangeStep: 31
       }
     };
     // Make bars horizontal, to allow for more space for facet value names for
@@ -149,7 +163,7 @@ class HistogramFacet extends Component {
               <VegaLite
                 spec={spec}
                 data={data}
-                tooltip={new Handler().call}
+                tooltip={new Handler({ theme: "custom" }).call}
                 onNewView={this.onNewView}
               />
             </div>
