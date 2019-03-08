@@ -1,23 +1,8 @@
 // Partially copied from https://github.com/DataBiosphere/saturn-ui/blob/dev/src/components/icons.js
 
-import "@webcomponents/custom-elements"; // must be before icons
-
-import "@clr/icons/clr-icons.css";
-import { ClarityIcons } from "@clr/icons";
 import React from "react";
 
 import colors from "libs/colors";
-import downAngleSvg from "./icons/down-angle.svg";
-import logowShadow from "./icons/logo-wShadow.svg";
-
-ClarityIcons.add({
-  // Can't chage color with "<img src". So use "<img src" for icons where we
-  // don't need to change color.
-  downAngle: "<img src='" + downAngleSvg + "' />",
-  logowShadow: "<img src='" + logowShadow + "' />"
-});
-
-export const logoGlow = <clr-icon shape="logowShadow" size="75" />;
 
 export const downAngle = (
   <clr-icon shape="downAngle" width="20px" height="12px" />
@@ -46,5 +31,21 @@ export const CheckboxStyles = {
     "&:hover": {
       fill: colors.green[2]
     }
+  }
+};
+
+export const DownAngleStyles = {
+  downAngle: {
+    height: 12,
+    width: 20
+  }
+};
+
+export const TerraLogoStyles = {
+  terraLogo: {
+    fill: "white",
+    height: 75,
+    marginRight: 2,
+    width: 75
   }
 };

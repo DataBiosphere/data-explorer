@@ -4,9 +4,16 @@ import "@clr/icons/shapes/essential-shapes.min.js";
 import "@clr/icons/clr-icons.css";
 import AsyncSelect from "react-select/lib/Async";
 import { components } from "react-select";
+import { withStyles } from "@material-ui/core/styles";
 
-import { downAngle } from "libs/icons";
+import { ReactComponent as DownAngle } from "libs/icons/down-angle.svg";
+import { DownAngleStyles } from "libs/icons";
 
+const materialUiStyles = {
+  ...DownAngleStyles
+};
+
+// styles passed to <AsyncSelect>
 // To get readable class names, add classNamePrefix="foo" to <AsyncSelect>
 const styles = {
   clearIndicator: (provided, state) => ({
@@ -190,6 +197,8 @@ class Search extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
+
     // Put search icon before placeholder text. Note that after clicking in
     // search box, cursor should be right before "S" in "Search".
     const Placeholder = props => {
@@ -236,7 +245,7 @@ class Search extends React.Component {
       const { getStyles } = props;
       return (
         <components.DropdownIndicator {...props} style={styles.dropdownIcon}>
-          {downAngle}
+          <DownAngle className={classes.downAngle} />
         </components.DropdownIndicator>
       );
     };
@@ -265,4 +274,4 @@ class Search extends React.Component {
   }
 }
 
-export default Search;
+export default withStyles(materialUiStyles)(Search);

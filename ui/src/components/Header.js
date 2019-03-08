@@ -13,9 +13,11 @@ import { withStyles } from "@material-ui/core/styles";
 import colors from "libs/colors";
 import headerLeftHexes from "libs/images/header-left-hexes.svg";
 import headerRightHexes from "libs/images/header-right-hexes.svg";
-import { logoGlow } from "libs/icons";
+import { TerraLogoStyles } from "libs/icons";
+import { ReactComponent as TerraLogo } from "libs/icons/logo-wShadow.svg";
 
 const styles = {
+  ...TerraLogoStyles,
   appBar: {
     background: `81px url(${headerLeftHexes}) no-repeat, right url(${headerRightHexes}) no-repeat, ${
       colors.green[1]
@@ -33,9 +35,6 @@ const styles = {
     fontSize: 18,
     fontWeight: 600,
     marginLeft: 15
-  },
-  logoGlow: {
-    marginRight: 2
   },
   snackbarMessage: {
     display: "grid",
@@ -175,7 +174,7 @@ class Header extends React.Component {
       <AppBar position="static" className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
           {snackbar}
-          <div className={classes.logoGlow}> {logoGlow} </div>
+          <TerraLogo className={classes.terraLogo} />
           <div className={classes.dataExplorerText}>Data Explorer</div>
           <div className={classes.verticalSeparator} />
           <div className={classes.datasetName}>{this.props.datasetName}</div>
