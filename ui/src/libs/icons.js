@@ -4,10 +4,6 @@ import React from "react";
 
 import colors from "libs/colors";
 
-export const downAngle = (
-  <clr-icon shape="downAngle" width="20px" height="12px" />
-);
-
 export const CheckboxStyles = {
   checkboxRoot: {
     border: "1px solid " + colors.gray[5],
