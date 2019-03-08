@@ -22,7 +22,6 @@ const styles = {
     ...provided,
     backgroundColor: "#ebedef",
     border: 0,
-    height: 45,
     margin: "9px 15px 0px 15px"
   }),
   dropdownIcon: {
@@ -76,7 +75,7 @@ const styles = {
     backgroundColor: "#74ae43",
     borderRadius: "15.5px",
     height: "31",
-    margin: "0 15px 0 0"
+    margin: "0 15px 7px 0"
   }),
   multiValueLabel: (provided, state) => ({
     ...provided,
@@ -111,7 +110,7 @@ const styles = {
   },
   valueContainer: (provided, state) => ({
     ...provided,
-    paddingLeft: 14
+    padding: "7px 0 0 14px"
   })
 };
 
@@ -244,6 +243,7 @@ class Search extends React.Component {
 
     return (
       <AsyncSelect
+        classNamePrefix="foo"
         isMulti="true"
         onChange={this.props.handleSearchBoxChange}
         getOptionLabel={this.renderOption}

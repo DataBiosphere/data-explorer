@@ -7,10 +7,27 @@ import ListItem from "@material-ui/core/ListItem";
 import * as Style from "libs/style";
 import colors from "libs/colors";
 import FacetHeader from "components/facets/FacetHeader";
-import { CheckboxRootStyles } from "libs/icons";
+import { CheckboxStyles, CheckSquare } from "libs/icons";
 
 const styles = {
-  checkboxRoot: CheckboxRootStyles,
+  ...CheckboxStyles,
+  checkboxRoot: {
+    border: "1px solid " + colors.gray[5],
+    borderRadius: 3,
+    height: 14,
+    width: 14,
+    "&:hover": {
+      border: "1px solid " + colors.green[1]
+    },
+    "&$checkboxChecked": {
+      border: "1px solid " + colors.green[0],
+      color: colors.green[1],
+      "&:hover": {
+        color: colors.green[2]
+      }
+    }
+  },
+  checkboxChecked: {},
   textFacet: {
     ...Style.elements.card,
     color: colors.gray[0],
@@ -78,12 +95,16 @@ class TextFacet extends Component {
         onClick={e => this.onClick(value.name)}
       >
         <Checkbox
-          classes={{ root: classes.checkboxRoot }}
+          classes={{
+            root: classes.checkboxRoot,
+            checked: classes.checkboxChecked
+          }}
           checked={
             this.props.selectedValues != null &&
             this.props.selectedValues.includes(value.name)
           }
           icon=<div />
+          checkedIcon=<CheckSquare />
         />
         <div
           className={
