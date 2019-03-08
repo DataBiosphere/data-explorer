@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { withStyles } from "@material-ui/core/styles";
-import VegaLite from "react-vega-lite";
+import { canvas } from "vega-canvas";
 import { Handler } from "vega-tooltip";
+import VegaLite from "react-vega-lite";
+import { withStyles } from "@material-ui/core/styles";
 
 import "./HistogramFacet.css";
 import * as Style from "libs/style";
@@ -21,6 +22,9 @@ const styles = {
   }
 };
 
+// If more than 120px, facet value name will be cut off with "..."
+const facetValueNameWidthLimit = 120;
+
 const baseSpec = {
   $schema: "https://vega.github.io/schema/vega-lite/v3.json",
   config: {
@@ -30,6 +34,9 @@ const baseSpec = {
       labelFontWeight: 500,
       labelPadding: 9,
       ticks: false
+    },
+    view: {
+      //      width: 250,
     }
   },
   encoding: {
@@ -90,19 +97,41 @@ function isCategorical(facet) {
   );
 }
 
+// Make vega chart fill up facet horizontally.
+// By default, chart width -- just the bars, not including text -- is 200px.
+// If facet value names are short, there is more whitespace to left of chart:
+// https://i.imgur.com/I5A6EUn.png
+// This method increases chart width in those cases:
+// https://i.imgur.com/JSKHSkS.png
+function setWidth(facetValueNames) {
+  const defaultChartWidth = 200;
+
+  const context = canvas(1, 1).getContext("2d");
+  const nameWidths = facetValueNames.map(n => context.measureText(n).width);
+  const maxNameWidth_currentFacet = Math.max(...nameWidths);
+  if (maxNameWidth_currentFacet > facetValueNameWidthLimit) {
+    baseSpec.width = defaultChartWidth;
+  } else {
+    baseSpec.width =
+      defaultChartWidth + facetValueNameWidthLimit - maxNameWidth_currentFacet;
+  }
+}
+
 class HistogramFacet extends Component {
   constructor(props) {
     super(props);
     this.isValueDimmed = this.isValueDimmed.bind(this);
-    this.onNewView = this.onNewView.bind(this);
     this.onClick = this.onClick.bind(this);
+    this.onNewView = this.onNewView.bind(this);
   }
 
   render() {
     const { classes } = this.props;
 
-    const spec = Object.assign({}, baseSpec);
     let facetValueNames = this.props.facet.values.map(v => v.name);
+    setWidth(facetValueNames);
+
+    const spec = Object.assign({}, baseSpec);
     if (!isCategorical(this.props.facet)) {
       // For numeric facets, higher numbers should be higher on the y-axis
       facetValueNames.reverse();
@@ -114,7 +143,7 @@ class HistogramFacet extends Component {
       sort: facetValueNames,
       axis: {
         labelFontSize: 12,
-        labelLimit: 120
+        labelLimit: facetValueNameWidthLimit
       },
       scale: {
         paddingInner: 0.419,
