@@ -7,7 +7,11 @@ textarea,
 select,
 button {
   font-family: "Montserrat", sans-serif;
+  /*
+Turn off tabular-nums for now, font pre-loading doesn't work with it.
+Melissa will investigate if we can turn back on.
   font-variant-numeric: tabular-nums;
+*/
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;

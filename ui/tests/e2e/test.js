@@ -188,7 +188,7 @@ describe("End-to-end", () => {
     facetBar = await getHistogramFacetBar("Super Population", "European");
     const barColor = await page.evaluate(bar => bar.style.fill, facetBar);
     // Vega translates our hex colors to rgb so it must be validated this way.
-    expect(barColor).toBe("rgb(204, 207, 212)");
+    expect(barColor).toBe("rgb(191, 225, 240)");
   });
 
   async function waitForElasticsearchIndex() {

@@ -1,5 +1,12 @@
 /* Vega tooltip is outside root element, so can't style with inline CSS like
    normal. */
 #vg-tooltip-element {
+  background-color: white;
+  border: 1px solid #dfe3e9;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.17), 0 3px 2px 0 rgba(0, 0, 0, 0.06),
+    0 0 2px 0 rgba(0, 0, 0, 0.06);
+  color: #333f52;
   font-family: Montserrat;
+  font-size: 12px;
+  padding: 16px;
 }

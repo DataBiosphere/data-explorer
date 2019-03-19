@@ -19,7 +19,7 @@ import ExportUrlApi from "api/src/api/ExportUrlApi";
 import FacetsGrid from "components/facets/FacetsGrid";
 import Search from "components/Search";
 import Header from "components/Header";
-import Montserrat from "libs/fonts/Montserrat-Regular.woff";
+import Montserrat from "libs/fonts/Montserrat-Medium.woff2";
 
 const styles = {
   disclaimer: {
