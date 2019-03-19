@@ -34,9 +34,6 @@ const baseSpec = {
       labelFontWeight: 500,
       labelPadding: 9,
       ticks: false
-    },
-    view: {
-      //      width: 250,
     }
   },
   encoding: {
