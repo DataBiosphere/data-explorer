@@ -81,7 +81,9 @@ const baseSpec = {
 
 const facetValueCountAxis = {
   axis: {
-    labelFontSize: 10
+    labelFontSize: 10,
+    domainColor: colors.gray[4],
+    gridColor: colors.gray[6]
   },
   field: "count",
   type: "quantitative",
@@ -141,7 +143,8 @@ class HistogramFacet extends Component {
       sort: facetValueNames,
       axis: {
         labelFontSize: 12,
-        labelLimit: facetValueNameWidthLimit
+        labelLimit: facetValueNameWidthLimit,
+        domainColor: colors.gray[4]
       },
       scale: {
         // Bar height (18px) + whitespace height (13px) = 31px
