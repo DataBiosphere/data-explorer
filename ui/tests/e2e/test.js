@@ -158,10 +158,10 @@ describe("End-to-end", () => {
     await initial_select[0].click();
     await initial_select[0].type("pat");
 
-    // Select first result
+    // Select second result
     await page.waitForXPath("//span[contains(text(), 'Add')]");
     let results = await page.$x("//span[contains(text(), 'Add')]");
-    await results[0].click();
+    await results[1].click();
 
     // Assert Relationship facet is added
     await waitForTextFacet("Relationship");
