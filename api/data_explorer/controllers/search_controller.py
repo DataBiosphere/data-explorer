@@ -1,4 +1,5 @@
 import re
+import time
 
 from data_explorer.models.search_result import SearchResult
 from data_explorer.models.search_response import SearchResponse
@@ -78,21 +79,30 @@ def search_get(query=None):
     else:
         # Return only fields matching query.
 
-        # Part 1: Search main index. For the BigQuery indexer, this searches
+        # Use MultiMatch to search across all fields. "phrase_prefix" matches
+        # with prefix of words in column values.
+        multi_match = MultiMatch(query=query, type="phrase_prefix")
+
+        # Part 1: Search fields index. For the BigQuery indexer, this searches
+        # BigQuery column name and description.
+        fields_search = Search(
+            using=es, index=current_app.config['FIELDS_INDEX_NAME']).query(
+                multi_match)[0:num_field_search_results]
+        fields_search_response = fields_search.execute()
+        fields = fields_search_response.to_dict()
+        search_results.extend(_results_from_fields_index(fields))
+
+        # Part 2: Search main index. For the BigQuery indexer, this searches
         # BigQuery column values.
         # Store the query matches in a dict of es_field_name to a set of facet
         # values.
         field_to_facet_values = dict()
 
-        # Use MultiMatch to search across all fields. "phrase_prefix" matches
-        # with prefix of words in column values.
-        multi_match = MultiMatch(query=query, type="phrase_prefix")
         search = Search(
             using=es,
             index=current_app.config['INDEX_NAME']).query(multi_match).params(
                 request_timeout=30)[0:num_search_results]
 
-        import time
         begin = time.time()
         response = search.execute()
         end = time.time()
@@ -126,14 +136,5 @@ def search_get(query=None):
                         elasticsearch_field_name=es_field_name,
                         facet_name=es_field_name.split('.')[-1],
                         facet_value=facet_value))
-
-        # Part 2: Search fields index. For the BigQuery indexer, this searches
-        # BigQuery column name and description.
-        fields_search = Search(
-            using=es, index=current_app.config['FIELDS_INDEX_NAME']).query(
-                multi_match)[0:num_field_search_results]
-        fields_search_response = fields_search.execute()
-        fields = fields_search_response.to_dict()
-        search_results.extend(_results_from_fields_index(fields))
 
     return SearchResponse(search_results=search_results)
