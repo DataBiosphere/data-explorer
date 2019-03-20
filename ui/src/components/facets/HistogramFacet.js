@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { canvas } from "vega-canvas";
 import { Handler } from "vega-tooltip";
-import VegaLite from "react-vega-lite";
+import * as vl from "vega-lite";
+import Vega from "react-vega";
 import { withStyles } from "@material-ui/core/styles";
 
 import "./HistogramFacet.css";
@@ -143,9 +144,13 @@ class HistogramFacet extends Component {
         labelLimit: facetValueNameWidthLimit
       },
       scale: {
-        paddingInner: 0.419,
-        paddingOuter: 0,
-        rangeStep: 31
+        // Bar height (18px) + whitespace height (13px) = 31px
+        rangeStep: 31,
+        // Proportion of step that is whitespace; 13/31 = .42
+        paddingInner: 0.42,
+        // There should be 7 pixels of whitespace under bottom bar
+        //. 7/31/2 ~= .12
+        paddingOuter: 0.12
       }
     };
     // Make bars horizontal, to allow for more space for facet value names for
@@ -177,6 +182,23 @@ class HistogramFacet extends Component {
       })
     );
 
+    // Setting align removes whitespace over top bar. align isn't in vega-lite
+    // spec. vega-lite spec is easier to construct than vega spec. So construct
+    // vega-lite spec, compile to vega spec, edit align, then render Vega
+    // component.
+    // When https://github.com/vega/vega-lite/issues/4741 is fixed, remove this
+    // hack and just set align normally.
+    spec.data = data;
+    const vegaSpec = vl.compile(spec).spec;
+    vegaSpec.scales[1].align = 0;
+    let vega = (
+      <Vega
+        spec={vegaSpec}
+        tooltip={new Handler({ theme: "custom" }).call}
+        onNewView={this.onNewView}
+      />
+    );
+
     return (
       <div className={classes.histogramFacet}>
         <FacetHeader
@@ -185,14 +207,7 @@ class HistogramFacet extends Component {
         />
         {this.props.facet.values &&
           this.props.facet.values.length > 0 && (
-            <div className={classes.vega}>
-              <VegaLite
-                spec={spec}
-                data={data}
-                tooltip={new Handler({ theme: "custom" }).call}
-                onNewView={this.onNewView}
-              />
-            </div>
+            <div className={classes.vega}> {vega} </div>
           )}
       </div>
     );
