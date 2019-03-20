@@ -29,7 +29,10 @@ const facetValueNameWidthLimit = 120;
 const baseSpec = {
   $schema: "https://vega.github.io/schema/vega-lite/v3.json",
   config: {
+    // Config that applies to both axes go here
     axis: {
+      domainColor: colors.gray[4],
+      gridColor: colors.gray[6],
       labelColor: colors.gray[0],
       labelFont: "Montserrat",
       labelFontWeight: 500,
@@ -81,9 +84,7 @@ const baseSpec = {
 
 const facetValueCountAxis = {
   axis: {
-    labelFontSize: 10,
-    domainColor: colors.gray[4],
-    gridColor: colors.gray[6]
+    labelFontSize: 10
   },
   field: "count",
   type: "quantitative",
@@ -143,8 +144,7 @@ class HistogramFacet extends Component {
       sort: facetValueNames,
       axis: {
         labelFontSize: 12,
-        labelLimit: facetValueNameWidthLimit,
-        domainColor: colors.gray[4]
+        labelLimit: facetValueNameWidthLimit
       },
       scale: {
         // Bar height (18px) + whitespace height (13px) = 31px
@@ -173,7 +173,7 @@ class HistogramFacet extends Component {
       })
     };
 
-    // Create transparent bar that extends the entire length of the cart. This
+    // Create transparent bar that extends the entire length of the chart. This
     // makes tooltip/selection easier for facet values that have very low count.
     const maxFacetValue = Math.max(...data.values.map(v => v.count));
     data.values = data.values.concat(
