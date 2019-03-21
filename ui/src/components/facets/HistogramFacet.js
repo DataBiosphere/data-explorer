@@ -26,7 +26,7 @@ const styles = {
 // If more than 120px, facet value name will be cut off with "..."
 const facetValueNameWidthLimit = 120;
 
-const baseSpec = {
+const baseVegaLiteSpec = {
   $schema: "https://vega.github.io/schema/vega-lite/v3.json",
   config: {
     // Config that applies to both axes go here
@@ -111,9 +111,9 @@ function setWidth(facetValueNames) {
   const nameWidths = facetValueNames.map(n => context.measureText(n).width);
   const maxNameWidth_currentFacet = Math.max(...nameWidths);
   if (maxNameWidth_currentFacet > facetValueNameWidthLimit) {
-    baseSpec.width = defaultChartWidth;
+    baseVegaLiteSpec.width = defaultChartWidth;
   } else {
-    baseSpec.width =
+    baseVegaLiteSpec.width =
       defaultChartWidth + facetValueNameWidthLimit - maxNameWidth_currentFacet;
   }
 }
@@ -132,7 +132,7 @@ class HistogramFacet extends Component {
     let facetValueNames = this.props.facet.values.map(v => v.name);
     setWidth(facetValueNames);
 
-    const spec = Object.assign({}, baseSpec);
+    const vegaLiteSpec = Object.assign({}, baseVegaLiteSpec);
     if (!isCategorical(this.props.facet)) {
       // For numeric facets, higher numbers should be higher on the y-axis
       facetValueNames.reverse();
@@ -158,8 +158,8 @@ class HistogramFacet extends Component {
     };
     // Make bars horizontal, to allow for more space for facet value names for
     // categorical facets.
-    spec.encoding.x = facetValueCountAxis;
-    spec.encoding.y = facetValueNameAxis;
+    vegaLiteSpec.encoding.x = facetValueCountAxis;
+    vegaLiteSpec.encoding.y = facetValueNameAxis;
 
     const data = {
       values: this.props.facet.values.map(v => {
@@ -185,15 +185,44 @@ class HistogramFacet extends Component {
       })
     );
 
-    // Setting align removes whitespace over top bar. align isn't in vega-lite
-    // spec. vega-lite spec is easier to construct than vega spec. So construct
-    // vega-lite spec, compile to vega spec, edit align, then render Vega
-    // component.
-    // When https://github.com/vega/vega-lite/issues/4741 is fixed, remove this
-    // hack and just set align normally.
-    spec.data = data;
-    const vegaSpec = vl.compile(spec).spec;
+    // vega-lite spec is easier to construct than vega spec. But certain
+    // properties aren't available in vega-lite spec (vega-lite is a subset of
+    // vega). So construct vega-lite spec, compile to vega spec, edit properties
+    // that are only available in vega, then render Vega component.
+    vegaLiteSpec.data = data;
+    const vegaSpec = vl.compile(vegaLiteSpec).spec;
+
+    // Setting align removes whitespace over top bar.
+    // When https://github.com/vega/vega-lite/issues/4741 is fixed, set align
+    // normally.
     vegaSpec.scales[1].align = 0;
+
+    // Add tooltips to axis labels. vega-lite spec doesn't have "encode".
+    // When  ????
+    // is fixed, this can
+    // be simplified.
+    let facetValueIndexStr = "";
+    if (isCategorical(this.props.facet)) {
+      facetValueIndexStr =
+        "round((isNaN(datum.index)?0:datum.index) * (length(data('source_0'))/2 - 1))";
+    } else {
+      // For numeric facets, facet value counts are in reverse order
+      facetValueIndexStr =
+        "length(data('source_0'))/2 - 1 - round((isNaN(datum.index)?0:datum.index) * (length(data('source_0'))/2 - 1))";
+    }
+    const signalStr =
+      "datum.value + ': ' + data('source_0')[" + facetValueIndexStr + "].count";
+    vegaSpec.axes[2].encode = {
+      labels: {
+        interactive: true,
+        update: {
+          tooltip: {
+            signal: signalStr
+          }
+        }
+      }
+    };
+
     let vega = (
       <Vega
         spec={vegaSpec}
@@ -208,10 +237,9 @@ class HistogramFacet extends Component {
           facet={this.props.facet}
           selectedValues={this.props.selectedValues}
         />
-        {this.props.facet.values &&
-          this.props.facet.values.length > 0 && (
-            <div className={classes.vega}> {vega} </div>
-          )}
+        {this.props.facet.values && this.props.facet.values.length > 0 && (
+          <div className={classes.vega}> {vega} </div>
+        )}
       </div>
     );
   }
