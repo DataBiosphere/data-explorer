@@ -198,9 +198,8 @@ class HistogramFacet extends Component {
     vegaSpec.scales[1].align = 0;
 
     // Add tooltips to axis labels. vega-lite spec doesn't have "encode".
-    // When  ????
-    // is fixed, this can
-    // be simplified.
+    // May be able to simplify after https://github.com/vega/vega/issues/1719
+    // is fixed.
     let facetValueIndexStr = "";
     if (isCategorical(this.props.facet)) {
       facetValueIndexStr =
