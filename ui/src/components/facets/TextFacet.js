@@ -43,7 +43,7 @@ const styles = {
     display: "grid",
     fontSize: 14,
     fontWeight: 500,
-    gridTemplateColumns: "auto 50px",
+    gridTemplateColumns: "auto 60px",
     padding: "0 0 0 14px",
     width: "100%"
   },
