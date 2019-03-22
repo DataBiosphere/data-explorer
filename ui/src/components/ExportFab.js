@@ -1,5 +1,6 @@
 /** Export to Terra FAB */
 
+import React from "react";
 import CloudUpload from "@material-ui/icons/CloudUpload";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -9,9 +10,17 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import React from "react";
+import { withStyles } from "@material-ui/core/styles";
 
 import "components/ExportFab.css";
+
+const styles = {
+  exportFab: {
+    bottom: 100,
+    position: "fixed",
+    right: 20
+  }
+};
 
 class ExportFab extends React.Component {
   constructor(props) {
@@ -24,17 +33,19 @@ class ExportFab extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
+
     var filter = this.props.filter;
     var defaultTextValue =
       filter != null && filter.length > 0 ? "" : "all participants";
     return (
       <div>
         {/*
-          Style div instead of button itself, to prevent button from moving
-          when cohort dialog is shown. See
+          Style div instead of button itself, to prevent button from moving to
+          the right when cohort dialog is shown. See
           https://github.com/mui-org/material-ui/issues/9275#issuecomment-350479467
         */}
-        <div className="mui-fixed exportFab">
+        <div className={"mui-fixed " + classes.exportFab}>
           <Tooltip title="Send to Terra">
             <Button
               variant="fab"
@@ -128,4 +139,4 @@ class ExportFab extends React.Component {
   }
 }
 
-export default ExportFab;
+export default withStyles(styles)(ExportFab);
