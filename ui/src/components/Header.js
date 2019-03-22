@@ -130,8 +130,7 @@ class Header extends React.Component {
 
     const snackbarKey = "hasShownSnackbarv2";
     let snackbar = null;
-    if (true) {
-      //if (localStorage.getItem(snackbarKey) === null) {
+    if (localStorage.getItem(snackbarKey) === null) {
       localStorage.setItem(snackbarKey, "true");
       snackbar = (
         <Snackbar
