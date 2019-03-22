@@ -197,20 +197,38 @@ class HistogramFacet extends Component {
     // normally.
     vegaSpec.scales[1].align = 0;
 
-    // Add tooltips to axis labels. vega-lite spec doesn't have "encode".
+    // Add tooltips to axis labels. If you hover over "Has WGS Low Cov...",
+    // tooltip is "Has WGS Low Coverage BAM: 2535".
+    // vega-lite spec doesn't have "encode", so modify vega spec.
+    // Unfortunately constructing the tooltip is more complicated than the bar
+    // tooltip, because facet value count is not readily available.
+    // We have access to facet data in data('source_0'); see
+    // https://i.imgur.com/TICTYgA.png
+    // Each axis label has an index from 0 to 1
+    // (https://i.imgur.com/2ILXv9a.png). If there are 4 facet values, indexes
+    // are: 0, 1/3, 2/3, 3/3.
+    // facetValueIndexStr converts from float to integer (0, 1, 2, 3).
+    // - isNaN can be deleted when we're using a vega version with
+    //   https://github.com/vega/vega/pull/1720
+    // - We divide by 2 because there are actually two entries in
+    //   data('source_0') for each facet value. One for the blue bar, and one
+    //   for a transparent bar. (The transparent bar lets us show tooltip for
+    //   when blue bar is small/non-existent.)
+    // - We subtract 1 because the floats are 0,1/3,2/3,3/3, not 0,1/4,2/4, etc.
+    // - See https://github.com/vega/vega/issues/1719 (second issue) for why we
+    //   need round().
     let facetValueIndexStr = "";
     if (isCategorical(this.props.facet)) {
-      // See https://github.com/vega/vega/issues/1719 for why we need round().
-      // Remove isNaN when we're using a vega version with
-      // https://github.com/vega/vega/pull/1720
       facetValueIndexStr =
         "round((isNaN(datum.index)?0:datum.index) * (length(data('source_0'))/2 - 1))";
     } else {
-      // For numeric facets, facet value counts are in reverse order
+      // For numeric facets, facet value counts are in reverse order.
+      // So instead of 0,1,2,3 we need 3,2,1,0.
       facetValueIndexStr =
         "length(data('source_0'))/2 - 1 - round((isNaN(datum.index)?0:datum.index) * (length(data('source_0'))/2 - 1))";
     }
     const signalStr =
+      // Now we can construct tooltip: facet value name: facet value count
       "datum.value + ': ' + data('source_0')[" + facetValueIndexStr + "].count";
     vegaSpec.axes[2].encode = {
       labels: {
