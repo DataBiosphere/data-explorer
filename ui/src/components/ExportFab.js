@@ -1,7 +1,4 @@
-/** Export to Terra FAB */
-
 import React from "react";
-import CloudUpload from "@material-ui/icons/CloudUpload";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
 import TextField from "@material-ui/core/TextField";
@@ -12,13 +9,18 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { withStyles } from "@material-ui/core/styles";
 
-import "components/ExportFab.css";
+import { ReactComponent as ExportButton } from "libs/icons/export_to_terra.svg";
 
 const styles = {
   exportFab: {
-    bottom: 100,
+    bottom: 45,
     position: "fixed",
-    right: 20
+    right: 35
+  },
+  exportButton: {
+    filter: "drop-shadow( 0 2px 2px rgba(0,0,0,0.63))",
+    height: 89,
+    width: 81
   }
 };
 
@@ -47,13 +49,10 @@ class ExportFab extends React.Component {
         */}
         <div className={"mui-fixed " + classes.exportFab}>
           <Tooltip title="Send to Terra">
-            <Button
-              variant="fab"
-              color="secondary"
+            <ExportButton
+              className={classes.exportButton}
               onClick={() => this.handleClick()}
-            >
-              <CloudUpload />
-            </Button>
+            />
           </Tooltip>
         </div>
         <div>
