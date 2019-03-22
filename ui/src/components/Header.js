@@ -1,9 +1,6 @@
 import React from "react";
 import AppBar from "@material-ui/core/AppBar";
 import CloseIcon from "@material-ui/icons/Close";
-import "@clr/icons";
-import "@clr/icons/shapes/essential-shapes.min.js";
-import "@clr/icons/clr-icons.css";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import IconButton from "@material-ui/core/IconButton";
 import Snackbar from "@material-ui/core/Snackbar";
@@ -157,9 +154,9 @@ class Header extends React.Component {
                   <b>How to use Data Explorer</b>
                 </div>
                 <br />
-                <div>Click on a bar to select it.</div>
+                <div>Click on a bar to select it</div>
                 <div>
-                  <i>Hint:&nbsp;</i> Clicking on whitespace also works.
+                  <i>Hint:&nbsp;</i> Clicking on whitespace also works
                 </div>
               </>
             }
