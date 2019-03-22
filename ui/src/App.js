@@ -30,6 +30,12 @@ const styles = {
   disclaimerLink: {
     color: colors.green[0],
     textDecoration: "none"
+  },
+  root: {
+    backgroundColor: colors.grayBlue[6],
+    // Disable horizontal scrollbar. Horizontal scrollbar appears because each
+    // HistogramFacet has right margin, including right-most HistogramFacets.
+    overflowX: "hidden"
   }
 };
 
@@ -165,7 +171,7 @@ class App extends Component {
     } else {
       return (
         <MuiThemeProvider theme={theme}>
-          <div style={{ backgroundColor: "#fafbfc" }}>
+          <div className={classes.root}>
             <Header
               datasetName={this.state.datasetName}
               totalCount={this.state.totalCount}
