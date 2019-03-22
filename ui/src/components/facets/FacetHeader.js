@@ -15,7 +15,7 @@ const styles = {
   facetHeader: {
     backgroundColor: colors.grayBlue[5],
     display: "grid",
-    gridTemplateColumns: "auto 80px"
+    gridTemplateColumns: "auto 90px"
   },
   facetName: {
     color: colors.gray[1],

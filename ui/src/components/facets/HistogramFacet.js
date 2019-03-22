@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { canvas } from "vega-canvas";
 import { Handler } from "vega-tooltip";
-import VegaLite from "react-vega-lite";
+import * as vl from "vega-lite";
+import Vega from "react-vega";
 import { withStyles } from "@material-ui/core/styles";
 
 import "./HistogramFacet.css";
@@ -25,10 +26,13 @@ const styles = {
 // If more than 120px, facet value name will be cut off with "..."
 const facetValueNameWidthLimit = 120;
 
-const baseSpec = {
+const baseVegaLiteSpec = {
   $schema: "https://vega.github.io/schema/vega-lite/v3.json",
   config: {
+    // Config that applies to both axes go here
     axis: {
+      domainColor: colors.gray[4],
+      gridColor: colors.gray[6],
       labelColor: colors.gray[0],
       labelFont: "Montserrat",
       labelFontWeight: 500,
@@ -107,9 +111,9 @@ function setWidth(facetValueNames) {
   const nameWidths = facetValueNames.map(n => context.measureText(n).width);
   const maxNameWidth_currentFacet = Math.max(...nameWidths);
   if (maxNameWidth_currentFacet > facetValueNameWidthLimit) {
-    baseSpec.width = defaultChartWidth;
+    baseVegaLiteSpec.width = defaultChartWidth;
   } else {
-    baseSpec.width =
+    baseVegaLiteSpec.width =
       defaultChartWidth + facetValueNameWidthLimit - maxNameWidth_currentFacet;
   }
 }
@@ -128,7 +132,7 @@ class HistogramFacet extends Component {
     let facetValueNames = this.props.facet.values.map(v => v.name);
     setWidth(facetValueNames);
 
-    const spec = Object.assign({}, baseSpec);
+    const vegaLiteSpec = Object.assign({}, baseVegaLiteSpec);
     if (!isCategorical(this.props.facet)) {
       // For numeric facets, higher numbers should be higher on the y-axis
       facetValueNames.reverse();
@@ -143,15 +147,19 @@ class HistogramFacet extends Component {
         labelLimit: facetValueNameWidthLimit
       },
       scale: {
-        paddingInner: 0.419,
-        paddingOuter: 0,
-        rangeStep: 31
+        // Bar height (18px) + whitespace height (13px) = 31px
+        rangeStep: 31,
+        // Proportion of step that is whitespace; 13/31 = .42
+        paddingInner: 0.42,
+        // There should be 7 pixels of whitespace under bottom bar
+        //. 7/31/2 ~= .12
+        paddingOuter: 0.12
       }
     };
     // Make bars horizontal, to allow for more space for facet value names for
     // categorical facets.
-    spec.encoding.x = facetValueCountAxis;
-    spec.encoding.y = facetValueNameAxis;
+    vegaLiteSpec.encoding.x = facetValueCountAxis;
+    vegaLiteSpec.encoding.y = facetValueNameAxis;
 
     const data = {
       values: this.props.facet.values.map(v => {
@@ -165,7 +173,7 @@ class HistogramFacet extends Component {
       })
     };
 
-    // Create transparent bar that extends the entire length of the cart. This
+    // Create transparent bar that extends the entire length of the chart. This
     // makes tooltip/selection easier for facet values that have very low count.
     const maxFacetValue = Math.max(...data.values.map(v => v.count));
     data.values = data.values.concat(
@@ -177,6 +185,70 @@ class HistogramFacet extends Component {
       })
     );
 
+    // vega-lite spec is easier to construct than vega spec. But certain
+    // properties aren't available in vega-lite spec (vega-lite is a subset of
+    // vega). So construct vega-lite spec, compile to vega spec, edit properties
+    // that are only available in vega, then render Vega component.
+    vegaLiteSpec.data = data;
+    const vegaSpec = vl.compile(vegaLiteSpec).spec;
+
+    // Setting align removes whitespace over top bar.
+    // When https://github.com/vega/vega-lite/issues/4741 is fixed, set align
+    // normally.
+    vegaSpec.scales[1].align = 0;
+
+    // Add tooltips to axis labels. If you hover over "Has WGS Low Cov...",
+    // tooltip is "Has WGS Low Coverage BAM: 2535".
+    // vega-lite spec doesn't have "encode", so modify vega spec.
+    // Unfortunately constructing the tooltip is more complicated than the bar
+    // tooltip, because facet value count is not readily available.
+    // We have access to facet data in data('source_0'); see
+    // https://i.imgur.com/TICTYgA.png
+    // Each axis label has an index from 0 to 1
+    // (https://i.imgur.com/2ILXv9a.png). If there are 4 facet values, indexes
+    // are: 0, 1/3, 2/3, 3/3.
+    // facetValueIndexStr converts from float to integer (0, 1, 2, 3).
+    // - isNaN can be deleted when we're using a vega version with
+    //   https://github.com/vega/vega/pull/1720
+    // - We divide by 2 because there are actually two entries in
+    //   data('source_0') for each facet value. One for the blue bar, and one
+    //   for a transparent bar. (The transparent bar lets us show tooltip for
+    //   when blue bar is small/non-existent.)
+    // - We subtract 1 because the floats are 0,1/3,2/3,3/3, not 0,1/4,2/4, etc.
+    // - See https://github.com/vega/vega/issues/1719 (second issue) for why we
+    //   need round().
+    let facetValueIndexStr = "";
+    if (isCategorical(this.props.facet)) {
+      facetValueIndexStr =
+        "round((isNaN(datum.index)?0:datum.index) * (length(data('source_0'))/2 - 1))";
+    } else {
+      // For numeric facets, facet value counts are in reverse order.
+      // So instead of 0,1,2,3 we need 3,2,1,0.
+      facetValueIndexStr =
+        "length(data('source_0'))/2 - 1 - round((isNaN(datum.index)?0:datum.index) * (length(data('source_0'))/2 - 1))";
+    }
+    const signalStr =
+      // Now we can construct tooltip: facet value name: facet value count
+      "datum.value + ': ' + data('source_0')[" + facetValueIndexStr + "].count";
+    vegaSpec.axes[2].encode = {
+      labels: {
+        interactive: true,
+        update: {
+          tooltip: {
+            signal: signalStr
+          }
+        }
+      }
+    };
+
+    let vega = (
+      <Vega
+        spec={vegaSpec}
+        tooltip={new Handler({ theme: "custom" }).call}
+        onNewView={this.onNewView}
+      />
+    );
+
     return (
       <div className={classes.histogramFacet}>
         <FacetHeader
@@ -185,14 +257,7 @@ class HistogramFacet extends Component {
         />
         {this.props.facet.values &&
           this.props.facet.values.length > 0 && (
-            <div className={classes.vega}>
-              <VegaLite
-                spec={spec}
-                data={data}
-                tooltip={new Handler({ theme: "custom" }).call}
-                onNewView={this.onNewView}
-              />
-            </div>
+            <div className={classes.vega}> {vega} </div>
           )}
       </div>
     );
