@@ -198,10 +198,11 @@ class HistogramFacet extends Component {
     vegaSpec.scales[1].align = 0;
 
     // Add tooltips to axis labels. vega-lite spec doesn't have "encode".
-    // May be able to simplify after https://github.com/vega/vega/issues/1719
-    // is fixed.
     let facetValueIndexStr = "";
     if (isCategorical(this.props.facet)) {
+      // See https://github.com/vega/vega/issues/1719 for why we need round().
+      // Remove isNaN when we're using a vega version with
+      // https://github.com/vega/vega/pull/1720
       facetValueIndexStr =
         "round((isNaN(datum.index)?0:datum.index) * (length(data('source_0'))/2 - 1))";
     } else {
@@ -236,9 +237,10 @@ class HistogramFacet extends Component {
           facet={this.props.facet}
           selectedValues={this.props.selectedValues}
         />
-        {this.props.facet.values && this.props.facet.values.length > 0 && (
-          <div className={classes.vega}> {vega} </div>
-        )}
+        {this.props.facet.values &&
+          this.props.facet.values.length > 0 && (
+            <div className={classes.vega}> {vega} </div>
+          )}
       </div>
     );
   }
