@@ -3,6 +3,7 @@ import AppBar from "@material-ui/core/AppBar";
 import CloseIcon from "@material-ui/icons/Close";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import IconButton from "@material-ui/core/IconButton";
+import Slide from "@material-ui/core/Slide";
 import Snackbar from "@material-ui/core/Snackbar";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 import Switch from "@material-ui/core/Switch";
@@ -120,6 +121,10 @@ const styles = {
   }
 };
 
+function TransitionLeft(props) {
+  return <Slide {...props} direction="left" />;
+}
+
 class Header extends React.Component {
   state = {
     snackbarOpen: true
@@ -141,6 +146,7 @@ class Header extends React.Component {
           }}
           open={this.state.snackbarOpen}
           onClose={this.handleSnackbarClose}
+          TransitionComponent={TransitionLeft}
         >
           <SnackbarContent
             classes={{
