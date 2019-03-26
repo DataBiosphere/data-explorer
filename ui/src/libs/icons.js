@@ -9,6 +9,7 @@ export const CheckboxStyles = {
     border: "1px solid " + colors.gray[5],
     borderRadius: 3,
     height: 14,
+    padding: 0,
     width: 14,
     "&:hover": {
       border: "1px solid " + colors.green[1]
