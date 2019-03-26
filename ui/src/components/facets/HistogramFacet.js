@@ -276,7 +276,10 @@ class HistogramFacet extends Component {
     // bars.
     if (item && item.datum) {
       // facetValue is a string, eg "female"
-      const facetValue = item.datum.facet_value;
+      // If bar was clicked, item.datum.facet_value is populated.
+      // If axis label was clicked, item.datum.value is populated.
+      const facetValue =
+        "facet_value" in item.datum ? item.datum.facet_value : item.datum.value;
       let isSelected;
       // this.props.selectedValues contains what was selected before the click.
       // isSelected contains if facet value was selected after the click.
