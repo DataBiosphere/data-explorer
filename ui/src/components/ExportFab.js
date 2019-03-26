@@ -49,6 +49,11 @@ const styles = {
       border: "1px solid #638e3e"
     }
   },
+  dialogButtonSendDisabled: {
+    backgroundColor: "#e9edf1",
+    border: "1px solid #babdc0",
+    color: "#babdc0"
+  },
   dialogDesc: {
     color: colors.gray[0],
     fontSize: 14
@@ -159,6 +164,7 @@ class ExportFab extends React.Component {
                     this.handleSave();
                   }
                 }}
+                placeholder="cohort name"
                 type="text"
                 variant="outlined"
               />
@@ -175,10 +181,17 @@ class ExportFab extends React.Component {
                 Cancel
               </Button>
               <Button
-                className={classNames(
-                  classes.dialogButtonBase,
-                  classes.dialogButtonSend
-                )}
+                classes={{
+                  root: classNames(
+                    classes.dialogButtonBase,
+                    classes.dialogButtonSend
+                  ),
+                  disabled: classNames(
+                    classes.dialogButtonBase,
+                    classes.dialogButtonSendDisabled
+                  )
+                }}
+                disabled={this.state.cohortName == ""}
                 variant="contained"
                 id="save"
                 onClick={this.handleSave}
