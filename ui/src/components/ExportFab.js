@@ -20,7 +20,14 @@ const styles = {
   exportButton: {
     filter: "drop-shadow( 0 2px 2px rgba(0,0,0,0.63))",
     height: 89,
-    width: 81
+    width: 81,
+    "&:hover :first-child": {
+      cursor: "pointer",
+      fill: "#7cb24e"
+    },
+    "&:active :first-child": {
+      fill: "#63953a"
+    }
   }
 };
 
