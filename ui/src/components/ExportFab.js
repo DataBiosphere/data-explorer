@@ -1,6 +1,4 @@
-/** Export to Terra FAB */
-
-import CloudUpload from "@material-ui/icons/CloudUpload";
+import React from "react";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
 import TextField from "@material-ui/core/TextField";
@@ -9,9 +7,29 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import React from "react";
+import { withStyles } from "@material-ui/core/styles";
 
-import "components/ExportFab.css";
+import { ReactComponent as ExportButton } from "libs/icons/export_to_terra.svg";
+
+const styles = {
+  exportFab: {
+    bottom: 45,
+    position: "fixed",
+    right: 35
+  },
+  exportButton: {
+    filter: "drop-shadow( 0 2px 2px rgba(0,0,0,0.63))",
+    height: 89,
+    width: 81,
+    "&:hover :first-child": {
+      cursor: "pointer",
+      fill: "#7cb24e"
+    },
+    "&:active :first-child": {
+      fill: "#63953a"
+    }
+  }
+};
 
 class ExportFab extends React.Component {
   constructor(props) {
@@ -24,25 +42,24 @@ class ExportFab extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
+
     var filter = this.props.filter;
     var defaultTextValue =
       filter != null && filter.length > 0 ? "" : "all participants";
     return (
       <div>
         {/*
-          Style div instead of button itself, to prevent button from moving
-          when cohort dialog is shown. See
+          Style div instead of button itself, to prevent button from moving to
+          the right when cohort dialog is shown. See
           https://github.com/mui-org/material-ui/issues/9275#issuecomment-350479467
         */}
-        <div className="mui-fixed exportFab">
+        <div className={"mui-fixed " + classes.exportFab}>
           <Tooltip title="Send to Terra">
-            <Button
-              variant="fab"
-              color="secondary"
+            <ExportButton
+              className={classes.exportButton}
               onClick={() => this.handleClick()}
-            >
-              <CloudUpload />
-            </Button>
+            />
           </Tooltip>
         </div>
         <div>
@@ -128,4 +145,4 @@ class ExportFab extends React.Component {
   }
 }
 
-export default ExportFab;
+export default withStyles(styles)(ExportFab);

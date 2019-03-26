@@ -51,7 +51,7 @@ const styles = {
   }),
   input: (provided, state) => ({
     ...provided,
-    marginLeft: 0
+    margin: "0 0 5px 0"
   }),
   option: (provided, state) => ({
     ...provided,
@@ -89,7 +89,7 @@ const styles = {
     color: "white",
     fontSize: 12,
     fontWeight: 500,
-    padding: "8px 21px 0 20px",
+    padding: "10px 21px 0 20px",
     // For some reason paddingLeft from above is ignored; put again here
     paddingLeft: "20px"
   }),

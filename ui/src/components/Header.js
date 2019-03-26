@@ -3,7 +3,7 @@ import AppBar from "@material-ui/core/AppBar";
 import CloseIcon from "@material-ui/icons/Close";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import IconButton from "@material-ui/core/IconButton";
-import InfoIcon from "@material-ui/icons/Info";
+import Slide from "@material-ui/core/Slide";
 import Snackbar from "@material-ui/core/Snackbar";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 import Switch from "@material-ui/core/Switch";
@@ -36,23 +36,19 @@ const styles = {
     fontWeight: 600,
     marginLeft: 15
   },
-  snackbarMessage: {
-    display: "grid",
-    gridTemplateColumns: "30px auto"
+  snackbarContentMessage: {
+    fontWeight: 500,
+    padding: 0,
+    width: 200
   },
-  snackbarInfoIcon: {
-    gridRow: "1/3",
-    gridColumn: "1",
-    fontSize: "20px",
-    marginRight: "12px",
-    opacity: 0.9
-  },
-  snackbarContent: {
+  snackbarContentRoot: {
     alignItems: "baseline",
-    backgroundColor: "#525c6c",
-    borderRadius: "5px",
-    fontSize: "12px",
-    padding: "4px 16px 4px 16px"
+    backgroundColor: colors.gray[1],
+    borderLeft: "5px solid " + colors.gray[0],
+    borderRadius: 5,
+    fontSize: 12,
+    minWidth: 228,
+    padding: "8px 16px 20px 17px"
   },
   snackbarCloseButton: {
     height: "24px",
@@ -61,6 +57,10 @@ const styles = {
   snackbarCloseIcon: {
     fontSize: "20px",
     opacity: 0.9
+  },
+  snackbarRoot: {
+    right: 10,
+    top: 75
   },
   toolbar: {
     padding: 0
@@ -121,6 +121,10 @@ const styles = {
   }
 };
 
+function TransitionLeft(props) {
+  return <Slide {...props} direction="left" />;
+}
+
 class Header extends React.Component {
   state = {
     snackbarOpen: true
@@ -129,30 +133,37 @@ class Header extends React.Component {
   render() {
     const { classes } = this.props;
 
-    const snackbarKey = "hasShownSnackbar";
+    const snackbarKey = "hasShownSnackbarv2";
     let snackbar = null;
     if (localStorage.getItem(snackbarKey) === null) {
       localStorage.setItem(snackbarKey, "true");
       snackbar = (
         <Snackbar
+          className={classes.snackbarRoot}
           anchorOrigin={{
             vertical: "top",
-            horizontal: "center"
+            horizontal: "right"
           }}
           open={this.state.snackbarOpen}
-          autoHideDuration={6000}
           onClose={this.handleSnackbarClose}
+          TransitionComponent={TransitionLeft}
         >
           <SnackbarContent
-            className={classes.snackbarContent}
+            classes={{
+              message: classes.snackbarContentMessage,
+              root: classes.snackbarContentRoot
+            }}
             message={
-              <span className={classes.snackbarMessage}>
-                <InfoIcon className={classes.snackbarInfoIcon} />
+              <>
+                <div>
+                  <b>How to use Data Explorer</b>
+                </div>
+                <br />
                 <div>Click on a bar to select it</div>
                 <div>
                   <i>Hint:&nbsp;</i> Clicking on whitespace also works
                 </div>
-              </span>
+              </>
             }
             action={[
               <IconButton

@@ -422,7 +422,7 @@ describe("End-to-end", () => {
   }
 
   async function exportToSaturn() {
-    await page.click("button[title='Send to Terra']");
+    await page.click("svg[title='Send to Terra']");
     // Wait for cohort name dialog
     await page.waitForSelector("#name");
 
