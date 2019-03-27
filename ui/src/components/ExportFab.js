@@ -115,8 +115,12 @@ class ExportFab extends React.Component {
     const { classes } = this.props;
 
     var filter = this.props.filter;
-    var defaultTextValue =
-      filter != null && filter.length > 0 ? "" : "all participants";
+    var defaultTextValue = "";
+    if (typeof filter === "undefined" || filter.length == "") {
+      defaultTextValue = "all participants";
+      // Set state so Send button is not disabled
+      this.state.cohortName = defaultTextValue;
+    }
     return (
       <div>
         {/*
