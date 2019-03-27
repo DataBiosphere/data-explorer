@@ -46,8 +46,10 @@ gcloud container clusters get-credentials elasticsearch-cluster --zone ${gke_clu
 
 # Create api/app.yml from api/app.yml.templ
 elasticsearch_url=$(kubectl get svc elasticsearch | grep elasticsearch | awk '{print $4}')
+git_commit=$(git rev-parse HEAD)
 sed -e "s/MY_DATASET/${dataset}/" api/app.yaml.templ > api/app.yaml
 sed -i -e "s/MY_ELASTICSEARCH_URL/${elasticsearch_url}/" api/app.yaml
+sed -i -e "s/MY_GIT_COMMIT/${git_commit}/" api/app.yaml
 
 # Temporarily copy api/Dockerfile, api/app.yaml to project root.
 # Unlike docker-compose, App Engine Flexible requires that docker build context
