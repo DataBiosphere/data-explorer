@@ -52,7 +52,11 @@ const styles = {
   },
   snackbarCloseButton: {
     height: "24px",
-    width: "24px"
+    width: "24px",
+    // Disble hover circle so we don't have to line it up with close icon
+    "&:hover": {
+      backgroundColor: "unset"
+    }
   },
   snackbarCloseIcon: {
     fontSize: "20px",
