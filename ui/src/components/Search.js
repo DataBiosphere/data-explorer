@@ -89,6 +89,9 @@ const styles = {
     color: "white",
     fontSize: 12,
     fontWeight: 500,
+    // For some reason different line-heights are needed for Mac Chrome vs
+    // Linux Chrome, to make chip text vertically centered in chip.
+    lineHeight: navigator.platform.includes("Mac") ? "10px" : "13px",
     padding: "10px 21px 0 20px",
     // For some reason paddingLeft from above is ignored; put again here
     paddingLeft: "20px"
