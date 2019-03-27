@@ -18,11 +18,11 @@
 
 ### Deploy the UI Server
 
-- Deploy:
-  ```
-  gcloud config set project PROJECT_ID
-  cd ui && gcloud app deploy --quiet
-  ```
+- From project root run `deploy/deploy-ui.sh MY_DATASET`, where `MY_DATASET` is
+  the name of the config directory in `dataset_config`.
+  Note: App Engine deployment is
+  slow and can take up 10 minutes. When `deploy/deploy-ui.sh` returns, that means
+  deployment has completed.
 
 ### Enable Access Control
 
