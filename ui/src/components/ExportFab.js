@@ -191,7 +191,9 @@ class ExportFab extends React.Component {
                     classes.dialogButtonSendDisabled
                   )
                 }}
-                disabled={this.state.cohortName == ""}
+                disabled={
+                  !("cohortName" in this.state) || this.state.cohortName == ""
+                }
                 variant="contained"
                 id="save"
                 onClick={this.handleSave}
