@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "@material-ui/core/Button";
+import classNames from "classnames";
 import Tooltip from "@material-ui/core/Tooltip";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
@@ -9,9 +10,78 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { withStyles } from "@material-ui/core/styles";
 
+import colors from "libs/colors";
 import { ReactComponent as ExportButton } from "libs/icons/export_to_terra.svg";
 
 const styles = {
+  dialogButtonBase: {
+    boxShadow: "unset",
+    color: colors.green[0],
+    fontSize: 16,
+    margin: "0 25px 26px 0",
+    padding: "10px 20px 8px 20px"
+  },
+  dialogButtonCancel: {
+    // Add an invisible border so the button doesn't move when we click it
+    border: "1px solid white",
+    "&:hover": {
+      backgroundColor: "#e9edf1",
+      border: "1px solid #babdc0",
+      borderRadius: 3
+    },
+    "&:active": {
+      backgroundColor: "#e9edf1",
+      border: "1px solid #babdc0",
+      borderRadius: 3
+    }
+  },
+  dialogButtonSend: {
+    backgroundColor: colors.green[1],
+    border: "1px solid #5c8b35",
+    borderRadius: 3,
+    color: "white",
+    "&:hover": {
+      backgroundColor: "#7cb24e",
+      border: "1px solid #638e3e"
+    },
+    "&:active": {
+      backgroundColor: "#63953a",
+      border: "1px solid #638e3e"
+    }
+  },
+  dialogButtonSendDisabled: {
+    backgroundColor: "#e9edf1",
+    border: "1px solid #babdc0",
+    color: "#babdc0"
+  },
+  dialogDesc: {
+    color: colors.gray[0],
+    fontSize: 14
+  },
+  dialogInputInput: {
+    color: colors.gray[0],
+    fontSize: 14,
+    padding: "10px 12px 6px 12px"
+  },
+  dialogInputRoot: {
+    margin: "22px 0 30px 0",
+    "&:hover $dialogInputNotchedOutline": {
+      borderColor: "#ced0da !important"
+    },
+    "&$dialogInputCssFocused $dialogInputNotchedOutline": {
+      borderColor: colors.green[1] + " !important"
+    }
+  },
+  dialogInputCssFocused: {},
+  dialogInputNotchedOutline: {
+    borderColor: "#dfe3e9 !important",
+    borderWidth: "1px !important"
+  },
+  dialogTitle: {
+    color: colors.gray[0],
+    fontSize: 18,
+    fontWeight: 600
+  },
   exportFab: {
     bottom: 45,
     position: "fixed",
@@ -45,8 +115,12 @@ class ExportFab extends React.Component {
     const { classes } = this.props;
 
     var filter = this.props.filter;
-    var defaultTextValue =
-      filter != null && filter.length > 0 ? "" : "all participants";
+    var defaultTextValue = "";
+    if (typeof filter === "undefined" || filter.length == "") {
+      defaultTextValue = "all participants";
+      // Set state so Send button is not disabled
+      this.state.cohortName = defaultTextValue;
+    }
     return (
       <div>
         {/*
@@ -64,33 +138,70 @@ class ExportFab extends React.Component {
         </div>
         <div>
           <Dialog
+            className={classes.dialogRoot}
             open={this.state.open}
             onClose={this.handleClose}
-            aria-labelledby="form-dialog-title"
           >
+            <DialogTitle className={classes.dialogTitle} disableTypography>
+              Send to Terra
+            </DialogTitle>
             <DialogContent>
+              <div className={classes.dialogDesc}>
+                A cohort with this name will be created in Terra
+              </div>
               <TextField
                 autoFocus
                 defaultValue={defaultTextValue}
                 fullWidth
-                helperText="A cohort with this name will be created in Terra"
                 id="name"
-                label="Cohort Name"
-                margin="dense"
+                InputProps={{
+                  classes: {
+                    root: classes.dialogInputRoot,
+                    focused: classes.dialogInputCssFocused,
+                    input: classes.dialogInputInput,
+                    notchedOutline: classes.dialogInputNotchedOutline
+                  }
+                }}
                 onChange={this.setTextValue}
                 onKeyPress={ev => {
                   if (ev.key === "Enter") {
                     this.handleSave();
                   }
                 }}
+                placeholder="cohort name"
                 type="text"
+                variant="outlined"
               />
             </DialogContent>
             <DialogActions>
-              <Button onClick={this.handleCancel} color="primary">
+              <Button
+                className={classNames(
+                  classes.dialogButtonBase,
+                  classes.dialogButtonCancel
+                )}
+                onClick={this.handleCancel}
+                color="primary"
+              >
                 Cancel
               </Button>
-              <Button id="save" onClick={this.handleSave} color="primary">
+              <Button
+                classes={{
+                  root: classNames(
+                    classes.dialogButtonBase,
+                    classes.dialogButtonSend
+                  ),
+                  disabled: classNames(
+                    classes.dialogButtonBase,
+                    classes.dialogButtonSendDisabled
+                  )
+                }}
+                disabled={
+                  !("cohortName" in this.state) || this.state.cohortName == ""
+                }
+                variant="contained"
+                id="save"
+                onClick={this.handleSave}
+              >
                 Send
               </Button>
             </DialogActions>
