@@ -22,7 +22,7 @@ from data_explorer.models.export_url_response import ExportUrlResponse  # noqa: 
 from data_explorer.util import elasticsearch_util
 from data_explorer.util.dataset_faceted_search import DatasetFacetedSearch
 
-# Send to Terra flow
+# Save in Terra flow
 # - User clicks export button on bottom right of Data Explorer
 # - A dialog pops up, asking user to name cohort. User types "African females"
 #   and clicks Export button
@@ -43,16 +43,16 @@ def _check_preconditions():
                                'deploy.json')
     if not os.path.isfile(config_path):
         error_msg = (
-            'deploy.json not found. Send to Terra feature will not work. '
-            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-send-to-terra-feature'
+            'deploy.json not found. Save in Terra feature will not work. '
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-save-in-terra-feature'
         )
         current_app.logger.error(error_msg)
         raise BadRequest(error_msg)
 
     if not current_app.config['DEPLOY_PROJECT_ID']:
         error_msg = (
-            'Project not set in deploy.json. Send to Terra feature will not work. '
-            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-send-to-terra-feature'
+            'Project not set in deploy.json. Save in Terra feature will not work. '
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-save-in-terra-feature'
         )
         current_app.logger.error(error_msg)
         raise BadRequest(error_msg)
@@ -60,8 +60,8 @@ def _check_preconditions():
     if not current_app.config['EXPORT_URL_GCS_BUCKET']:
         error_msg = (
             'Project not set in deploy.json or export URL GCS bucket not '
-            'found. Send to Terra feature will not work. '
-            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-send-to-terra-feature'
+            'found. Save in Terra feature will not work. '
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-save-in-terra-feature'
         )
         current_app.logger.error(error_msg)
         raise BadRequest(error_msg)
@@ -70,8 +70,8 @@ def _check_preconditions():
                                     'private-key.json')
     if not os.path.isfile(private_key_path):
         error_msg = (
-            'Private key not found. Send to Terra feature will not work. '
-            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-send-to-terra-feature'
+            'Private key not found. Save in Terra feature will not work. '
+            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-save-in-terra-feature'
         )
         current_app.logger.error(error_msg)
         raise BadRequest(error_msg)

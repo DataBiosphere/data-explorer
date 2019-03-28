@@ -129,7 +129,7 @@ class ExportFab extends React.Component {
           https://github.com/mui-org/material-ui/issues/9275#issuecomment-350479467
         */}
         <div className={"mui-fixed " + classes.exportFab}>
-          <Tooltip title="Send to Terra">
+          <Tooltip title="Save in Terra">
             <ExportButton
               className={classes.exportButton}
               onClick={() => this.handleClick()}
@@ -143,7 +143,7 @@ class ExportFab extends React.Component {
             onClose={this.handleClose}
           >
             <DialogTitle className={classes.dialogTitle} disableTypography>
-              Send to Terra
+              Save in Terra
             </DialogTitle>
             <DialogContent>
               <div className={classes.dialogDesc}>

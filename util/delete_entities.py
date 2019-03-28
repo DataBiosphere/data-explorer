@@ -1,6 +1,6 @@
 """Delete all entities in a workspace.
 
-This is useful when working on the Send to Terra feature.
+This is useful when working on the Save in Terra feature.
 
 To run:
 
