@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Creates GCS bucket for the Send to Terra feature.
+# Creates GCS bucket for the Save in Terra feature.
 #
 # See export_url_controller.py for more information.
 #

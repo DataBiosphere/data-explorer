@@ -29,14 +29,14 @@ cluster_name=$(echo $cluster_line | awk '{print $1}')
 gke_cluster_zone=$(echo $cluster_line | awk '{print $2}')
 
 if [ ! -f "dataset_config/${dataset}/private-key.json" ]; then
-	echo "Private key not found. Send to Terra feature will not work. "
-	echo "See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-send-to-terra-feature."
+	echo "Private key not found. Save in Terra feature will not work. "
+	echo "See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-save-in-terra-feature."
 	exit 1
 fi
 
 if ! gsutil ls "gs://${project_id}-export" &> /dev/null; then
-	echo "Export bucket not found. Send to Terra feature will not work. "
-	echo "See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-send-to-terra-feature."
+	echo "Export bucket not found. Save in Terra feature will not work. "
+	echo "See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-save-in-terra-feature."
 	exit 1
 fi
 
