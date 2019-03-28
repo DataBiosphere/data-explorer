@@ -33,9 +33,13 @@ const styles = {
   },
   root: {
     backgroundColor: colors.grayBlue[6],
-    // Disable horizontal scrollbar. Horizontal scrollbar appears because each
-    // HistogramFacet has right margin, including right-most HistogramFacets.
-    overflowX: "hidden"
+    // 1) overflow-x=hidden is needed to disable horizontal scrollbar.
+    // Horizontal scrollbar appears because each HistogramFacet has right
+    // margin, including right-most HistogramFacets.
+    // 2) With overflow-x=hidden, horizontal scrollbar disappears but with some
+    // datasets (not 1000 Genomes) there are 2 vertical scrollbars.
+    // overflow=hidden gets us down to one vertical scrollbar.
+    overflow: "hidden"
   }
 };
 
