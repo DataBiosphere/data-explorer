@@ -21,6 +21,8 @@ fi
 
 dataset=$1
 project_id=$(jq --raw-output '.project_id' dataset_config/${dataset}/deploy.json)
+# Initialize gcloud and kubectl commands
+gcloud config set project ${project_id}
 
 # Need to get cluster name by sorting the list of clusters, and choosing to
 # use the one with the greatest timestamp (most recent)
@@ -45,8 +47,6 @@ normal=$(tput sgr0)
 echo "Deploying API server for ${bold}dataset ${dataset}${normal} to ${bold}project ${project_id}${normal}"
 echo
 
-# Initialize gcloud and kubectl commands
-gcloud config set project ${project_id}
 gcloud container clusters get-credentials ${cluster_name} --zone ${gke_cluster_zone}
 
 # Create api/app.yml from api/app.yml.templ
