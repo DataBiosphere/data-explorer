@@ -111,7 +111,8 @@ def search_get(query=None):
 
         # This regex matches if there is a word that starts with query,
         # or a word ending with underscore_query.
-        query_regex = r"\b{query}\w*|_{query}\w*".format(query=re.escape(query.lower()))
+        query_regex = r"\b{query}\w*|_{query}\w*".format(
+            query=re.escape(query.lower()))
 
         # hits contains entire documents. Iterate over the fields to figure out
         # which field matched query.
