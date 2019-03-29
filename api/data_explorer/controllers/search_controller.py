@@ -110,7 +110,7 @@ def search_get(query=None):
         response_fields = response.to_dict()
 
         # This regex matches if there is a word that starts with query,
-        # or a word ending with underscore_query.
+        # or a word that contains underscore_query.
         query_regex = r"\b{query}\w*|_{query}\w*".format(
             query=re.escape(query.lower()))
 
