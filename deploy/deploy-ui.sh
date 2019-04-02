@@ -16,15 +16,14 @@ then
 fi
 
 dataset=$1
-project_id=$(jq --raw-output '.project_id' dataset_config/${dataset}/deploy.json)
+
+util/setup-gcloud.sh ${dataset}
+project_id=$(kubectl config current-context | cut -d "_" -f 2)
 
 bold=$(tput bold)
 normal=$(tput sgr0)
 echo "Deploying UI server for ${bold}dataset ${dataset}${normal} to ${bold}project ${project_id}${normal}"
 echo
-
-# Initialize gcloud command
-gcloud config set project ${project_id}
 
 # Create ui/app.yml from ui/app.yml.templ
 git_commit=$(git rev-parse HEAD)
