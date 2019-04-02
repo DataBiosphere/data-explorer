@@ -6,6 +6,7 @@ import AsyncSelect from "react-select/lib/Async";
 import { components } from "react-select";
 import { withStyles } from "@material-ui/core/styles";
 
+import colors from "libs/colors";
 import { ReactComponent as DownAngle } from "libs/icons/down-angle.svg";
 import { DownAngleStyles } from "libs/icons";
 
@@ -27,9 +28,15 @@ const styles = {
   }),
   control: (provided, state) => ({
     ...provided,
-    backgroundColor: "#ebedef",
+    backgroundColor: colors.gray[6],
     border: 0,
-    margin: "9px 15px 0px 15px"
+    borderRadius: 5,
+    margin: "9px 15px 0px 15px",
+    ...(state.isFocused
+      ? {
+          boxShadow: "0 0 0 1px " + colors.green[1]
+        }
+      : {})
   }),
   dropdownIcon: {
     color: "#5c912e",
