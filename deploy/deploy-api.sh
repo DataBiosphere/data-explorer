@@ -56,8 +56,10 @@ cp api/Dockerfile api/${dataset}.app.yaml .
 
 # Deploy App Engine api service
 gcloud app deploy --quiet ${dataset}.app.yaml
-rm ${dataset}.app.yaml
+# -f option because Dockerfile may already be removed by another script
+rm -f Dockerfile ${dataset}.app.yaml
 
+# Reset gcloud project in case a different deploy-api.sh was started while this one was running.
 gcloud config set project ${project_id}
 # Set up routing rules
 cd deploy && gcloud app deploy --quiet dispatch.yaml
