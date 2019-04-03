@@ -44,19 +44,22 @@ echo
 # Create api/app.yml from api/app.yml.templ
 elasticsearch_url=$(kubectl get svc elasticsearch | grep elasticsearch | awk '{print $4}')
 git_commit=$(git rev-parse HEAD)
-sed -e "s/MY_DATASET/${dataset}/" api/app.yaml.templ > api/app.yaml
-sed -i -e "s/MY_ELASTICSEARCH_URL/${elasticsearch_url}/" api/app.yaml
-sed -i -e "s/MY_GIT_COMMIT/${git_commit}/" api/app.yaml
+sed -e "s/MY_DATASET/${dataset}/" api/app.yaml.templ > api/${dataset}.app.yaml
+sed -i -e "s/MY_ELASTICSEARCH_URL/${elasticsearch_url}/" api/${dataset}.app.yaml
+sed -i -e "s/MY_GIT_COMMIT/${git_commit}/" api/${dataset}.app.yaml
 
 # Temporarily copy api/Dockerfile, api/app.yaml to project root.
 # Unlike docker-compose, App Engine Flexible requires that docker build context
 # be in same directory as Dockerfile. Build context must be project root in
 # order to pickup dataset_config/.
-cp api/Dockerfile api/app.yaml .
+cp api/Dockerfile api/${dataset}.app.yaml .
 
 # Deploy App Engine api service
-gcloud app deploy --quiet
-rm Dockerfile app.yaml
+gcloud app deploy --quiet ${dataset}.app.yaml
+# -f option because Dockerfile may already be removed a different instance of deploy-api.sh
+rm -f Dockerfile ${dataset}.app.yaml
 
+# Reset gcloud project in case a different deploy-api.sh was started while this one was running.
+gcloud config set project ${project_id}
 # Set up routing rules
 cd deploy && gcloud app deploy --quiet dispatch.yaml
