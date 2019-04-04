@@ -161,6 +161,7 @@ class App extends Component {
     this.handleSearchBoxChange = this.handleSearchBoxChange.bind(this);
     this.handleVizSwitchChange = this.handleVizSwitchChange.bind(this);
     this.loadOptions = this.loadOptions.bind(this);
+    this.removeFacet = this.removeFacet.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -196,6 +197,8 @@ class App extends Component {
               updateFacets={this.updateFacets}
               selectedFacetValues={this.state.selectedFacetValues}
               facets={Array.from(this.state.facets.values())}
+              removeFacet={this.removeFacet}
+              extraFacetEsFieldNames={this.state.extraFacetEsFieldNames}
               showViz={this.state.showViz}
             />
             <ExportFab
@@ -352,6 +355,12 @@ class App extends Component {
       }
     }
     return newValueList;
+  }
+
+  removeFacet(facetValue) {
+    if (this.state.facets.delete(facetValue)) {
+      this.setState({ facets: this.state.facets });
+    }
   }
 
   /**

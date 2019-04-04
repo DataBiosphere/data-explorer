@@ -23,6 +23,10 @@ function facetCard(props, facet) {
       <HistogramFacet
         facet={facet}
         updateFacets={props.updateFacets}
+        removeFacet={props.removeFacet}
+        facetIsExtra={props.extraFacetEsFieldNames.includes(
+          facet.es_field_name
+        )}
         selectedValues={props.selectedFacetValues.get(facet.es_field_name)}
       />
     );
@@ -31,6 +35,10 @@ function facetCard(props, facet) {
       <TextFacet
         facet={facet}
         updateFacets={props.updateFacets}
+        removeFacet={props.removeFacet}
+        facetIsExtra={props.extraFacetEsFieldNames.includes(
+          facet.es_field_name
+        )}
         selectedValues={props.selectedFacetValues.get(facet.es_field_name)}
       />
     );

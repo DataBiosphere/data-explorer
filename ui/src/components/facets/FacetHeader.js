@@ -29,27 +29,47 @@ const styles = {
     fontWeight: 600,
     padding: "11px 18px 0 0",
     textAlign: "right"
+  },
+  removeFacet: {
+    padding: "7px 0 0 50px"
   }
 };
 
 class FacetHeader extends Component {
+  state = {
+    hoveredOver: false
+  };
+
   constructor(props) {
     super(props);
+    this.mouseEnter = this.mouseEnter.bind(this);
+    this.mouseLeave = this.mouseLeave.bind(this);
+    this.onClose = this.onClose.bind(this);
   }
 
   render() {
     const { classes } = this.props;
 
     return (
-      <div className={classes.facetHeader}>
+      <div
+        className={classes.facetHeader}
+        onMouseEnter={this.mouseEnter}
+        onMouseLeave={this.mouseLeave}
+      >
         <div className={classes.facetName}>{this.props.facet.name}</div>
-        {this.props.facet.name != "Samples Overview" && (
-          <div className={classes.totalFacetValueCount}>
-            {this.sumFacetValueCounts(
-              this.props.facet.values,
-              this.props.selectedValues
-            )}
+        {this.props.facetIsExtra && this.state.hoveredOver ? (
+          <div className={classes.removeFacet} onClick={this.onClose}>
+            <clr-icon shape="times" style={styles.clearIcon} size="29" />
           </div>
+        ) : (
+          this.props.facet.name != "Samples Overview" && (
+            <div className={classes.totalFacetValueCount}>
+              {this.sumFacetValueCounts(
+                this.props.facet.values,
+                this.props.selectedValues
+              )}
+            </div>
+          )
         )}
         {this.props.facet.description && (
           <div className={classes.facetDescription}>
@@ -58,6 +78,18 @@ class FacetHeader extends Component {
         )}
       </div>
     );
+  }
+
+  onClose() {
+    this.props.removeFacet(this.props.facet.es_field_name);
+  }
+
+  mouseEnter() {
+    this.setState({ hoveredOver: true });
+  }
+
+  mouseLeave() {
+    this.setState({ hoveredOver: false });
   }
 
   /**

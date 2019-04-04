@@ -108,6 +108,8 @@ class TextFacet extends Component {
         <FacetHeader
           facet={this.props.facet}
           selectedValues={this.props.selectedValues}
+          removeFacet={this.props.removeFacet}
+          facetIsExtra={this.props.facetIsExtra}
         />
         <List dense className={classes.facetValueList}>
           {facetValueDivs}
