@@ -358,7 +358,10 @@ class App extends Component {
   }
 
   removeFacet(facetValue) {
-    if (this.state.facets.delete(facetValue)) {
+    if (
+      this.state.facets.delete(facetValue) ||
+      this.state.extraFacetEsFieldNames.delete(facetValue)
+    ) {
       this.setState({ facets: this.state.facets });
     }
   }
