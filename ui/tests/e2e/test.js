@@ -174,11 +174,10 @@ describe("End-to-end", () => {
 
     // Click on 'x' on the facet header
     await page.hover("div[class^='FacetHeader-facetName-']");
-    await page.click("div[class^='FacetHeader-removeFacet-']");
+    await page.click("div[class^='FacetHeader-closeIcon-']");
 
-    await waitForFacetsUpdate(3500);
     // Make sure the facet filters were removed
-    await assertTextFacet("Super Population", "3500", "African", "1018");
+    await waitForFacetsUpdate(3500);
   });
 
   test("[HistogramFacet] Participant facet", async () => {

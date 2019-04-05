@@ -30,22 +30,22 @@ const styles = {
     padding: "11px 18px 0 0",
     textAlign: "right"
   },
-  removeFacet: {
+  closeIcon: {
     color: colors.gray[1],
     padding: "7px 0 0 50px"
   }
 };
 
 class FacetHeader extends Component {
-  state = {
-    hoveredOver: false
-  };
-
   constructor(props) {
     super(props);
+    this.state = {
+      hoveredOver: false
+    };
+
     this.mouseEnter = this.mouseEnter.bind(this);
     this.mouseLeave = this.mouseLeave.bind(this);
-    this.onClose = this.onClose.bind(this);
+    this.handleRemoveFacet = this.handleRemoveFacet.bind(this);
   }
 
   render() {
@@ -58,9 +58,9 @@ class FacetHeader extends Component {
         onMouseLeave={this.mouseLeave}
       >
         <div className={classes.facetName}>{this.props.facet.name}</div>
-        {this.props.facetIsExtra && this.state.hoveredOver ? (
-          <div className={classes.removeFacet} onClick={this.onClose}>
-            <clr-icon shape="times" size="25" />
+        {this.props.isExtraFacet && this.state.hoveredOver ? (
+          <div className={classes.closeIcon} onClick={this.handleRemoveFacet}>
+            <clr-icon shape="times" style={styles.clearIcon} size="29" />
           </div>
         ) : (
           this.props.facet.name != "Samples Overview" && (
@@ -81,8 +81,8 @@ class FacetHeader extends Component {
     );
   }
 
-  onClose() {
-    this.props.removeFacet(this.props.facet.es_field_name);
+  handleRemoveFacet() {
+    this.props.handleRemoveFacet(this.props.facet.es_field_name);
   }
 
   mouseEnter() {

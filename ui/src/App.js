@@ -161,7 +161,7 @@ class App extends Component {
     this.handleSearchBoxChange = this.handleSearchBoxChange.bind(this);
     this.handleVizSwitchChange = this.handleVizSwitchChange.bind(this);
     this.loadOptions = this.loadOptions.bind(this);
-    this.removeFacet = this.removeFacet.bind(this);
+    this.handleRemoveFacet = this.handleRemoveFacet.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -197,7 +197,7 @@ class App extends Component {
               updateFacets={this.updateFacets}
               selectedFacetValues={this.state.selectedFacetValues}
               facets={Array.from(this.state.facets.values())}
-              removeFacet={this.removeFacet}
+              handleRemoveFacet={this.handleRemoveFacet}
               extraFacetEsFieldNames={this.state.extraFacetEsFieldNames}
               showViz={this.state.showViz}
             />
@@ -318,7 +318,7 @@ class App extends Component {
       // Remove facetValue from the list of filters for facetName
       allFacetValues.set(
         esFieldName,
-        this.removeFacetValue(facetValuesForField, facetValue)
+        facetValuesForField.filter(n => n != facetValue)
       );
     }
     return allFacetValues;
@@ -346,33 +346,23 @@ class App extends Component {
     );
   }
 
-  // Remove the given facet value from a list of facet values.
-  removeFacetValue(valueList, facetValue) {
-    let newValueList = [];
-    for (let i = 0; i < valueList.length; i++) {
-      if (valueList[i] !== facetValue) {
-        newValueList.push(valueList[i]);
-      }
-    }
-    return newValueList;
-  }
-
-  removeFacet(facetValue) {
-    this.state.facets.delete(facetValue);
-    this.state.selectedFacetValues.delete(facetValue);
-    let extraFacetEsFieldNames = this.removeFacetValue(
-      this.state.extraFacetEsFieldNames,
-      facetValue
+  handleRemoveFacet(facetValue) {
+    let facetsCopy = new Map(this.state.facets);
+    facetsCopy.delete(facetValue);
+    let selectedFacetValues = new Map(this.state.selectedFacetValues);
+    selectedFacetValues.delete(facetValue);
+    let extraFacetEsFieldNames = this.state.extraFacetEsFieldNames.filter(
+      n => n != facetValue
     );
     this.setState({
       facetsApiDone: false,
-      facets: this.state.facets,
+      facets: facetsCopy,
       extraFacetEsFieldNames: extraFacetEsFieldNames,
-      selectedFacetValues: this.state.selectedFacetValues
+      selectedFacetValues: selectedFacetValues
     });
     this.facetsApi.facetsGet(
       {
-        filter: this.filterMapToArray(this.state.selectedFacetValues),
+        filter: this.filterMapToArray(selectedFacetValues),
         extraFacets: extraFacetEsFieldNames
       },
       this.facetsCallback
