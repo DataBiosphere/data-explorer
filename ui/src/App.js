@@ -161,6 +161,7 @@ class App extends Component {
     this.handleSearchBoxChange = this.handleSearchBoxChange.bind(this);
     this.handleVizSwitchChange = this.handleVizSwitchChange.bind(this);
     this.loadOptions = this.loadOptions.bind(this);
+    this.handleRemoveFacet = this.handleRemoveFacet.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -196,6 +197,8 @@ class App extends Component {
               updateFacets={this.updateFacets}
               selectedFacetValues={this.state.selectedFacetValues}
               facets={Array.from(this.state.facets.values())}
+              handleRemoveFacet={this.handleRemoveFacet}
+              extraFacetEsFieldNames={this.state.extraFacetEsFieldNames}
               showViz={this.state.showViz}
             />
             <ExportFab
@@ -315,7 +318,7 @@ class App extends Component {
       // Remove facetValue from the list of filters for facetName
       allFacetValues.set(
         esFieldName,
-        this.removeFacetValue(facetValuesForField, facetValue)
+        facetValuesForField.filter(n => n != facetValue)
       );
     }
     return allFacetValues;
@@ -343,15 +346,27 @@ class App extends Component {
     );
   }
 
-  // Remove the given facet value from a list of facet values.
-  removeFacetValue(valueList, facetValue) {
-    let newValueList = [];
-    for (let i = 0; i < valueList.length; i++) {
-      if (valueList[i] !== facetValue) {
-        newValueList.push(valueList[i]);
-      }
-    }
-    return newValueList;
+  handleRemoveFacet(facetValue) {
+    let facetsCopy = new Map(this.state.facets);
+    facetsCopy.delete(facetValue);
+    let selectedFacetValues = new Map(this.state.selectedFacetValues);
+    selectedFacetValues.delete(facetValue);
+    let extraFacetEsFieldNames = this.state.extraFacetEsFieldNames.filter(
+      n => n != facetValue
+    );
+    this.setState({
+      facetsApiDone: false,
+      facets: facetsCopy,
+      extraFacetEsFieldNames: extraFacetEsFieldNames,
+      selectedFacetValues: selectedFacetValues
+    });
+    this.facetsApi.facetsGet(
+      {
+        filter: this.filterMapToArray(selectedFacetValues),
+        extraFacets: extraFacetEsFieldNames
+      },
+      this.facetsCallback
+    );
   }
 
   /**

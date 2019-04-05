@@ -254,11 +254,12 @@ class HistogramFacet extends Component {
         <FacetHeader
           facet={this.props.facet}
           selectedValues={this.props.selectedValues}
+          handleRemoveFacet={this.props.handleRemoveFacet}
+          isExtraFacet={this.props.isExtraFacet}
         />
-        {this.props.facet.values &&
-          this.props.facet.values.length > 0 && (
-            <div className={classes.vega}> {vega} </div>
-          )}
+        {this.props.facet.values && this.props.facet.values.length > 0 && (
+          <div className={classes.vega}> {vega} </div>
+        )}
       </div>
     );
   }

@@ -29,27 +29,48 @@ const styles = {
     fontWeight: 600,
     padding: "11px 18px 0 0",
     textAlign: "right"
+  },
+  closeIcon: {
+    color: colors.gray[1],
+    padding: "7px 0 0 50px"
   }
 };
 
 class FacetHeader extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      hoveredOver: false
+    };
+
+    this.mouseEnter = this.mouseEnter.bind(this);
+    this.mouseLeave = this.mouseLeave.bind(this);
+    this.handleRemoveFacet = this.handleRemoveFacet.bind(this);
   }
 
   render() {
     const { classes } = this.props;
 
     return (
-      <div className={classes.facetHeader}>
+      <div
+        className={classes.facetHeader}
+        onMouseEnter={this.mouseEnter}
+        onMouseLeave={this.mouseLeave}
+      >
         <div className={classes.facetName}>{this.props.facet.name}</div>
-        {this.props.facet.name != "Samples Overview" && (
-          <div className={classes.totalFacetValueCount}>
-            {this.sumFacetValueCounts(
-              this.props.facet.values,
-              this.props.selectedValues
-            )}
+        {this.props.isExtraFacet && this.state.hoveredOver ? (
+          <div className={classes.closeIcon} onClick={this.handleRemoveFacet}>
+            <clr-icon shape="times" style={styles.clearIcon} size="29" />
           </div>
+        ) : (
+          this.props.facet.name != "Samples Overview" && (
+            <div className={classes.totalFacetValueCount}>
+              {this.sumFacetValueCounts(
+                this.props.facet.values,
+                this.props.selectedValues
+              )}
+            </div>
+          )
         )}
         {this.props.facet.description && (
           <div className={classes.facetDescription}>
@@ -58,6 +79,18 @@ class FacetHeader extends Component {
         )}
       </div>
     );
+  }
+
+  handleRemoveFacet() {
+    this.props.handleRemoveFacet(this.props.facet.es_field_name);
+  }
+
+  mouseEnter() {
+    this.setState({ hoveredOver: true });
+  }
+
+  mouseLeave() {
+    this.setState({ hoveredOver: false });
   }
 
   /**
