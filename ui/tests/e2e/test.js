@@ -165,10 +165,20 @@ describe("End-to-end", () => {
 
     // Assert Relationship facet is added
     await waitForTextFacet("Relationship");
+    // Move mouse away from the facet header (so X isn't displayed)
+    await page.hover("input");
     await assertTextFacet("Relationship", "1", "mother", "831");
 
     // Make sure facet value is selected
     await assertTextFacetValueSelected("Relationship", "paternal grandmother");
+
+    // Click on 'x' on the facet header
+    await page.hover("div[class^='FacetHeader-facetName-']");
+    await page.click("div[class^='FacetHeader-removeFacet-']");
+
+    await waitForFacetsUpdate(3500);
+    // Make sure the facet filters were removed
+    await assertTextFacet("Super Population", "3500", "African", "1018");
   });
 
   test("[HistogramFacet] Participant facet", async () => {
