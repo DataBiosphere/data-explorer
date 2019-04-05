@@ -358,16 +358,25 @@ class App extends Component {
   }
 
   removeFacet(facetValue) {
-    if (this.state.facets.delete(facetValue)) {
-      let extraFacetEsFieldNames = this.removeFacetValue(
-        this.state.extraFacetEsFieldNames,
-        facetValue
-      );
-      this.setState({
-        facets: this.state.facets,
-        extraFacetEsFieldNames: extraFacetEsFieldNames
-      });
-    }
+    this.state.facets.delete(facetValue);
+    this.state.selectedFacetValues.delete(facetValue);
+    let extraFacetEsFieldNames = this.removeFacetValue(
+      this.state.extraFacetEsFieldNames,
+      facetValue
+    );
+    this.setState({
+      facetsApiDone: false,
+      facets: this.state.facets,
+      extraFacetEsFieldNames: extraFacetEsFieldNames,
+      selectedFacetValues: this.state.selectedFacetValues
+    });
+    this.facetsApi.facetsGet(
+      {
+        filter: this.filterMapToArray(this.state.selectedFacetValues),
+        extraFacets: extraFacetEsFieldNames
+      },
+      this.facetsCallback
+    );
   }
 
   /**
