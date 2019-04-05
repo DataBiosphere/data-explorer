@@ -31,6 +31,7 @@ const styles = {
     textAlign: "right"
   },
   removeFacet: {
+    color: colors.gray[1],
     padding: "7px 0 0 50px"
   }
 };
@@ -59,7 +60,7 @@ class FacetHeader extends Component {
         <div className={classes.facetName}>{this.props.facet.name}</div>
         {this.props.facetIsExtra && this.state.hoveredOver ? (
           <div className={classes.removeFacet} onClick={this.onClose}>
-            <clr-icon shape="times" style={styles.clearIcon} size="29" />
+            <clr-icon shape="times" size="25" />
           </div>
         ) : (
           this.props.facet.name != "Samples Overview" && (

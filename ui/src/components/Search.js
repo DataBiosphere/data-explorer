@@ -244,7 +244,7 @@ class Search extends React.Component {
           ref={ref}
           style={getStyles("clearIndicator", props)}
         >
-          <clr-icon shape="times" style={styles.clearIcon} size="29" />
+          <clr-icon shape="times" size="29" />
         </div>
       );
     };
