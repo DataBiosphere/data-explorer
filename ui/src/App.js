@@ -171,7 +171,7 @@ class App extends Component {
   render() {
     const { classes } = this.props;
 
-    if (this.state.facets.size == 0 || this.state.datasetName === "") {
+    if (this.state.facets.size === 0 || this.state.datasetName === "") {
       // Server has not yet responded or returned an error
       return <div />;
     } else {
@@ -205,7 +205,7 @@ class App extends Component {
               exportUrlApi={new ExportUrlApi(this.apiClient)}
               filter={this.filterMapToArray(this.state.selectedFacetValues)}
             />
-            {this.state.datasetName == "1000 Genomes"
+            {this.state.datasetName === "1000 Genomes"
               ? Disclaimer(classes)
               : null}
           </div>
@@ -214,9 +214,33 @@ class App extends Component {
     }
   }
 
+  handleQueryString() {
+    let queryStringJSON = this.queryStringToJSON();
+    this.callFacetsAPIGet(
+      {
+        filter: queryStringJSON.filter,
+        extraFacets: queryStringJSON.extraFacets
+      },
+      function(error, data) {
+        this.facetsCallback(error, data);
+        this.setState({
+          // Set selectedFacetValues state after facetsCallback.
+          // If it were set before, the relevant facet might not yet be in extraFacetEsFieldsNames.
+          selectedFacetValues: this.filterArrayToMap(queryStringJSON.filter),
+          extraFacetEsFieldNames: queryStringJSON.extraFacets
+        });
+      }.bind(this)
+    );
+  }
+
   componentDidMount() {
     this.searchApi.searchGet({}, this.searchCallback);
-    this.facetsApi.facetsGet({}, this.facetsCallback);
+
+    if (window.location.search) {
+      this.handleQueryString();
+    } else {
+      this.callFacetsAPIGet({}, this.facetsCallback);
+    }
 
     // Call /api/dataset
     let datasetApi = new DatasetApi(this.apiClient);
@@ -256,28 +280,28 @@ class App extends Component {
   }
 
   handleSearchBoxChange(selectedOptions, action) {
-    if (action.action == "clear") {
+    if (action.action === "clear") {
       // x on right of search box was clicked.
       this.setState({ selectedFacetValues: new Map() });
-      this.facetsApi.facetsGet(
+      this.callFacetsAPIGet(
         {
           filter: this.filterMapToArray(new Map()),
           extraFacets: this.state.extraFacetEsFieldNames
         },
         this.facetsCallback
       );
-    } else if (action.action == "remove-value") {
+    } else if (action.action === "remove-value") {
       // chip x was clicked.
       let parts = action.removedValue.value.split("=");
       this.updateFacets(parts[0], parts[1], false);
-    } else if (action.action == "select-option") {
+    } else if (action.action === "select-option") {
       let option = action.option;
       // Drop-down row was clicked.
       let newExtraFacetEsFieldNames = this.state.extraFacetEsFieldNames;
       newExtraFacetEsFieldNames.push(option.esFieldName);
 
       let selectedFacetValues = this.state.selectedFacetValues;
-      if (option.facetValue != "") {
+      if (option.facetValue !== "") {
         selectedFacetValues = this.updateSelectedFacetValues(
           option.esFieldName,
           option.facetValue,
@@ -285,7 +309,7 @@ class App extends Component {
         );
       }
 
-      this.facetsApi.facetsGet(
+      this.callFacetsAPIGet(
         {
           filter: this.filterMapToArray(selectedFacetValues),
           extraFacets: newExtraFacetEsFieldNames
@@ -318,7 +342,7 @@ class App extends Component {
       // Remove facetValue from the list of filters for facetName
       allFacetValues.set(
         esFieldName,
-        facetValuesForField.filter(n => n != facetValue)
+        facetValuesForField.filter(n => n !== facetValue)
       );
     }
     return allFacetValues;
@@ -337,7 +361,7 @@ class App extends Component {
       facetsApiDone: false,
       selectedFacetValues: selectedFacetValues
     });
-    this.facetsApi.facetsGet(
+    this.callFacetsAPIGet(
       {
         filter: this.filterMapToArray(this.state.selectedFacetValues),
         extraFacets: this.state.extraFacetEsFieldNames
@@ -352,7 +376,7 @@ class App extends Component {
     let selectedFacetValues = new Map(this.state.selectedFacetValues);
     selectedFacetValues.delete(facetValue);
     let extraFacetEsFieldNames = this.state.extraFacetEsFieldNames.filter(
-      n => n != facetValue
+      n => n !== facetValue
     );
     this.setState({
       facetsApiDone: false,
@@ -360,7 +384,7 @@ class App extends Component {
       extraFacetEsFieldNames: extraFacetEsFieldNames,
       selectedFacetValues: selectedFacetValues
     });
-    this.facetsApi.facetsGet(
+    this.callFacetsAPIGet(
       {
         filter: this.filterMapToArray(selectedFacetValues),
         extraFacets: extraFacetEsFieldNames
@@ -388,6 +412,64 @@ class App extends Component {
       }
     });
     return filterArray;
+  }
+
+  /**
+   * Converts an Array of filter strings back to a Map of filters
+   * Example:
+   * In: ["Gender=female", "Gender=male", "Population=American"]
+   * Out: {"Gender" => ["male", "female"], "Population" => ["American"]}
+   */
+  filterArrayToMap(filterArray) {
+    let filterMap = new Map();
+    filterArray.forEach(function(pair) {
+      pair = pair.split("=");
+      if (filterMap.has(pair[0])) {
+        let arr = filterMap.get(pair[0]);
+        arr.push(pair[1]);
+        filterMap.set(pair[0], arr);
+      } else {
+        filterMap.set(pair[0], [pair[1]]);
+      }
+    });
+    return filterMap;
+  }
+
+  /**
+   * Converts the query string parameters in the current window
+   * to a dictionary object usable by the backend
+   * Example:
+   * In: http://data-explorer.com/?filter=Gender%3Dfemale%7CGender%3Dmale%7CPopulation%3DAmerican&extraFacets=Population
+   * Out: {"filter" => ["Gender=female", "Gender=male", "Population=American"], "extraFacets" => ["Population"]}
+   */
+  queryStringToJSON() {
+    var pairs = window.location.search.slice(1).split("&");
+    var result = {};
+    pairs.forEach(function(pair) {
+      pair = pair.split("=");
+      result[pair[0]] = pair[1] ? decodeURIComponent(pair[1]).split("|") : [];
+    });
+    return result;
+  }
+
+  updateQueryParams(facetFilterParam, extraFacetsParam) {
+    window.history.pushState(
+      null,
+      "",
+      "?filter=" + facetFilterParam + "&extraFacets=" + extraFacetsParam
+    );
+  }
+
+  // Wrap the call to facetsGet together with updating the query params
+  callFacetsAPIGet(data, facetsCallback) {
+    this.facetsApi.facetsGet(data, facetsCallback);
+    let extraFacetsParam = (data.extraFacets || []).join(
+      encodeURIComponent("|")
+    );
+    let facetFilterParam = (data.filter || [])
+      .map(f => f.replace("=", encodeURIComponent("=")))
+      .join(encodeURIComponent("|"));
+    this.updateQueryParams(facetFilterParam, extraFacetsParam);
   }
 
   handleVizSwitchChange = event => {
