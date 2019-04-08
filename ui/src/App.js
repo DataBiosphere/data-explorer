@@ -214,25 +214,6 @@ class App extends Component {
     }
   }
 
-  handleQueryString() {
-    let queryStringJSON = this.queryStringToJSON();
-    this.callFacetsAPIGet(
-      {
-        filter: queryStringJSON.filter,
-        extraFacets: queryStringJSON.extraFacets
-      },
-      function(error, data) {
-        this.facetsCallback(error, data);
-        this.setState({
-          // Set selectedFacetValues state after facetsCallback.
-          // If it were set before, the relevant facet might not yet be in extraFacetEsFieldsNames.
-          selectedFacetValues: this.filterArrayToMap(queryStringJSON.filter),
-          extraFacetEsFieldNames: queryStringJSON.extraFacets
-        });
-      }.bind(this)
-    );
-  }
-
   componentDidMount() {
     this.searchApi.searchGet({}, this.searchCallback);
 
@@ -433,6 +414,25 @@ class App extends Component {
       }
     });
     return filterMap;
+  }
+
+  handleQueryString() {
+    let queryStringJSON = this.queryStringToJSON();
+    this.callFacetsAPIGet(
+      {
+        filter: queryStringJSON.filter,
+        extraFacets: queryStringJSON.extraFacets
+      },
+      function(error, data) {
+        this.facetsCallback(error, data);
+        this.setState({
+          // Set selectedFacetValues state after facetsCallback.
+          // If it were set before, the relevant facet might not yet be in extraFacetEsFieldsNames.
+          selectedFacetValues: this.filterArrayToMap(queryStringJSON.filter),
+          extraFacetEsFieldNames: queryStringJSON.extraFacets
+        });
+      }.bind(this)
+    );
   }
 
   /**
