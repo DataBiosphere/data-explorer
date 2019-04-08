@@ -316,8 +316,8 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type):
         # is fixed, use AutoHistogramFacet instead. Will no longer need 2
         # steps.
         interval = _get_bucket_interval(es, elasticsearch_field_name)
-        es_facet = HistogramFacet(
-            field=elasticsearch_field_name, interval=interval)
+        es_facet = HistogramFacet(field=elasticsearch_field_name,
+                                  interval=interval)
 
     nested_facet = _maybe_get_nested_facet(elasticsearch_field_name, es_facet)
     if nested_facet:
@@ -353,8 +353,8 @@ def _delete_index(es, index):
         current_app.logger.info('Deleting %s index failed: %s' % (index, e))
         # Ignore 404: index not found
         index = es.indices.get(index=index, ignore=404)
-        current_app.logger.info(
-            'es.indices.get(index=%s): %s' % (index, index))
+        current_app.logger.info('es.indices.get(index=%s): %s' %
+                                (index, index))
 
 
 def _create_index(es, index, mappings_file=None):
