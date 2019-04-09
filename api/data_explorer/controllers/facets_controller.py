@@ -103,12 +103,11 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
                     value_name = bool(value_name)
             values.append(FacetValue(name=value_name, count=count))
         facets.append(
-            Facet(
-                name=facet_info.get('ui_facet_name'),
-                description=facet_info.get('description'),
-                values=values,
-                es_field_name=es_field_name,
-                es_field_type=facet_info.get('type')))
+            Facet(name=facet_info.get('ui_facet_name'),
+                  description=facet_info.get('description'),
+                  values=values,
+                  es_field_name=es_field_name,
+                  es_field_type=facet_info.get('type')))
 
-    return FacetsResponse(
-        facets=facets, count=es_response._faceted_search.count())
+    return FacetsResponse(facets=facets,
+                          count=es_response._faceted_search.count())
