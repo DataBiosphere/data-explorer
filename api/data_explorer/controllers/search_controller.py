@@ -15,17 +15,15 @@ def _results_from_fields_index(fields):
     for field in fields['hits']['hits']:
         if "description" in field["_source"]:
             results.append(
-                SearchResult(
-                    facet_name=field["_source"]["name"],
-                    facet_description=field["_source"]["description"],
-                    elasticsearch_field_name=field["_id"],
-                    facet_value=""))
+                SearchResult(facet_name=field["_source"]["name"],
+                             facet_description=field["_source"]["description"],
+                             elasticsearch_field_name=field["_id"],
+                             facet_value=""))
         else:
             results.append(
-                SearchResult(
-                    facet_name=field["_source"]["name"],
-                    elasticsearch_field_name=field["_id"],
-                    facet_value=""))
+                SearchResult(facet_name=field["_source"]["name"],
+                             elasticsearch_field_name=field["_id"],
+                             facet_value=""))
     return results
 
 
@@ -134,9 +132,8 @@ def search_get(query=None):
         for es_field_name in field_to_facet_values:
             for facet_value in field_to_facet_values[es_field_name]:
                 search_results.append(
-                    SearchResult(
-                        elasticsearch_field_name=es_field_name,
-                        facet_name=es_field_name.split('.')[-1],
-                        facet_value=facet_value))
+                    SearchResult(elasticsearch_field_name=es_field_name,
+                                 facet_name=es_field_name.split('.')[-1],
+                                 facet_value=facet_value))
 
     return SearchResponse(search_results=search_results)

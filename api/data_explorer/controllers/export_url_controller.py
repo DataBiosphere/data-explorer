@@ -88,8 +88,8 @@ def _get_doc_generator(filter_arr):
     filters = elasticsearch_util.get_facet_value_dict(filter_arr,
                                                       combined_facets)
     search_dict = DatasetFacetedSearch(
-        filters, combined_facets).build_search().to_dict().get(
-            'post_filter', {})
+        filters,
+        combined_facets).build_search().to_dict().get('post_filter', {})
     search = Search(using=es, index=current_app.config['INDEX_NAME'])
     search.update_from_dict({'post_filter': search_dict})
     for result in search.scan():
@@ -150,8 +150,8 @@ def _write_gcs_file(entities):
     blob.upload_from_string(entities_json)
 
     current_app.logger.info(
-        'Wrote gs://%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'],
-                              blob.name))
+        'Wrote gs://%s/%s' %
+        (current_app.config['EXPORT_URL_GCS_BUCKET'], blob.name))
     # Return in the format that signing a URL needs.
     return '/%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'], blob.name)
 

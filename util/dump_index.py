@@ -27,11 +27,13 @@ DOC_TYPE = 'type'
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '--es_url', default='http://localhost:9200', required=False)
+    parser.add_argument('--es_url',
+                        default='http://localhost:9200',
+                        required=False)
     parser.add_argument('--dataset', default='1000_genomes', required=False)
-    parser.add_argument(
-        '--output_dir', default='dataset_config/1000_genomes', required=False)
+    parser.add_argument('--output_dir',
+                        default='dataset_config/1000_genomes',
+                        required=False)
     return parser.parse_args()
 
 
@@ -61,8 +63,8 @@ def main():
 
     print 'Dump index mappings: %s' % index
     mappings_file = open(output_mappings_file, 'w')
-    mappings = requests.get(
-        '%s/%s/_mapping/type' % (args.es_url, index)).json()
+    mappings = requests.get('%s/%s/_mapping/type' %
+                            (args.es_url, index)).json()
     json.dump(mappings[index], mappings_file)
     mappings_file.close()
 
