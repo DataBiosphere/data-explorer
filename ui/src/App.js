@@ -220,7 +220,7 @@ class App extends Component {
     if (window.location.search) {
       this.handleQueryString();
     } else {
-      this.callFacetsAPIGet({}, this.facetsCallback);
+      this.callFacetsApiGet({}, this.facetsCallback);
     }
 
     // Call /api/dataset
@@ -264,7 +264,7 @@ class App extends Component {
     if (action.action === "clear") {
       // x on right of search box was clicked.
       this.setState({ selectedFacetValues: new Map() });
-      this.callFacetsAPIGet(
+      this.callFacetsApiGet(
         {
           filter: this.filterMapToArray(new Map()),
           extraFacets: this.state.extraFacetEsFieldNames
@@ -290,7 +290,7 @@ class App extends Component {
         );
       }
 
-      this.callFacetsAPIGet(
+      this.callFacetsApiGet(
         {
           filter: this.filterMapToArray(selectedFacetValues),
           extraFacets: newExtraFacetEsFieldNames
@@ -342,7 +342,7 @@ class App extends Component {
       facetsApiDone: false,
       selectedFacetValues: selectedFacetValues
     });
-    this.callFacetsAPIGet(
+    this.callFacetsApiGet(
       {
         filter: this.filterMapToArray(this.state.selectedFacetValues),
         extraFacets: this.state.extraFacetEsFieldNames
@@ -365,7 +365,7 @@ class App extends Component {
       extraFacetEsFieldNames: extraFacetEsFieldNames,
       selectedFacetValues: selectedFacetValues
     });
-    this.callFacetsAPIGet(
+    this.callFacetsApiGet(
       {
         filter: this.filterMapToArray(selectedFacetValues),
         extraFacets: extraFacetEsFieldNames
@@ -418,7 +418,7 @@ class App extends Component {
 
   handleQueryString() {
     let queryStringJSON = this.queryStringToJSON();
-    this.callFacetsAPIGet(
+    this.callFacetsApiGet(
       {
         filter: queryStringJSON.filter,
         extraFacets: queryStringJSON.extraFacets
@@ -461,7 +461,7 @@ class App extends Component {
   }
 
   // Wrap the call to facetsGet together with updating the query params
-  callFacetsAPIGet(data, facetsCallback) {
+  callFacetsApiGet(data, facetsCallback) {
     this.facetsApi.facetsGet(data, facetsCallback);
     let extraFacetsParam = (data.extraFacets || []).join(
       encodeURIComponent("|")
