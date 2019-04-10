@@ -35,7 +35,7 @@ const styles = {
       borderRadius: 3
     }
   },
-  dialogButtonSend: {
+  dialogButtonSave: {
     backgroundColor: colors.green[1],
     border: "1px solid #5c8b35",
     borderRadius: 3,
@@ -49,7 +49,7 @@ const styles = {
       border: "1px solid #638e3e"
     }
   },
-  dialogButtonSendDisabled: {
+  dialogButtonSaveDisabled: {
     backgroundColor: "#e9edf1",
     border: "1px solid #babdc0",
     color: "#babdc0"
@@ -118,7 +118,7 @@ class ExportFab extends React.Component {
     var defaultTextValue = "";
     if (typeof filter === "undefined" || filter.length == "") {
       defaultTextValue = "all participants";
-      // Set state so Send button is not disabled
+      // Set state so Save button is not disabled
       this.state.cohortName = defaultTextValue;
     }
     return (
@@ -188,11 +188,11 @@ class ExportFab extends React.Component {
                 classes={{
                   root: classNames(
                     classes.dialogButtonBase,
-                    classes.dialogButtonSend
+                    classes.dialogButtonSave
                   ),
                   disabled: classNames(
                     classes.dialogButtonBase,
-                    classes.dialogButtonSendDisabled
+                    classes.dialogButtonSaveDisabled
                   )
                 }}
                 disabled={
@@ -202,7 +202,7 @@ class ExportFab extends React.Component {
                 id="save"
                 onClick={this.handleSave}
               >
-                Send
+                Save
               </Button>
             </DialogActions>
           </Dialog>
