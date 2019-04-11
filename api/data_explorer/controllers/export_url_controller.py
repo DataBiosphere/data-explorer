@@ -352,7 +352,8 @@ def export_url_post():  # noqa: E501
     for c in ' .:=':
         cohort_name = cohort_name.replace(c, '_')
 
-    entities = _get_entities_dict(cohort_name, query, filter_arr, data_explorer_url)
+    entities = _get_entities_dict(cohort_name, query, filter_arr,
+                                  data_explorer_url)
 
     # Don't actually write GCS file during unit test. If we wrote a file during
     # unit test, in order to make it easy for anyone to run this test, we would
