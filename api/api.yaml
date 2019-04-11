@@ -105,6 +105,8 @@ paths:
                 collectionFormat: pipes
                 items:
                   type: string
+              dataExplorerUrl:
+                type: string
       responses:
         200:
           description: Success

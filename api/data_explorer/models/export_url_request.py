@@ -15,20 +15,32 @@ class ExportUrlRequest(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, cohort_name=None, filter=None):  # noqa: E501
+    def __init__(self, cohort_name=None, filter=None,
+                 data_explorer_url=None):  # noqa: E501
         """ExportUrlRequest - a model defined in Swagger
 
         :param cohort_name: The cohort_name of this ExportUrlRequest.  # noqa: E501
         :type cohort_name: str
         :param filter: The filter of this ExportUrlRequest.  # noqa: E501
         :type filter: List[str]
+        :param data_explorer_url: The data_explorer_url of this ExportUrlRequest.  # noqa: E501
+        :type data_explorer_url: str
         """
-        self.swagger_types = {'cohort_name': str, 'filter': List[str]}
+        self.swagger_types = {
+            'cohort_name': str,
+            'filter': List[str],
+            'data_explorer_url': str
+        }
 
-        self.attribute_map = {'cohort_name': 'cohortName', 'filter': 'filter'}
+        self.attribute_map = {
+            'cohort_name': 'cohortName',
+            'filter': 'filter',
+            'data_explorer_url': 'dataExplorerUrl'
+        }
 
         self._cohort_name = cohort_name
         self._filter = filter
+        self._data_explorer_url = data_explorer_url
 
     @classmethod
     def from_dict(cls, dikt):
@@ -82,3 +94,24 @@ class ExportUrlRequest(Model):
         """
 
         self._filter = filter
+
+    @property
+    def data_explorer_url(self):
+        """Gets the data_explorer_url of this ExportUrlRequest.
+
+
+        :return: The data_explorer_url of this ExportUrlRequest.
+        :rtype: str
+        """
+        return self._data_explorer_url
+
+    @data_explorer_url.setter
+    def data_explorer_url(self, data_explorer_url):
+        """Sets the data_explorer_url of this ExportUrlRequest.
+
+
+        :param data_explorer_url: The data_explorer_url of this ExportUrlRequest.
+        :type data_explorer_url: str
+        """
+
+        self._data_explorer_url = data_explorer_url
