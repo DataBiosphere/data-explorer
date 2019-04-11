@@ -249,6 +249,7 @@ class ExportFab extends React.Component {
     let params = new Object();
     params.cohortName = cohortName;
     params.filter = filter;
+    params.dataExplorerUrl = window.location.href;
     this.props.exportUrlApi.exportUrlPost(
       { exportUrlRequest: params },
       exportUrlCallback
