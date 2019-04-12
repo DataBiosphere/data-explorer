@@ -143,7 +143,11 @@ class ExportFab extends React.Component {
             </DialogTitle>
             <DialogContent>
               <div className={classes.dialogDesc}>
-                A cohort with this name will be created in Terra
+                <p>A cohort with this name will be created in Terra.</p>
+                <p>
+                  If a cohort with this name already exists, it will be
+                  overwritten.
+                </p>
               </div>
               <TextField
                 autoFocus
