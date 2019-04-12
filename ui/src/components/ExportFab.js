@@ -240,8 +240,9 @@ class ExportFab extends React.Component {
         exportUrlRequest: {
           cohortName: this.state.cohortName,
           dataExplorerUrl: window.location.href,
-          filter: this.props.filter,
-        },
+          filter: this.props.filter
+        }
+      },
       exportUrlCallback
     );
   }
