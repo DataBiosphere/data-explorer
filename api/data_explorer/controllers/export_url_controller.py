@@ -96,7 +96,7 @@ def _get_doc_generator(filter_arr):
         yield result.to_dict()
 
 
-def _get_entities_dict(cohort_name, query, filter_arr):
+def _get_entities_dict(cohort_name, query, filter_arr, data_explorer_url):
     """Returns a dict representing the JSON list of entities."""
     # Terra add-import expects a JSON list of entities, where each entity is
     # the entity JSON passed into
@@ -127,6 +127,7 @@ def _get_entities_dict(cohort_name, query, filter_arr):
         'attributes': {
             'dataset_name': current_app.config['DATASET_NAME'],
             'query': query,
+            'data_explorer_url': data_explorer_url,
         }
     })
 
@@ -342,6 +343,7 @@ def export_url_post():  # noqa: E501
     _check_preconditions()
     data = json.loads(request.data)
     filter_arr = data['filter']
+    data_explorer_url = data['dataExplorerUrl']
 
     current_app.logger.info('Export URL request data %s' % request.data)
 
@@ -350,7 +352,8 @@ def export_url_post():  # noqa: E501
     for c in ' .:=':
         cohort_name = cohort_name.replace(c, '_')
 
-    entities = _get_entities_dict(cohort_name, query, filter_arr)
+    entities = _get_entities_dict(cohort_name, query, filter_arr,
+                                  data_explorer_url)
 
     # Don't actually write GCS file during unit test. If we wrote a file during
     # unit test, in order to make it easy for anyone to run this test, we would
