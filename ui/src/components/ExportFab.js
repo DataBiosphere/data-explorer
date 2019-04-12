@@ -143,7 +143,11 @@ class ExportFab extends React.Component {
             </DialogTitle>
             <DialogContent>
               <div className={classes.dialogDesc}>
-                A cohort with this name will be created in Terra
+                <p>A cohort with this name will be created in Terra.</p>
+                <p>
+                  If a cohort with this name already exists, it will be
+                  overwritten.
+                </p>
               </div>
               <TextField
                 autoFocus
@@ -230,6 +234,14 @@ class ExportFab extends React.Component {
           "https://app.terra.bio/#import-data?format=entitiesJson";
         if (data.authorization_domain) {
           importUrl += "&ad=" + data.authorization_domain;
+        }
+        // - From Terra Data tab, user opens a cohort in DE.
+        // - wid is set to workspace id of workspace that contains cohort.
+        // - Here we pass wid to import-data, so workspace is selected in
+        //   drop-down by default.
+        const wid = new URLSearchParams(window.location.search).get("wid");
+        if (wid) {
+          importUrl += "&wid=" + wid;
         }
         importUrl += "&url=" + data.url;
         window.location.assign(importUrl);
