@@ -41,7 +41,9 @@ normal=$(tput sgr0)
 echo "Deploying API server for ${bold}dataset ${dataset}${normal} to ${bold}project ${project_id}${normal}"
 echo
 
-# Create api/app.yml from api/app.yml.templ
+# Create api/MY_DATASET.app.yaml from api/app.yaml.templ
+# MY_DATASET is so this script can be run with mulitple datasets simultaneously,
+# and they won't clobber each other's app.yaml
 elasticsearch_url=$(kubectl get svc elasticsearch | grep elasticsearch | awk '{print $4}')
 git_commit=$(git rev-parse HEAD)
 sed -e "s/MY_DATASET/${dataset}/" api/app.yaml.templ > api/${dataset}.app.yaml
@@ -57,7 +59,7 @@ cp api/Dockerfile api/${dataset}.app.yaml .
 # Deploy App Engine api service
 gcloud app deploy --quiet ${dataset}.app.yaml
 # -f option because Dockerfile may already be removed a different instance of deploy-api.sh
-rm -f Dockerfile ${dataset}.app.yaml
+rm -f Dockerfile api/${dataset}.app.yaml ${dataset}.app.yaml
 
 # Reset gcloud project in case a different deploy-api.sh was started while this one was running.
 gcloud config set project ${project_id}
