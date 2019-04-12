@@ -417,47 +417,35 @@ class App extends Component {
   }
 
   handleQueryString() {
-    let queryStringJSON = this.queryStringToJSON();
+    var params = new URLSearchParams(window.location.search);
+    // filter looks like ["Gender=female", "Gender=male", "Population=American"]
+    var filter = params.get("filter") ? params.get("filter").split("|") : [];
+    var extraFacets = params.get("extraFacets")
+      ? params.get("extraFacets").split("|")
+      : [];
     this.callFacetsApiGet(
       {
-        filter: queryStringJSON.filter,
-        extraFacets: queryStringJSON.extraFacets
+        filter: filter,
+        extraFacets: extraFacets
       },
       function(error, data) {
         this.facetsCallback(error, data);
         this.setState({
           // Set selectedFacetValues state after facetsCallback.
           // If it were set before, the relevant facet might not yet be in extraFacetEsFieldsNames.
-          selectedFacetValues: this.filterArrayToMap(queryStringJSON.filter),
-          extraFacetEsFieldNames: queryStringJSON.extraFacets
+          selectedFacetValues: this.filterArrayToMap(filter),
+          extraFacetEsFieldNames: extraFacets
         });
       }.bind(this)
     );
   }
 
-  /**
-   * Converts the query string parameters in the current window
-   * to a dictionary object usable by the backend
-   * Example:
-   * In: http://data-explorer.com/?filter=Gender%3Dfemale%7CGender%3Dmale%7CPopulation%3DAmerican&extraFacets=Population
-   * Out: {"filter" => ["Gender=female", "Gender=male", "Population=American"], "extraFacets" => ["Population"]}
-   */
-  queryStringToJSON() {
-    var pairs = window.location.search.slice(1).split("&");
-    var result = {};
-    pairs.forEach(function(pair) {
-      pair = pair.split("=");
-      result[pair[0]] = pair[1] ? decodeURIComponent(pair[1]).split("|") : [];
-    });
-    return result;
-  }
-
-  updateQueryParams(facetFilterParam, extraFacetsParam) {
-    window.history.pushState(
-      null,
-      "",
-      "?filter=" + facetFilterParam + "&extraFacets=" + extraFacetsParam
-    );
+  updateQueryString(filterParam, extraFacetsParam) {
+    // If there are any params other than filter/extraFacets, leave as-is.
+    var params = new URLSearchParams(window.location.search);
+    params.set("filter", filterParam);
+    params.set("extraFacets", extraFacetsParam);
+    window.history.replaceState(null, "", "?" + params.toString());
   }
 
   // Wrap the call to facetsGet together with updating the query params
@@ -466,10 +454,10 @@ class App extends Component {
     let extraFacetsParam = (data.extraFacets || []).join(
       encodeURIComponent("|")
     );
-    let facetFilterParam = (data.filter || [])
+    let filterParam = (data.filter || [])
       .map(f => f.replace("=", encodeURIComponent("=")))
       .join(encodeURIComponent("|"));
-    this.updateQueryParams(facetFilterParam, extraFacetsParam);
+    this.updateQueryString(filterParam, extraFacetsParam);
   }
 
   handleVizSwitchChange = event => {
