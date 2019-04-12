@@ -104,23 +104,19 @@ const styles = {
 class ExportFab extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { open: false };
-    this.handleClick = this.handleClick.bind(this);
+    this.state = {
+      cohortName: "",
+      dialogOpen: false
+    };
+    this.handleFabClick = this.handleFabClick.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
-    this.setTextValue = this.setTextValue.bind(this);
+    this.handleCohortNameChange = this.handleCohortNameChange.bind(this);
   }
 
   render() {
     const { classes } = this.props;
 
-    var filter = this.props.filter;
-    var defaultTextValue = "";
-    if (typeof filter === "undefined" || filter.length == "") {
-      defaultTextValue = "all participants";
-      // Set state so Save button is not disabled
-      this.state.cohortName = defaultTextValue;
-    }
     return (
       <div>
         {/*
@@ -132,14 +128,14 @@ class ExportFab extends React.Component {
           <Tooltip title="Save in Terra">
             <ExportButton
               className={classes.exportButton}
-              onClick={() => this.handleClick()}
+              onClick={() => this.handleFabClick()}
             />
           </Tooltip>
         </div>
         <div>
           <Dialog
             className={classes.dialogRoot}
-            open={this.state.open}
+            open={this.state.dialogOpen}
             onClose={this.handleClose}
           >
             <DialogTitle className={classes.dialogTitle} disableTypography>
@@ -151,7 +147,7 @@ class ExportFab extends React.Component {
               </div>
               <TextField
                 autoFocus
-                defaultValue={defaultTextValue}
+                value={this.state.cohortName}
                 fullWidth
                 id="name"
                 InputProps={{
@@ -162,7 +158,7 @@ class ExportFab extends React.Component {
                     notchedOutline: classes.dialogInputNotchedOutline
                   }
                 }}
-                onChange={this.setTextValue}
+                onChange={this.handleCohortNameChange}
                 onKeyPress={ev => {
                   if (ev.key === "Enter") {
                     this.handleSave();
@@ -211,20 +207,21 @@ class ExportFab extends React.Component {
     );
   }
 
-  setTextValue(event) {
+  handleCohortNameChange(event) {
     this.setState({ cohortName: event.target.value });
   }
 
-  handleClick() {
-    this.setState(state => ({ open: true }));
+  handleFabClick() {
+    const cohortName = this.props.filter.length === 0 ? "all participants" : "";
+    this.setState(state => ({ cohortName: cohortName, dialogOpen: true }));
   }
 
   handleCancel() {
-    this.setState(state => ({ open: false }));
+    this.setState(state => ({ dialogOpen: false }));
   }
 
   handleSave() {
-    this.setState(state => ({ open: false }));
+    this.setState(state => ({ dialogOpen: false }));
     let exportUrlCallback = function(error, data) {
       if (error) {
         alert(error.response.body.detail);
@@ -238,20 +235,14 @@ class ExportFab extends React.Component {
         window.location.assign(importUrl);
       }
     }.bind(this);
-    let cohortName = this.state.cohortName;
-    let filter = this.props.filter;
-    if (filter == null) {
-      filter = [];
-    }
-    if (cohortName == null) {
-      cohortName = "all participants";
-    }
-    let params = new Object();
-    params.cohortName = cohortName;
-    params.filter = filter;
-    params.dataExplorerUrl = window.location.href;
     this.props.exportUrlApi.exportUrlPost(
-      { exportUrlRequest: params },
+      {
+        exportUrlRequest: {
+          cohortName: this.state.cohortName,
+          dataExplorerUrl: window.location.href,
+          filter: this.props.filter
+        }
+      },
       exportUrlCallback
     );
   }
