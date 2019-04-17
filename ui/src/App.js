@@ -14,11 +14,11 @@ import {
   SearchApi
 } from "data_explorer_service";
 import colors from "libs/colors";
+import DeHeader from "components/DeHeader";
 import ExportFab from "components/ExportFab";
 import ExportUrlApi from "api/src/api/ExportUrlApi";
 import FacetsGrid from "components/facets/FacetsGrid";
-import Search from "components/Search";
-import Header from "components/Header";
+import TerraHeader from "components/TerraHeader";
 import Montserrat from "libs/fonts/Montserrat-Medium.woff2";
 
 const styles = {
@@ -136,7 +136,7 @@ class App extends Component {
     }.bind(this);
 
     // debounce so we don't call API server query after every letter; only after a pause in typing
-    this.loadOptions = debounce((inputValue, callback) => {
+    this.handleSearchBoxTyping = debounce((inputValue, callback) => {
       // axios is needed to avoid setTimeout from react-select examples at https://react-select.com/async.
       let apiUrl = this.apiClient.buildUrl("search?query=" + inputValue);
       axios
@@ -159,8 +159,8 @@ class App extends Component {
 
     this.updateFacets = this.updateFacets.bind(this);
     this.handleSearchBoxChange = this.handleSearchBoxChange.bind(this);
+    this.handleSearchBoxTyping = this.handleSearchBoxTyping.bind(this);
     this.handleVizSwitchChange = this.handleVizSwitchChange.bind(this);
-    this.loadOptions = this.loadOptions.bind(this);
     this.handleRemoveFacet = this.handleRemoveFacet.bind(this);
     this.filterArrayToMap = this.filterArrayToMap.bind(this);
   }
@@ -179,20 +179,23 @@ class App extends Component {
       return (
         <MuiThemeProvider theme={theme}>
           <div className={classes.root}>
-            <Header
+            <TerraHeader
               datasetName={this.state.datasetName}
               totalCount={this.state.totalCount}
               showViz={this.state.showViz}
               handleVizSwitchChange={this.handleVizSwitchChange}
             />
-
-            <Search
-              searchPlaceholderText={this.state.searchPlaceholderText}
-              defaultOptions={this.state.searchResults}
-              handleSearchBoxChange={this.handleSearchBoxChange}
-              selectedFacetValues={this.state.selectedFacetValues}
+            <DeHeader
+              datasetName={this.state.datasetName}
               facets={this.state.facets}
-              loadOptions={this.loadOptions}
+              handleSearchBoxChange={this.handleSearchBoxChange}
+              handleSearchBoxTyping={this.handleSearchBoxTyping}
+              handleVizSwitchChange={this.handleVizSwitchChange}
+              searchPlaceholderText={this.state.searchPlaceholderText}
+              searchResults={this.state.searchResults}
+              selectedFacetValues={this.state.selectedFacetValues}
+              showViz={this.state.showViz}
+              totalCount={this.state.totalCount}
             />
             <FacetsGrid
               updateFacets={this.updateFacets}
