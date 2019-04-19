@@ -25,6 +25,7 @@ const styles = {
     ...provided,
     fontFamily: ["Montserrat", "sans-serif"].join(","),
     fontSize: 13,
+    marginLeft: 15,
     width: "100%"
   }),
   control: (provided, state) => ({
@@ -32,7 +33,6 @@ const styles = {
     backgroundColor: colors.gray[6],
     border: 0,
     borderRadius: 5,
-    margin: "0 15px 12px 15px",
     ...(state.isFocused
       ? {
           boxShadow: "0 0 0 1px " + colors.green[1]

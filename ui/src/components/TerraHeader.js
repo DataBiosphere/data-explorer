@@ -16,7 +16,7 @@ const styles = {
       colors.green[1]
     }`,
     borderBottom: "2px solid #b0d239",
-    boxShadow: "rgba(0, 0, 0, 0.12) 0px 3px 2px 0px",
+    boxShadow: "rgba(0, 0, 0, 0.12) 0px 1px 2px 0px",
     height: 66
   },
   dataExplorerText: {
@@ -24,8 +24,19 @@ const styles = {
     fontWeight: 600,
     marginRight: 15
   },
+  datasetName: {
+    fontSize: 18,
+    fontWeight: 600,
+    marginLeft: 15
+  },
   toolbar: {
     padding: 0
+  },
+  verticalSeparator: {
+    boxSizing: "border-box",
+    height: 34,
+    width: 2,
+    border: "1px solid #97c543"
   }
 };
 
@@ -38,6 +49,8 @@ class TerraHeader extends React.Component {
         <Toolbar className={classes.toolbar}>
           <TerraLogo className={classes.terraLogo} />
           <div className={classes.dataExplorerText}>Data Explorer</div>
+          <div className={classes.verticalSeparator} />
+          <div className={classes.datasetName}>{this.props.datasetName}</div>
         </Toolbar>
       </AppBar>
     );

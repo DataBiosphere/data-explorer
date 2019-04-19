@@ -19,11 +19,10 @@ const styles = {
     backgroundColor: colors.grayBlue[6],
     boxShadow: "unset",
     color: colors.gray[0],
-    marginTop: 16
+    marginTop: 3
   },
-  datasetName: {
-    fontSize: 28,
-    marginLeft: 15
+  saveButton: {
+    margin: "0 16px 0 16px"
   },
   snackbarContentMessage: {
     fontWeight: 500,
@@ -59,15 +58,15 @@ const styles = {
     padding: 0
   },
   totalCount: {
+    alignItems: "center",
     backgroundColor: colors.lightGreen[4],
     borderRadius: 15.5,
     color: "#7f8fa4",
-    fontSize: 16,
-    fontWeight: 500,
-    height: 31,
-    lineHeight: 2,
-    marginLeft: 40,
-    padding: "0 20px 0 20px"
+    display: "flex",
+    fontSize: 14,
+    height: 45,
+    marginLeft: 16,
+    textAlign: "center"
   },
   vizSwitchBase: {
     "&$vizSwitchChecked": {
@@ -168,19 +167,19 @@ class DeHeader extends React.Component {
       );
     }
 
-    const saveButton = buttonPrimary({}, ["Primary Button"]);
+    const saveButton = buttonPrimary(
+      {
+        className: classes.saveButton,
+        // Not sure why this is needed. Without this, text is a bit too high.
+        style: { padding: "1px 14px 0 14px" }
+      },
+      ["Save in Terra"]
+    );
 
     return (
       <AppBar position="static" className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
           {snackbar}
-          <div className={classes.datasetName}>{this.props.datasetName}</div>
-          <div className={classes.totalCount}>
-            {this.props.totalCount} Participants
-          </div>
-          {saveButton}
-        </Toolbar>
-        <Toolbar className={classes.toolbar}>
           <Search
             searchPlaceholderText={this.props.searchPlaceholderText}
             defaultOptions={this.props.searchResults}
@@ -189,25 +188,10 @@ class DeHeader extends React.Component {
             facets={this.props.facets}
             loadOptions={this.props.handleSearchBoxTyping}
           />
-          <FormControlLabel
-            classes={{
-              label: classes.vizSwitchLabel,
-              root: classes.vizSwitchRoot
-            }}
-            control={
-              <Switch
-                classes={{
-                  switchBase: classes.vizSwitchBase,
-                  bar: classes.vizSwitchBar,
-                  icon: classes.vizSwitchIcon,
-                  checked: classes.vizSwitchChecked
-                }}
-                checked={this.props.showViz}
-                onChange={this.props.handleVizSwitchChange}
-              />
-            }
-            label="Visualizations"
-          />
+          <div className={classes.totalCount}>
+            {this.props.totalCount} Participants
+          </div>
+          {saveButton}
         </Toolbar>
       </AppBar>
     );
