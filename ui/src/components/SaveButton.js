@@ -1,7 +1,6 @@
 import React from "react";
 import Button from "@material-ui/core/Button";
 import classNames from "classnames";
-import Tooltip from "@material-ui/core/Tooltip";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -10,8 +9,8 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { withStyles } from "@material-ui/core/styles";
 
+import { buttonPrimary } from "libs/common";
 import colors from "libs/colors";
-import { ReactComponent as ExportButton } from "libs/icons/export_to_terra.svg";
 
 const styles = {
   dialogButtonBase: {
@@ -81,132 +80,110 @@ const styles = {
     color: colors.gray[0],
     fontSize: 18,
     fontWeight: 600
-  },
-  exportFab: {
-    bottom: 45,
-    position: "fixed",
-    right: 35
-  },
-  exportButton: {
-    filter: "drop-shadow( 0 2px 2px rgba(0,0,0,0.63))",
-    height: 89,
-    width: 81,
-    "&:hover :first-child": {
-      cursor: "pointer",
-      fill: "#7cb24e"
-    },
-    "&:active :first-child": {
-      fill: "#63953a"
-    }
   }
 };
 
-class ExportFab extends React.Component {
+class SaveButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       cohortName: "",
       dialogOpen: false
     };
-    this.handleFabClick = this.handleFabClick.bind(this);
-    this.handleSave = this.handleSave.bind(this);
-    this.handleCancel = this.handleCancel.bind(this);
+    this.handleButtonClick = this.handleButtonClick.bind(this);
+    this.handleDialogSave = this.handleDialogSave.bind(this);
+    this.handleDialogCancel = this.handleDialogCancel.bind(this);
     this.handleCohortNameChange = this.handleCohortNameChange.bind(this);
   }
 
   render() {
     const { classes } = this.props;
 
+    const saveButton = buttonPrimary(
+      {
+        as: "a",
+        onClick: () => this.handleButtonClick(),
+        style: {
+          margin: "0 16px 0 16px",
+          // Not sure why this is needed. Without this, text is a bit too high.
+          padding: "1px 14px 0 14px"
+        }
+      },
+      ["Save in Terra"]
+    );
+
     return (
       <div>
-        {/*
-          Style div instead of button itself, to prevent button from moving to
-          the right when cohort dialog is shown. See
-          https://github.com/mui-org/material-ui/issues/9275#issuecomment-350479467
-        */}
-        <div className={"mui-fixed " + classes.exportFab}>
-          <Tooltip title="Save in Terra">
-            <ExportButton
-              className={classes.exportButton}
-              onClick={() => this.handleFabClick()}
-            />
-          </Tooltip>
-        </div>
-        <div>
-          <Dialog
-            className={classes.dialogRoot}
-            open={this.state.dialogOpen}
-            onClose={this.handleClose}
-          >
-            <DialogTitle className={classes.dialogTitle} disableTypography>
-              Save in Terra
-            </DialogTitle>
-            <DialogContent>
-              <div className={classes.dialogDesc}>
-                <p>A cohort with this name will be created in Terra.</p>
-                <p>
-                  If a cohort with this name already exists, it will be
-                  overwritten.
-                </p>
-              </div>
-              <TextField
-                autoFocus
-                value={this.state.cohortName}
-                fullWidth
-                id="name"
-                InputProps={{
-                  classes: {
-                    root: classes.dialogInputRoot,
-                    focused: classes.dialogInputCssFocused,
-                    input: classes.dialogInputInput,
-                    notchedOutline: classes.dialogInputNotchedOutline
-                  }
-                }}
-                onChange={this.handleCohortNameChange}
-                onKeyPress={ev => {
-                  if (ev.key === "Enter") {
-                    this.handleSave();
-                  }
-                }}
-                placeholder="cohort name"
-                type="text"
-                variant="outlined"
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button
-                className={classNames(
-                  classes.dialogButtonBase,
-                  classes.dialogButtonCancel
-                )}
-                onClick={this.handleCancel}
-                color="primary"
-              >
-                Cancel
-              </Button>
-              <Button
-                classes={{
-                  root: classNames(
-                    classes.dialogButtonBase,
-                    classes.dialogButtonSave
-                  ),
-                  disabled: classNames(
-                    classes.dialogButtonBase,
-                    classes.dialogButtonSaveDisabled
-                  )
-                }}
-                disabled={
-                  !("cohortName" in this.state) || this.state.cohortName == ""
+        {saveButton}
+        <Dialog open={this.state.dialogOpen} onClose={this.handleClose}>
+          <DialogTitle className={classes.dialogTitle} disableTypography>
+            Save in Terra
+          </DialogTitle>
+          <DialogContent>
+            <div className={classes.dialogDesc}>
+              <p>A cohort with this name will be created in Terra.</p>
+              <p>
+                If a cohort with this name already exists, it will be
+                overwritten.
+              </p>
+            </div>
+            <TextField
+              autoFocus
+              value={this.state.cohortName}
+              fullWidth
+              id="name"
+              InputProps={{
+                classes: {
+                  root: classes.dialogInputRoot,
+                  focused: classes.dialogInputCssFocused,
+                  input: classes.dialogInputInput,
+                  notchedOutline: classes.dialogInputNotchedOutline
                 }
-                variant="contained"
-                id="save"
-                onClick={this.handleSave}
-              >
-                Save
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </div>
+              }}
+              onChange={this.handleCohortNameChange}
+              onKeyPress={ev => {
+                if (ev.key === "Enter") {
+                  this.handleDialogSave();
+                }
+              }}
+              placeholder="cohort name"
+              type="text"
+              variant="outlined"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              className={classNames(
+                classes.dialogButtonBase,
+                classes.dialogButtonCancel
+              )}
+              onClick={this.handleDialogCancel}
+              color="primary"
+            >
+              Cancel
+            </Button>
+            <Button
+              classes={{
+                root: classNames(
+                  classes.dialogButtonBase,
+                  classes.dialogButtonSave
+                ),
+                disabled: classNames(
+                  classes.dialogButtonBase,
+                  classes.dialogButtonSaveDisabled
+                )
+              }}
+              disabled={
+                !("cohortName" in this.state) || this.state.cohortName == ""
+              }
+              variant="contained"
+              id="save"
+              onClick={this.handleDialogSave}
+            >
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     );
   }
@@ -215,16 +192,18 @@ class ExportFab extends React.Component {
     this.setState({ cohortName: event.target.value });
   }
 
-  handleFabClick() {
-    const cohortName = this.props.filter.length === 0 ? "all participants" : "";
+  handleButtonClick() {
+    const cohortName = !this.props.selectedFacetValues.size
+      ? "all participants"
+      : "";
     this.setState(state => ({ cohortName: cohortName, dialogOpen: true }));
   }
 
-  handleCancel() {
+  handleDialogCancel() {
     this.setState(state => ({ dialogOpen: false }));
   }
 
-  handleSave() {
+  handleDialogSave() {
     this.setState(state => ({ dialogOpen: false }));
     let exportUrlCallback = function(error, data) {
       if (error) {
@@ -260,4 +239,4 @@ class ExportFab extends React.Component {
   }
 }
 
-export default withStyles(styles)(ExportFab);
+export default withStyles(styles)(SaveButton);

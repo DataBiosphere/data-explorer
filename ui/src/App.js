@@ -15,7 +15,6 @@ import {
 } from "data_explorer_service";
 import colors from "libs/colors";
 import DeHeader from "components/DeHeader";
-import ExportFab from "components/ExportFab";
 import ExportUrlApi from "api/src/api/ExportUrlApi";
 import FacetsGrid from "components/facets/FacetsGrid";
 import TerraHeader from "components/TerraHeader";
@@ -187,6 +186,7 @@ class App extends Component {
             />
             <DeHeader
               datasetName={this.state.datasetName}
+              exportUrlApi={new ExportUrlApi(this.apiClient)}
               facets={this.state.facets}
               handleSearchBoxChange={this.handleSearchBoxChange}
               handleSearchBoxTyping={this.handleSearchBoxTyping}
@@ -204,10 +204,6 @@ class App extends Component {
               handleRemoveFacet={this.handleRemoveFacet}
               extraFacetEsFieldNames={this.state.extraFacetEsFieldNames}
               showViz={this.state.showViz}
-            />
-            <ExportFab
-              exportUrlApi={new ExportUrlApi(this.apiClient)}
-              filter={this.filterMapToArray(this.state.selectedFacetValues)}
             />
             {this.state.datasetName === "1000 Genomes"
               ? Disclaimer(classes)

@@ -10,8 +10,8 @@ import Switch from "@material-ui/core/Switch";
 import Toolbar from "@material-ui/core/Toolbar";
 import { withStyles } from "@material-ui/core/styles";
 
-import { buttonPrimary } from "libs/common";
 import colors from "libs/colors";
+import SaveButton from "components/SaveButton";
 import Search from "components/Search";
 
 const styles = {
@@ -20,9 +20,6 @@ const styles = {
     boxShadow: "unset",
     color: colors.gray[0],
     marginTop: 3
-  },
-  saveButton: {
-    margin: "0 16px 0 16px"
   },
   snackbarContentMessage: {
     fontWeight: 500,
@@ -66,6 +63,7 @@ const styles = {
     fontSize: 14,
     height: 45,
     marginLeft: 16,
+    padding: "0 16px 0 16px",
     textAlign: "center"
   },
   vizSwitchBase: {
@@ -167,15 +165,6 @@ class DeHeader extends React.Component {
       );
     }
 
-    const saveButton = buttonPrimary(
-      {
-        className: classes.saveButton,
-        // Not sure why this is needed. Without this, text is a bit too high.
-        style: { padding: "1px 14px 0 14px" }
-      },
-      ["Save in Terra"]
-    );
-
     return (
       <AppBar position="static" className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
@@ -191,7 +180,10 @@ class DeHeader extends React.Component {
           <div className={classes.totalCount}>
             {this.props.totalCount} Participants
           </div>
-          {saveButton}
+          <SaveButton
+            exportUrlApi={this.props.exportUrlApi}
+            selectedFacetValues={this.props.selectedFacetValues}
+          />
         </Toolbar>
       </AppBar>
     );
