@@ -1,7 +1,6 @@
-/* Copied from terra-ui style.css */
-
 @import "libs/fonts/Montserrat.css";
 
+/* Keep in sync with saturn-ui */
 body,
 input,
 textarea,
@@ -13,11 +12,4 @@ button {
   -moz-osx-font-smoothing: grayscale;
   margin: 0;
   padding: 0;
-}
-
-/* Needed for common.js buttonPrimary */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
 }
