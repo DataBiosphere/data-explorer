@@ -65,8 +65,9 @@ const styles = {
     display: "flex",
     fontSize: 14,
     height: 45,
+    lineHeight: "16px",
     marginLeft: 16,
-    padding: "0 16px 0 16px",
+    padding: "2px 16px 0 16px",
     textAlign: "center"
   },
   vizSwitchBase: {

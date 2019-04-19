@@ -10,6 +10,7 @@ import { withStyles } from "@material-ui/core/styles";
 
 import colors from "libs/colors";
 import { elementStyles, PrimaryButton, SecondaryButton } from "libs/common";
+import { filterMapToArray } from "libs/util";
 
 const styles = {
   dialogDesc: {
@@ -141,27 +142,6 @@ class SaveButton extends React.Component {
     this.setState(state => ({ dialogOpen: false }));
   }
 
-  /**
-   * Converts a Map of filters to an Array of filter strings interpretable by
-   * the backend
-   * @param filterMap Map of esFieldName:[facetValues] pairs
-   * @return [string] Array of "esFieldName=facetValue" strings
-   */
-  filterMapToArray(filterMap) {
-    let filterArray = [];
-    filterMap.forEach((values, key) => {
-      // Scenario where there are no values for a key: A single value is
-      // checked for a facet. The value is unchecked. The facet name will
-      // still be a key in filterMap, but there will be no values.
-      if (values.length > 0) {
-        for (let value of values) {
-          filterArray.push(key + "=" + value);
-        }
-      }
-    });
-    return filterArray;
-  }
-
   handleDialogSave() {
     this.setState(state => ({ dialogOpen: false }));
     let exportUrlCallback = function(error, data) {
@@ -190,7 +170,7 @@ class SaveButton extends React.Component {
         exportUrlRequest: {
           cohortName: this.state.cohortName,
           dataExplorerUrl: window.location.href,
-          filter: this.filterMapToArray(this.props.selectedFacetValues)
+          filter: filterMapToArray(this.props.selectedFacetValues)
         }
       },
       exportUrlCallback

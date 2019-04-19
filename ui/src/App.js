@@ -17,6 +17,7 @@ import colors from "libs/colors";
 import DeHeader from "components/DeHeader";
 import ExportUrlApi from "api/src/api/ExportUrlApi";
 import FacetsGrid from "components/facets/FacetsGrid";
+import { filterArrayToMap, filterMapToArray } from "libs/util";
 import TerraHeader from "components/TerraHeader";
 import Montserrat from "libs/fonts/Montserrat-Medium.woff2";
 
@@ -161,7 +162,6 @@ class App extends Component {
     this.handleSearchBoxTyping = this.handleSearchBoxTyping.bind(this);
     this.handleVizSwitchChange = this.handleVizSwitchChange.bind(this);
     this.handleRemoveFacet = this.handleRemoveFacet.bind(this);
-    this.filterArrayToMap = this.filterArrayToMap.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -266,7 +266,7 @@ class App extends Component {
       this.setState({ selectedFacetValues: new Map() });
       this.callFacetsApiGet(
         {
-          filter: this.filterMapToArray(new Map()),
+          filter: filterMapToArray(new Map()),
           extraFacets: this.state.extraFacetEsFieldNames
         },
         this.facetsCallback
@@ -292,7 +292,7 @@ class App extends Component {
 
       this.callFacetsApiGet(
         {
-          filter: this.filterMapToArray(selectedFacetValues),
+          filter: filterMapToArray(selectedFacetValues),
           extraFacets: newExtraFacetEsFieldNames
         },
         function(error, data) {
@@ -344,7 +344,7 @@ class App extends Component {
     });
     this.callFacetsApiGet(
       {
-        filter: this.filterMapToArray(this.state.selectedFacetValues),
+        filter: filterMapToArray(this.state.selectedFacetValues),
         extraFacets: this.state.extraFacetEsFieldNames
       },
       this.facetsCallback
@@ -367,53 +367,11 @@ class App extends Component {
     });
     this.callFacetsApiGet(
       {
-        filter: this.filterMapToArray(selectedFacetValues),
+        filter: filterMapToArray(selectedFacetValues),
         extraFacets: extraFacetEsFieldNames
       },
       this.facetsCallback
     );
-  }
-
-  /**
-   * Converts a Map of filters to an Array of filter strings interpretable by
-   * the backend
-   * @param filterMap Map of esFieldName:[facetValues] pairs
-   * @return [string] Array of "esFieldName=facetValue" strings
-   */
-  filterMapToArray(filterMap) {
-    let filterArray = [];
-    filterMap.forEach((values, key) => {
-      // Scenario where there are no values for a key: A single value is
-      // checked for a facet. The value is unchecked. The facet name will
-      // still be a key in filterMap, but there will be no values.
-      if (values.length > 0) {
-        for (let value of values) {
-          filterArray.push(key + "=" + value);
-        }
-      }
-    });
-    return filterArray;
-  }
-
-  /**
-   * Converts an Array of filter strings back to a Map of filters
-   * Example:
-   * In: ["Gender%3Dfemale", "Gender%3Dmale", "Population%3DAmerican"]
-   * Out: {"Gender" => ["male", "female"], "Population" => ["American"]}
-   */
-  filterArrayToMap(filterArray) {
-    let filterMap = new Map();
-    filterArray.forEach(function(pair) {
-      pair = pair.split(encodeURIComponent("="));
-      if (filterMap.has(pair[0])) {
-        let arr = filterMap.get(pair[0]);
-        arr.push(pair[1]);
-        filterMap.set(pair[0], arr);
-      } else {
-        filterMap.set(pair[0], [pair[1]]);
-      }
-    });
-    return filterMap;
   }
 
   handleQueryString() {
@@ -434,7 +392,7 @@ class App extends Component {
         this.setState({
           // Set selectedFacetValues state after facetsCallback.
           // If it were set before, the relevant facet might not yet be in extraFacetEsFieldsNames.
-          selectedFacetValues: this.filterArrayToMap(filter),
+          selectedFacetValues: filterArrayToMap(filter),
           extraFacetEsFieldNames: extraFacets
         });
       }.bind(this)
