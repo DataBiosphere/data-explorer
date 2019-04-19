@@ -405,7 +405,7 @@ class App extends Component {
   filterArrayToMap(filterArray) {
     let filterMap = new Map();
     filterArray.forEach(function(pair) {
-      pair = pair.split("%3D");
+      pair = pair.split(encodeURIComponent("="));
       if (filterMap.has(pair[0])) {
         let arr = filterMap.get(pair[0]);
         arr.push(pair[1]);
@@ -419,10 +419,11 @@ class App extends Component {
 
   handleQueryString() {
     var params = new URLSearchParams(window.location.search);
-    var filter = params.get("filter") ? params.get("filter").split("%7C") : [];
+    var pipe = encodeURIComponent("|");
+    var filter = params.get("filter") ? params.get("filter").split(pipe) : [];
     // filter looks like ["Gender%3Dfemale", "Gender%3Dmale", "Population%3DAmerican"]
     var extraFacets = params.get("extraFacets")
-      ? params.get("extraFacets").split("%7C")
+      ? params.get("extraFacets").split(pipe)
       : [];
     this.callFacetsApiGet(
       {
