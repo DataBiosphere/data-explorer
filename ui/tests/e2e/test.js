@@ -16,9 +16,6 @@ describe("End-to-end", () => {
 
   beforeEach(async () => {
     await page.goto("http://localhost:4400");
-    await page.evaluate(() => {
-      localStorage.setItem("hasShownSnackbar", "true");
-    });
     await page.waitForSelector("[class*='datasetName']");
   });
 
@@ -189,15 +186,44 @@ describe("End-to-end", () => {
     await facetBar.click("input");
     await waitForFacetsUpdate(1018);
 
-    // // Assert page updated correctly.
+    // Assert page updated correctly.
     await assertHeaderTotalCount("1018");
     await assertHistogramFacet("Gender", "1018", "male", "518");
 
-    // // Make sure non-selected facet values are dimmed.
+    // Make sure non-selected facet values are dimmed.
     facetBar = await getHistogramFacetBar("Super Population", "European");
     const barColor = await page.evaluate(bar => bar.style.fill, facetBar);
     // Vega translates our hex colors to rgb so it must be validated this way.
     expect(barColor).toBe("rgb(191, 225, 240)");
+  });
+
+  test("[HistogramFacet] Data Explorer URL works", async () => {
+    // Add Relationship extra facet and select Relationship=mother.
+    let initial_select = await page.$x(
+      "//div[contains(text(), 'Search to add a facet')]"
+    );
+    await initial_select[0].click();
+    await initial_select[0].type("mother");
+    await page.waitForXPath("//span[contains(text(), 'Add')]");
+    let results = await page.$x("//span[contains(text(), 'Add')]");
+    await results[0].click();
+    await waitForFacetsUpdate(831);
+
+    // Select Super Population=African, Super Population=South Asian
+    let facetBar = await getHistogramFacetBar("Super Population", "African");
+    await facetBar.click("input");
+    await waitForFacetsUpdate(279);
+    facetBar = await getHistogramFacetBar("Super Population", "South Asian");
+    await facetBar.click("input");
+    await waitForFacetsUpdate(477);
+
+    // Reload page with current URL. This simulates exporting URL to Terra and
+    // opening exported URL.
+    await page.goto(page.url());
+    await page.waitForSelector("[class*='datasetName']");
+
+    // This confirms the right extra facets and filters were rendered.
+    await assertHeaderTotalCount("477");
   });
 
   async function waitForElasticsearchIndex() {

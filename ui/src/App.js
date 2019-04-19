@@ -162,6 +162,7 @@ class App extends Component {
     this.handleVizSwitchChange = this.handleVizSwitchChange.bind(this);
     this.loadOptions = this.loadOptions.bind(this);
     this.handleRemoveFacet = this.handleRemoveFacet.bind(this);
+    this.filterArrayToMap = this.filterArrayToMap.bind(this);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -398,13 +399,13 @@ class App extends Component {
   /**
    * Converts an Array of filter strings back to a Map of filters
    * Example:
-   * In: ["Gender=female", "Gender=male", "Population=American"]
+   * In: ["Gender%3Dfemale", "Gender%3Dmale", "Population%3DAmerican"]
    * Out: {"Gender" => ["male", "female"], "Population" => ["American"]}
    */
   filterArrayToMap(filterArray) {
     let filterMap = new Map();
     filterArray.forEach(function(pair) {
-      pair = pair.split("=");
+      pair = pair.split(encodeURIComponent("="));
       if (filterMap.has(pair[0])) {
         let arr = filterMap.get(pair[0]);
         arr.push(pair[1]);
@@ -418,10 +419,11 @@ class App extends Component {
 
   handleQueryString() {
     var params = new URLSearchParams(window.location.search);
-    // filter looks like ["Gender=female", "Gender=male", "Population=American"]
-    var filter = params.get("filter") ? params.get("filter").split("|") : [];
+    var pipe = encodeURIComponent("|");
+    var filter = params.get("filter") ? params.get("filter").split(pipe) : [];
+    // filter looks like ["Gender%3Dfemale", "Gender%3Dmale", "Population%3DAmerican"]
     var extraFacets = params.get("extraFacets")
-      ? params.get("extraFacets").split("|")
+      ? params.get("extraFacets").split(pipe)
       : [];
     this.callFacetsApiGet(
       {
