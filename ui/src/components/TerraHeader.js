@@ -47,7 +47,9 @@ class TerraHeader extends React.Component {
     return (
       <AppBar position="static" className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
-          <TerraLogo className={classes.terraLogo} />
+          <a href="https://app.terra.bio">
+            <TerraLogo className={classes.terraLogo} />
+          </a>
           <div className={classes.dataExplorerText}>Data Explorer</div>
           <div className={classes.verticalSeparator} />
           <div className={classes.datasetName}>{this.props.datasetName}</div>
