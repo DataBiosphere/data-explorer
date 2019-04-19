@@ -1,58 +1,16 @@
 import React from "react";
-import Button from "@material-ui/core/Button";
 import classNames from "classnames";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { withStyles } from "@material-ui/core/styles";
 
-import { buttonPrimary } from "libs/common";
 import colors from "libs/colors";
+import { PrimaryButton, SecondaryButton } from "libs/common";
 
 const styles = {
-  dialogButtonBase: {
-    boxShadow: "unset",
-    color: colors.green[0],
-    fontSize: 16,
-    margin: "0 25px 26px 0",
-    padding: "10px 20px 8px 20px"
-  },
-  dialogButtonCancel: {
-    // Add an invisible border so the button doesn't move when we click it
-    border: "1px solid white",
-    "&:hover": {
-      backgroundColor: "#e9edf1",
-      border: "1px solid #babdc0",
-      borderRadius: 3
-    },
-    "&:active": {
-      backgroundColor: "#e9edf1",
-      border: "1px solid #babdc0",
-      borderRadius: 3
-    }
-  },
-  dialogButtonSave: {
-    backgroundColor: colors.green[1],
-    border: "1px solid #5c8b35",
-    borderRadius: 3,
-    color: "white",
-    "&:hover": {
-      backgroundColor: "#7cb24e",
-      border: "1px solid #638e3e"
-    },
-    "&:active": {
-      backgroundColor: "#63953a",
-      border: "1px solid #638e3e"
-    }
-  },
-  dialogButtonSaveDisabled: {
-    backgroundColor: "#e9edf1",
-    border: "1px solid #babdc0",
-    color: "#babdc0"
-  },
   dialogDesc: {
     color: colors.gray[0],
     fontSize: 14
@@ -76,6 +34,10 @@ const styles = {
     borderColor: "#dfe3e9 !important",
     borderWidth: "1px !important"
   },
+  dialogButton: {
+    float: "right",
+    margin: "36px 0 0 24px"
+  },
   dialogTitle: {
     color: colors.gray[0],
     fontSize: 18,
@@ -97,24 +59,13 @@ class SaveButton extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
-
-    const saveButton = buttonPrimary(
-      {
-        as: "a",
-        onClick: () => this.handleButtonClick(),
-        style: {
-          margin: "0 16px 0 16px",
-          // Not sure why this is needed. Without this, text is a bit too high.
-          padding: "1px 14px 0 14px"
-        }
-      },
-      ["Save in Terra"]
-    );
+    const { classes, className } = this.props;
 
     return (
-      <div>
-        {saveButton}
+      <div className={className}>
+        <PrimaryButton onClick={this.handleButtonClick}>
+          Save in Terra
+        </PrimaryButton>
         <Dialog open={this.state.dialogOpen} onClose={this.handleClose}>
           <DialogTitle className={classes.dialogTitle} disableTypography>
             Save in Terra
@@ -150,39 +101,22 @@ class SaveButton extends React.Component {
               type="text"
               variant="outlined"
             />
-          </DialogContent>
-          <DialogActions>
-            <Button
-              className={classNames(
-                classes.dialogButtonBase,
-                classes.dialogButtonCancel
-              )}
-              onClick={this.handleDialogCancel}
-              color="primary"
-            >
-              Cancel
-            </Button>
-            <Button
-              classes={{
-                root: classNames(
-                  classes.dialogButtonBase,
-                  classes.dialogButtonSave
-                ),
-                disabled: classNames(
-                  classes.dialogButtonBase,
-                  classes.dialogButtonSaveDisabled
-                )
-              }}
+            <PrimaryButton
+              className={classes.dialogButton}
               disabled={
                 !("cohortName" in this.state) || this.state.cohortName == ""
               }
-              variant="contained"
-              id="save"
               onClick={this.handleDialogSave}
             >
               Save
-            </Button>
-          </DialogActions>
+            </PrimaryButton>
+            <SecondaryButton
+              className={classes.dialogButton}
+              onClick={this.handleDialogCancel}
+            >
+              Cancel
+            </SecondaryButton>
+          </DialogContent>
         </Dialog>
       </div>
     );
@@ -201,6 +135,27 @@ class SaveButton extends React.Component {
 
   handleDialogCancel() {
     this.setState(state => ({ dialogOpen: false }));
+  }
+
+  /**
+   * Converts a Map of filters to an Array of filter strings interpretable by
+   * the backend
+   * @param filterMap Map of esFieldName:[facetValues] pairs
+   * @return [string] Array of "esFieldName=facetValue" strings
+   */
+  filterMapToArray(filterMap) {
+    let filterArray = [];
+    filterMap.forEach((values, key) => {
+      // Scenario where there are no values for a key: A single value is
+      // checked for a facet. The value is unchecked. The facet name will
+      // still be a key in filterMap, but there will be no values.
+      if (values.length > 0) {
+        for (let value of values) {
+          filterArray.push(key + "=" + value);
+        }
+      }
+    });
+    return filterArray;
   }
 
   handleDialogSave() {
@@ -231,7 +186,7 @@ class SaveButton extends React.Component {
         exportUrlRequest: {
           cohortName: this.state.cohortName,
           dataExplorerUrl: window.location.href,
-          filter: this.props.filter
+          filter: this.filterMapToArray(this.props.selectedFacetValues)
         }
       },
       exportUrlCallback

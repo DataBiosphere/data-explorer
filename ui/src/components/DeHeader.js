@@ -21,6 +21,9 @@ const styles = {
     color: colors.gray[0],
     marginTop: 3
   },
+  saveButton: {
+    margin: "0 16px 0 16px"
+  },
   snackbarContentMessage: {
     fontWeight: 500,
     padding: 0,
@@ -181,6 +184,7 @@ class DeHeader extends React.Component {
             {this.props.totalCount} Participants
           </div>
           <SaveButton
+            className={classes.saveButton}
             exportUrlApi={this.props.exportUrlApi}
             selectedFacetValues={this.props.selectedFacetValues}
           />
