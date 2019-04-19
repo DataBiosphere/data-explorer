@@ -17,7 +17,7 @@ const baseStyles = {
   }
 };
 
-const styles = {
+const elementStyles = {
   primaryButton: {
     ...baseStyles.buttonBase,
     backgroundColor: colors.green[1],
@@ -41,10 +41,16 @@ const styles = {
       backgroundColor: "unset",
       color: colors.green[1]
     }
+  },
+  tooltip: {
+    backgroundColor: "black",
+    borderRadius: 4,
+    fontSize: 14,
+    padding: "8px 8px 4px 8px"
   }
 };
 
-const PrimaryButton = withStyles(styles)(function(props) {
+const PrimaryButton = withStyles(elementStyles)(function(props) {
   const { classes, ...otherProps } = props;
   return (
     <Button
@@ -61,7 +67,7 @@ const PrimaryButton = withStyles(styles)(function(props) {
   );
 });
 
-const SecondaryButton = withStyles(styles)(function(props) {
+const SecondaryButton = withStyles(elementStyles)(function(props) {
   const { classes, className, ...otherProps } = props;
   return (
     <Button
@@ -72,4 +78,4 @@ const SecondaryButton = withStyles(styles)(function(props) {
   );
 });
 
-export { PrimaryButton, SecondaryButton };
+export { elementStyles, PrimaryButton, SecondaryButton };
