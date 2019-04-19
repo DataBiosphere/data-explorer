@@ -4,6 +4,7 @@
 import React from "react";
 import Button from "@material-ui/core/Button";
 import classNames from "classnames";
+import Tooltip from "@material-ui/core/Tooltip";
 import { withStyles } from "@material-ui/core/styles";
 
 import colors from "libs/colors";
@@ -17,7 +18,7 @@ const baseStyles = {
   }
 };
 
-const elementStyles = {
+const styles = {
   primaryButton: {
     ...baseStyles.buttonBase,
     backgroundColor: colors.green[1],
@@ -50,8 +51,8 @@ const elementStyles = {
   }
 };
 
-const PrimaryButton = withStyles(elementStyles)(function(props) {
-  const { classes, ...otherProps } = props;
+const PrimaryButton = withStyles(styles)(function(props) {
+  const { classes, children, ...otherProps } = props;
   return (
     <Button
       classes={{
@@ -63,11 +64,13 @@ const PrimaryButton = withStyles(elementStyles)(function(props) {
       }}
       disableRipple={true}
       {...otherProps}
-    />
+    >
+      {children}
+    </Button>
   );
 });
 
-const SecondaryButton = withStyles(elementStyles)(function(props) {
+const SecondaryButton = withStyles(styles)(function(props) {
   const { classes, className, ...otherProps } = props;
   return (
     <Button
@@ -78,4 +81,22 @@ const SecondaryButton = withStyles(elementStyles)(function(props) {
   );
 });
 
-export { elementStyles, PrimaryButton, SecondaryButton };
+const TerraTooltip = withStyles(styles)(function(props) {
+  const {
+    classes: { tooltip, ...otherClasses },
+    children,
+    ...otherProps
+  } = props;
+  return (
+    <Tooltip
+      classes={{ tooltip: tooltip, ...otherClasses }}
+      disableRipple={true}
+      TransitionProps={{ timeout: 0 }}
+      {...otherProps}
+    >
+      {children}
+    </Tooltip>
+  );
+});
+
+export { PrimaryButton, SecondaryButton, TerraTooltip };

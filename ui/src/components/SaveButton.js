@@ -1,7 +1,6 @@
 import React from "react";
 import classNames from "classnames";
 import TextField from "@material-ui/core/TextField";
-import Tooltip from "@material-ui/core/Tooltip";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
@@ -9,7 +8,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import { withStyles } from "@material-ui/core/styles";
 
 import colors from "libs/colors";
-import { elementStyles, PrimaryButton, SecondaryButton } from "libs/common";
+import { PrimaryButton, SecondaryButton, TerraTooltip } from "libs/common";
 import { filterMapToArray } from "libs/util";
 
 const styles = {
@@ -45,7 +44,9 @@ const styles = {
     fontSize: 18,
     fontWeight: 600
   },
-  tooltip: elementStyles.tooltip
+  tooltip: {
+    width: 200
+  }
 };
 
 class SaveButton extends React.Component {
@@ -66,11 +67,14 @@ class SaveButton extends React.Component {
 
     return (
       <div className={className}>
-        <Tooltip classes={{ tooltip: classes.tooltip }} title="Save in Terra">
+        <TerraTooltip
+          classes={{ tooltip: classes.tooltip }}
+          title="Save cohorts so you can work with them later"
+        >
           <PrimaryButton onClick={this.handleButtonClick}>
             Save in Terra
           </PrimaryButton>
-        </Tooltip>
+        </TerraTooltip>
         <Dialog open={this.state.dialogOpen} onClose={this.handleClose}>
           <DialogTitle className={classes.dialogTitle} disableTypography>
             Save in Terra
