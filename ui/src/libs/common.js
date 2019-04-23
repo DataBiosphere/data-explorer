@@ -12,11 +12,7 @@ import colors from "libs/colors";
 const baseStyles = {
   buttonBase: {
     borderRadius: 5,
-    // For some reason different paddings are needed for Mac Chrome vs
-    // Linux Chrome, to make chip text vertically centered in button.
-    padding: navigator.platform.includes("Mac")
-      ? "0 15px 0 15px"
-      : "6px 15px 4px 15px",
+    padding: "6px 15px 4px 15px",
     textTransform: "uppercase",
     whiteSpace: "nowrap"
   }
