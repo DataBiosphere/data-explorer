@@ -22,7 +22,7 @@ const baseStyles = {
   }
 };
 
-const styles = {
+const buttonStyles = {
   primaryButton: {
     ...baseStyles.buttonBase,
     backgroundColor: colors.green[1],
@@ -46,7 +46,10 @@ const styles = {
       backgroundColor: "unset",
       color: colors.green[1]
     }
-  },
+  }
+};
+
+const tooltipStyles = {
   tooltip: {
     backgroundColor: "black",
     borderRadius: 4,
@@ -55,7 +58,7 @@ const styles = {
   }
 };
 
-const PrimaryButton = withStyles(styles)(function(props) {
+const PrimaryButton = withStyles(buttonStyles)(function(props) {
   const { classes, children, ...otherProps } = props;
   return (
     <Button
@@ -74,7 +77,7 @@ const PrimaryButton = withStyles(styles)(function(props) {
   );
 });
 
-const SecondaryButton = withStyles(styles)(function(props) {
+const SecondaryButton = withStyles(buttonStyles)(function(props) {
   const { classes, className, ...otherProps } = props;
   return (
     <Button
@@ -85,7 +88,7 @@ const SecondaryButton = withStyles(styles)(function(props) {
   );
 });
 
-const TerraTooltip = withStyles(styles)(function(props) {
+const TerraTooltip = withStyles(tooltipStyles)(function(props) {
   const {
     classes: { tooltip, ...otherClasses },
     children,
