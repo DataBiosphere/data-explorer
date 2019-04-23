@@ -97,7 +97,6 @@ const TerraTooltip = withStyles(tooltipStyles)(function(props) {
   return (
     <Tooltip
       classes={{ tooltip: tooltip, ...otherClasses }}
-      disableRipple={true}
       TransitionProps={{ timeout: 0 }}
       {...otherProps}
     >
