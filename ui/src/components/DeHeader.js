@@ -145,6 +145,8 @@ class DeHeader extends React.Component {
           </div>
           <SaveButton
             className={classes.saveButton}
+            datasetName={this.props.datasetName}
+            embed={this.props.embed}
             exportUrlApi={this.props.exportUrlApi}
             selectedFacetValues={this.props.selectedFacetValues}
           />

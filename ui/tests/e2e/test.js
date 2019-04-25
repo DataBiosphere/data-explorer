@@ -31,7 +31,7 @@ describe("End-to-end", () => {
 
     // Click on facet bar and assert page updated correctly
     let facetBar = await getFacetBar("Super Population", "African");
-    await facetBar.click("input");
+    await facetBar.click("");
     await waitForFacetsUpdate(1018);
     await assertFacet("Gender", "1018", "male", "518");
 
@@ -48,7 +48,7 @@ describe("End-to-end", () => {
 
     // Click on facet bar and assert page updated correctly
     let facetBar = await getFacetBar("% covered 20x or greater", "0.9-1.0");
-    await facetBar.click("input");
+    await facetBar.click("");
     await waitForFacetsUpdate(1108);
     await assertFacet("Gender", "1108", "female", "563");
 
@@ -65,7 +65,7 @@ describe("End-to-end", () => {
 
     // Click on facet bar and assert page updated correctly
     let facetBar = await getFacetBar("Samples Overview", "Has Exome CRAM");
-    await facetBar.click("input");
+    await facetBar.click("");
     await waitForFacetsUpdate(2534);
     await assertFacet("Gender", "2534", "female", "1290");
 
@@ -74,7 +74,7 @@ describe("End-to-end", () => {
 
   test("Save in Terra", async () => {
     let facetBar = await getFacetBar("Super Population", "African");
-    await facetBar.click("input");
+    await facetBar.click("");
     await waitForFacetsUpdate(1018);
 
     await saveInTerra();
@@ -83,20 +83,20 @@ describe("End-to-end", () => {
   test("Search box - chips", async () => {
     // Click on facet bar and assert chip is added
     let facetBar = await getFacetBar("Gender", "female");
-    await facetBar.click("input");
+    await facetBar.click("");
     await waitForFacetsUpdate(1760);
     await waitForChip("Gender=female");
 
     // Click on facet bar again and assert chip is deleted
     facetBar = await getFacetBar("Gender", "female");
-    await facetBar.click("input");
+    await facetBar.click("");
     await waitForFacetsUpdate(3500);
     chips = await page.$x("//div[text()='Gender=female']");
     expect(chips.length).toBe(0);
 
     // Click on facet bar, click on chip "x", assert facet value is unselected
     facetBar = await getFacetBar("Gender", "female");
-    await facetBar.click("input");
+    await facetBar.click("");
     await waitForFacetsUpdate(1760);
     let chipX = await page.waitForXPath(
       "//div[text()[contains(.,'Gender=female')]]/../div[2]"
@@ -148,10 +148,10 @@ describe("End-to-end", () => {
 
     // Select Super Population=African, Super Population=South Asian
     let facetBar = await getFacetBar("Super Population", "African");
-    await facetBar.click("input");
+    await facetBar.click("");
     await waitForFacetsUpdate(279);
     facetBar = await getFacetBar("Super Population", "South Asian");
-    await facetBar.click("input");
+    await facetBar.click("");
     await waitForFacetsUpdate(477);
 
     // Reload page with current URL. This simulates exporting URL to Terra and

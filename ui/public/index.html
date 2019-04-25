@@ -23,6 +23,12 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Data explorer</title>
+    <!--
+      Used for embedding Data Explorer into Terra.
+      Without this, Terra header is fixed: https://i.imgur.com/tucJzcG.gifv
+      With this, DE iframe embeds naturally: https://i.imgur.com/iqgwp8q.gifv
+    -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/4.1.1/iframeResizer.contentWindow.min.js"></script>
   </head>
   <body>
     <noscript> You need to enable JavaScript to run this app. </noscript>

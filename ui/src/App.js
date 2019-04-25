@@ -74,6 +74,11 @@ class App extends Component {
     super(props);
 
     this.state = {
+      // If embed is true: DE is embedded in an iframe in Terra. Top-level URL
+      // looks like https://app.terra.bio/#library/datasets/1000%20Genomes/data-explorer
+      // If embed is false: DE is stand-alone. Top-level URL looks like
+      // https://test-data-explorer.appspot.com
+      embed: false,
       datasetName: "",
       // What to show in search box by default. If this is the empty string, the
       // react-select default of "Select..." is shown.
@@ -175,8 +180,12 @@ class App extends Component {
       return (
         <MuiThemeProvider theme={theme}>
           <div className={classes.root}>
-            <TerraHeader datasetName={this.state.datasetName} />
+            {!this.state.embed && (
+              <TerraHeader datasetName={this.state.datasetName} />
+            )}
             <DeHeader
+              datasetName={this.state.datasetName}
+              embed={this.state.embed}
               exportUrlApi={new ExportUrlApi(this.apiClient)}
               facets={this.state.facets}
               handleSearchBoxChange={this.handleSearchBoxChange}
@@ -378,6 +387,7 @@ class App extends Component {
       function(error, data) {
         this.facetsCallback(error, data);
         this.setState({
+          embed: params.has("embed"),
           // Set selectedFacetValues state after facetsCallback.
           // If it were set before, the relevant facet might not yet be in extraFacetEsFieldsNames.
           selectedFacetValues: filterArrayToMap(filter),
@@ -393,6 +403,14 @@ class App extends Component {
     params.set("filter", filterParam);
     params.set("extraFacets", extraFacetsParam);
     window.history.replaceState(null, "", "?" + params.toString());
+
+    // Tell Terra about new params so top-level Terra url can be updated
+    if (this.state.embed && "parentIFrame" in window) {
+      params.delete("embed");
+      // Don't set targetOrigin because it's unknown. It could be app.terra.bio,
+      // bvdp-saturn-dev.appspot.com, etc.
+      window.parentIFrame.sendMessage({ deQueryStr: params.toString() });
+    }
   }
 
   // Wrap the call to facetsGet together with updating the query params
