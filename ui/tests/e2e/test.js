@@ -22,7 +22,6 @@ describe("End-to-end", () => {
 
   beforeEach(async () => {
     await page.goto("http://localhost:4400");
-    await page.setViewport({ width: 1200, height: 600 });
     await page.waitForSelector("[class*='datasetName']");
   });
 
