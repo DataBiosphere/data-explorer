@@ -3,7 +3,6 @@ import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import { withStyles } from "@material-ui/core/styles";
 
-import TextFacet from "components/facets/TextFacet";
 import HistogramFacet from "components/facets/HistogramFacet";
 
 const styles = {
@@ -17,34 +16,6 @@ const styles = {
   }
 };
 
-function facetCard(props, facet) {
-  if (props.showViz) {
-    return (
-      <HistogramFacet
-        facet={facet}
-        updateFacets={props.updateFacets}
-        handleRemoveFacet={props.handleRemoveFacet}
-        isExtraFacet={props.extraFacetEsFieldNames.includes(
-          facet.es_field_name
-        )}
-        selectedValues={props.selectedFacetValues.get(facet.es_field_name)}
-      />
-    );
-  } else {
-    return (
-      <TextFacet
-        facet={facet}
-        updateFacets={props.updateFacets}
-        handleRemoveFacet={props.handleRemoveFacet}
-        isExtraFacet={props.extraFacetEsFieldNames.includes(
-          facet.es_field_name
-        )}
-        selectedValues={props.selectedFacetValues.get(facet.es_field_name)}
-      />
-    );
-  }
-}
-
 function FacetsGrid(props) {
   const { classes } = props;
 
@@ -57,7 +28,15 @@ function FacetsGrid(props) {
         key={facet.name}
         style={{ padding: 0 }}
       >
-        {facetCard(props, facet)}
+        <HistogramFacet
+          facet={facet}
+          updateFacets={props.updateFacets}
+          handleRemoveFacet={props.handleRemoveFacet}
+          isExtraFacet={props.extraFacetEsFieldNames.includes(
+            facet.es_field_name
+          )}
+          selectedValues={props.selectedFacetValues.get(facet.es_field_name)}
+        />
       </GridListTile>
     );
   });
