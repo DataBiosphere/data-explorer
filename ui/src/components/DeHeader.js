@@ -67,7 +67,6 @@ const styles = {
     marginLeft: 16,
     padding: "2px 16px 0 16px",
     textAlign: "center"
-  },
   }
 };
 
