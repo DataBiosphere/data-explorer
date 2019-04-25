@@ -316,12 +316,15 @@ Uncomment after https://github.com/GoogleChrome/puppeteer/issues/4336 is fixed
   }
 
   async function saveInTerra() {
-    await page.click("svg[title='Save in Terra']");
+    await page.click("button[title~='Save']");
     // Wait for cohort name dialog
     await page.waitForSelector("#name");
 
     await page.type("#name", "c");
-    await page.click("#save");
+    // Look for span with exact text 'Save'. This matches on dialog save button
+    // and not "Save cohort" button
+    let saveButton = await page.waitForXPath("//span[./text()='Save']");
+    await saveButton.click();
     await page.waitForRequest("https://app.terra.bio/");
   }
 });
