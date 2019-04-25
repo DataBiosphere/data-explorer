@@ -60,7 +60,7 @@ class FacetHeader extends Component {
         <div className={classes.facetName}>{this.props.facet.name}</div>
         {this.props.isExtraFacet && this.state.hoveredOver ? (
           <div className={classes.closeIcon} onClick={this.handleRemoveFacet}>
-            <clr-icon shape="times" style={styles.clearIcon} size="29" />
+            <clr-icon shape="times" style={styles.clearIcon} size="24" />
           </div>
         ) : (
           this.props.facet.name != "Samples Overview" && (
