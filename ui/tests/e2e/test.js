@@ -11,7 +11,6 @@ describe("End-to-end", () => {
   beforeAll(async () => {
     // It can take a while for servers to start up
     jest.setTimeout(JEST_TIMEOUT_MS);
-    jest.setTimeout(10000000);
     await waitForElasticsearchIndex();
 
     // Hide snackbar because it prevents clicking on some facet bars
