@@ -28,12 +28,12 @@ describe("End-to-end", () => {
   });
 
   test("Search box - select row with facet value", async () => {
-    // Type "na19686" into search box and select second result
+    // Type "pat" into search box and select second result
     let searchBox = await page.$x(
       "//div[contains(text(), 'Search to add a facet')]"
     );
     await searchBox[0].click();
-    await searchBox[0].type("na19686");
+    await searchBox[0].type("pat");
     let secondResult = await page.waitForXPath(
       "(//span[contains(text(), 'Add')])[2]"
     );
@@ -47,7 +47,7 @@ describe("End-to-end", () => {
     // Click on 'x' in facet header, make sure filter was removed
     debugger;
     let header = await page.waitForXPath(
-      "//div[contains(@class, 'FacetHeader-facetHeader') and contains(., 'Grandparents')]"
+      "//div[contains(@class, 'FacetHeader-facetHeader') and contains(., 'Relationship')]"
     );
     await header.hover();
     let closeIcon = await page.waitForSelector(
