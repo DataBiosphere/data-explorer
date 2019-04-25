@@ -24,14 +24,15 @@ const styles = {
   container: (provided, state) => ({
     ...provided,
     fontFamily: ["Montserrat", "sans-serif"].join(","),
-    fontSize: 13
+    fontSize: 13,
+    marginLeft: 15,
+    width: "100%"
   }),
   control: (provided, state) => ({
     ...provided,
     backgroundColor: colors.gray[6],
     border: 0,
     borderRadius: 5,
-    margin: "9px 15px 0px 15px",
     ...(state.isFocused
       ? {
           boxShadow: "0 0 0 1px " + colors.green[1]

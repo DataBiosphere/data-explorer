@@ -9,30 +9,18 @@ import Toolbar from "@material-ui/core/Toolbar";
 import { withStyles } from "@material-ui/core/styles";
 
 import colors from "libs/colors";
-import headerLeftHexes from "libs/images/header-left-hexes.svg";
-import headerRightHexes from "libs/images/header-right-hexes.svg";
-import { TerraLogoStyles } from "libs/icons";
-import { ReactComponent as TerraLogo } from "libs/icons/logo-wShadow.svg";
+import SaveButton from "components/SaveButton";
+import Search from "components/Search";
 
 const styles = {
-  ...TerraLogoStyles,
   appBar: {
-    background: `81px url(${headerLeftHexes}) no-repeat, right url(${headerRightHexes}) no-repeat, ${
-      colors.green[1]
-    }`,
-    borderBottom: "2px solid #b0d239",
-    boxShadow: "rgba(0, 0, 0, 0.12) 0px 3px 2px 0px",
-    height: 66
+    backgroundColor: colors.grayBlue[6],
+    boxShadow: "unset",
+    color: colors.gray[0],
+    marginTop: 3
   },
-  dataExplorerText: {
-    fontSize: 18,
-    fontWeight: 600,
-    marginRight: 15
-  },
-  datasetName: {
-    fontSize: 18,
-    fontWeight: 600,
-    marginLeft: 15
+  saveButton: {
+    margin: "0 16px 0 16px"
   },
   snackbarContentMessage: {
     fontWeight: 500,
@@ -68,20 +56,54 @@ const styles = {
     padding: 0
   },
   totalCount: {
-    backgroundColor: "#b0d239",
+    alignItems: "center",
+    backgroundColor: colors.lightGreen[4],
     borderRadius: 15.5,
-    fontSize: 16,
-    fontWeight: 500,
-    height: 31,
-    lineHeight: 2,
-    marginLeft: 40,
-    padding: "0 20px 0 20px"
+    color: "#7f8fa4",
+    display: "flex",
+    fontSize: 14,
+    height: 45,
+    lineHeight: "16px",
+    marginLeft: 16,
+    padding: "2px 16px 0 16px",
+    textAlign: "center"
   },
-  verticalSeparator: {
-    boxSizing: "border-box",
-    height: 34,
-    width: 2,
-    border: "1px solid #97c543"
+  vizSwitchBase: {
+    "&$vizSwitchChecked": {
+      color: "white",
+      "& + $vizSwitchBar": {
+        backgroundColor: colors.lightGreen[2]
+      }
+    }
+  },
+  vizSwitchChecked: {
+    transform: "translateX(15px)",
+    "& + $vizSwitchBar": {
+      opacity: 1,
+      border: "none"
+    }
+  },
+  vizSwitchBar: {
+    borderRadius: 13,
+    width: 36,
+    height: 20,
+    marginTop: -10,
+    marginLeft: -17,
+    backgroundColor: "#cccfd4",
+    opacity: 1
+  },
+  vizSwitchIcon: {
+    width: 16,
+    height: 16
+  },
+  vizSwitchLabel: {
+    color: "#7f8fa4",
+    fontSize: 12,
+    fontWeight: 600,
+    marginTop: -1
+  },
+  vizSwitchRoot: {
+    margin: "2px 32px 0 auto"
   }
 };
 
@@ -89,7 +111,7 @@ function TransitionLeft(props) {
   return <Slide {...props} direction="left" />;
 }
 
-class Header extends React.Component {
+class DeHeader extends React.Component {
   state = {
     snackbarOpen: true
   };
@@ -149,13 +171,22 @@ class Header extends React.Component {
       <AppBar position="static" className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
           {snackbar}
-          <TerraLogo className={classes.terraLogo} />
-          <div className={classes.dataExplorerText}>Data Explorer</div>
-          <div className={classes.verticalSeparator} />
-          <div className={classes.datasetName}>{this.props.datasetName}</div>
+          <Search
+            searchPlaceholderText={this.props.searchPlaceholderText}
+            defaultOptions={this.props.searchResults}
+            handleSearchBoxChange={this.props.handleSearchBoxChange}
+            selectedFacetValues={this.props.selectedFacetValues}
+            facets={this.props.facets}
+            loadOptions={this.props.handleSearchBoxTyping}
+          />
           <div className={classes.totalCount}>
             {this.props.totalCount} Participants
           </div>
+          <SaveButton
+            className={classes.saveButton}
+            exportUrlApi={this.props.exportUrlApi}
+            selectedFacetValues={this.props.selectedFacetValues}
+          />
         </Toolbar>
       </AppBar>
     );
@@ -169,4 +200,4 @@ class Header extends React.Component {
   };
 }
 
-export default withStyles(styles)(Header);
+export default withStyles(styles)(DeHeader);
