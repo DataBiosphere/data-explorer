@@ -159,7 +159,6 @@ class App extends Component {
 
     this.updateFacets = this.updateFacets.bind(this);
     this.handleSearchBoxChange = this.handleSearchBoxChange.bind(this);
-    this.loadOptions = this.loadOptions.bind(this);
     this.handleSearchBoxTyping = this.handleSearchBoxTyping.bind(this);
     this.handleRemoveFacet = this.handleRemoveFacet.bind(this);
   }

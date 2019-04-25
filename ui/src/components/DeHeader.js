@@ -9,6 +9,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import { withStyles } from "@material-ui/core/styles";
 
 import colors from "libs/colors";
+import CopyUrlButton from "components/CopyUrlButton";
 import SaveButton from "components/SaveButton";
 import Search from "components/Search";
 
@@ -21,6 +22,9 @@ const styles = {
   },
   saveButton: {
     margin: "0 16px 0 16px"
+  },
+  copyUrlButton: {
+    marginRight: "16px"
   },
   snackbarContentMessage: {
     fontWeight: 500,
@@ -187,6 +191,7 @@ class DeHeader extends React.Component {
             exportUrlApi={this.props.exportUrlApi}
             selectedFacetValues={this.props.selectedFacetValues}
           />
+          <CopyUrlButton className={classes.copyUrlButton} />
         </Toolbar>
       </AppBar>
     );
