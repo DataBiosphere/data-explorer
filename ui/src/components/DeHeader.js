@@ -58,53 +58,14 @@ const styles = {
   },
   totalCount: {
     alignItems: "center",
-    backgroundColor: colors.lightGreen[4],
-    borderRadius: 15.5,
-    color: "#7f8fa4",
+    color: colors.gray[0],
     display: "flex",
-    fontSize: 14,
+    fontSize: 16,
     height: 45,
     lineHeight: "16px",
     marginLeft: 16,
     padding: "2px 16px 0 16px",
     textAlign: "center"
-  },
-  vizSwitchBase: {
-    "&$vizSwitchChecked": {
-      color: "white",
-      "& + $vizSwitchBar": {
-        backgroundColor: colors.lightGreen[2]
-      }
-    }
-  },
-  vizSwitchChecked: {
-    transform: "translateX(15px)",
-    "& + $vizSwitchBar": {
-      opacity: 1,
-      border: "none"
-    }
-  },
-  vizSwitchBar: {
-    borderRadius: 13,
-    width: 36,
-    height: 20,
-    marginTop: -10,
-    marginLeft: -17,
-    backgroundColor: "#cccfd4",
-    opacity: 1
-  },
-  vizSwitchIcon: {
-    width: 16,
-    height: 16
-  },
-  vizSwitchLabel: {
-    color: "#7f8fa4",
-    fontSize: 12,
-    fontWeight: 600,
-    marginTop: -1
-  },
-  vizSwitchRoot: {
-    margin: "2px 32px 0 auto"
   }
 };
 

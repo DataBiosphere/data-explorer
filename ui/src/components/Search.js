@@ -73,10 +73,8 @@ const styles = {
   }),
   menu: (provided, state) => ({
     ...provided,
-    margin: "5px 15px 0 15px",
-    width: "-webkit-calc(100% - 30px)",
-    width: "-moz-calc(100% - 30px)",
-    width: "calc(100% - 30px)"
+    borderRadius: 5,
+    marginTop: 3
   }),
   menuList: (provided, state) => ({
     ...provided,
@@ -87,14 +85,14 @@ const styles = {
   // multiValue = Chip styling
   multiValue: (provided, state) => ({
     ...provided,
-    backgroundColor: "#74ae43",
+    backgroundColor: colors.grayBlue[1],
     borderRadius: "15.5px",
     height: "31",
     margin: "0 15px 7px 0"
   }),
   multiValueLabel: (provided, state) => ({
     ...provided,
-    color: "white",
+    color: colors.gray[0],
     fontSize: 12,
     fontWeight: 500,
     // For some reason different line-heights are needed for Mac Chrome vs
@@ -112,7 +110,7 @@ const styles = {
     }
   }),
   multiValueRemoveIcon: {
-    color: "white"
+    color: colors.gray[3]
   },
   placeholder: (provided, state) => ({
     ...provided,

@@ -78,8 +78,6 @@ class App extends Component {
       // What to show in search box by default. If this is the empty string, the
       // react-select default of "Select..." is shown.
       searchPlaceholderText: "",
-      // Whether to show visualization facets or text facets
-      showViz: true,
       // Map from es_field_name to facet data returned from API server /facets call.
       facets: new Map(),
       totalCount: null,
@@ -177,22 +175,15 @@ class App extends Component {
       return (
         <MuiThemeProvider theme={theme}>
           <div className={classes.root}>
-            <TerraHeader
-              datasetName={this.state.datasetName}
-              totalCount={this.state.totalCount}
-              showViz={this.state.showViz}
-            />
+            <TerraHeader datasetName={this.state.datasetName} />
             <DeHeader
-              datasetName={this.state.datasetName}
               exportUrlApi={new ExportUrlApi(this.apiClient)}
               facets={this.state.facets}
               handleSearchBoxChange={this.handleSearchBoxChange}
               handleSearchBoxTyping={this.handleSearchBoxTyping}
-              handleVizSwitchChange={this.handleVizSwitchChange}
               searchPlaceholderText={this.state.searchPlaceholderText}
               searchResults={this.state.searchResults}
               selectedFacetValues={this.state.selectedFacetValues}
-              showViz={this.state.showViz}
               totalCount={this.state.totalCount}
             />
             <FacetsGrid
@@ -201,7 +192,6 @@ class App extends Component {
               facets={Array.from(this.state.facets.values())}
               handleRemoveFacet={this.handleRemoveFacet}
               extraFacetEsFieldNames={this.state.extraFacetEsFieldNames}
-              showViz={this.state.showViz}
             />
             {this.state.datasetName === "1000 Genomes"
               ? Disclaimer(classes)
