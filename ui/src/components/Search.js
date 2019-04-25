@@ -73,10 +73,8 @@ const styles = {
   }),
   menu: (provided, state) => ({
     ...provided,
-    margin: "5px 15px 0 15px",
-    width: "-webkit-calc(100% - 30px)",
-    width: "-moz-calc(100% - 30px)",
-    width: "calc(100% - 30px)"
+    borderRadius: 5,
+    marginTop: 3
   }),
   menuList: (provided, state) => ({
     ...provided,
