@@ -40,7 +40,7 @@ describe("End-to-end", () => {
     await secondResult.click();
 
     // Assert Relationship facet was added and value was selected
-    await waitForFacetsUpdate(2);
+    await waitForFacetsUpdate(1);
     // I believe this is broken due to Puppeteer bug
     //    await assertFacet("Relationship", "1", "mother", "831");
 
