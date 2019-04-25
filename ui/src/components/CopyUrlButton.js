@@ -1,12 +1,19 @@
 import React from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { PrimaryButton } from "libs/common";
+import { PrimaryButton, TerraTooltip } from "libs/common";
+import "@clr/icons/clr-icons.css";
+
+const style = {
+  copyUrlButton: {
+    marginRight: "16px"
+  }
+};
 
 export default class CopyUrlButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      buttonText: "Copy URL"
+      buttonText: "Copy URL to clipboard"
     };
     this.handleButtonClick = this.handleButtonClick.bind(this);
   }
@@ -14,19 +21,26 @@ export default class CopyUrlButton extends React.Component {
   handleButtonClick() {
     // Just change the button text for a second
     this.setState({ buttonText: "Copied!" });
-    setTimeout(() => this.setState({ buttonText: "Copy URL" }), 1000);
+    setTimeout(
+      () => this.setState({ buttonText: "Copy URL to clipboard" }),
+      1000
+    );
   }
 
   render() {
     const { className } = this.props;
 
     return (
-      <div className={className}>
-        <CopyToClipboard text={window.location.href}>
-          <PrimaryButton onClick={this.handleButtonClick}>
-            {this.state.buttonText}
-          </PrimaryButton>
-        </CopyToClipboard>
+      <div
+        className={className}
+        onClick={this.handleButtonClick}
+        style={style.copyUrlButton}
+      >
+        <TerraTooltip title={this.state.buttonText}>
+          <CopyToClipboard text={window.location.href}>
+            <clr-icon shape="copy-to-clipboard" size="20" />
+          </CopyToClipboard>
+        </TerraTooltip>
       </div>
     );
   }

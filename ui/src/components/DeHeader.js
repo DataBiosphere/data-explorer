@@ -23,9 +23,6 @@ const styles = {
   saveButton: {
     margin: "0 16px 0 16px"
   },
-  copyUrlButton: {
-    marginRight: "16px"
-  },
   snackbarContentMessage: {
     fontWeight: 500,
     padding: 0,
