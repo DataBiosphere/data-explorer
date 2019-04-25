@@ -57,11 +57,9 @@ const styles = {
   },
   totalCount: {
     alignItems: "center",
-    backgroundColor: colors.lightGreen[4],
-    borderRadius: 15.5,
-    color: "#7f8fa4",
+    color: colors.gray[0],
     display: "flex",
-    fontSize: 14,
+    fontSize: 16,
     height: 45,
     lineHeight: "16px",
     marginLeft: 16,
