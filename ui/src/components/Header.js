@@ -1,12 +1,10 @@
 import React from "react";
 import AppBar from "@material-ui/core/AppBar";
 import CloseIcon from "@material-ui/icons/Close";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import IconButton from "@material-ui/core/IconButton";
 import Slide from "@material-ui/core/Slide";
 import Snackbar from "@material-ui/core/Snackbar";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
-import Switch from "@material-ui/core/Switch";
 import Toolbar from "@material-ui/core/Toolbar";
 import { withStyles } from "@material-ui/core/styles";
 
@@ -84,44 +82,6 @@ const styles = {
     height: 34,
     width: 2,
     border: "1px solid #97c543"
-  },
-  vizSwitchBase: {
-    "&$vizSwitchChecked": {
-      color: "white",
-      "& + $vizSwitchBar": {
-        backgroundColor: "#b0d239"
-      }
-    }
-  },
-  vizSwitchChecked: {
-    transform: "translateX(15px)",
-    "& + $vizSwitchBar": {
-      opacity: 1,
-      border: "none"
-    }
-  },
-  vizSwitchBar: {
-    borderRadius: 13,
-    boxShadow: "0px 0px 8px 3px rgba(0,0,0,0.12)",
-    width: 36,
-    height: 20,
-    marginTop: -10,
-    marginLeft: -17,
-    backgroundColor: "#cccfd4",
-    opacity: 1
-  },
-  vizSwitchIcon: {
-    width: 16,
-    height: 16
-  },
-  vizSwitchLabel: {
-    color: "white",
-    fontSize: 12,
-    fontWeight: 600,
-    marginTop: -1
-  },
-  vizSwitchRoot: {
-    margin: "2px 32px 0 auto"
   }
 };
 
@@ -196,25 +156,6 @@ class Header extends React.Component {
           <div className={classes.totalCount}>
             {this.props.totalCount} Participants
           </div>
-          <FormControlLabel
-            classes={{
-              label: classes.vizSwitchLabel,
-              root: classes.vizSwitchRoot
-            }}
-            control={
-              <Switch
-                classes={{
-                  switchBase: classes.vizSwitchBase,
-                  bar: classes.vizSwitchBar,
-                  icon: classes.vizSwitchIcon,
-                  checked: classes.vizSwitchChecked
-                }}
-                checked={this.props.showViz}
-                onChange={this.props.handleVizSwitchChange}
-              />
-            }
-            label="Visualizations"
-          />
         </Toolbar>
       </AppBar>
     );

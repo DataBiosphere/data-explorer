@@ -159,7 +159,6 @@ class App extends Component {
 
     this.updateFacets = this.updateFacets.bind(this);
     this.handleSearchBoxChange = this.handleSearchBoxChange.bind(this);
-    this.handleVizSwitchChange = this.handleVizSwitchChange.bind(this);
     this.loadOptions = this.loadOptions.bind(this);
     this.handleRemoveFacet = this.handleRemoveFacet.bind(this);
     this.filterArrayToMap = this.filterArrayToMap.bind(this);
@@ -183,7 +182,6 @@ class App extends Component {
               datasetName={this.state.datasetName}
               totalCount={this.state.totalCount}
               showViz={this.state.showViz}
-              handleVizSwitchChange={this.handleVizSwitchChange}
             />
 
             <Search
@@ -461,10 +459,6 @@ class App extends Component {
       .join(encodeURIComponent("|"));
     this.updateQueryString(filterParam, extraFacetsParam);
   }
-
-  handleVizSwitchChange = event => {
-    this.setState({ showViz: event.target.checked });
-  };
 }
 
 export default withStyles(styles)(App);
