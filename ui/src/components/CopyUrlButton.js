@@ -28,14 +28,8 @@ export default class CopyUrlButton extends React.Component {
   }
 
   render() {
-    const { className } = this.props;
-
     return (
-      <div
-        className={className}
-        onClick={this.handleButtonClick}
-        style={style.copyUrlButton}
-      >
+      <div onClick={this.handleButtonClick} style={style.copyUrlButton}>
         <TerraTooltip title={this.state.buttonText}>
           <CopyToClipboard text={window.location.href}>
             <clr-icon shape="copy-to-clipboard" size="20" />

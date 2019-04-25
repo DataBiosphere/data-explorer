@@ -188,7 +188,7 @@ class DeHeader extends React.Component {
             exportUrlApi={this.props.exportUrlApi}
             selectedFacetValues={this.props.selectedFacetValues}
           />
-          <CopyUrlButton className={classes.copyUrlButton} />
+          <CopyUrlButton />
         </Toolbar>
       </AppBar>
     );
