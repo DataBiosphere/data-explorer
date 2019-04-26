@@ -144,12 +144,12 @@ class DeHeader extends React.Component {
           <div className={classes.totalCount}>
             {this.props.totalCount} Participants
           </div>
+          <CopyUrlButton />
           <SaveButton
             className={classes.saveButton}
             exportUrlApi={this.props.exportUrlApi}
             selectedFacetValues={this.props.selectedFacetValues}
           />
-          <CopyUrlButton />
         </Toolbar>
       </AppBar>
     );

@@ -3,12 +3,6 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { PrimaryButton, TerraTooltip } from "libs/common";
 import "@clr/icons/clr-icons.css";
 
-const style = {
-  copyUrlButton: {
-    marginRight: "16px"
-  }
-};
-
 export default class CopyUrlButton extends React.Component {
   constructor(props) {
     super(props);
@@ -31,7 +25,7 @@ export default class CopyUrlButton extends React.Component {
     const { className } = this.props;
 
     return (
-      <div onClick={this.handleButtonClick} style={style.copyUrlButton}>
+      <div onClick={this.handleButtonClick}>
         <TerraTooltip title={this.state.buttonText}>
           <CopyToClipboard text={window.location.href}>
             <clr-icon shape="copy-to-clipboard" size="20" />
