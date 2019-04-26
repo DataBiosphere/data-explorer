@@ -9,6 +9,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import { withStyles } from "@material-ui/core/styles";
 
 import colors from "libs/colors";
+import CopyUrlButton from "components/CopyUrlButton";
 import SaveButton from "components/SaveButton";
 import Search from "components/Search";
 
@@ -148,6 +149,7 @@ class DeHeader extends React.Component {
             exportUrlApi={this.props.exportUrlApi}
             selectedFacetValues={this.props.selectedFacetValues}
           />
+          <CopyUrlButton />
         </Toolbar>
       </AppBar>
     );
