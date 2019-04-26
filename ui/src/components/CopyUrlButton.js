@@ -1,9 +1,17 @@
 import React from "react";
+import "@clr/icons/clr-icons.css";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { PrimaryButton, TerraTooltip } from "libs/common";
-import "@clr/icons/clr-icons.css";
+import { withStyles } from "@material-ui/core/styles";
 
-export default class CopyUrlButton extends React.Component {
+const styles = {
+  button: {
+    color: "#7f8fa4",
+    marginLeft: 16
+  }
+};
+
+class CopyUrlButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,16 +30,18 @@ export default class CopyUrlButton extends React.Component {
   }
 
   render() {
-    const { className } = this.props;
+    const { classes } = this.props;
 
     return (
-      <div onClick={this.handleButtonClick}>
+      <div onClick={this.handleButtonClick} className={classes.button}>
         <TerraTooltip title={this.state.buttonText}>
           <CopyToClipboard text={window.location.href}>
-            <clr-icon shape="copy-to-clipboard" size="20" />
+            <clr-icon shape="copy-to-clipboard" size="16" />
           </CopyToClipboard>
         </TerraTooltip>
       </div>
     );
   }
 }
+
+export default withStyles(styles)(CopyUrlButton);

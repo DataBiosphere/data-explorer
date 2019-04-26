@@ -141,10 +141,10 @@ class DeHeader extends React.Component {
             facets={this.props.facets}
             loadOptions={this.props.handleSearchBoxTyping}
           />
+          <CopyUrlButton />
           <div className={classes.totalCount}>
             {this.props.totalCount} Participants
           </div>
-          <CopyUrlButton />
           <SaveButton
             className={classes.saveButton}
             exportUrlApi={this.props.exportUrlApi}
