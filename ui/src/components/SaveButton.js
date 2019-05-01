@@ -116,7 +116,7 @@ class SaveButton extends React.Component {
             <PrimaryButton
               className={classes.dialogButton}
               disabled={
-                !("cohortName" in this.state) || this.state.cohortName == ""
+                !("cohortName" in this.state) || this.state.cohortName === ""
               }
               onClick={this.handleDialogSave}
             >
