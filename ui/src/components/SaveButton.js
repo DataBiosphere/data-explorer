@@ -68,13 +68,18 @@ class SaveButton extends React.Component {
       <div className={className}>
         <TerraTooltip
           classes={{ tooltip: classes.tooltip }}
-          title="Save cohorts so you can work with them later"
+          title="Save cohort so you can work with it later"
         >
           <PrimaryButton onClick={this.handleButtonClick}>
             Save cohort
           </PrimaryButton>
         </TerraTooltip>
-        <Dialog open={this.state.dialogOpen} onClose={this.handleClose}>
+        <Dialog
+          onClose={this.handleClose}
+          open={this.state.dialogOpen}
+          // Without this, dialog appears too low when embedded in Terra
+          scroll="body"
+        >
           <DialogTitle className={classes.dialogTitle} disableTypography>
             Save in Terra
           </DialogTitle>
@@ -151,10 +156,9 @@ class SaveButton extends React.Component {
       if (error) {
         alert(error.response.body.detail);
       } else {
-        let importUrl =
-          "https://app.terra.bio/#import-data?format=entitiesJson";
+        let queryStr = "format=entitiesJson";
         if (data.authorization_domain) {
-          importUrl += "&ad=" + data.authorization_domain;
+          queryStr += "&ad=" + data.authorization_domain;
         }
         // - From Terra Data tab, user opens a cohort in DE.
         // - wid is set to workspace id of workspace that contains cohort.
@@ -162,17 +166,37 @@ class SaveButton extends React.Component {
         //   drop-down by default.
         const wid = new URLSearchParams(window.location.search).get("wid");
         if (wid) {
-          importUrl += "&wid=" + wid;
+          queryStr += "&wid=" + wid;
         }
-        importUrl += "&url=" + data.url;
-        window.location.assign(importUrl);
+        queryStr += "&url=" + data.url;
+        if (this.props.embed && "parentIFrame" in window) {
+          // Don't set targetOrigin because it's unknown. It could be
+          // app.terra.bio, bvdp-saturn-dev.appspot.com, etc.
+          window.parentIFrame.sendMessage({ importDataQueryStr: queryStr });
+        } else {
+          window.location.assign(
+            "https://app.terra.bio/#import-data?" + queryStr
+          );
+        }
       }
     }.bind(this);
+
+    var dataExplorerUrl;
+    if (this.props.embed) {
+      dataExplorerUrl =
+        "https://app.terra.bio/#library/datasets/" +
+        this.props.datasetName +
+        "/data-explorer" +
+        window.location.search.replace("embed=&", "");
+    } else {
+      dataExplorerUrl = window.location.href;
+    }
+
     this.props.exportUrlApi.exportUrlPost(
       {
         exportUrlRequest: {
           cohortName: this.state.cohortName,
-          dataExplorerUrl: window.location.href,
+          dataExplorerUrl: dataExplorerUrl,
           filter: filterMapToArray(this.props.selectedFacetValues)
         }
       },
