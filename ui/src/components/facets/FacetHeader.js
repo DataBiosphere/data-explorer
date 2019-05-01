@@ -1,9 +1,18 @@
 import React, { Component } from "react";
+import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles";
 
 import colors from "libs/colors";
 
 const styles = {
+  extraFacetHeader: {
+    "&:hover $totalFacetValueCount": {
+      display: "none"
+    },
+    "&:hover $closeIcon": {
+      display: "block"
+    }
+  },
   facetDescription: {
     gridColumn: "1/3",
     color: colors.gray[1],
@@ -32,6 +41,7 @@ const styles = {
   },
   closeIcon: {
     color: colors.gray[1],
+    display: "none",
     padding: "7px 0 0 50px"
   }
 };
@@ -43,8 +53,6 @@ class FacetHeader extends Component {
       hoveredOver: false
     };
 
-    this.mouseEnter = this.mouseEnter.bind(this);
-    this.mouseLeave = this.mouseLeave.bind(this);
     this.handleRemoveFacet = this.handleRemoveFacet.bind(this);
   }
 
@@ -53,24 +61,25 @@ class FacetHeader extends Component {
 
     return (
       <div
-        className={classes.facetHeader}
-        onMouseEnter={this.mouseEnter}
-        onMouseLeave={this.mouseLeave}
+        className={
+          this.props.isExtraFacet
+            ? classNames(classes.facetHeader, classes.extraFacetHeader)
+            : classes.facetHeader
+        }
       >
         <div className={classes.facetName}>{this.props.facet.name}</div>
-        {this.props.isExtraFacet && this.state.hoveredOver ? (
+        {this.props.facet.name != "Samples Overview" && (
+          <div className={classes.totalFacetValueCount}>
+            {this.sumFacetValueCounts(
+              this.props.facet.values,
+              this.props.selectedValues
+            )}
+          </div>
+        )}
+        {this.props.isExtraFacet && (
           <div className={classes.closeIcon} onClick={this.handleRemoveFacet}>
             <clr-icon shape="times" style={styles.clearIcon} size="24" />
           </div>
-        ) : (
-          this.props.facet.name != "Samples Overview" && (
-            <div className={classes.totalFacetValueCount}>
-              {this.sumFacetValueCounts(
-                this.props.facet.values,
-                this.props.selectedValues
-              )}
-            </div>
-          )
         )}
         {this.props.facet.description && (
           <div className={classes.facetDescription}>
@@ -83,14 +92,6 @@ class FacetHeader extends Component {
 
   handleRemoveFacet() {
     this.props.handleRemoveFacet(this.props.facet.es_field_name);
-  }
-
-  mouseEnter() {
-    this.setState({ hoveredOver: true });
-  }
-
-  mouseLeave() {
-    this.setState({ hoveredOver: false });
   }
 
   /**

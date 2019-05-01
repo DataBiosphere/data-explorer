@@ -105,31 +105,33 @@ describe("End-to-end", () => {
     await waitForFacetsUpdate(3500);
   });
 
-  /*
-Uncomment after https://github.com/GoogleChrome/puppeteer/issues/4336 is fixed
-
   test("Search box - select row with facet value", async () => {
-    // Type "na19686" into search box and select second result
+    // Type "pat" into search box and select second result
     let searchBox = await page.$x(
       "//div[contains(text(), 'Search to add a facet')]"
     );
     await searchBox[0].click();
-    await searchBox[0].type("na19686");
-    let secondResult = await page.waitForXPath("(//span[contains(text(), 'Add')])[2]");
+    await searchBox[0].type("pat");
+    let secondResult = await page.waitForXPath(
+      "(//span[contains(text(), 'Add')])[2]"
+    );
     await secondResult.click();
 
     // Assert Relationship facet was added and value was selected
-    await waitForFacetsUpdate(2);
+    await waitForFacetsUpdate(1);
     await assertFacet("Relationship", "1", "mother", "831");
 
     // Click on 'x' in facet header, make sure filter was removed
-    let header = await page.waitForXPath("//div[contains(@class, 'FacetHeader-facetHeader') and contains(., 'Grandparents')]");
+    let header = await page.waitForXPath(
+      "//div[contains(@class, 'FacetHeader-facetHeader') and contains(., 'Relationship')]"
+    );
     await header.hover();
-    let closeIcon = await page.waitForSelector("div[class^='FacetHeader-closeIcon-']");
+    let closeIcon = await page.waitForSelector(
+      "div[class^='FacetHeader-closeIcon-']"
+    );
     await closeIcon.click();
     await waitForFacetsUpdate(3500);
   });
-*/
 
   test("Data Explorer URL works", async () => {
     // Add Relationship extra facet and select Relationship=mother.
