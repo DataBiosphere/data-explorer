@@ -94,7 +94,7 @@ const facetValueCountAxis = {
 
 function isCategorical(facet) {
   return (
-    facet.es_field_type == "text" || facet.es_field_type == "samples_overview"
+    facet.es_field_type === "text" || facet.es_field_type === "samples_overview"
   );
 }
 

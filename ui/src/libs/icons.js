@@ -1,7 +1,5 @@
 // Partially copied from https://github.com/DataBiosphere/saturn-ui/blob/dev/src/components/icons.js
 
-import React from "react";
-
 import colors from "libs/colors";
 
 export const CheckboxStyles = {

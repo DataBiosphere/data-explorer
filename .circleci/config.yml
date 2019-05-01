@@ -11,14 +11,11 @@ jobs:
       - restore_cache:
           key: node-modules-{{ .Branch }}-{{ checksum "ui/package.json" }}
       - run:
-          name: nvm install node and UI dependencies
+          name: npm install
           command: |
             cd ui
-            # As of 4/20/18, circleci/classic:latest has npm 5.4.2. With 5.4.2,
-            # "npm install" fails with optionalDependencies bug.
-            npm install npm@5.6.0 -g
             npm install
-            # As of 4/20/18, circleci/classic:latest has node 6.1.0. async is
+            # As of 5/1/19, circleci/classic:latest has node 6.1.0. async is
             # not supported until node 7.6.0.
             npm install node@8.11.1 -g
       - save_cache:
@@ -32,24 +29,26 @@ jobs:
             yapf -dr . --exclude ui/node_modules/
       - run:
           name: Run the UI linter
-          command: |
-              cd ui
-              npm run lint
+          command: cd ui && npm run lint
+      - run:
+          # This will fail if there are js warnings
+          name: Check for Javascript warnings
+          command: cd ui && npm run build
       - run:
           name: Run API server unit tests
           command: |
-              # Some files are missing because of .gitignore
-              echo '{"project_id": "ci-test-data-explorer"}' > dataset_config/1000_genomes/deploy.json
-              echo ${GOOGLE_SERVICE_KEY} > dataset_config/1000_genomes/private-key.json
-              pip install tox
-              cd api
-              tox
+            # Some files are missing because of .gitignore
+            echo '{"project_id": "ci-test-data-explorer"}' > dataset_config/1000_genomes/deploy.json
+            echo ${GOOGLE_SERVICE_KEY} > dataset_config/1000_genomes/private-key.json
+            pip install tox
+            cd api
+            tox
       - run:
           name: Run docker-compose
           command: |
-              # Set GOOGLE_APPLICATION_CREDENTIALS so GCP client libraries (such as reading export bucket) work.
-              GOOGLE_APPLICATION_CREDENTIALS="dataset_config/1000_genomes/private-key.json" docker-compose up --build -d
+            # Set GOOGLE_APPLICATION_CREDENTIALS so GCP client libraries (such as reading export bucket) work.
+            GOOGLE_APPLICATION_CREDENTIALS="dataset_config/1000_genomes/private-key.json" docker-compose up --build -d
       - run:
           name: Run e2e tests
           command: |
-              cd ui && npm test
+            cd ui && npm test
