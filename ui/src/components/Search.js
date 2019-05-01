@@ -144,7 +144,7 @@ class Search extends React.Component {
     if (option.label != null) {
       return option.label;
     }
-    if (option.facetValue != null && option.facetValue != "") {
+    if (option.facetValue !== null && option.facetValue !== "") {
       return (
         <div>
           <span style={{ color: "#cccfd4" }}>Add</span>
@@ -251,7 +251,6 @@ class Search extends React.Component {
     const DropdownIndicator = (
       props: ElementConfig<typeof components.DropdownIndicator>
     ) => {
-      const { getStyles } = props;
       return (
         <components.DropdownIndicator {...props} style={styles.dropdownIcon}>
           <DownAngle className={classes.downAngle} />
