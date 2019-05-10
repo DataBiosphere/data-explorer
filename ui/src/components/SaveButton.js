@@ -180,16 +180,13 @@ class SaveButton extends React.Component {
       }
     }.bind(this);
 
-    var dataExplorerUrl;
-    if (this.props.embed) {
-      dataExplorerUrl =
-        "https://app.terra.bio/#library/datasets/" +
-        this.props.datasetName +
-        "/data-explorer" +
-        window.location.search.replace("embed=&", "");
-    } else {
-      dataExplorerUrl = window.location.href;
-    }
+    const dataExplorerUrl =
+      "https://app.terra.bio/#library/datasets/" +
+      this.props.datasetName +
+      "/data-explorer" +
+      window.location.search.replace("embed=&", "") +
+      "&origin=" +
+      window.location.origin;
 
     this.props.exportUrlApi.exportUrlPost(
       {
