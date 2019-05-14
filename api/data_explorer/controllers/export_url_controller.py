@@ -88,8 +88,8 @@ def _get_doc_generator(filter_arr):
     filters = elasticsearch_util.get_facet_value_dict(filter_arr,
                                                       combined_facets)
     search_dict = DatasetFacetedSearch(
-        filters,
-        combined_facets).build_search().to_dict().get('post_filter', {})
+        filters, combined_facets).build_search().to_dict().get(
+            'post_filter', {})
     search = Search(using=es, index=current_app.config['INDEX_NAME'])
     search.update_from_dict({'post_filter': search_dict})
     for result in search.scan():
@@ -109,12 +109,9 @@ def _get_entities_dict(cohort_name, query, filter_arr, data_explorer_url):
             # This is the entity ID. Ideally this would be
             # project_id.dataset_id.table_name, and we wouldn't need the
             # table_name attribute. Unfortunately RAWLS doesn't allow
-            # periods here. RAWLS does allow periods in attributes. So put
-            # just table name here, and put full project.dataset.table in
-            # table_name attribute.
-            # Use rsplit instead of split because project id may have ".", eg
-            # "google.com:api-project-123".
-            'name': table_name.rsplit('.', 1)[1],
+            # periods here. RAWLS does allow periods in attributes. So use
+            # underscores here and periods in table_name attribute.
+            'name': table_name.replace('.', '_').replace(':', '_'),
             'attributes': {
                 'dataset_name': current_app.config['DATASET_NAME'],
                 'table_name': table_name,
@@ -151,8 +148,8 @@ def _write_gcs_file(entities):
     blob.upload_from_string(entities_json)
 
     current_app.logger.info(
-        'Wrote gs://%s/%s' %
-        (current_app.config['EXPORT_URL_GCS_BUCKET'], blob.name))
+        'Wrote gs://%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'],
+                              blob.name))
     # Return in the format that signing a URL needs.
     return '/%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'], blob.name)
 
