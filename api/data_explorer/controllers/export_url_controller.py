@@ -109,12 +109,9 @@ def _get_entities_dict(cohort_name, query, filter_arr, data_explorer_url):
             # This is the entity ID. Ideally this would be
             # project_id.dataset_id.table_name, and we wouldn't need the
             # table_name attribute. Unfortunately RAWLS doesn't allow
-            # periods here. RAWLS does allow periods in attributes. So put
-            # just table name here, and put full project.dataset.table in
-            # table_name attribute.
-            # Use rsplit instead of split because project id may have ".", eg
-            # "google.com:api-project-123".
-            'name': table_name.rsplit('.', 1)[1],
+            # periods here. RAWLS does allow periods in attributes. So use
+            # underscores here and periods in table_name attribute.
+            'name': table_name.replace('.', '_').replace(':', '_'),
             'attributes': {
                 'dataset_name': current_app.config['DATASET_NAME'],
                 'table_name': table_name,
