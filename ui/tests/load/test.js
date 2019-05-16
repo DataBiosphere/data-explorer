@@ -1,3 +1,18 @@
+/*
+
+Simple load test. Does 100 simultaneous searches on NHS.
+Use NHS because it is a large dataset. (UKBB is also large, but is mostly
+numbers. NHS has strings and so is more realistic.)
+
+- Uncomment headless in jest-puppeteer.config.js
+- cd ui && ./node_modules/.bin/jest tests/load
+- In test window that popped up, login as channing user
+- In test window, Ctrl-Pgdown to scroll through all tabs. (See XXX for why
+this manual step is needed.) Each tab (except for first) should say "Loading..."
+in search box. This means search has started.
+
+*/
+
 const JEST_TIMEOUT_MS = 600 * 1000;
 
 //const DATA_EXPLORER_URL = "https://test-data-explorer.appspot.com";
@@ -14,12 +29,8 @@ describe("Load test", () => {
   beforeAll(async () => {
     jest.setTimeout(JEST_TIMEOUT_MS);
 
-    /*
-    await loginGoogle();
-    await loginDataExplorer();
-*/
-
     debugger;
+
     await page.goto(DATA_EXPLORER_URL);
     await page.waitForXPath("//div[contains(string(), 'Data Explorer')]", {
       timeout: 0
@@ -59,94 +70,36 @@ describe("Load test", () => {
       "spin",
       "mem"
     ];
-    //    const queries = ["pre", "men"];
+    const oneHundredQueries = queries
+      .concat(queries)
+      .concat(queries)
+      .concat(queries)
+      .concat(queries);
     await Promise.all(queries.map(q => search(q)));
   });
 
-  async function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  async function loginGoogle() {
-    console.log("Logging into Google");
-    const page = await browser.newPage();
-    // If this isn't set, get different login pages depending on headless
-    //    await page.setJavaScriptEnabled(false);
-    debugger;
-    const navigationPromise = page.waitForNavigation({
-      waitUntil: "networkidle2"
-    });
-
-    // This login page is same regardless of headless
-    // https://accounts.google.com/login?hl=en is different for headless
-    //    await page.goto("https://accounts.google.com/ServiceLogin?nojavascript=1", { waitUntil: 'networkidle2' });
-    await page.goto("https://accounts.google.com/login?hl=en", {
-      waitUntil: "networkidle2"
-    });
-
-    await page.waitForSelector("input[type=email]");
-    await page.type("input[type=email]", process.argv[3]);
-    await page.click("#next");
-    await navigationPromise;
-
-    await page.waitForSelector("input[type=password]", { visible: true });
-    await page.type("input[type=password]", process.argv[4]);
-    await page.click("#signIn");
-
-    // 2FA
-    await page.screenshot({ path: "login1.png" });
-    await page.waitForSelector("input[type=tel]", { visible: true });
-    await page.type("input[type=tel]", process.argv[5]);
-    await page.click("#submit");
-    page.close();
-  }
-
-  async function loginDataExplorer() {
-    console.log("Logging into " + DATA_EXPLORER_URL);
-    const page = await browser.newPage();
-    const navigationPromise = page.waitForNavigation({
-      waitUntil: "networkidle2"
-    });
-
-    await page.goto(DATA_EXPLORER_URL, { waitUntil: "networkidle2" });
-
-    await page.waitForSelector("input[type=email]");
-    await page.type("input[type=email]", process.argv[3]);
-    await page.click("span.snByac");
-    await navigationPromise;
-
-    await page.waitForSelector("input[type=password]", { visible: true });
-    await page.type("input[type=password]", process.argv[4]);
-    await page.click("span.snByac");
-  }
-
   async function search(query) {
-    //    const context = await browser.createIncognitoBrowserContext();
-    //   const page = await context.newPage();
     const page = await browser.newPage();
     await page.goto(DATA_EXPLORER_URL);
-    await page.waitForXPath("//div[contains(text(), 'Search to add a facet')]");
-    //    await page.waitForSelector(".jss110");
-    //   await page.click(".jss110");
-    //await page.evaluate(() => {
-    //document.querySelector('.jss110').click();
-    //});
+    await page.waitForXPath(
+      "//div[contains(text(), 'Search to add a facet')]",
+      { timeout: 0 }
+    );
 
     let searchBox = await page.$x(
       "//div[contains(text(), 'Search to add a facet')]"
     );
     await searchBox[0].click();
     await searchBox[0].type(query);
-    //await page.screenshot({ path: `${query} 1.png` });
     console.log(`${query} begin ${new Date().getTime()}`);
     let start = Date.now();
     await page.waitForXPath(
-      "(//*[text()='No options' or contains(text(), 'Add')])"
+      "(//*[text()='No options' or contains(text(), 'Add')])",
+      { timeout: 0 }
     );
     console.log(`${query} end ${new Date().getTime()}`);
     let elapsedSec = (Date.now() - start) / 1000;
     console.log(`Search for ${query} took ${elapsedSec} sec`);
-    //await page.screenshot({ path: `${query} 2.png` });
     await page.close();
   }
 });
