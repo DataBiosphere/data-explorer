@@ -1,15 +1,23 @@
 import React from "react";
-import TextField from "@material-ui/core/TextField";
+import Checkbox from "@material-ui/core/Checkbox";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import TextField from "@material-ui/core/TextField";
 import { withStyles } from "@material-ui/core/styles";
 
+import { CheckboxStyles } from "libs/icons";
 import colors from "libs/colors";
 import { PrimaryButton, SecondaryButton, TerraTooltip } from "libs/common";
 import { filterMapToArray } from "libs/util";
 
 const styles = {
+  ...CheckboxStyles,
+  checkboxLabel: {
+    fontSize: "16px",
+    fontWeight: "600",
+    verticalAlign: "middle"
+  },
   dialogDesc: {
     color: colors.gray[0],
     fontSize: 14
@@ -20,7 +28,7 @@ const styles = {
     padding: "10px 12px 6px 12px"
   },
   dialogInputRoot: {
-    margin: "22px 0 30px 0",
+    marginTop: 5,
     "&:hover $dialogInputNotchedOutline": {
       borderColor: "#ced0da !important"
     },
@@ -37,6 +45,11 @@ const styles = {
     float: "right",
     margin: "36px 0 0 24px"
   },
+  dialogSection: {
+    display: "grid",
+    gridTemplateColumns: "50px auto",
+    padding: "1rem 0 1rem 0"
+  },
   dialogTitle: {
     color: colors.gray[0],
     fontSize: 18,
@@ -52,7 +65,10 @@ class SaveButton extends React.Component {
     super(props);
     this.state = {
       cohortName: "",
-      dialogOpen: false
+      dialogOpen: true, // O NOT COMMIT
+      dialogCohortChecked: true,
+      dialogSamplesChecked: true,
+      dialogParticipantsChecked: true
     };
     this.handleButtonClick = this.handleButtonClick.bind(this);
     this.handleDialogSave = this.handleDialogSave.bind(this);
@@ -63,14 +79,104 @@ class SaveButton extends React.Component {
   render() {
     const { classes, className } = this.props;
 
+    const dialogCohortSection = (
+      <div className={classes.dialogSection}>
+        <Checkbox
+          classes={{
+            root: classes.checkboxRoot,
+            checked: classes.checkboxChecked
+          }}
+          checked={this.state.dialogCohortChecked}
+          onChange={this.handleCheckboxClick("dialogCohortChecked")}
+        />
+        <span className={classes.checkboxLabel}>Save cohort</span>
+        <div style={{ gridColumnStart: 2, gridColumnEnd: 3 }}>
+          <p>
+            Save a SQL query representing this cohort. You can open saved
+            cohorts in Data Explorer or notebooks.
+          </p>
+          <p>
+            If a cohort with this name already exists, it will be overwritten.
+          </p>
+          <TextField
+            autoFocus
+            value={this.state.cohortName}
+            fullWidth
+            id="name"
+            InputProps={{
+              classes: {
+                root: classes.dialogInputRoot,
+                focused: classes.dialogInputCssFocused,
+                input: classes.dialogInputInput,
+                notchedOutline: classes.dialogInputNotchedOutline
+              }
+            }}
+            onChange={this.handleCohortNameChange}
+            onKeyPress={ev => {
+              if (ev.key === "Enter") {
+                this.handleDialogSave();
+              }
+            }}
+            placeholder="cohort name is required"
+            type="text"
+            variant="outlined"
+            disabled={!this.state.dialogCohortChecked}
+          />
+        </div>
+      </div>
+    );
+
+    const dialogParticipantsSection = (
+      <div className={classes.dialogSection}>
+        <Checkbox
+          classes={{
+            root: classes.checkboxRoot,
+            checked: classes.checkboxChecked
+          }}
+          checked={this.state.dialogParticipantsChecked}
+          onChange={this.handleCheckboxClick("dialogParticipantsChecked")}
+        />
+        <span className={classes.checkboxLabel}>Save participants</span>
+        <div style={{ gridColumnStart: 2, gridColumnEnd: 3 }}>
+          <p>Save a table of participant data.</p>
+          <p>
+            Warning: If you are saving many participants, this can take a while.
+          </p>
+        </div>
+      </div>
+    );
+
+    const dialogSamplesSection = (
+      <div className={classes.dialogSection}>
+        <Checkbox
+          classes={{
+            root: classes.checkboxRoot,
+            checked: classes.checkboxChecked
+          }}
+          checked={this.state.dialogSamplesChecked}
+          onChange={this.handleCheckboxClick("dialogSamplesChecked")}
+        />
+        <span className={classes.checkboxLabel}>
+          Save samples and sample set
+        </span>
+        <div style={{ gridColumnStart: 2, gridColumnEnd: 3 }}>
+          <p>
+            Save a table of sample data, as well as a sample set representing
+            this cohort. You can run workflows on these samples.
+          </p>
+          <p>Warning: If you are saving many samples, this can take a while.</p>
+        </div>
+      </div>
+    );
+
     return (
       <div className={className}>
         <TerraTooltip
           classes={{ tooltip: classes.tooltip }}
-          title="Save cohort so you can work with it later"
+          title="Save cohort, participants, and samples"
         >
           <PrimaryButton onClick={this.handleButtonClick}>
-            Save cohort
+            Save in Terra
           </PrimaryButton>
         </TerraTooltip>
         <Dialog
@@ -84,39 +190,17 @@ class SaveButton extends React.Component {
           </DialogTitle>
           <DialogContent>
             <div className={classes.dialogDesc}>
-              <p>A cohort with this name will be created in Terra.</p>
-              <p>
-                If a cohort with this name already exists, it will be
-                overwritten.
-              </p>
+              {dialogCohortSection}
+              {dialogParticipantsSection}
+              {dialogSamplesSection}
             </div>
-            <TextField
-              autoFocus
-              value={this.state.cohortName}
-              fullWidth
-              id="name"
-              InputProps={{
-                classes: {
-                  root: classes.dialogInputRoot,
-                  focused: classes.dialogInputCssFocused,
-                  input: classes.dialogInputInput,
-                  notchedOutline: classes.dialogInputNotchedOutline
-                }
-              }}
-              onChange={this.handleCohortNameChange}
-              onKeyPress={ev => {
-                if (ev.key === "Enter") {
-                  this.handleDialogSave();
-                }
-              }}
-              placeholder="cohort name"
-              type="text"
-              variant="outlined"
-            />
             <PrimaryButton
               className={classes.dialogButton}
               disabled={
-                !("cohortName" in this.state) || this.state.cohortName === ""
+                (this.state.dialogCohortChecked && !this.state.cohortName) ||
+                (!this.state.dialogCohortChecked &&
+                  !this.state.dialogSamplesChecked &&
+                  !this.state.dialogParticipantsChecked)
               }
               onClick={this.handleDialogSave}
             >
@@ -144,6 +228,10 @@ class SaveButton extends React.Component {
       : "";
     this.setState(state => ({ cohortName: cohortName, dialogOpen: true }));
   }
+
+  handleCheckboxClick = name => event => {
+    this.setState({ [name]: event.target.checked });
+  };
 
   handleDialogCancel() {
     this.setState(state => ({ dialogOpen: false }));

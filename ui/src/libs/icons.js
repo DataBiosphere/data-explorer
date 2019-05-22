@@ -13,20 +13,11 @@ export const CheckboxStyles = {
       border: "1px solid " + colors.green[1]
     },
     "&$checkboxChecked": {
-      border: "1px solid " + colors.green[0]
+      border: "1px solid " + colors.green[0],
+      color: colors.green[0]
     }
   },
-  checkboxChecked: {},
-  checkedIcon: {
-    fill: colors.green[1],
-    height: 16,
-    width: 16,
-    // Needed for hover color to work
-    zIndex: 2,
-    "&:hover": {
-      fill: colors.green[2]
-    }
-  }
+  checkboxChecked: {}
 };
 
 export const DownAngleStyles = {
