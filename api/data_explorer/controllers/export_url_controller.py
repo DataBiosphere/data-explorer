@@ -77,49 +77,6 @@ def _check_preconditions():
         raise BadRequest(error_msg)
 
 
-def _random_str():
-    # Random 10 character string
-    return ''.join(
-        random.choice(string.ascii_letters + string.digits) for _ in range(10))
-
-
-def _write_gcs_file(entities):
-    """Returns GCS file path of the format /bucket/object."""
-    client = storage.Client(project=current_app.config['DEPLOY_PROJECT_ID'])
-    export_bucket = client.get_bucket(
-        current_app.config['EXPORT_URL_GCS_BUCKET'])
-    user = os.environ.get('USER')
-    blob = export_bucket.blob(_random_str())
-    entities_json = json.dumps(entities)
-    blob.upload_from_string(entities_json)
-
-    current_app.logger.info(
-        'Wrote gs://%s/%s' %
-        (current_app.config['EXPORT_URL_GCS_BUCKET'], blob.name))
-    # Return in the format that signing a URL needs.
-    return '/%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'], blob.name)
-
-
-def _create_signed_url(gcs_path):
-    private_key_path = os.path.join(current_app.config['DATASET_CONFIG_DIR'],
-                                    'private-key.json')
-    creds = ServiceAccountCredentials.from_json_keyfile_name(private_key_path)
-    service_account_email = current_app.config[
-        'DEPLOY_PROJECT_ID'] + '@appspot.gserviceaccount.com'
-    # Signed URL will be valid for 5 minutes
-    timestamp = str(int(time.time()) + 5 * 60)
-    file_metadata = '\n'.join(['GET', '', '', timestamp, gcs_path])
-    signature = base64.b64encode(creds.sign_blob(file_metadata)[1])
-    signature = urllib.quote(signature, safe='')
-    signed_url = ('https://storage.googleapis.com%s?GoogleAccessId=%s'
-                  '&Expires=%s&Signature=%s') % (
-                      gcs_path, service_account_email, timestamp, signature)
-    # import-data expects url to be url encoded
-    signed_url = urllib.quote(signed_url, safe='')
-    current_app.logger.info('Signed URL: ' + signed_url)
-    return signed_url
-
-
 def _get_range_clause(column, value):
     arr = value.split('-')
     if len(arr) > 1:
@@ -315,6 +272,49 @@ def _get_entities_dict(cohort_name, query, filter_arr, data_explorer_url):
     })
 
     return entities
+
+
+def _random_str():
+    # Random 10 character string
+    return ''.join(
+        random.choice(string.ascii_letters + string.digits) for _ in range(10))
+
+
+def _write_gcs_file(entities):
+    """Returns GCS file path of the format /bucket/object."""
+    client = storage.Client(project=current_app.config['DEPLOY_PROJECT_ID'])
+    export_bucket = client.get_bucket(
+        current_app.config['EXPORT_URL_GCS_BUCKET'])
+    user = os.environ.get('USER')
+    blob = export_bucket.blob(_random_str())
+    entities_json = json.dumps(entities)
+    blob.upload_from_string(entities_json)
+
+    current_app.logger.info(
+        'Wrote gs://%s/%s' %
+        (current_app.config['EXPORT_URL_GCS_BUCKET'], blob.name))
+    # Return in the format that signing a URL needs.
+    return '/%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'], blob.name)
+
+
+def _create_signed_url(gcs_path):
+    private_key_path = os.path.join(current_app.config['DATASET_CONFIG_DIR'],
+                                    'private-key.json')
+    creds = ServiceAccountCredentials.from_json_keyfile_name(private_key_path)
+    service_account_email = current_app.config[
+        'DEPLOY_PROJECT_ID'] + '@appspot.gserviceaccount.com'
+    # Signed URL will be valid for 5 minutes
+    timestamp = str(int(time.time()) + 5 * 60)
+    file_metadata = '\n'.join(['GET', '', '', timestamp, gcs_path])
+    signature = base64.b64encode(creds.sign_blob(file_metadata)[1])
+    signature = urllib.quote(signature, safe='')
+    signed_url = ('https://storage.googleapis.com%s?GoogleAccessId=%s'
+                  '&Expires=%s&Signature=%s') % (
+                      gcs_path, service_account_email, timestamp, signature)
+    # import-data expects url to be url encoded
+    signed_url = urllib.quote(signed_url, safe='')
+    current_app.logger.info('Signed URL: ' + signed_url)
+    return signed_url
 
 
 def export_url_post():  # noqa: E501
