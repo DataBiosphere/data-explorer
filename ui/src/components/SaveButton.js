@@ -16,7 +16,7 @@ const styles = {
   checkboxLabel: {
     fontSize: "16px",
     fontWeight: "600",
-    verticalAlign: "middle"
+    margin: "-1px 0 6px 0"
   },
   dialogDesc: {
     color: colors.gray[0],
@@ -93,7 +93,9 @@ class SaveButton extends React.Component {
         <div style={{ gridColumnStart: 2, gridColumnEnd: 3 }}>
           <p>
             Save a SQL query representing this cohort. You can open saved
-            cohorts in Data Explorer or notebooks.
+            cohorts in Data Explorer or a notebook. Also save a list of this
+            dataset's BigQuery tables, which can be joined against the SQL
+            query.
           </p>
           <p>
             If a cohort with this name already exists, it will be overwritten.
