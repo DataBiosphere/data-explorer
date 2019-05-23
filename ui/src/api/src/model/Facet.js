@@ -27,6 +27,8 @@ export default class Facet {
    * @class
    */
 
+  constructor() {}
+
   /**
    * Constructs a <code>Facet</code> from a plain JavaScript object, optionally creating a new instance.
    * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.

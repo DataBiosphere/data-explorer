@@ -90,7 +90,7 @@ export default class ApiClient {
    * @returns {String} The string representation of <code>param</code>.
    */
   paramToString(param) {
-    if (param === undefined || param === null) {
+    if (param == undefined || param == null) {
       return "";
     }
     if (param instanceof Date) {
@@ -209,8 +209,8 @@ export default class ApiClient {
     for (var key in params) {
       if (
         params.hasOwnProperty(key) &&
-        params[key] !== undefined &&
-        params[key] !== null
+        params[key] != undefined &&
+        params[key] != null
       ) {
         var value = params[key];
         if (this.isFileParam(value) || Array.isArray(value)) {
@@ -343,7 +343,7 @@ export default class ApiClient {
    * @returns A value of the specified type.
    */
   deserialize(response, returnType) {
-    if (response === null || returnType === null || response.status === 204) {
+    if (response == null || returnType == null || response.status == 204) {
       return null;
     }
 
@@ -429,7 +429,7 @@ export default class ApiClient {
     var contentType = this.jsonPreferredMime(contentTypes);
     if (contentType) {
       // Issue with superagent and multipart/form-data (https://github.com/visionmedia/superagent/issues/746)
-      if (contentType !== "multipart/form-data") {
+      if (contentType != "multipart/form-data") {
         request.type(contentType);
       }
     } else if (!request.header["Content-Type"]) {
@@ -438,7 +438,7 @@ export default class ApiClient {
 
     if (contentType === "application/x-www-form-urlencoded") {
       request.send(querystring.stringify(this.normalizeParams(formParams)));
-    } else if (contentType === "multipart/form-data") {
+    } else if (contentType == "multipart/form-data") {
       var _formParams = this.normalizeParams(formParams);
       for (var key in _formParams) {
         if (_formParams.hasOwnProperty(key)) {
@@ -555,7 +555,7 @@ export default class ApiClient {
           }
 
           var result = {};
-          for (k in data) {
+          for (var k in data) {
             if (data.hasOwnProperty(k)) {
               var key = ApiClient.convertToType(k, keyType);
               var value = ApiClient.convertToType(data[k], valueType);

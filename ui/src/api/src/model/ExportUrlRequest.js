@@ -25,6 +25,8 @@ export default class ExportUrlRequest {
    * @class
    */
 
+  constructor() {}
+
   /**
    * Constructs a <code>ExportUrlRequest</code> from a plain JavaScript object, optionally creating a new instance.
    * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
@@ -51,11 +53,24 @@ export default class ExportUrlRequest {
           "String"
         );
       }
+      if (data.hasOwnProperty("shouldExportParticipants")) {
+        obj["shouldExportParticipants"] = ApiClient.convertToType(
+          data["shouldExportParticipants"],
+          "Boolean"
+        );
+      }
+      if (data.hasOwnProperty("shouldExportSamples")) {
+        obj["shouldExportSamples"] = ApiClient.convertToType(
+          data["shouldExportSamples"],
+          "Boolean"
+        );
+      }
     }
     return obj;
   }
 
   /**
+   * If this is set, export a cohort entity. If this is set, filter and dataExplorerUrl must also be set.
    * @member {String} cohortName
    */
   cohortName = undefined;
@@ -67,4 +82,14 @@ export default class ExportUrlRequest {
    * @member {String} dataExplorerUrl
    */
   dataExplorerUrl = undefined;
+  /**
+   * If this is true, export participant entities.
+   * @member {Boolean} shouldExportParticipants
+   */
+  shouldExportParticipants = undefined;
+  /**
+   * If this is true, export sample and sample set entities.
+   * @member {Boolean} shouldExportSamples
+   */
+  shouldExportSamples = undefined;
 }

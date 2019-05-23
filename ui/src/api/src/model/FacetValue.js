@@ -26,6 +26,8 @@ export default class FacetValue {
    * @class
    */
 
+  constructor() {}
+
   /**
    * Constructs a <code>FacetValue</code> from a plain JavaScript object, optionally creating a new instance.
    * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.

@@ -12,6 +12,7 @@
  */
 
 import ApiClient from "../ApiClient";
+import ExportUrlRequest from "../model/ExportUrlRequest";
 import ExportUrlResponse from "../model/ExportUrlResponse";
 
 /**

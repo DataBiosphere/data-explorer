@@ -15,8 +15,12 @@ class ExportUrlRequest(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, cohort_name=None, filter=None,
-                 data_explorer_url=None):  # noqa: E501
+    def __init__(self,
+                 cohort_name=None,
+                 filter=None,
+                 data_explorer_url=None,
+                 should_export_participants=None,
+                 should_export_samples=None):  # noqa: E501
         """ExportUrlRequest - a model defined in Swagger
 
         :param cohort_name: The cohort_name of this ExportUrlRequest.  # noqa: E501
@@ -25,22 +29,32 @@ class ExportUrlRequest(Model):
         :type filter: List[str]
         :param data_explorer_url: The data_explorer_url of this ExportUrlRequest.  # noqa: E501
         :type data_explorer_url: str
+        :param should_export_participants: The should_export_participants of this ExportUrlRequest.  # noqa: E501
+        :type should_export_participants: bool
+        :param should_export_samples: The should_export_samples of this ExportUrlRequest.  # noqa: E501
+        :type should_export_samples: bool
         """
         self.swagger_types = {
             'cohort_name': str,
             'filter': List[str],
-            'data_explorer_url': str
+            'data_explorer_url': str,
+            'should_export_participants': bool,
+            'should_export_samples': bool
         }
 
         self.attribute_map = {
             'cohort_name': 'cohortName',
             'filter': 'filter',
-            'data_explorer_url': 'dataExplorerUrl'
+            'data_explorer_url': 'dataExplorerUrl',
+            'should_export_participants': 'shouldExportParticipants',
+            'should_export_samples': 'shouldExportSamples'
         }
 
         self._cohort_name = cohort_name
         self._filter = filter
         self._data_explorer_url = data_explorer_url
+        self._should_export_participants = should_export_participants
+        self._should_export_samples = should_export_samples
 
     @classmethod
     def from_dict(cls, dikt):
@@ -57,6 +71,7 @@ class ExportUrlRequest(Model):
     def cohort_name(self):
         """Gets the cohort_name of this ExportUrlRequest.
 
+        If this is set, export a cohort entity. If this is set, filter and dataExplorerUrl must also be set.   # noqa: E501
 
         :return: The cohort_name of this ExportUrlRequest.
         :rtype: str
@@ -67,6 +82,7 @@ class ExportUrlRequest(Model):
     def cohort_name(self, cohort_name):
         """Sets the cohort_name of this ExportUrlRequest.
 
+        If this is set, export a cohort entity. If this is set, filter and dataExplorerUrl must also be set.   # noqa: E501
 
         :param cohort_name: The cohort_name of this ExportUrlRequest.
         :type cohort_name: str
@@ -115,3 +131,49 @@ class ExportUrlRequest(Model):
         """
 
         self._data_explorer_url = data_explorer_url
+
+    @property
+    def should_export_participants(self):
+        """Gets the should_export_participants of this ExportUrlRequest.
+
+        If this is true, export participant entities.  # noqa: E501
+
+        :return: The should_export_participants of this ExportUrlRequest.
+        :rtype: bool
+        """
+        return self._should_export_participants
+
+    @should_export_participants.setter
+    def should_export_participants(self, should_export_participants):
+        """Sets the should_export_participants of this ExportUrlRequest.
+
+        If this is true, export participant entities.  # noqa: E501
+
+        :param should_export_participants: The should_export_participants of this ExportUrlRequest.
+        :type should_export_participants: bool
+        """
+
+        self._should_export_participants = should_export_participants
+
+    @property
+    def should_export_samples(self):
+        """Gets the should_export_samples of this ExportUrlRequest.
+
+        If this is true, export sample and sample set entities.  # noqa: E501
+
+        :return: The should_export_samples of this ExportUrlRequest.
+        :rtype: bool
+        """
+        return self._should_export_samples
+
+    @should_export_samples.setter
+    def should_export_samples(self, should_export_samples):
+        """Sets the should_export_samples of this ExportUrlRequest.
+
+        If this is true, export sample and sample set entities.  # noqa: E501
+
+        :param should_export_samples: The should_export_samples of this ExportUrlRequest.
+        :type should_export_samples: bool
+        """
+
+        self._should_export_samples = should_export_samples

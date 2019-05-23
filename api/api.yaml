@@ -96,6 +96,9 @@ paths:
             type: object
             properties:
               cohortName:
+                description: >
+                  If this is set, export a cohort entity. If this is
+                  set, filter and dataExplorerUrl must also be set.
                 type: string
               filter:
                 type: array
@@ -107,6 +110,12 @@ paths:
                   type: string
               dataExplorerUrl:
                 type: string
+              shouldExportParticipants:
+                description: If this is true, export participant entities.
+                type: boolean
+              shouldExportSamples:
+                description: If this is true, export sample and sample set entities.
+                type: boolean
       responses:
         200:
           description: Success
