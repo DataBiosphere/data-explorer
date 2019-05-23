@@ -77,60 +77,6 @@ def _check_preconditions():
         raise BadRequest(error_msg)
 
 
-def _get_doc_generator(filter_arr):
-    if len(filter_arr) == 0:
-        return
-
-    es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
-    combined_facets = OrderedDict(
-        current_app.config['EXTRA_FACET_INFO'].items() +
-        current_app.config['FACET_INFO'].items())
-    filters = elasticsearch_util.get_facet_value_dict(filter_arr,
-                                                      combined_facets)
-    search_dict = DatasetFacetedSearch(
-        filters,
-        combined_facets).build_search().to_dict().get('post_filter', {})
-    search = Search(using=es, index=current_app.config['INDEX_NAME'])
-    search.update_from_dict({'post_filter': search_dict})
-    for result in search.scan():
-        yield result.to_dict()
-
-
-def _get_entities_dict(cohort_name, query, filter_arr, data_explorer_url):
-    """Returns a dict representing the JSON list of entities."""
-    # Terra add-import expects a JSON list of entities, where each entity is
-    # the entity JSON passed into
-    # https://rawls.dsde-prod.broadinstitute.org/#!/entities/create_entity
-    entities = []
-    for table_name in current_app.config['TABLES']:
-        entities.append({
-            # FireCloud doesn't allow spaces, so use underscore.
-            'entityType': 'BigQuery_table',
-            # This is the entity ID. Ideally this would be
-            # project_id.dataset_id.table_name, and we wouldn't need the
-            # table_name attribute. Unfortunately RAWLS doesn't allow
-            # periods here. RAWLS does allow periods in attributes. So use
-            # underscores here and periods in table_name attribute.
-            'name': table_name.replace('.', '_').replace(':', '_'),
-            'attributes': {
-                'dataset_name': current_app.config['DATASET_NAME'],
-                'table_name': table_name,
-            }
-        })
-
-    entities.append({
-        'entityType': 'cohort',
-        'name': cohort_name,
-        'attributes': {
-            'dataset_name': current_app.config['DATASET_NAME'],
-            'query': query,
-            'data_explorer_url': data_explorer_url,
-        }
-    })
-
-    return entities
-
-
 def _random_str():
     # Random 10 character string
     return ''.join(
@@ -334,6 +280,41 @@ def _get_sql_query(filters):
         table_num += 1
 
     return query
+
+
+def _get_entities_dict(cohort_name, query, filter_arr, data_explorer_url):
+    """Returns a dict representing the JSON list of entities."""
+    # Terra add-import expects a JSON list of entities, where each entity is
+    # the entity JSON passed into
+    # https://rawls.dsde-prod.broadinstitute.org/#!/entities/create_entity
+    entities = []
+    for table_name in current_app.config['TABLES']:
+        entities.append({
+            # FireCloud doesn't allow spaces, so use underscore.
+            'entityType': 'BigQuery_table',
+            # This is the entity ID. Ideally this would be
+            # project_id.dataset_id.table_name, and we wouldn't need the
+            # table_name attribute. Unfortunately RAWLS doesn't allow
+            # periods here. RAWLS does allow periods in attributes. So use
+            # underscores here and periods in table_name attribute.
+            'name': table_name.replace('.', '_').replace(':', '_'),
+            'attributes': {
+                'dataset_name': current_app.config['DATASET_NAME'],
+                'table_name': table_name,
+            }
+        })
+
+    entities.append({
+        'entityType': 'cohort',
+        'name': cohort_name,
+        'attributes': {
+            'dataset_name': current_app.config['DATASET_NAME'],
+            'query': query,
+            'data_explorer_url': data_explorer_url,
+        }
+    })
+
+    return entities
 
 
 def export_url_post():  # noqa: E501
