@@ -352,12 +352,6 @@ def export_url_post():  # noqa: E501
     entities = _get_entities_dict(cohort_name, query, filter_arr,
                                   data_explorer_url)
 
-    # Don't actually write GCS file during unit test. If we wrote a file during
-    # unit test, in order to make it easy for anyone to run this test, we would
-    # have to create a world-readable bucket.
-    if 'pytest' in sys.modules:
-        return 'foo'
-
     gcs_path = _write_gcs_file(entities)
     signed_url = _create_signed_url(gcs_path)
     return ExportUrlResponse(

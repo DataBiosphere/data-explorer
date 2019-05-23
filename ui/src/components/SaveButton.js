@@ -28,7 +28,7 @@ const styles = {
     padding: "10px 12px 6px 12px"
   },
   dialogInputRoot: {
-    marginTop: 5,
+    margin: "5px 0 16px 0",
     "&:hover $dialogInputNotchedOutline": {
       borderColor: "#ced0da !important"
     },
