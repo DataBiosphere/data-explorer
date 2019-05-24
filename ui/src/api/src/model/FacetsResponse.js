@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Data Explorer Service
  * API Service that reads from Elasticsearch.

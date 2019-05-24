@@ -7,7 +7,6 @@ import { withStyles } from "@material-ui/core/styles";
 
 import "./HistogramFacet.css";
 import * as Style from "libs/style";
-import colors from "libs/colors";
 import FacetHeader from "components/facets/FacetHeader";
 
 const styles = {
@@ -31,9 +30,9 @@ const baseVegaLiteSpec = {
   config: {
     // Config that applies to both axes go here
     axis: {
-      domainColor: colors.gray[4],
-      gridColor: colors.gray[6],
-      labelColor: colors.gray[0],
+      domainColor: "#aeb3ba",
+      gridColor: "#ebedef",
+      labelColor: "#333f52",
       labelFont: "Montserrat",
       labelFontWeight: 500,
       labelPadding: 9,
@@ -47,9 +46,9 @@ const baseVegaLiteSpec = {
       scale: {
         range: [
           // Default bar color
-          colors.blue[2],
+          "#4cabd4",
           // Unselected bar
-          colors.blue[5]
+          "#bfe1f0"
         ]
       },
       legend: null

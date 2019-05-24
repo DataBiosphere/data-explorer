@@ -6,7 +6,6 @@ import AsyncSelect from "react-select/lib/Async";
 import { components } from "react-select";
 import { withStyles } from "@material-ui/core/styles";
 
-import colors from "libs/colors";
 import { ReactComponent as DownAngle } from "libs/icons/down-angle.svg";
 import { DownAngleStyles } from "libs/icons";
 
@@ -30,12 +29,12 @@ const styles = {
   }),
   control: (provided, state) => ({
     ...provided,
-    backgroundColor: colors.gray[6],
+    backgroundColor: "#ebedef",
     border: 0,
     borderRadius: 5,
     ...(state.isFocused
       ? {
-          boxShadow: "0 0 0 1px " + colors.green[1]
+          boxShadow: "0 0 0 1px #74ae43"
         }
       : {})
   }),
@@ -85,14 +84,14 @@ const styles = {
   // multiValue = Chip styling
   multiValue: (provided, state) => ({
     ...provided,
-    backgroundColor: colors.grayBlue[1],
+    backgroundColor: "#ced8e3",
     borderRadius: "15.5px",
     height: "31",
     margin: "0 15px 7px 0"
   }),
   multiValueLabel: (provided, state) => ({
     ...provided,
-    color: colors.gray[0],
+    color: "#333f52",
     fontSize: 12,
     fontWeight: 500,
     // For some reason different line-heights are needed for Mac Chrome vs
@@ -110,7 +109,7 @@ const styles = {
     }
   }),
   multiValueRemoveIcon: {
-    color: colors.gray[3]
+    color: "#8f96a1"
   },
   placeholder: (provided, state) => ({
     ...provided,

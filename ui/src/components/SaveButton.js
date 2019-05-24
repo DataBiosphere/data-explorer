@@ -16,14 +16,14 @@ const styles = {
   checkboxLabel: {
     fontSize: "16px",
     fontWeight: "600",
-    margin: "-1px 0 6px 0"
+    margin: "-3px 0 6px 0"
   },
   dialogDesc: {
-    color: colors.gray[0],
+    color: "#333f52",
     fontSize: 14
   },
   dialogInputInput: {
-    color: colors.gray[0],
+    color: colors.secondary(),
     fontSize: 14,
     padding: "10px 12px 6px 12px"
   },
@@ -33,7 +33,7 @@ const styles = {
       borderColor: "#ced0da !important"
     },
     "&$dialogInputCssFocused $dialogInputNotchedOutline": {
-      borderColor: colors.green[1] + " !important"
+      borderColor: "#4d72aa !important"
     }
   },
   dialogInputCssFocused: {},
@@ -48,12 +48,17 @@ const styles = {
   dialogSection: {
     display: "grid",
     gridTemplateColumns: "50px auto",
+    lineHeight: "22px",
     padding: "1rem 0 1rem 0"
   },
   dialogTitle: {
-    color: colors.gray[0],
+    color: "#333f52",
     fontSize: 18,
     fontWeight: 600
+  },
+  link: {
+    color: "#295699",
+    textDecoration: "none"
   },
   tooltip: {
     width: 200
@@ -95,8 +100,17 @@ class SaveButton extends React.Component {
             Save a SQL query returning participant ids for this cohort. You can
             open saved cohorts in Data Explorer or a notebook. Also save this
             dataset's BigQuery tables, which can be{" "}
-            <a href="https://app.terra.bio/#workspaces/help-gatk/Terra%20Notebooks%20Playground/notebooks/launch/Py3%20-%20How%20to%20use%20a%20cohort.ipynb">
-              joined against
+            <a
+              className={classes.link}
+              href="https://app.terra.bio/#workspaces/help-gatk/Terra%20Notebooks%20Playground/notebooks/launch/Py3%20-%20How%20to%20use%20a%20cohort.ipynb"
+              target="_blank"
+            >
+              joined against{" "}
+              <clr-icon
+                shape="pop-out"
+                size="12"
+                style={{ margin: "-6px 4px 0 4px" }}
+              />
             </a>{" "}
             the SQL query.
           </p>
@@ -166,7 +180,7 @@ class SaveButton extends React.Component {
         </span>
         <div style={{ gridColumnStart: 2, gridColumnEnd: 3 }}>
           <p>
-            Save a table of sample data, as well as a sample set representing
+            Save a table of sample data, as well as a sample set, representing
             this cohort. You can run workflows, view samples in IGV, and more.
           </p>
           <p>Warning: If you are saving many samples, this can take a while.</p>
