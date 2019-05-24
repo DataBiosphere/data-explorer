@@ -92,10 +92,13 @@ class SaveButton extends React.Component {
         <span className={classes.checkboxLabel}>Save cohort</span>
         <div style={{ gridColumnStart: 2, gridColumnEnd: 3 }}>
           <p>
-            Save a SQL query representing this cohort. You can open saved
-            cohorts in Data Explorer or a notebook. Also save a list of this
-            dataset's BigQuery tables, which can be joined against the SQL
-            query.
+            Save a SQL query returning participant ids for this cohort. You can
+            open saved cohorts in Data Explorer or a notebook. Also save this
+            dataset's BigQuery tables, which can be{" "}
+            <a href="https://app.terra.bio/#workspaces/help-gatk/Terra%20Notebooks%20Playground/notebooks/launch/Py3%20-%20How%20to%20use%20a%20cohort.ipynb">
+              joined against
+            </a>{" "}
+            the SQL query.
           </p>
           <p>
             If a cohort with this name already exists, it will be overwritten.
@@ -164,7 +167,7 @@ class SaveButton extends React.Component {
         <div style={{ gridColumnStart: 2, gridColumnEnd: 3 }}>
           <p>
             Save a table of sample data, as well as a sample set representing
-            this cohort. You can run workflows on these samples.
+            this cohort. You can run workflows, view samples in IGV, and more.
           </p>
           <p>Warning: If you are saving many samples, this can take a while.</p>
         </div>
