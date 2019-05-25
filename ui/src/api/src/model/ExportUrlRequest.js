@@ -39,6 +39,24 @@ export default class ExportUrlRequest {
     if (data) {
       obj = obj || new ExportUrlRequest();
 
+      if (data.hasOwnProperty("shouldExportCohort")) {
+        obj["shouldExportCohort"] = ApiClient.convertToType(
+          data["shouldExportCohort"],
+          "Boolean"
+        );
+      }
+      if (data.hasOwnProperty("shouldExportParticipants")) {
+        obj["shouldExportParticipants"] = ApiClient.convertToType(
+          data["shouldExportParticipants"],
+          "Boolean"
+        );
+      }
+      if (data.hasOwnProperty("shouldExportSamples")) {
+        obj["shouldExportSamples"] = ApiClient.convertToType(
+          data["shouldExportSamples"],
+          "Boolean"
+        );
+      }
       if (data.hasOwnProperty("cohortName")) {
         obj["cohortName"] = ApiClient.convertToType(
           data["cohortName"],
@@ -54,24 +72,24 @@ export default class ExportUrlRequest {
           "String"
         );
       }
-      if (data.hasOwnProperty("shouldExportParticipants")) {
-        obj["shouldExportParticipants"] = ApiClient.convertToType(
-          data["shouldExportParticipants"],
-          "Boolean"
-        );
-      }
-      if (data.hasOwnProperty("shouldExportSamples")) {
-        obj["shouldExportSamples"] = ApiClient.convertToType(
-          data["shouldExportSamples"],
-          "Boolean"
-        );
-      }
     }
     return obj;
   }
 
   /**
-   * If this is set, export a cohort entity. If this is set, filter and dataExplorerUrl must also be set.
+   * If this is true, cohortName/filter/dataExplorerUrl must be set.
+   * @member {Boolean} shouldExportCohort
+   */
+  shouldExportCohort = undefined;
+  /**
+   * @member {Boolean} shouldExportParticipants
+   */
+  shouldExportParticipants = undefined;
+  /**
+   * @member {Boolean} shouldExportSamples
+   */
+  shouldExportSamples = undefined;
+  /**
    * @member {String} cohortName
    */
   cohortName = undefined;
@@ -83,14 +101,4 @@ export default class ExportUrlRequest {
    * @member {String} dataExplorerUrl
    */
   dataExplorerUrl = undefined;
-  /**
-   * If this is true, export participant entities.
-   * @member {Boolean} shouldExportParticipants
-   */
-  shouldExportParticipants = undefined;
-  /**
-   * If this is true, export sample and sample set entities.
-   * @member {Boolean} shouldExportSamples
-   */
-  shouldExportSamples = undefined;
 }

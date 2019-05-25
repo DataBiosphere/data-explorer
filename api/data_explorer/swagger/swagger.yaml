@@ -247,20 +247,18 @@ definitions:
   exportUrlRequest:
     type: "object"
     properties:
+      shouldExportCohort:
+        type: "boolean"
+        description: "If this is true, cohortName/filter/dataExplorerUrl must be set.\n"
+      shouldExportParticipants:
+        type: "boolean"
+      shouldExportSamples:
+        type: "boolean"
       cohortName:
         type: "string"
-        description:
-          "If this is set, export a cohort entity. If this is set, filter\
-          \ and dataExplorerUrl must also be set.\n"
       filter:
         type: "array"
         items:
           type: "string"
       dataExplorerUrl:
         type: "string"
-      shouldExportParticipants:
-        type: "boolean"
-        description: "If this is true, export participant entities."
-      shouldExportSamples:
-        type: "boolean"
-        description: "If this is true, export sample and sample set entities."

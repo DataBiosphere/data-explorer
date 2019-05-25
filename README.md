@@ -110,6 +110,7 @@ update the server implementations:
     swagger-codegen generate -i api/api.yaml -l javascript -o ui/src/api -DuseES6=true
     yapf -ir . --exclude ui/node_modules
     ```
+- Add `/* eslint-disable */` to the top of every `ui/` file that generates a Javascript warning. (CircleCI fails on [Javascript warnings](https://github.com/DataBiosphere/data-explorer/blob/efa4897d5ed4e3f01952c36f0ed76a55e5cf776e/.circleci/config.yml#L35) and there's [no easy way to hide them with CRA](https://github.com/facebook/create-react-app/issues/2339).)
 - Update the server implementations to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
 
 ### One-time setup

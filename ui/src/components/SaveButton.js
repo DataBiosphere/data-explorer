@@ -103,6 +103,7 @@ class SaveButton extends React.Component {
             <a
               className={classes.link}
               href="https://app.terra.bio/#workspaces/help-gatk/Terra%20Notebooks%20Playground/notebooks/launch/Py3%20-%20How%20to%20use%20a%20cohort.ipynb"
+              rel="noopener noreferrer"
               target="_blank"
             >
               joined against{" "}
