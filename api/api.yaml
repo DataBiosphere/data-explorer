@@ -95,6 +95,15 @@ paths:
           schema:
             type: object
             properties:
+              shouldExportCohort:
+                description: >
+                  If this is true, cohortName/filter/dataExplorerUrl must
+                  be set.
+                type: boolean
+              shouldExportParticipants:
+                type: boolean
+              shouldExportSamples:
+                type: boolean
               cohortName:
                 type: string
               filter:

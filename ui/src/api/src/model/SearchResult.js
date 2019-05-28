@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Data Explorer Service
  * API Service that reads from Elasticsearch.
@@ -25,6 +26,8 @@ export default class SearchResult {
    * @alias module:model/SearchResult
    * @class
    */
+
+  constructor() {}
 
   /**
    * Constructs a <code>SearchResult</code> from a plain JavaScript object, optionally creating a new instance.

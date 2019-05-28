@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Data Explorer Service
  * API Service that reads from Elasticsearch.
@@ -25,6 +26,8 @@ export default class ExportUrlRequest {
    * @class
    */
 
+  constructor() {}
+
   /**
    * Constructs a <code>ExportUrlRequest</code> from a plain JavaScript object, optionally creating a new instance.
    * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
@@ -36,6 +39,24 @@ export default class ExportUrlRequest {
     if (data) {
       obj = obj || new ExportUrlRequest();
 
+      if (data.hasOwnProperty("shouldExportCohort")) {
+        obj["shouldExportCohort"] = ApiClient.convertToType(
+          data["shouldExportCohort"],
+          "Boolean"
+        );
+      }
+      if (data.hasOwnProperty("shouldExportParticipants")) {
+        obj["shouldExportParticipants"] = ApiClient.convertToType(
+          data["shouldExportParticipants"],
+          "Boolean"
+        );
+      }
+      if (data.hasOwnProperty("shouldExportSamples")) {
+        obj["shouldExportSamples"] = ApiClient.convertToType(
+          data["shouldExportSamples"],
+          "Boolean"
+        );
+      }
       if (data.hasOwnProperty("cohortName")) {
         obj["cohortName"] = ApiClient.convertToType(
           data["cohortName"],
@@ -55,6 +76,19 @@ export default class ExportUrlRequest {
     return obj;
   }
 
+  /**
+   * If this is true, cohortName/filter/dataExplorerUrl must be set.
+   * @member {Boolean} shouldExportCohort
+   */
+  shouldExportCohort = undefined;
+  /**
+   * @member {Boolean} shouldExportParticipants
+   */
+  shouldExportParticipants = undefined;
+  /**
+   * @member {Boolean} shouldExportSamples
+   */
+  shouldExportSamples = undefined;
   /**
    * @member {String} cohortName
    */

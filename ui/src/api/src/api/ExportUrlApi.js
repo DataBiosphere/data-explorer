@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Data Explorer Service
  * API Service that reads from Elasticsearch.
@@ -12,6 +13,7 @@
  */
 
 import ApiClient from "../ApiClient";
+import ExportUrlRequest from "../model/ExportUrlRequest";
 import ExportUrlResponse from "../model/ExportUrlResponse";
 
 /**
