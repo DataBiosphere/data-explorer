@@ -21,15 +21,15 @@ const baseStyles = {
 const buttonStyles = {
   primaryButton: {
     ...baseStyles.buttonBase,
-    backgroundColor: colors.green[1],
-    border: "1px solid " + colors.green[0],
+    backgroundColor: colors.accent(),
+    border: "1px solid " + colors.accent(1.2),
     color: "white",
     "&:hover": {
-      backgroundColor: colors.green[2]
+      backgroundColor: colors.accent(0.85)
     },
     "&$primaryButtonDisabled": {
-      backgroundColor: colors.gray[5],
-      border: "1px solid " + colors.gray[4],
+      backgroundColor: colors.dark(0.25),
+      border: "1px solid " + colors.dark(0.4),
       color: "white"
     }
   },
@@ -37,10 +37,10 @@ const buttonStyles = {
   secondaryButton: {
     ...baseStyles.buttonBase,
     border: "1px solid transparent",
-    color: colors.green[0],
+    color: colors.accent(1.2),
     "&:hover": {
       backgroundColor: "unset",
-      color: colors.green[1]
+      color: colors.accent()
     }
   }
 };
