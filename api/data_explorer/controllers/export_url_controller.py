@@ -133,6 +133,18 @@ def _get_table_and_clause(es_field_name, field_type, value,
     return table_name, column, clause
 
 
+def _get_all_participants_query():
+    participant_id = current_app.config['PARTICIPANT_ID_COLUMN']
+    query = 'SELECT DISTINCT %s FROM (' % participant_id
+    query += 'SELECT %s FROM `%s`' % (participant_id,
+                                      current_app.config['TABLES'][0])
+    for table in current_app.config['TABLES'][1:]:
+        query += ' UNION DISTINCT SELECT %s FROM `%s`' % (participant_id,
+                                                          table)
+    query += ')'
+    return query
+
+
 def _get_sql_query(filters):
     participant_id_column = current_app.config['PARTICIPANT_ID_COLUMN']
     sample_file_column_fields = {
@@ -141,14 +153,7 @@ def _get_sql_query(filters):
     }
 
     if not filters or not len(filters):
-        # TODO: _get_sql_query() assumes that all tables have all participant
-        # ids. Make _get_sql_query() work if that's not the case. participant
-        # ids should be aggregated from all tables.
-
-        # Arbitrarily choosing first table
-        table_name = current_app.config['TABLES'][0]
-        return 'SELECT DISTINCT {} FROM `{}`'.format(participant_id_column,
-                                                     table_name)
+        return _get_all_participants_query()
 
     # facet_table_clauses must have two levels of nesting (facet_id, table_name)
     # because clauses from the same column are OR'ed together, whereas clauses
@@ -320,7 +325,7 @@ def export_url_post():  # noqa: E501
     data = json.loads(request.data)
     current_app.logger.info('Export URL request data %s' % request.data)
 
-    entities = _get_entities_dict(data['cohort_name'], data['filter'],
+    entities = _get_entities_dict(data['cohortName'], data['filter'],
                                   data['dataExplorerUrl'])
     gcs_path = _write_gcs_file(entities)
     signed_url = _create_signed_url(gcs_path)
