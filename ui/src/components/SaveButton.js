@@ -1,4 +1,5 @@
 import React from "react";
+import Checkbox from "@material-ui/core/Checkbox";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -69,7 +70,10 @@ class SaveButton extends React.Component {
     super(props);
     this.state = {
       cohortName: "",
-      dialogOpen: false
+      dialogOpen: true, // D O NOT COMMIT
+      dialogCohortChecked: true,
+      dialogSamplesChecked: true,
+      dialogParticipantsChecked: true
     };
     this.handleButtonClick = this.handleButtonClick.bind(this);
     this.handleDialogSave = this.handleDialogSave.bind(this);
@@ -80,11 +84,92 @@ class SaveButton extends React.Component {
   render() {
     const { classes, className } = this.props;
 
+    const dialogCohortSection = (
+      <div className={classes.dialogSection}>
+        <Checkbox
+          classes={{
+            root: classes.checkboxRoot,
+            checked: classes.checkboxChecked
+          }}
+          checked={this.state.dialogCohortChecked}
+          onChange={this.handleCheckboxClick("dialogCohortChecked")}
+        />
+        <span className={classes.checkboxLabel}>Save cohort</span>
+        <div style={{ gridColumnStart: 2, gridColumnEnd: 3 }}>
+          <p>
+            Save a SQL query returning participant ids for this cohort. You can
+            open saved cohorts in Data Explorer or a notebook. Also save this
+            dataset's BigQuery tables, which can be{" "}
+            <a
+              className={classes.link}
+              href="https://app.terra.bio/#workspaces/help-gatk/Terra%20Notebooks%20Playground/notebooks/launch/Py3%20-%20How%20to%20use%20a%20cohort.ipynb"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              joined against{" "}
+              <clr-icon
+                shape="pop-out"
+                size="12"
+                style={{ margin: "-6px 4px 0 4px" }}
+              />
+            </a>{" "}
+            the SQL query.
+          </p>
+          <p>
+            If a cohort with this name already exists, it will be overwritten.
+          </p>
+          <TextField
+            autoFocus
+            value={this.state.cohortName}
+            fullWidth
+            id="name"
+            InputProps={{
+              classes: {
+                root: classes.dialogInputRoot,
+                focused: classes.dialogInputCssFocused,
+                input: classes.dialogInputInput,
+                notchedOutline: classes.dialogInputNotchedOutline
+              }
+            }}
+            onChange={this.handleCohortNameChange}
+            onKeyPress={ev => {
+              if (ev.key === "Enter") {
+                this.handleDialogSave();
+              }
+            }}
+            placeholder="cohort name is required"
+            type="text"
+            variant="outlined"
+            disabled={!this.state.dialogCohortChecked}
+          />
+        </div>
+      </div>
+    );
+    const dialogParticipantsSection = (
+      <div className={classes.dialogSection}>
+        <Checkbox
+          classes={{
+            root: classes.checkboxRoot,
+            checked: classes.checkboxChecked
+          }}
+          checked={this.state.dialogParticipantsChecked}
+          onChange={this.handleCheckboxClick("dialogParticipantsChecked")}
+        />
+        <span className={classes.checkboxLabel}>Save participants</span>
+        <div style={{ gridColumnStart: 2, gridColumnEnd: 3 }}>
+          <p>Save a table of participant data.</p>
+          <p>
+            Warning: If you are saving many participants, this can take a while.
+          </p>
+        </div>
+      </div>
+    );
+
     return (
       <div className={className}>
         <TerraTooltip
           classes={{ tooltip: classes.tooltip }}
-          title="Save cohort so you can work with it later"
+          title="Save cohort and participants"
         >
           <PrimaryButton onClick={this.handleButtonClick}>
             Save in Terra
@@ -101,39 +186,15 @@ class SaveButton extends React.Component {
           </DialogTitle>
           <DialogContent>
             <div className={classes.dialogDesc}>
-              <p>A cohort with this name will be created in Terra.</p>
-              <p>
-                If a cohort with this name already exists, it will be
-                overwritten.
-              </p>
+              {dialogCohortSection}
+              {dialogParticipantsSection}
             </div>
-            <TextField
-              autoFocus
-              value={this.state.cohortName}
-              fullWidth
-              id="name"
-              InputProps={{
-                classes: {
-                  root: classes.dialogInputRoot,
-                  focused: classes.dialogInputCssFocused,
-                  input: classes.dialogInputInput,
-                  notchedOutline: classes.dialogInputNotchedOutline
-                }
-              }}
-              onChange={this.handleCohortNameChange}
-              onKeyPress={ev => {
-                if (ev.key === "Enter") {
-                  this.handleDialogSave();
-                }
-              }}
-              placeholder="cohort name"
-              type="text"
-              variant="outlined"
-            />
             <PrimaryButton
               className={classes.dialogButton}
               disabled={
-                !("cohortName" in this.state) || this.state.cohortName === ""
+                (this.state.dialogCohortChecked && !this.state.cohortName) ||
+                (!this.state.dialogCohortChecked &&
+                  !this.state.dialogParticipantsChecked)
               }
               onClick={this.handleDialogSave}
             >
