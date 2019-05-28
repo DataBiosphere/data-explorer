@@ -239,11 +239,13 @@ def _get_sql_query(filters):
     return query
 
 
-def _get_entities_dict(cohort_name, query, filter_arr, data_explorer_url):
-    #                       should_export_participants, should_export_samples):
+def _get_entities_dict(should_export_cohort, should_export_participants,
+                       should_export_samples, cohort_name, query, filter_arr,
+                       data_explorer_url):
     """Returns a dict representing the JSON list of entities."""
-    print('%s %s %s' %
-          (cohort_name, should_export_participants, should_export_samples))
+    current_app.logger.info('%s %s %s' %
+                            (should_export_cohort, should_export_participants,
+                             should_export_samples))
     # Terra add-import expects a JSON list of entities, where each entity is
     # the entity JSON passed into
     # https://rawls.dsde-prod.broadinstitute.org/#!/entities/create_entity
@@ -334,10 +336,12 @@ def export_url_post():  # noqa: E501
         cohort_name = cohort_name.replace(c, '_')
 
     entities = _get_entities_dict(cohort_name, query, filter_arr,
-                                  data_explorer_url)  #,
-    #                                  data['should_export_participants'],
-    #                                  data['should_export_samples'])
+                                  data_explorer_url,
+                                  data['shouldExportCohort'],
+                                  data['shouldExportParticipants'],
+                                  data['shouldExportSamples'])
 
+    return
     gcs_path = _write_gcs_file(entities)
     signed_url = _create_signed_url(gcs_path)
     return ExportUrlResponse(

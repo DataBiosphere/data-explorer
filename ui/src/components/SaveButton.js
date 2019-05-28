@@ -302,6 +302,9 @@ class SaveButton extends React.Component {
     this.props.exportUrlApi.exportUrlPost(
       {
         exportUrlRequest: {
+          shouldExportCohort: this.state.dialogCohortChecked,
+          shouldExportParticipants: this.state.dialogParticipantsChecked,
+          shouldExportSamples: this.state.dialogSamplesChecked,
           cohortName: this.state.cohortName,
           dataExplorerUrl: dataExplorerUrl,
           filter: filterMapToArray(this.props.selectedFacetValues)
