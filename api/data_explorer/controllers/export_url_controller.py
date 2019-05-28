@@ -77,103 +77,6 @@ def _check_preconditions():
         raise BadRequest(error_msg)
 
 
-def _get_doc_generator(filter_arr):
-    if len(filter_arr) == 0:
-        return
-
-    es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
-    combined_facets = OrderedDict(
-        current_app.config['EXTRA_FACET_INFO'].items() +
-        current_app.config['FACET_INFO'].items())
-    filters = elasticsearch_util.get_facet_value_dict(filter_arr,
-                                                      combined_facets)
-    search_dict = DatasetFacetedSearch(
-        filters,
-        combined_facets).build_search().to_dict().get('post_filter', {})
-    search = Search(using=es, index=current_app.config['INDEX_NAME'])
-    search.update_from_dict({'post_filter': search_dict})
-    for result in search.scan():
-        yield result.to_dict()
-
-
-def _get_entities_dict(cohort_name, query, filter_arr, data_explorer_url):
-    """Returns a dict representing the JSON list of entities."""
-    # Terra add-import expects a JSON list of entities, where each entity is
-    # the entity JSON passed into
-    # https://rawls.dsde-prod.broadinstitute.org/#!/entities/create_entity
-    entities = []
-    for table_name in current_app.config['TABLES']:
-        entities.append({
-            # FireCloud doesn't allow spaces, so use underscore.
-            'entityType': 'BigQuery_table',
-            # This is the entity ID. Ideally this would be
-            # project_id.dataset_id.table_name, and we wouldn't need the
-            # table_name attribute. Unfortunately RAWLS doesn't allow
-            # periods here. RAWLS does allow periods in attributes. So use
-            # underscores here and periods in table_name attribute.
-            'name': table_name.replace('.', '_').replace(':', '_'),
-            'attributes': {
-                'dataset_name': current_app.config['DATASET_NAME'],
-                'table_name': table_name,
-            }
-        })
-
-    entities.append({
-        'entityType': 'cohort',
-        'name': cohort_name,
-        'attributes': {
-            'dataset_name': current_app.config['DATASET_NAME'],
-            'query': query,
-            'data_explorer_url': data_explorer_url,
-        }
-    })
-
-    return entities
-
-
-def _random_str():
-    # Random 10 character string
-    return ''.join(
-        random.choice(string.ascii_letters + string.digits) for _ in range(10))
-
-
-def _write_gcs_file(entities):
-    """Returns GCS file path of the format /bucket/object."""
-    client = storage.Client(project=current_app.config['DEPLOY_PROJECT_ID'])
-    export_bucket = client.get_bucket(
-        current_app.config['EXPORT_URL_GCS_BUCKET'])
-    user = os.environ.get('USER')
-    blob = export_bucket.blob(_random_str())
-    entities_json = json.dumps(entities)
-    blob.upload_from_string(entities_json)
-
-    current_app.logger.info(
-        'Wrote gs://%s/%s' %
-        (current_app.config['EXPORT_URL_GCS_BUCKET'], blob.name))
-    # Return in the format that signing a URL needs.
-    return '/%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'], blob.name)
-
-
-def _create_signed_url(gcs_path):
-    private_key_path = os.path.join(current_app.config['DATASET_CONFIG_DIR'],
-                                    'private-key.json')
-    creds = ServiceAccountCredentials.from_json_keyfile_name(private_key_path)
-    service_account_email = current_app.config[
-        'DEPLOY_PROJECT_ID'] + '@appspot.gserviceaccount.com'
-    # Signed URL will be valid for 5 minutes
-    timestamp = str(int(time.time()) + 5 * 60)
-    file_metadata = '\n'.join(['GET', '', '', timestamp, gcs_path])
-    signature = base64.b64encode(creds.sign_blob(file_metadata)[1])
-    signature = urllib.quote(signature, safe='')
-    signed_url = ('https://storage.googleapis.com%s?GoogleAccessId=%s'
-                  '&Expires=%s&Signature=%s') % (
-                      gcs_path, service_account_email, timestamp, signature)
-    # import-data expects url to be url encoded
-    signed_url = urllib.quote(signed_url, safe='')
-    current_app.logger.info('Signed URL: ' + signed_url)
-    return signed_url
-
-
 def _get_range_clause(column, value):
     arr = value.split('-')
     if len(arr) > 1:
@@ -336,28 +239,89 @@ def _get_sql_query(filters):
     return query
 
 
+def _get_entities_dict(cohort_name, filter_arr, data_explorer_url):
+    """Returns a dict representing the JSON list of entities."""
+    # Terra add-import expects a JSON list of entities, where each entity is
+    # the entity JSON passed into
+    # https://rawls.dsde-prod.broadinstitute.org/#!/entities/create_entity
+    entities = []
+    for table_name in current_app.config['TABLES']:
+        entities.append({
+            # FireCloud doesn't allow spaces, so use underscore.
+            'entityType': 'BigQuery_table',
+            # This is the entity ID. Ideally this would be
+            # project_id.dataset_id.table_name, and we wouldn't need the
+            # table_name attribute. Unfortunately RAWLS doesn't allow
+            # periods here. RAWLS does allow periods in attributes. So use
+            # underscores here and periods in table_name attribute.
+            'name': table_name.replace('.', '_').replace(':', '_'),
+            'attributes': {
+                'dataset_name': current_app.config['DATASET_NAME'],
+                'table_name': table_name,
+            }
+        })
+
+    for c in ' .:=':
+        cohort_name = cohort_name.replace(c, '_')
+    entities.append({
+        'entityType': 'cohort',
+        'name': cohort_name,
+        'attributes': {
+            'dataset_name': current_app.config['DATASET_NAME'],
+            'query': _get_sql_query(filter_arr),
+            'data_explorer_url': data_explorer_url,
+        }
+    })
+
+    return entities
+
+
+def _write_gcs_file(entities):
+    """Returns GCS file path of the format /bucket/object."""
+    client = storage.Client(project=current_app.config['DEPLOY_PROJECT_ID'])
+    export_bucket = client.get_bucket(
+        current_app.config['EXPORT_URL_GCS_BUCKET'])
+    user = os.environ.get('USER')
+    random_str = ''.join(
+        random.choice(string.ascii_letters + string.digits) for _ in range(10))
+    blob = export_bucket.blob(random_str)
+    entities_json = json.dumps(entities)
+    blob.upload_from_string(entities_json)
+
+    current_app.logger.info(
+        'Wrote gs://%s/%s' %
+        (current_app.config['EXPORT_URL_GCS_BUCKET'], blob.name))
+    # Return in the format that signing a URL needs.
+    return '/%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'], blob.name)
+
+
+def _create_signed_url(gcs_path):
+    private_key_path = os.path.join(current_app.config['DATASET_CONFIG_DIR'],
+                                    'private-key.json')
+    creds = ServiceAccountCredentials.from_json_keyfile_name(private_key_path)
+    service_account_email = current_app.config[
+        'DEPLOY_PROJECT_ID'] + '@appspot.gserviceaccount.com'
+    # Signed URL will be valid for 5 minutes
+    timestamp = str(int(time.time()) + 5 * 60)
+    file_metadata = '\n'.join(['GET', '', '', timestamp, gcs_path])
+    signature = base64.b64encode(creds.sign_blob(file_metadata)[1])
+    signature = urllib.quote(signature, safe='')
+    signed_url = ('https://storage.googleapis.com%s?GoogleAccessId=%s'
+                  '&Expires=%s&Signature=%s') % (
+                      gcs_path, service_account_email, timestamp, signature)
+    # import-data expects url to be url encoded
+    signed_url = urllib.quote(signed_url, safe='')
+    current_app.logger.info('Signed URL: ' + signed_url)
+    return signed_url
+
+
 def export_url_post():  # noqa: E501
     _check_preconditions()
     data = json.loads(request.data)
-    filter_arr = data['filter']
-    data_explorer_url = data['dataExplorerUrl']
-
     current_app.logger.info('Export URL request data %s' % request.data)
 
-    query = _get_sql_query(filter_arr)
-    cohort_name = data['cohortName']
-    for c in ' .:=':
-        cohort_name = cohort_name.replace(c, '_')
-
-    entities = _get_entities_dict(cohort_name, query, filter_arr,
-                                  data_explorer_url)
-
-    # Don't actually write GCS file during unit test. If we wrote a file during
-    # unit test, in order to make it easy for anyone to run this test, we would
-    # have to create a world-readable bucket.
-    if 'pytest' in sys.modules:
-        return 'foo'
-
+    entities = _get_entities_dict(data['cohort_name'], data['filter'],
+                                  data['dataExplorerUrl'])
     gcs_path = _write_gcs_file(entities)
     signed_url = _create_signed_url(gcs_path)
     return ExportUrlResponse(
