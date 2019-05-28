@@ -1,31 +1,38 @@
 import React from "react";
-import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import TextField from "@material-ui/core/TextField";
 import { withStyles } from "@material-ui/core/styles";
 
+import { CheckboxStyles } from "libs/icons";
 import colors from "libs/colors";
 import { PrimaryButton, SecondaryButton, TerraTooltip } from "libs/common";
 import { filterMapToArray } from "libs/util";
 
 const styles = {
+  ...CheckboxStyles,
+  checkboxLabel: {
+    fontSize: "16px",
+    fontWeight: "600",
+    margin: "-3px 0 6px 0"
+  },
   dialogDesc: {
-    color: colors.gray[0],
+    color: colors.dark(),
     fontSize: 14
   },
   dialogInputInput: {
-    color: colors.gray[0],
+    color: colors.secondary(),
     fontSize: 14,
     padding: "10px 12px 6px 12px"
   },
   dialogInputRoot: {
-    margin: "22px 0 30px 0",
+    margin: "5px 0 16px 0",
     "&:hover $dialogInputNotchedOutline": {
       borderColor: "#ced0da !important"
     },
     "&$dialogInputCssFocused $dialogInputNotchedOutline": {
-      borderColor: colors.green[1] + " !important"
+      borderColor: colors.primary() + " !important"
     }
   },
   dialogInputCssFocused: {},
@@ -37,10 +44,20 @@ const styles = {
     float: "right",
     margin: "36px 0 0 24px"
   },
+  dialogSection: {
+    display: "grid",
+    gridTemplateColumns: "50px auto",
+    lineHeight: "22px",
+    padding: "1rem 0 1rem 0"
+  },
   dialogTitle: {
-    color: colors.gray[0],
+    color: colors.dark(),
     fontSize: 18,
     fontWeight: 600
+  },
+  link: {
+    color: "#295699",
+    textDecoration: "none"
   },
   tooltip: {
     width: 200
@@ -70,7 +87,7 @@ class SaveButton extends React.Component {
           title="Save cohort so you can work with it later"
         >
           <PrimaryButton onClick={this.handleButtonClick}>
-            Save cohort
+            Save in Terra
           </PrimaryButton>
         </TerraTooltip>
         <Dialog
@@ -144,6 +161,10 @@ class SaveButton extends React.Component {
       : "";
     this.setState(state => ({ cohortName: cohortName, dialogOpen: true }));
   }
+
+  handleCheckboxClick = name => event => {
+    this.setState({ [name]: event.target.checked });
+  };
 
   handleDialogCancel() {
     this.setState(state => ({ dialogOpen: false }));
