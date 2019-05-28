@@ -6,6 +6,7 @@ import AsyncSelect from "react-select/lib/Async";
 import { components } from "react-select";
 import { withStyles } from "@material-ui/core/styles";
 
+import colors from "libs/colors";
 import { ReactComponent as DownAngle } from "libs/icons/down-angle.svg";
 import { DownAngleStyles } from "libs/icons";
 
@@ -34,7 +35,7 @@ const styles = {
     borderRadius: 5,
     ...(state.isFocused
       ? {
-          boxShadow: "0 0 0 1px #74ae43"
+          boxShadow: "0 0 0 1px " + colors.success()
         }
       : {})
   }),
@@ -91,7 +92,7 @@ const styles = {
   }),
   multiValueLabel: (provided, state) => ({
     ...provided,
-    color: "#333f52",
+    color: colors.dark(),
     fontSize: 12,
     fontWeight: 500,
     // For some reason different line-heights are needed for Mac Chrome vs

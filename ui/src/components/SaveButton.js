@@ -18,7 +18,7 @@ const styles = {
     margin: "-3px 0 6px 0"
   },
   dialogDesc: {
-    color: "#333f52",
+    color: colors.dark(),
     fontSize: 14
   },
   dialogInputInput: {
@@ -32,7 +32,7 @@ const styles = {
       borderColor: "#ced0da !important"
     },
     "&$dialogInputCssFocused $dialogInputNotchedOutline": {
-      borderColor: "#4d72aa !important"
+      borderColor: colors.primary() + " !important"
     }
   },
   dialogInputCssFocused: {},
@@ -51,7 +51,7 @@ const styles = {
     padding: "1rem 0 1rem 0"
   },
   dialogTitle: {
-    color: "#333f52",
+    color: colors.dark(),
     fontSize: 18,
     fontWeight: 600
   },

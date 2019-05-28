@@ -8,6 +8,7 @@ import SnackbarContent from "@material-ui/core/SnackbarContent";
 import Toolbar from "@material-ui/core/Toolbar";
 import { withStyles } from "@material-ui/core/styles";
 
+import colors from "libs/colors";
 import SaveButton from "components/SaveButton";
 import Search from "components/Search";
 
@@ -15,7 +16,7 @@ const styles = {
   appBar: {
     backgroundColor: "#fafbfc",
     boxShadow: "unset",
-    color: "#333f52",
+    color: colors.dark(),
     marginTop: 3
   },
   saveButton: {
@@ -29,7 +30,7 @@ const styles = {
   snackbarContentRoot: {
     alignItems: "baseline",
     backgroundColor: "#525c6c",
-    borderLeft: "5px solid #333f52",
+    borderLeft: "5px solid " + colors.dark(),
     borderRadius: 5,
     fontSize: 12,
     minWidth: 228,
@@ -56,7 +57,7 @@ const styles = {
   },
   totalCount: {
     alignItems: "center",
-    color: "#333f52",
+    color: colors.dark(),
     display: "flex",
     fontSize: 16,
     height: 45,

@@ -13,6 +13,7 @@ import {
   FacetsApi,
   SearchApi
 } from "data_explorer_service";
+import colors from "libs/colors";
 import DeHeader from "components/DeHeader";
 import ExportUrlApi from "api/src/api/ExportUrlApi";
 import FacetsGrid from "components/facets/FacetsGrid";
@@ -22,7 +23,7 @@ import Montserrat from "libs/fonts/Montserrat-Medium.woff2";
 
 const styles = {
   disclaimer: {
-    color: "#333f52",
+    color: colors.dark(),
     fontSize: 14,
     padding: "15px 15px 5px 15px"
   },

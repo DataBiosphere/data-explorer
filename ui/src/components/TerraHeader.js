@@ -3,6 +3,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import { withStyles } from "@material-ui/core/styles";
 
+import colors from "libs/colors";
 import headerLeftHexes from "libs/images/header-left-hexes.svg";
 import headerRightHexes from "libs/images/header-right-hexes.svg";
 import { TerraLogoStyles } from "libs/icons";
@@ -11,7 +12,9 @@ import { ReactComponent as TerraLogo } from "libs/icons/logo-wShadow.svg";
 const styles = {
   ...TerraLogoStyles,
   appBar: {
-    background: `81px url(${headerLeftHexes}) no-repeat, right url(${headerRightHexes}) no-repeat, #74ae43`,
+    background:
+      `81px url(${headerLeftHexes}) no-repeat, right url(${headerRightHexes}) no-repeat, ` +
+      colors.success(),
     borderBottom: "2px solid #b0d239",
     boxShadow: "rgba(0, 0, 0, 0.12) 0px 1px 2px 0px",
     height: 66

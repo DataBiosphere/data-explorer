@@ -10,7 +10,7 @@ export const CheckboxStyles = {
     padding: 0,
     width: 14,
     "&:hover": {
-      border: "1px solid #74ae43"
+      border: "1px solid " + colors.success()
     },
     "&$checkboxChecked": {
       border: "1px solid #5c912e",

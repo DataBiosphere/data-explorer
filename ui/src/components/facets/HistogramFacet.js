@@ -5,6 +5,7 @@ import * as vl from "vega-lite";
 import Vega from "react-vega";
 import { withStyles } from "@material-ui/core/styles";
 
+import colors from "libs/colors";
 import "./HistogramFacet.css";
 import * as Style from "libs/style";
 import FacetHeader from "components/facets/FacetHeader";
@@ -32,7 +33,7 @@ const baseVegaLiteSpec = {
     axis: {
       domainColor: "#aeb3ba",
       gridColor: "#ebedef",
-      labelColor: "#333f52",
+      labelColor: colors.dark(),
       labelFont: "Montserrat",
       labelFontWeight: 500,
       labelPadding: 9,
