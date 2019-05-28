@@ -70,10 +70,7 @@ class SaveButton extends React.Component {
     super(props);
     this.state = {
       cohortName: "",
-      dialogOpen: false,
-      dialogCohortChecked: true,
-      dialogSamplesChecked: true,
-      dialogParticipantsChecked: true
+      dialogOpen: false
     };
     this.handleButtonClick = this.handleButtonClick.bind(this);
     this.handleDialogSave = this.handleDialogSave.bind(this);
@@ -88,7 +85,7 @@ class SaveButton extends React.Component {
       <div className={className}>
         <TerraTooltip
           classes={{ tooltip: classes.tooltip }}
-          title="Save cohort, participants, and samples"
+          title="Save cohort so you can work with it later"
         >
           <PrimaryButton onClick={this.handleButtonClick}>
             Save in Terra
@@ -219,9 +216,6 @@ class SaveButton extends React.Component {
     this.props.exportUrlApi.exportUrlPost(
       {
         exportUrlRequest: {
-          shouldExportCohort: this.state.dialogCohortChecked,
-          shouldExportParticipants: this.state.dialogParticipantsChecked,
-          shouldExportSamples: this.state.dialogSamplesChecked,
           cohortName: this.state.cohortName,
           dataExplorerUrl: dataExplorerUrl,
           filter: filterMapToArray(this.props.selectedFacetValues)
