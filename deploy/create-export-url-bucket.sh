@@ -32,5 +32,6 @@ gsutil mb -p ${project_id} ${bucket}
 echo "Setting bucket TTL to 1 day"
 gsutil lifecycle set deploy/export-url-bucket-lifecycle.json ${bucket}
 
+# Needed since Terra is fetching from the browser
 echo "Setting up CORS"
 gsutil cors set deploy/export-url-bucket-cors.json ${bucket}

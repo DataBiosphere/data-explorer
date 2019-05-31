@@ -1,11 +1,6 @@
 [
-   {
-      "method":[
-         "GET"
-      ],
-      "origin":[
-         "https://app.terra.bio",
-         "https://bvdp-saturn-dev.appspot.com"
-      ]
-   }
+  {
+    "method": ["GET"],
+    "origin": ["*"]
+  }
 ]
