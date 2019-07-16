@@ -555,7 +555,7 @@ export default class ApiClient {
           }
 
           var result = {};
-          for (k in data) {
+          for (let k in data) {
             if (data.hasOwnProperty(k)) {
               var key = ApiClient.convertToType(k, keyType);
               var value = ApiClient.convertToType(data[k], valueType);

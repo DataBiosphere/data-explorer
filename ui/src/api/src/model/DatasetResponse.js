@@ -20,13 +20,6 @@ import ApiClient from "../ApiClient";
  */
 export default class DatasetResponse {
   /**
-   * Constructs a new <code>DatasetResponse</code>.
-   * Dataset information.
-   * @alias module:model/DatasetResponse
-   * @class
-   */
-
-  /**
    * Constructs a <code>DatasetResponse</code> from a plain JavaScript object, optionally creating a new instance.
    * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
    * @param {Object} data The plain JavaScript object bearing properties of interest.
@@ -46,6 +39,12 @@ export default class DatasetResponse {
           "String"
         );
       }
+      if (data.hasOwnProperty("time_series_unit")) {
+        obj["time_series_unit"] = ApiClient.convertToType(
+          data["time_series_unit"],
+          "String"
+        );
+      }
     }
     return obj;
   }
@@ -59,4 +58,9 @@ export default class DatasetResponse {
    * @member {String} search_placeholder_text
    */
   search_placeholder_text = undefined;
+  /**
+   * If time_series_column in bigquery.json is set, this must be set. This is used to label the time axis -- eg Month or Year.
+   * @member {String} time_series_unit
+   */
+  time_series_unit = undefined;
 }

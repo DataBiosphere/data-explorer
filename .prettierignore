@@ -4,3 +4,6 @@ package-lock.json
 dataset_config/1000_genomes/index.json
 dataset_config/1000_genomes/fields.json
 dataset_config/1000_genomes/mappings.json
+dataset_config/framingham_heart_study_teaching/index.json
+dataset_config/framingham_heart_study_teaching/fields.json
+dataset_config/framingham_heart_study_teaching/mappings.json

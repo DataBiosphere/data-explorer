@@ -21,13 +21,6 @@ import Facet from "./Facet";
  */
 export default class FacetsResponse {
   /**
-   * Constructs a new <code>FacetsResponse</code>.
-   * Results from a faceted search.
-   * @alias module:model/FacetsResponse
-   * @class
-   */
-
-  /**
    * Constructs a <code>FacetsResponse</code> from a plain JavaScript object, optionally creating a new instance.
    * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
    * @param {Object} data The plain JavaScript object bearing properties of interest.
