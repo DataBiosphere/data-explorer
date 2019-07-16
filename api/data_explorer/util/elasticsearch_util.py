@@ -1,5 +1,6 @@
 import json
 import urllib
+import math
 
 from elasticsearch import helpers
 from elasticsearch_dsl import Search
@@ -19,7 +20,7 @@ from filters_facet import FiltersFacet
 from flask import current_app
 
 
-def _get_field_range_and_cardinality(es, field_name):
+def _get_metrics(es, field_name):
     search = Search(using=es, index=current_app.config['INDEX_NAME'])
     # Traverse down the nesting levels from the root field, until we reach the leaf.
     # Need to traverse until the root, because we have to build the search object
@@ -43,16 +44,36 @@ def _get_field_range_and_cardinality(es, field_name):
     aggs = search.params(size=0).execute().aggregations.to_dict()
     for nesting in nestings:
         aggs = aggs.get(nesting)
-    if aggs['max']['value'] and aggs['max']['value']:
-        field_range = aggs['max']['value'] - aggs['min']['value']
+
+    return (aggs['min']['value'], aggs['max']['value'],
+            aggs['cardinality']['value'])
+
+
+def _get_field_range_and_cardinality(es, field_name, time_series_vals):
+    if time_series_vals:
+        all_metrics = [
+            _get_metrics(es, "%s.%s" % (field_name, tsv))
+            for tsv in time_series_vals
+        ]
+        total_max = max(m[1] for m in all_metrics)
+        total_card = max(m[2] for m in all_metrics)
+        if total_max != None:
+            total_min = min(m[0] for m in all_metrics if m[0] != None)
+        else:
+            total_min = None
+    else:
+        total_min, total_max, total_card = _get_metrics(es, field_name)
+    if total_max:
+        field_range = total_max - total_min
     else:
         field_range = 0
 
-    return (field_range, aggs['cardinality']['value'])
+    return (field_range, total_card)
 
 
-def _get_bucket_interval(es, field_name):
-    field_range, cardinality = _get_field_range_and_cardinality(es, field_name)
+def get_bucket_interval(es, field_name, time_series_vals):
+    field_range, cardinality = _get_field_range_and_cardinality(
+        es, field_name, time_series_vals)
     if field_range < 1:
         return .1
     elif field_range == 1 and cardinality > 2:
@@ -107,9 +128,11 @@ def range_to_number(interval_str):
     else:
         number = interval_str.split('-')[0]
 
-    number = number.replace('M', '000000')
-    number = number.replace('B', '000000000')
-    if '.' in number:
+    if number[-1] == 'M':
+        return int(round(float(number[:-1]) * 1000000))
+    elif number[-1] == 'B':
+        return int(round(float(number[:-1]) * 1000000000))
+    elif '.' in number:
         return float(number)
     else:
         return int(number)
@@ -123,13 +146,21 @@ def number_to_range(interval_start, interval):
     elif interval == 1:
         # Return something like "5"
         return '%d' % interval_start
-    if interval < 1000000:
+    elif interval < 1000000:
         # Return something like "10-19"
         return '%d-%d' % (interval_start, interval_start + interval - 1)
+    elif interval == 1000000:
+        # Return something like "1.0M-1.9M"
+        return '%d.0M-%d.9M' % (interval_start / 1000000,
+                                interval_start / 1000000)
     elif interval < 1000000000:
         # Return something like "10M-19M"
         return '%dM-%dM' % (interval_start / 1000000,
                             (interval_start + interval - 1) / 1000000)
+    elif interval == 1000000000:
+        # Return something like "1.0B-1.9B"
+        return '%d.0B-%d.9B' % (interval_start / 1000000000,
+                                interval_start / 1000000000)
     else:
         # Return something like "10B-19B"
         return '%dB-%dB' % (interval_start / 1000000000,
@@ -204,35 +235,40 @@ def get_field_description(es, field_name):
     return ''
 
 
-def get_field_type(es, field_name):
-    # elasticsearch_dsl.Mapping, which gets mappings for all fields, would be
-    # easier, but we can't use it.
-    # BigQuery indexer uses field names like "project.dataset.table.column".
-    # elasticsearch_dsl.Mapping corresponds to
-    # "curl /index/_mapping/doc_type". That returns a nested dict:
-    #   "project":
-    #     "dataset":
-    #       ...
-    # It's difficult to retrieve type from the nested dict.
-    # Instead, we get the type for one field:
-    # "curl /index/_mapping/doc_type/project.dataset.table.column".
-    # This has the benefit that we can support Elasticsearch documents that are
-    # truly nested, such as HCA Orange Box. elasticsearch_field_name in ui.json
-    # would be "parent.child".
-    mapping = es.indices.get_field_mapping(
-        fields=field_name,
-        index=current_app.config['INDEX_NAME'],
-        doc_type='type')
+def get_field_type(es, field_name, mapping):
+    submapping = mapping[
+        current_app.config['INDEX_NAME']]['mappings']['type']['properties']
+    for subname in field_name.split('.')[:-1]:
+        submapping = submapping[subname]['properties']
+    submapping = submapping[field_name.split('.')[-1]]
+    return submapping['type']
 
-    if mapping == {}:
-        raise ValueError(
-            'elasticsearch_field_name %s not found in Elasticsearch index %s' %
-            (field_name, current_app.config['INDEX_NAME']))
 
-    # If field_name is "a.b.c", last_part is "c".
-    last_part = field_name.split('.')[len(field_name.split('.')) - 1]
-    return mapping[current_app.config['INDEX_NAME']]['mappings']['type'][
-        field_name]['mapping'][last_part]['type']
+def is_time_series(es, field_name, mapping):
+    """Returns true iff field_name has time series data.
+    """
+    submapping = mapping[
+        current_app.config['INDEX_NAME']]['mappings']['type']['properties']
+    for subname in field_name.split('.')[:-1]:
+        submapping = submapping[subname]['properties']
+    submapping = submapping[field_name.split('.')[-1]]
+    return ('properties' in submapping
+            and '_is_time_series' in submapping['properties'])
+
+
+def get_time_series_vals(es, field_name, mapping):
+    """Returns a sorted array of the times at which field_name could have
+    data.
+    """
+    submapping = mapping[
+        current_app.config['INDEX_NAME']]['mappings']['type']['properties']
+    for subname in field_name.split('.'):
+        submapping = submapping[subname]['properties']
+    time_series_vals = submapping.keys()
+    assert '_is_time_series' in time_series_vals
+    time_series_vals.remove('_is_time_series')
+    time_series_vals = map(str, sorted(map(int, time_series_vals)))
+    return time_series_vals
 
 
 def _get_nested_paths_inner(prefix, mappings):
@@ -296,7 +332,8 @@ def _maybe_get_nested_facet(elasticsearch_field_name, es_facet):
     return es_facet
 
 
-def get_elasticsearch_facet(es, elasticsearch_field_name, field_type):
+def get_elasticsearch_facet(es, elasticsearch_field_name, field_type,
+                            time_series_vals):
     if field_type == 'text':
         # Use ".keyword" because we want aggregation on keyword field, not
         # term field. See
@@ -308,14 +345,14 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type):
         es_facet = TermsFacet(field=elasticsearch_field_name)
     else:
         # Assume numeric type.
-        # Creating this facet is a two-step process.
-        # 1) Get max value
-        # 2) Based on max value, determine bucket size. Create
-        #    HistogramFacet with this bucket size.
+        if time_series_vals:
+            es_base_field_name = elasticsearch_field_name.rsplit('.', 1)[0]
+        else:
+            es_base_field_name = elasticsearch_field_name
+        interval = get_bucket_interval(es, es_base_field_name,
+                                       time_series_vals)
         # TODO: When https://github.com/elastic/elasticsearch/issues/31828
-        # is fixed, use AutoHistogramFacet instead. Will no longer need 2
-        # steps.
-        interval = _get_bucket_interval(es, elasticsearch_field_name)
+        # is fixed, use AutoHistogramFacet instead.
         es_facet = HistogramFacet(field=elasticsearch_field_name,
                                   interval=interval)
 

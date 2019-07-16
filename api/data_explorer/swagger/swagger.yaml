@@ -111,10 +111,16 @@ definitions:
       search_placeholder_text:
         type: "string"
         description: "Optional. What to show in the search box by default"
+      time_series_unit:
+        type: "string"
+        description:
+          "If time_series_column in bigquery.json is set, this must be\
+          \ set. This is used to label the time axis -- eg Month or Year.\n"
     description: "Dataset information."
     example:
       search_placeholder_text: "search_placeholder_text"
       name: "name"
+      time_series_unit: "time_series_unit"
   FacetsResponse:
     properties:
       facets:
@@ -128,25 +134,43 @@ definitions:
           \ example, this could be 40, representing 40 people.\n"
     description: "Results from a faceted search."
     example:
-      count: 6
+      count: 5
       facets:
-        - values:
-            - name: "name"
-              count: 0
-            - name: "name"
-              count: 0
+        - time_names:
+            - 6
+            - 6
+          time_series_value_counts:
+            - - 1
+              - 1
+            - - 1
+              - 1
+          value_counts:
+            - 0
+            - 0
           name: "name"
           description: "description"
           es_field_name: "es_field_name"
+          value_names:
+            - "value_names"
+            - "value_names"
           es_field_type: "es_field_type"
-        - values:
-            - name: "name"
-              count: 0
-            - name: "name"
-              count: 0
+        - time_names:
+            - 6
+            - 6
+          time_series_value_counts:
+            - - 1
+              - 1
+            - - 1
+              - 1
+          value_counts:
+            - 0
+            - 0
           name: "name"
           description: "description"
           es_field_name: "es_field_name"
+          value_names:
+            - "value_names"
+            - "value_names"
           es_field_type: "es_field_type"
   Facet:
     properties:
@@ -162,35 +186,52 @@ definitions:
       es_field_type:
         type: "string"
         description: "The Elasticsearch field type."
-      values:
+      value_names:
         type: "array"
+        description: "Array of names of possible facet values.\n"
         items:
-          $ref: "#/definitions/FacetValue"
+          type: "string"
+      value_counts:
+        type: "array"
+        description: "Array of counts for each facet value."
+        items:
+          type: "integer"
+      time_names:
+        type: "array"
+        description: "Array of times."
+        items:
+          type: "integer"
+      time_series_value_counts:
+        type: "array"
+        description:
+          "2-dimensional array of facet value counts, indexed by time then\
+          \ value; indexes correspond to time_names and then value_names.\n"
+        items:
+          type: "array"
+          items:
+            type: "integer"
     description:
       "A facet. For example, the Gender facet would include the facet name\
       \ \"Gender\", as well as counts for all possible values.\n"
     example:
-      values:
-        - name: "name"
-          count: 0
-        - name: "name"
-          count: 0
+      time_names:
+        - 6
+        - 6
+      time_series_value_counts:
+        - - 1
+          - 1
+        - - 1
+          - 1
+      value_counts:
+        - 0
+        - 0
       name: "name"
       description: "description"
       es_field_name: "es_field_name"
+      value_names:
+        - "value_names"
+        - "value_names"
       es_field_type: "es_field_type"
-  FacetValue:
-    properties:
-      name:
-        type: "string"
-        description: 'Facet value name, for example, "Male".'
-      count:
-        type: "integer"
-        description: "Facet value count."
-    description: 'A facet value, for example, "Male"/34.'
-    example:
-      name: "name"
-      count: 0
   ExportUrlResponse:
     properties:
       url:
@@ -214,10 +255,12 @@ definitions:
         - facet_value: "facet_value"
           elasticsearch_field_name: "elasticsearch_field_name"
           facet_name: "facet_name"
+          is_time_series: true
           facet_description: "facet_description"
         - facet_value: "facet_value"
           elasticsearch_field_name: "elasticsearch_field_name"
           facet_name: "facet_name"
+          is_time_series: true
           facet_description: "facet_description"
   SearchResult:
     properties:
@@ -236,6 +279,11 @@ definitions:
           "If this search result represents a facet, facet_value is the\
           \ empty string. If this search result represents a facet and selected value,\
           \ facet_value is the selected value.\n"
+      is_time_series:
+        type: "boolean"
+        description:
+          "Is true when facet_value is nonempty and the field is a time\
+          \ series field.\n"
     description:
       "Can represent a facet (Gender), or a facet and selected value (Gender\
       \ = female).\n"
@@ -243,6 +291,7 @@ definitions:
       facet_value: "facet_value"
       elasticsearch_field_name: "elasticsearch_field_name"
       facet_name: "facet_name"
+      is_time_series: true
       facet_description: "facet_description"
   exportUrlRequest:
     type: "object"

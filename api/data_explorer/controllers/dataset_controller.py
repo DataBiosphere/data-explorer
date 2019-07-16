@@ -19,5 +19,8 @@ def dataset_get():  # noqa: E501
     if current_app.config.get('SEARCH_PLACEHOLDER_TEXT'):
         dataset_response.search_placeholder_text = current_app.config[
             'SEARCH_PLACEHOLDER_TEXT']
+    if current_app.config.get('TIME_SERIES_UNIT'):
+        dataset_response.time_series_unit = current_app.config[
+            'TIME_SERIES_UNIT']
 
     return dataset_response

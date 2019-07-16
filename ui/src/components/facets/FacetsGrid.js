@@ -4,6 +4,7 @@ import GridListTile from "@material-ui/core/GridListTile";
 import { withStyles } from "@material-ui/core/styles";
 
 import HistogramFacet from "components/facets/HistogramFacet";
+import TimeSeriesFacet from "components/facets/TimeSeriesFacet";
 
 const styles = {
   root: {
@@ -19,15 +20,40 @@ const styles = {
 function FacetsGrid(props) {
   const { classes } = props;
 
-  const facetsList = props.facets.map(facet => {
-    return (
-      // Can't set padding the normal way because it's overridden by
-      // GridListTile's built-in "style=padding:2".
-      <GridListTile
-        classes={{ tile: classes.tile }}
-        key={facet.name}
-        style={{ padding: 0 }}
-      >
+  function isTimeSeries(facet) {
+    return facet.time_names.length > 0;
+  }
+
+  function numCols(facet) {
+    if (isTimeSeries(facet)) {
+      if (facet.time_names.length <= 3) {
+        return 1;
+      } else if (facet.time_names.length <= 6) {
+        return 2;
+      } else {
+        return 3;
+      }
+    } else {
+      return 1;
+    }
+  }
+
+  function getFacetDefinition(facet) {
+    if (isTimeSeries(facet)) {
+      return (
+        <TimeSeriesFacet
+          facet={facet}
+          updateFacets={props.updateFacets}
+          handleRemoveFacet={props.handleRemoveFacet}
+          isExtraFacet={props.extraFacetEsFieldNames.includes(
+            facet.es_field_name
+          )}
+          selectedFacetValues={props.selectedFacetValues}
+          timeSeriesUnit={props.timeSeriesUnit}
+        />
+      );
+    } else {
+      return (
         <HistogramFacet
           facet={facet}
           updateFacets={props.updateFacets}
@@ -37,6 +63,21 @@ function FacetsGrid(props) {
           )}
           selectedValues={props.selectedFacetValues.get(facet.es_field_name)}
         />
+      );
+    }
+  }
+
+  const facetsList = props.facets.map(facet => {
+    return (
+      // Can't set padding the normal way because it's overridden by
+      // GridListTile's built-in "style=padding:2".
+      <GridListTile
+        classes={{ tile: classes.tile }}
+        key={facet.name}
+        style={{ padding: 0 }}
+        cols={numCols(facet)}
+      >
+        {getFacetDefinition(facet)}
       </GridListTile>
     );
   });

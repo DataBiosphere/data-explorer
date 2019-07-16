@@ -18,28 +18,68 @@ def _results_from_fields_index(fields):
                 SearchResult(facet_name=field["_source"]["name"],
                              facet_description=field["_source"]["description"],
                              elasticsearch_field_name=field["_id"],
-                             facet_value=""))
+                             facet_value="",
+                             is_time_series=False))
         else:
             results.append(
                 SearchResult(facet_name=field["_source"]["name"],
                              elasticsearch_field_name=field["_id"],
-                             facet_value=""))
+                             facet_value="",
+                             is_time_series=False))
     return results
 
 
-def _results_from_main_index(fields, query_regex):
+def _results_from_main_index(fields, query_regex, time_series_stem=''):
+    """_results_from_main_index
+
+    Returns dictionary mapping elasticsearch field names from fields
+    to pairs containing that field's values that match query_regex,
+    and a boolean indicating if the field is a time series
+    field. Recursively iterates down fields, an excerpt of which might
+    look like:
+
+    {...
+        'project-name.dataset_name.table_name.field_a': 5,
+        'project-name.dataset_name.table_name.field_b': {
+            '_is_time_series': True,
+            '0': 3,
+            '12': 7,
+            '24': 8
+        },
+    ...
+    }
+
+    Above, field_b is a time series field, but field_a is
+    not. Therefore when this function recursively iterates on field_b,
+    it will have
+    time_series_stem='project-name.dataset_name.table_name.field_b' so
+    that the child invocation has access to the entire elasticsearch
+    field name.
+    """
     field_to_facet_values = dict()
     for field_name, field_value in fields.items():
         if isinstance(field_value, dict):
+            if '_is_time_series' in field_value and field_value[
+                    '_is_time_series']:
+                ts_stem = field_name
+            else:
+                ts_stem = ''
             field_to_facet_values.update(
-                _results_from_main_index(field_value, query_regex))
+                _results_from_main_index(field_value, query_regex, ts_stem))
         elif isinstance(field_value, basestring) and re.findall(
                 query_regex, field_value.lower()):
+            if time_series_stem:
+                field_name = time_series_stem + '.' + field_name
+                is_time_series = True
+            else:
+                is_time_series = False
             if field_name in field_to_facet_values:
-                field_to_facet_values[field_name].add(field_value)
+                field_to_facet_values[field_name].add(
+                    (field_value, is_time_series))
             else:
                 field_to_facet_values[field_name] = set()
-                field_to_facet_values[field_name].add(field_value)
+                field_to_facet_values[field_name].add(
+                    (field_value, is_time_series))
     return field_to_facet_values
 
 
@@ -130,10 +170,14 @@ def search_get(query=None):
         current_app.logger.info("Post-processing: %s sec" % (end - begin))
 
         for es_field_name in field_to_facet_values:
-            for facet_value in field_to_facet_values[es_field_name]:
+            for facet_value, is_time_series in field_to_facet_values[
+                    es_field_name]:
                 search_results.append(
                     SearchResult(elasticsearch_field_name=es_field_name,
-                                 facet_name=es_field_name.split('.')[-1],
-                                 facet_value=facet_value))
+                                 facet_name=(es_field_name.split('.')[-2]
+                                             if is_time_series else
+                                             es_field_name.split('.')[-1]),
+                                 facet_value=facet_value,
+                                 is_time_series=is_time_series))
 
     return SearchResponse(search_results=search_results)

@@ -4,6 +4,9 @@ dataset_config/*
 !dataset_config/1000_genomes
 dataset_config/1000_genomes/deploy.json
 dataset_config/1000_genomes/private-key.json
+!dataset_config/framingham_heart_study_teaching
+dataset_config/framingham_heart_study_teaching/deploy.json
+dataset_config/framingham_heart_study_teaching/private-key.json
 
 api/app.yaml
 ui/app.yaml

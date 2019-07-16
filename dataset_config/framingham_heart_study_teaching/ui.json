@@ -1,0 +1,34 @@
+// search_placeholder_text:
+//   Optional. What to show in the search box by default. Adjust the terms for
+//   your dataset. We recommend:
+// - A word that appears in BigQuery column descriptions, eg "center" for 1000 Genomes
+// - A prefix that appears in BigQuery column contents, eg "pat" for 1000 Genomes
+// facets:
+//   Facets to be shown in the UI. Facets will appear in the order they are
+//   listed here.
+// ui_facet_name:
+//   Required. Facet name.
+// ui_facet_description:
+//   Optional. Facet description.
+// elasticsearch_field_name:
+//   Required. Elasticsearch field name.
+{
+  "search_placeholder_text": "Search to add a facet. Try \"BMI\" or \"STROKE\"",
+  "facets": [
+    {
+      "ui_facet_name": "TIME",
+      "ui_facet_description": "",
+      "elasticsearch_field_name": "verily-public-data.framingham_heart_study_teaching.framingham_heart_study_teaching.TIME"
+    },
+    {
+      "ui_facet_name": "AGE",
+      "ui_facet_description": "",
+      "elasticsearch_field_name": "verily-public-data.framingham_heart_study_teaching.framingham_heart_study_teaching.AGE"
+    },
+    {
+      "ui_facet_name": "GLUCOSE",
+      "ui_facet_description": "",
+      "elasticsearch_field_name": "verily-public-data.framingham_heart_study_teaching.framingham_heart_study_teaching.GLUCOSE"
+    }
+  ]
+}
