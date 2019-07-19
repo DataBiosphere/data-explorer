@@ -14,7 +14,6 @@ class FacetValue(Model):
 
     Do not edit the class manually.
     """
-
     def __init__(self, name=None, count=None):  # noqa: E501
         """FacetValue - a model defined in Swagger
 
