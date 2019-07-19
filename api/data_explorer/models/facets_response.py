@@ -15,7 +15,6 @@ class FacetsResponse(Model):
 
     Do not edit the class manually.
     """
-
     def __init__(self, facets=None, count=None):  # noqa: E501
         """FacetsResponse - a model defined in Swagger
 

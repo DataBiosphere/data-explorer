@@ -15,7 +15,6 @@ class SearchResponse(Model):
 
     Do not edit the class manually.
     """
-
     def __init__(self, search_results=None):  # noqa: E501
         """SearchResponse - a model defined in Swagger
 
