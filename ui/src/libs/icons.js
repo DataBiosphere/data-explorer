@@ -4,29 +4,20 @@ import colors from "libs/colors";
 
 export const CheckboxStyles = {
   checkboxRoot: {
-    border: "1px solid " + colors.gray[5],
+    border: "1px solid " + colors.dark(0.55),
     borderRadius: 3,
     height: 14,
     padding: 0,
     width: 14,
     "&:hover": {
-      border: "1px solid " + colors.green[1]
+      border: "1px solid " + colors.success()
     },
     "&$checkboxChecked": {
-      border: "1px solid " + colors.green[0]
+      border: "1px solid #5c912e",
+      color: "#295699"
     }
   },
-  checkboxChecked: {},
-  checkedIcon: {
-    fill: colors.green[1],
-    height: 16,
-    width: 16,
-    // Needed for hover color to work
-    zIndex: 2,
-    "&:hover": {
-      fill: colors.green[2]
-    }
-  }
+  checkboxChecked: {}
 };
 
 export const DownAngleStyles = {

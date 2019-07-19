@@ -23,16 +23,16 @@ import Montserrat from "libs/fonts/Montserrat-Medium.woff2";
 
 const styles = {
   disclaimer: {
-    color: colors.gray[3],
+    color: colors.dark(),
     fontSize: 14,
     padding: "15px 15px 5px 15px"
   },
   disclaimerLink: {
-    color: colors.green[0],
+    color: "#295699",
     textDecoration: "none"
   },
   root: {
-    backgroundColor: colors.grayBlue[6],
+    backgroundColor: "#fafbfc",
     // 1) overflow-x=hidden is needed to disable horizontal scrollbar.
     // Horizontal scrollbar appears because each HistogramFacet has right
     // margin, including right-most HistogramFacets.
