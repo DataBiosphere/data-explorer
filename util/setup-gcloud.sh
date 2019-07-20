@@ -14,7 +14,8 @@ then
 fi
 
 dataset=$1
-project_id=$(jq --raw-output '.project_id' dataset_config/${dataset}/deploy.json)
+# Remove JSON comments with jsmin
+project_id=$(cat dataset_config/${dataset}/deploy.json | jsmin | jq --raw-output '.project_id')
 
 gcloud config set project ${project_id}
 echo "gcloud project set to $(gcloud config get-value project)"
