@@ -7,14 +7,14 @@ jasmine.getEnv().addReporter({
   }
 });
 
-describe("End-to-end", () => {
+describe("End-to-end 1000 genomes", () => {
   beforeAll(async () => {
     // It can take a while for servers to start up
     jest.setTimeout(JEST_TIMEOUT_MS);
     await waitForElasticsearchIndex();
 
     // Hide snackbar because it prevents clicking on some facet bars
-    await page.goto("http://localhost:4400", {timeout: 120000});
+    await page.goto("http://localhost:4400", { timeout: 120000 });
     await page.waitForSelector("[class*='datasetName']");
     await page.evaluate(() => {
       localStorage.setItem("hasShownSnackbarv2", "true");
@@ -22,7 +22,7 @@ describe("End-to-end", () => {
   });
 
   beforeEach(async () => {
-    await page.goto("http://localhost:4400", {timeout: 120000});
+    await page.goto("http://localhost:4400", { timeout: 120000 });
     await page.waitForSelector("[class*='datasetName']");
   });
 
