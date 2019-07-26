@@ -12,7 +12,6 @@
  */
 
 import ApiClient from "../ApiClient";
-import FacetValue from "./FacetValue";
 
 /**
  * The Facet model module.
@@ -20,13 +19,6 @@ import FacetValue from "./FacetValue";
  * @version 0.0.1
  */
 export default class Facet {
-  /**
-   * Constructs a new <code>Facet</code>.
-   * A facet. For example, the Gender facet would include the facet name \&quot;Gender\&quot;, as well as counts for all possible values.
-   * @alias module:model/Facet
-   * @class
-   */
-
   /**
    * Constructs a <code>Facet</code> from a plain JavaScript object, optionally creating a new instance.
    * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
@@ -59,8 +51,26 @@ export default class Facet {
           "String"
         );
       }
-      if (data.hasOwnProperty("values")) {
-        obj["values"] = ApiClient.convertToType(data["values"], [FacetValue]);
+      if (data.hasOwnProperty("value_names")) {
+        obj["value_names"] = ApiClient.convertToType(data["value_names"], [
+          "String"
+        ]);
+      }
+      if (data.hasOwnProperty("value_counts")) {
+        obj["value_counts"] = ApiClient.convertToType(data["value_counts"], [
+          "Number"
+        ]);
+      }
+      if (data.hasOwnProperty("time_names")) {
+        obj["time_names"] = ApiClient.convertToType(data["time_names"], [
+          "Number"
+        ]);
+      }
+      if (data.hasOwnProperty("time_series_value_counts")) {
+        obj["time_series_value_counts"] = ApiClient.convertToType(
+          data["time_series_value_counts"],
+          [["Number"]]
+        );
       }
     }
     return obj;
@@ -87,7 +97,23 @@ export default class Facet {
    */
   es_field_type = undefined;
   /**
-   * @member {Array.<module:model/FacetValue>} values
+   * Array of names of possible facet values.
+   * @member {Array.<String>} value_names
    */
-  values = undefined;
+  value_names = undefined;
+  /**
+   * Array of counts for each facet value.
+   * @member {Array.<Number>} value_counts
+   */
+  value_counts = undefined;
+  /**
+   * Array of times.
+   * @member {Array.<Number>} time_names
+   */
+  time_names = undefined;
+  /**
+   * 2-dimensional array of facet value counts, indexed by time then value; indexes correspond to time_names and then value_names.
+   * @member {Array.<Array.<Number>>} time_series_value_counts
+   */
+  time_series_value_counts = undefined;
 }

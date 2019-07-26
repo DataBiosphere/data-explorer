@@ -22,8 +22,6 @@ import requests
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan
 
-DOC_TYPE = 'type'
-
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -48,14 +46,14 @@ def main():
 
     print 'Dumping index: %s' % index
     index_file = open(output_index_file, 'w')
-    for row in scan(client, query={}, index=index, doc_type=DOC_TYPE):
+    for row in scan(client, query={}, index=index):
         json.dump(row, index_file)
         index_file.write('\n')
     index_file.close()
 
     fields_index_file = open(output_fields_file, 'w')
     print 'Dumping index: %s' % fields_index
-    for row in scan(client, query={}, index=fields_index, doc_type=DOC_TYPE):
+    for row in scan(client, query={}, index=fields_index):
         print(row)
         json.dump(row, fields_index_file)
         fields_index_file.write('\n')

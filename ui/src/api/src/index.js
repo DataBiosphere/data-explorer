@@ -17,7 +17,6 @@ import DatasetResponse from './model/DatasetResponse';
 import ExportUrlRequest from './model/ExportUrlRequest';
 import ExportUrlResponse from './model/ExportUrlResponse';
 import Facet from './model/Facet';
-import FacetValue from './model/FacetValue';
 import FacetsResponse from './model/FacetsResponse';
 import SearchResponse from './model/SearchResponse';
 import SearchResult from './model/SearchResult';
@@ -88,12 +87,6 @@ export {
      * @property {module:model/Facet}
      */
     Facet,
-
-    /**
-     * The FacetValue model constructor.
-     * @property {module:model/FacetValue}
-     */
-    FacetValue,
 
     /**
      * The FacetsResponse model constructor.

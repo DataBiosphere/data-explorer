@@ -101,7 +101,6 @@ Class | Method | HTTP request | Description
  - [DataExplorerService.ExportUrlRequest](docs/ExportUrlRequest.md)
  - [DataExplorerService.ExportUrlResponse](docs/ExportUrlResponse.md)
  - [DataExplorerService.Facet](docs/Facet.md)
- - [DataExplorerService.FacetValue](docs/FacetValue.md)
  - [DataExplorerService.FacetsResponse](docs/FacetsResponse.md)
  - [DataExplorerService.SearchResponse](docs/SearchResponse.md)
  - [DataExplorerService.SearchResult](docs/SearchResult.md)

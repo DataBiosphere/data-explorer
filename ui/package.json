@@ -17,9 +17,10 @@
     "react-dom": "^16.3.0",
     "react-scripts": "^2.0.0",
     "react-select": "^2.0.0",
-    "react-vega": "^4.0.2",
+    "vega": "^5.4.0",
+    "react-vega": "^6.0.1",
     "vega-lib": "^4.4.0",
-    "vega-lite": "^3.0.0-rc12",
+    "vega-lite": "^3.3.0",
     "vega-tooltip": "^0.15.0"
   },
   "scripts": {

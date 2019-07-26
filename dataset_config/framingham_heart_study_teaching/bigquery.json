@@ -1,0 +1,33 @@
+// Configuration for BigQuery indexer. See
+//   https://github.com/DataBiosphere/data-explorer-indexers#overview
+//   for more information.
+//
+// table_names:
+//   Fully-qualified BigQuery table names:
+//   Follows the format: <project id>.<dataset id>.<table name> (note '.'
+//   instead of ':' between project and dataset).
+// participant_id_column:
+//   Name of BigQuery column that holds the participant ID.
+// sample_id_column:
+//   The (optional) name of BigQuery column that holds the sample ID.
+// sample_file_columns:
+//   An (optional) map from file type to BigQuery column containing file paths.
+//   File types will appear in special Samples Overview facet. BigQuery column
+//   format is: <project>.<dataset>.<table>.<column>
+// time_series_column:
+//   The (optional) name of BigQuery column that holds the time
+//   associated with a data point. This column must have a numeric
+//   type.
+// time_series_unit:
+//   Unit of time_series_column. If time_series_column is set, this
+//   must be set. Examples: Month, Year.
+{
+  "table_names": [
+    "verily-public-data.framingham_heart_study_teaching.framingham_heart_study_teaching"
+  ],
+  "participant_id_column": "RANDID",
+  "sample_id_column": "",
+  "sample_file_columns": {},
+  "time_series_column": "PERIOD",
+  "time_series_unit": "Period"
+}

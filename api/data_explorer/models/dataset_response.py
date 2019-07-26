@@ -14,23 +14,34 @@ class DatasetResponse(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, name=None, search_placeholder_text=None):  # noqa: E501
+    def __init__(self,
+                 name=None,
+                 search_placeholder_text=None,
+                 time_series_unit=None):  # noqa: E501
         """DatasetResponse - a model defined in Swagger
 
         :param name: The name of this DatasetResponse.  # noqa: E501
         :type name: str
         :param search_placeholder_text: The search_placeholder_text of this DatasetResponse.  # noqa: E501
         :type search_placeholder_text: str
+        :param time_series_unit: The time_series_unit of this DatasetResponse.  # noqa: E501
+        :type time_series_unit: str
         """
-        self.swagger_types = {'name': str, 'search_placeholder_text': str}
+        self.swagger_types = {
+            'name': str,
+            'search_placeholder_text': str,
+            'time_series_unit': str
+        }
 
         self.attribute_map = {
             'name': 'name',
-            'search_placeholder_text': 'search_placeholder_text'
+            'search_placeholder_text': 'search_placeholder_text',
+            'time_series_unit': 'time_series_unit'
         }
 
         self._name = name
         self._search_placeholder_text = search_placeholder_text
+        self._time_series_unit = time_series_unit
 
     @classmethod
     def from_dict(cls, dikt):
@@ -86,3 +97,26 @@ class DatasetResponse(Model):
         """
 
         self._search_placeholder_text = search_placeholder_text
+
+    @property
+    def time_series_unit(self):
+        """Gets the time_series_unit of this DatasetResponse.
+
+        If time_series_column in bigquery.json is set, this must be set. This is used to label the time axis -- eg Month or Year.   # noqa: E501
+
+        :return: The time_series_unit of this DatasetResponse.
+        :rtype: str
+        """
+        return self._time_series_unit
+
+    @time_series_unit.setter
+    def time_series_unit(self, time_series_unit):
+        """Sets the time_series_unit of this DatasetResponse.
+
+        If time_series_column in bigquery.json is set, this must be set. This is used to label the time axis -- eg Month or Year.   # noqa: E501
+
+        :param time_series_unit: The time_series_unit of this DatasetResponse.
+        :type time_series_unit: str
+        """
+
+        self._time_series_unit = time_series_unit

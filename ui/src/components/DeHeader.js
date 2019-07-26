@@ -139,6 +139,7 @@ class DeHeader extends React.Component {
             selectedFacetValues={this.props.selectedFacetValues}
             facets={this.props.facets}
             loadOptions={this.props.handleSearchBoxTyping}
+            timeSeriesUnit={this.props.timeSeriesUnit}
           />
           <div className={classes.totalCount}>
             {this.props.totalCount} Participants

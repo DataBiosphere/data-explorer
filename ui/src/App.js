@@ -129,7 +129,8 @@ class App extends Component {
             facetName: result.facet_name,
             facetDescription: result.facet_description,
             esFieldName: result.elasticsearch_field_name,
-            facetValue: result.facet_value
+            facetValue: result.facet_value,
+            isTimeSeries: result.is_time_series
           };
         });
         this.setState({
@@ -150,7 +151,8 @@ class App extends Component {
               facetName: searchResult.facet_name,
               facetDescription: searchResult.facet_description,
               esFieldName: searchResult.elasticsearch_field_name,
-              facetValue: searchResult.facet_value
+              facetValue: searchResult.facet_value,
+              isTimeSeries: searchResult.is_time_series
             };
           });
           callback(result);
@@ -194,6 +196,7 @@ class App extends Component {
               searchResults={this.state.searchResults}
               selectedFacetValues={this.state.selectedFacetValues}
               totalCount={this.state.totalCount}
+              timeSeriesUnit={this.state.timeSeriesUnit}
             />
             <FacetsGrid
               updateFacets={this.updateFacets}
@@ -201,6 +204,7 @@ class App extends Component {
               facets={Array.from(this.state.facets.values())}
               handleRemoveFacet={this.handleRemoveFacet}
               extraFacetEsFieldNames={this.state.extraFacetEsFieldNames}
+              timeSeriesUnit={this.state.timeSeriesUnit}
             />
             {this.state.datasetName === "1000 Genomes"
               ? Disclaimer(classes)
@@ -229,7 +233,8 @@ class App extends Component {
       } else {
         this.setState({
           datasetName: data.name,
-          searchPlaceholderText: data.search_placeholder_text
+          searchPlaceholderText: data.search_placeholder_text,
+          timeSeriesUnit: data.time_series_unit
         });
       }
     }.bind(this);
@@ -276,7 +281,13 @@ class App extends Component {
       let option = action.option;
       // Drop-down row was clicked.
       let newExtraFacetEsFieldNames = this.state.extraFacetEsFieldNames;
-      newExtraFacetEsFieldNames.push(option.esFieldName);
+      let facetEsFieldName = option.isTimeSeries
+        ? option.esFieldName
+            .split(".")
+            .slice(0, -1)
+            .join(".")
+        : option.esFieldName;
+      newExtraFacetEsFieldNames.push(facetEsFieldName);
 
       let selectedFacetValues = this.state.selectedFacetValues;
       if (option.facetValue !== "") {
@@ -352,7 +363,17 @@ class App extends Component {
     let facetsCopy = new Map(this.state.facets);
     facetsCopy.delete(facetValue);
     let selectedFacetValues = new Map(this.state.selectedFacetValues);
-    selectedFacetValues.delete(facetValue);
+    for (const facetValueKey of selectedFacetValues.keys()) {
+      if (
+        facetValueKey === facetValue ||
+        facetValueKey
+          .split(".")
+          .slice(0, -1)
+          .join(".") === facetValue
+      ) {
+        selectedFacetValues.delete(facetValueKey);
+      }
+    }
     let extraFacetEsFieldNames = this.state.extraFacetEsFieldNames.filter(
       n => n !== facetValue
     );

@@ -1,4 +1,4 @@
-const JEST_TIMEOUT_MS = 60 * 1000;
+const JEST_TIMEOUT_MS = 120 * 1000;
 
 // Print test name at the beginning of each test
 jasmine.getEnv().addReporter({
@@ -14,14 +14,15 @@ describe("End-to-end", () => {
     await waitForElasticsearchIndex();
 
     // Hide snackbar because it prevents clicking on some facet bars
-    await page.goto("http://localhost:4400");
+    await page.goto("http://localhost:4400", {timeout: 120000});
+    await page.waitForSelector("[class*='datasetName']");
     await page.evaluate(() => {
       localStorage.setItem("hasShownSnackbarv2", "true");
     });
   });
 
   beforeEach(async () => {
-    await page.goto("http://localhost:4400");
+    await page.goto("http://localhost:4400", {timeout: 120000});
     await page.waitForSelector("[class*='datasetName']");
   });
 
@@ -106,16 +107,17 @@ describe("End-to-end", () => {
   });
 
   test("Search box - select row with facet value", async () => {
-    // Type "pat" into search box and select second result
+    // Type "pat" into search box and select result that adds
+    // Relationship facet with 'pat grandmother; mother' selected.
     let searchBox = await page.$x(
       "//div[contains(text(), 'Search to add a facet')]"
     );
     await searchBox[0].click();
     await searchBox[0].type("pat");
-    let secondResult = await page.waitForXPath(
-      "(//span[contains(text(), 'Add')])[2]"
+    let searchResult = await page.waitForXPath(
+      "//span[contains(., 'pat grandmother; mother')]"
     );
-    await secondResult.click();
+    await searchResult.click();
 
     // Assert Relationship facet was added and value was selected
     await waitForFacetsUpdate(1);

@@ -145,14 +145,30 @@ class Search extends React.Component {
       return option.label;
     }
     if (option.facetValue !== null && option.facetValue !== "") {
-      return (
-        <div>
-          <span style={{ color: "#cccfd4" }}>Add</span>
-          <span> {option.facetName} </span>
-          <span style={{ color: "#cccfd4" }}>facet and select</span>
-          <span> {option.facetValue} </span>
-        </div>
-      );
+      if (option.isTimeSeries) {
+        let fieldNameArr = option.esFieldName.split(".");
+        return (
+          <div>
+            <span style={{ color: "#cccfd4" }}>Add</span>
+            <span> {option.facetName} </span>
+            <span style={{ color: "#cccfd4" }}>facet and select</span>
+            <span> {option.facetValue} </span>
+            <span style={{ color: "#cccfd4" }}>
+              at {this.props.timeSeriesUnit}
+            </span>
+            <span> {fieldNameArr[fieldNameArr.length - 1]} </span>
+          </div>
+        );
+      } else {
+        return (
+          <div>
+            <span style={{ color: "#cccfd4" }}>Add</span>
+            <span> {option.facetName} </span>
+            <span style={{ color: "#cccfd4" }}>facet and select</span>
+            <span> {option.facetValue} </span>
+          </div>
+        );
+      }
     } else if (option.facetDescription != null) {
       return (
         <div>
@@ -189,7 +205,15 @@ class Search extends React.Component {
   chipsFromSelectedFacetValues(selectedFacetValues) {
     let chips = [];
     selectedFacetValues.forEach((values, key) => {
-      let facetName = this.props.facets.get(key).name;
+      let keySplit = key.split(".");
+      let facetName = this.props.facets.has(key)
+        ? this.props.facets.get(key).name
+        : this.props.facets.get(keySplit.slice(0, -1).join(".")).name +
+          " (" +
+          this.props.timeSeriesUnit +
+          " " +
+          keySplit[keySplit.length - 1] +
+          ")";
       if (values.length > 0) {
         for (let value of values) {
           chips.push({

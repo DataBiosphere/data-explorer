@@ -82,9 +82,11 @@ def init_elasticsearch():
     else:
         raise EnvironmentError('Elasticsearch failed to start.')
 
-    # Use the cached JSON files to load the example 1000 genomes dataset
-    # without having to run the indexer.
-    if app.app.config['INDEX_NAME'] == '1000_genomes':
+    # Use the cached JSON files to load the example 1000 genomes and
+    # framingham teaching datasets without having to run the indexer.
+    if (app.app.config['INDEX_NAME'] == '1000_genomes'
+            or app.app.config['INDEX_NAME'] ==
+            'framingham_heart_study_teaching_dataset'):
         index_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                   'index.json')
         mappings_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
@@ -161,12 +163,19 @@ def _process_bigquery():
         participant_id_column = bigquery_config['participant_id_column']
         sample_id_column = bigquery_config.get('sample_id_column', '')
         sample_file_columns = bigquery_config.get('sample_file_columns', {})
+        time_series_column = bigquery_config.get('time_series_column', '')
+        time_series_unit = bigquery_config.get('time_series_unit', '')
         table_names.sort()
 
     app.app.config['TABLES'] = table_names
     app.app.config['PARTICIPANT_ID_COLUMN'] = participant_id_column
     app.app.config['SAMPLE_ID_COLUMN'] = sample_id_column
     app.app.config['SAMPLE_FILE_COLUMNS'] = sample_file_columns
+    app.app.config['TIME_SERIES_COLUMN'] = time_series_column
+    app.app.config['TIME_SERIES_UNIT'] = time_series_unit
+    if time_series_column and not time_series_unit:
+        raise EnvironmentError('time_series_column is set in bigquery.json '
+                               'but time_series_unit is not')
 
 
 def _process_facets(es):
@@ -198,27 +207,43 @@ def _process_facets(es):
 
     app.app.config['NESTED_PATHS'] = elasticsearch_util.get_nested_paths(es)
 
+    # Precompute mapping for getting time series values later.
+    mapping = es.indices.get_mapping(index=app.app.config['INDEX_NAME'])
+
     for facet_config in facets_config:
-        es_field_name = facet_config['elasticsearch_field_name']
-        if es_field_name in facets:
-            raise EnvironmentError('%s appears more than once in ui.json' %
-                                   es_field_name)
-        field_type = elasticsearch_util.get_field_type(es, es_field_name)
-        ui_facet_name = facet_config['ui_facet_name']
-        if es_field_name.startswith('samples.'):
-            ui_facet_name = '%s (samples)' % ui_facet_name
+        es_base_field_name = facet_config['elasticsearch_field_name']
+        is_time_series = elasticsearch_util.is_time_series(
+            es, es_base_field_name, mapping)
+        if is_time_series:
+            time_series_vals = elasticsearch_util.get_time_series_vals(
+                es, es_base_field_name, mapping)
+            es_field_names = [
+                es_base_field_name + '.' + tsv for tsv in time_series_vals
+            ]
+        else:
+            time_series_vals = []
+            es_field_names = [es_base_field_name]
 
-        facets[es_field_name] = {
-            'ui_facet_name': ui_facet_name,
-            'type': field_type
-        }
-        if 'ui_facet_description' in facet_config:
-            facets[es_field_name]['description'] = facet_config[
-                'ui_facet_description']
-
-        facets[es_field_name][
-            'es_facet'] = elasticsearch_util.get_elasticsearch_facet(
-                es, es_field_name, field_type)
+        for es_field_name in es_field_names:
+            if es_field_name in facets:
+                raise EnvironmentError('%s appears more than once in ui.json' %
+                                       es_field_name)
+            field_type = elasticsearch_util.get_field_type(
+                es, es_field_name, mapping)
+            ui_facet_name = facet_config['ui_facet_name']
+            if es_field_name.startswith('samples.'):
+                ui_facet_name = '%s (samples)' % ui_facet_name
+            facets[es_field_name] = {
+                'ui_facet_name': ui_facet_name,
+                'type': field_type,
+                'is_time_series': is_time_series
+            }
+            if 'ui_facet_description' in facet_config:
+                facets[es_field_name]['description'] = facet_config[
+                    'ui_facet_description']
+            facets[es_field_name][
+                'es_facet'] = elasticsearch_util.get_elasticsearch_facet(
+                    es, es_field_name, field_type, time_series_vals)
 
     # Map from Elasticsearch field name to dict with ui facet name,
     # Elasticsearch field type, optional UI facet description and Elasticsearch
