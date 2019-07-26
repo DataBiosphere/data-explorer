@@ -1,4 +1,4 @@
-const JEST_TIMEOUT_MS = 60 * 1000;
+const JEST_TIMEOUT_MS = 120 * 1000;
 
 // Print test name at the beginning of each test
 jasmine.getEnv().addReporter({
