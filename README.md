@@ -179,9 +179,14 @@ To run locally:
 # Optional: ensure the elasticsearch index is clean
 docker-compose up --build -d elasticsearch
 curl -XDELETE localhost:9200/_all
-# Start the rest of the services
+# Run the 1000 genomes dataset tests for general functionality
 docker-compose up --build
-cd ui && npm test
+cd ui && npm run test-1000-genomes
+# Run the framingham heart study teaching dataset tests
+# for time series functionality
+DATASET_CONFIG_DIR=dataset_config/framingham_heart_study_teaching \
+docker-compose up --build
+cd ui && npm run test-framingham
 ```
 
 Troubleshooting tips for end-to-end tests:

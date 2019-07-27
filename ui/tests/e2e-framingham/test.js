@@ -171,8 +171,10 @@ describe("End-to-end framingham heart study teaching", () => {
           "http://localhost:9200/_cluster/health?wait_for_status=yellow"
         );
         // Elasticsearch has come up. Now wait for test data to be indexed.
-        await page.goto("http://localhost:9200/1000_genomes/type/_count");
-        await page.waitForXPath("//*[contains(text(), '3500')]");
+        await page.goto(
+          "http://localhost:9200/framingham_heart_study_teaching_dataset/type/_count"
+        );
+        await page.waitForXPath("//*[contains(text(), '4434')]");
         console.log(
           "Servers up and test data indexed after " + i + " seconds."
         );
@@ -247,7 +249,7 @@ describe("End-to-end framingham heart study teaching", () => {
       (facet, value) => {
         const labelsContainer = facet.querySelectorAll(
           "*[class*='mark-text role-axis-label']"
-        )[0]; // TODO: used to be [1]???
+        )[0];
         const labels = labelsContainer.querySelectorAll("text");
         var valueIdx;
         for (let i = 0; i < labels.length; i++) {

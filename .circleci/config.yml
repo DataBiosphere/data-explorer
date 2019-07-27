@@ -53,7 +53,7 @@ jobs:
       - run:
           name: Run e2e tests for 1000 genomes dataset
           command: |
-            cd ui && npm run test-1000-genomes'
+            cd ui && npm run test-1000-genomes
       - run:
           name: Run docker-compose for framingham heart study teaching dataset
           command: |
@@ -64,4 +64,4 @@ jobs:
       - run:
           name: Run e2e tests for framingham heart study teaching dataset
           command: |
-            cd ui && npm run test-framingham'
+            cd ui && npm run test-framingham
