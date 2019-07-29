@@ -14,7 +14,7 @@ describe("End-to-end framingham heart study teaching", () => {
     await waitForElasticsearchIndex();
 
     // Hide snackbar because it prevents clicking on some facet bars
-    await page.goto("http://localhost:4400", { timeout: 120000 });
+    await page.goto("http://localhost:4400");
     await page.waitForSelector("[class*='datasetName']");
     await page.evaluate(() => {
       localStorage.setItem("hasShownSnackbarv2", "true");
@@ -22,7 +22,7 @@ describe("End-to-end framingham heart study teaching", () => {
   });
 
   beforeEach(async () => {
-    await page.goto("http://localhost:4400", { timeout: 120000 });
+    await page.goto("http://localhost:4400");
     await page.waitForSelector("[class*='datasetName']");
   });
 
@@ -39,23 +39,6 @@ describe("End-to-end framingham heart study teaching", () => {
 
     // Make sure unselected facet value bar is dimmed
     facetBar = await getFacetBar("AGE", "50-59", "2");
-    const barColor = await page.evaluate(bar => bar.style.fill, facetBar);
-    // Vega translates our hex colors to rgb so it must be validated this way.
-    expect(barColor).toBe("rgb(191, 225, 240)");
-  });
-
-  test("Glucose facet", async () => {
-    // Assert facet rendered correctly
-    await assertFacet("GLUCOSE", "450-499", ["0", "0", "1"]);
-
-    // Click on facet bar and assert page updated correctly
-    let facetBar = await getFacetBar("GLUCOSE", "150-199", "3");
-    await facetBar.click("");
-    await waitForFacetsUpdate(42);
-    await assertFacet("TIME", "4000-4999", ["0", "0", "41"]);
-
-    // Make sure unselected facet value bar is dimmed
-    facetBar = await getFacetBar("GLUCOSE", "50-99", "3");
     const barColor = await page.evaluate(bar => bar.style.fill, facetBar);
     // Vega translates our hex colors to rgb so it must be validated this way.
     expect(barColor).toBe("rgb(191, 225, 240)");
@@ -116,43 +99,6 @@ describe("End-to-end framingham heart study teaching", () => {
     );
     await closeIcon.click();
     await waitForFacetsUpdate(4434);
-  });
-
-  test("Framingham Teaching Data Explorer URL works", async () => {
-    // Add BPMEDS extra facet and select BPMEDS=0 at Period 2.
-    let searchBox = await page.$x(
-      "//div[contains(text(), 'Search to add a facet')]"
-    );
-    await searchBox[0].click();
-    await searchBox[0].type("BPMEDS");
-    let result = await page.waitForXPath("//span[contains(text(), 'Add')]");
-    await result.click();
-    await waitForFacet("BPMEDS");
-    let facetBar = await getFacetBar("BPMEDS", "0", "2");
-    await facetBar.click();
-    await waitForFacetsUpdate(3473);
-
-    // Select 0-49, 50-99, 100-149 for GLUCOSE in Period 2, and select
-    // 50-99 for GLUCOSE in Period 1.
-    facetBar = await getFacetBar("GLUCOSE", "0-49", "2");
-    await facetBar.click("");
-    await waitForFacetsUpdate(9);
-    facetBar = await getFacetBar("GLUCOSE", "50-99", "2");
-    await facetBar.click("");
-    await waitForFacetsUpdate(2743);
-    facetBar = await getFacetBar("GLUCOSE", "100-149", "2");
-    await facetBar.click("");
-    await waitForFacetsUpdate(3000);
-    facetBar = await getFacetBar("GLUCOSE", "50-99", "1");
-    await facetBar.click("");
-    await waitForFacetsUpdate(2521);
-
-    // Reload page with current URL. This simulates exporting URL to Terra and
-    // opening exported URL.
-    await page.goto(page.url());
-
-    // This confirms the right extra facets and filters were rendered.
-    await waitForFacetsUpdate(2521);
   });
 
   async function waitForElasticsearchIndex() {

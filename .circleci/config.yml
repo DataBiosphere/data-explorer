@@ -51,9 +51,9 @@ jobs:
             # Set GOOGLE_APPLICATION_CREDENTIALS so GCP client libraries (such as reading export bucket) work.
             GOOGLE_APPLICATION_CREDENTIALS="dataset_config/1000_genomes/private-key.json" docker-compose up --build -d
       - run:
-          name: Run e2e tests for 1000 genomes dataset
+          name: Run e2e tests for 1000 Genomes dataset
           command: |
-            cd ui && npm run test-1000-genomes
+            cd ui && npm test
       - run:
           name: Run docker-compose for framingham heart study teaching dataset
           command: |
@@ -62,6 +62,6 @@ jobs:
             DATASET_CONFIG_DIR=dataset_config/framingham_heart_study_teaching \
             docker-compose up --build -d
       - run:
-          name: Run e2e tests for framingham heart study teaching dataset
+          name: Run e2e tests for Framingham Heart Study teaching dataset
           command: |
             cd ui && npm run test-framingham

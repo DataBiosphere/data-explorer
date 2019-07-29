@@ -14,7 +14,7 @@ describe("End-to-end 1000 genomes", () => {
     await waitForElasticsearchIndex();
 
     // Hide snackbar because it prevents clicking on some facet bars
-    await page.goto("http://localhost:4400", { timeout: 120000 });
+    await page.goto("http://localhost:4400");
     await page.waitForSelector("[class*='datasetName']");
     await page.evaluate(() => {
       localStorage.setItem("hasShownSnackbarv2", "true");
@@ -22,7 +22,7 @@ describe("End-to-end 1000 genomes", () => {
   });
 
   beforeEach(async () => {
-    await page.goto("http://localhost:4400", { timeout: 120000 });
+    await page.goto("http://localhost:4400");
     await page.waitForSelector("[class*='datasetName']");
   });
 
