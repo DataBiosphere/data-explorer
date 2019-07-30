@@ -168,7 +168,7 @@ def _get_time_series_facet(time_series_facets, es_response_facets):
                         value_names[i])
 
         if not all(count == 0 for count in value_counts):
-            ts_time_names.append(int(es_field_name.split('.')[-1]))
+            ts_time_names.append(es_field_name.split('.')[-1])
             ts_values.append([value_names, value_counts])
 
     value_names, time_series_value_counts = _get_time_series_params(
@@ -221,8 +221,8 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     es_response = search.execute()
     es_response_facets = es_response.facets.to_dict()
     # Uncomment to print Elasticsearch response python object
-    #current_app.logger.info(
-    #    'Elasticsearch response: %s' % pprint.pformat(es_response_facets))
+    # current_app.logger.info(
+    #     'Elasticsearch response: %s' % pprint.pformat(es_response_facets))
 
     facets = []
     i = 0

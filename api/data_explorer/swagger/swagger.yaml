@@ -134,16 +134,16 @@ definitions:
           \ example, this could be 40, representing 40 people.\n"
     description: "Results from a faceted search."
     example:
-      count: 5
+      count: 1
       facets:
         - time_names:
-            - 6
-            - 6
+            - "time_names"
+            - "time_names"
           time_series_value_counts:
-            - - 1
-              - 1
-            - - 1
-              - 1
+            - - 6
+              - 6
+            - - 6
+              - 6
           value_counts:
             - 0
             - 0
@@ -155,13 +155,13 @@ definitions:
             - "value_names"
           es_field_type: "es_field_type"
         - time_names:
-            - 6
-            - 6
+            - "time_names"
+            - "time_names"
           time_series_value_counts:
-            - - 1
-              - 1
-            - - 1
-              - 1
+            - - 6
+              - 6
+            - - 6
+              - 6
           value_counts:
             - 0
             - 0
@@ -198,9 +198,11 @@ definitions:
           type: "integer"
       time_names:
         type: "array"
-        description: "Array of times."
+        description:
+          "Array of times. Type string is used to allow for either ints\
+          \ or floats, where floats have underscores replacing decimal points.\n"
         items:
-          type: "integer"
+          type: "string"
       time_series_value_counts:
         type: "array"
         description:
@@ -215,13 +217,13 @@ definitions:
       \ \"Gender\", as well as counts for all possible values.\n"
     example:
       time_names:
-        - 6
-        - 6
+        - "time_names"
+        - "time_names"
       time_series_value_counts:
-        - - 1
-          - 1
-        - - 1
-          - 1
+        - - 6
+          - 6
+        - - 6
+          - 6
       value_counts:
         - 0
         - 0

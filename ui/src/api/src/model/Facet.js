@@ -63,7 +63,7 @@ export default class Facet {
       }
       if (data.hasOwnProperty("time_names")) {
         obj["time_names"] = ApiClient.convertToType(data["time_names"], [
-          "Number"
+          "String"
         ]);
       }
       if (data.hasOwnProperty("time_series_value_counts")) {
@@ -107,8 +107,8 @@ export default class Facet {
    */
   value_counts = undefined;
   /**
-   * Array of times.
-   * @member {Array.<Number>} time_names
+   * Array of times. Type string is used to allow for either ints or floats, where floats have underscores replacing decimal points.
+   * @member {Array.<String>} time_names
    */
   time_names = undefined;
   /**

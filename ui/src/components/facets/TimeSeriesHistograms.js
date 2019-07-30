@@ -189,7 +189,8 @@ class TimeSeriesHistogramPlot extends Component {
         data.values.push({
           facet_value: name,
           count: count,
-          time_series_value: time,
+          time_series_value: parseFloat(time.replace("_", ".")),
+          time_series_value_str: time,
           dimmed: this.isValueDimmed(
             name,
             this.props.facet.es_field_name + "." + time
@@ -253,7 +254,7 @@ class TimeSeriesHistogramPlot extends Component {
     // bars.
     if (item && item.datum && item.datum.facet_value) {
       let tsv_es_field_name =
-        this.props.facet.es_field_name + "." + item.datum.time_series_value;
+        this.props.facet.es_field_name + "." + item.datum.time_series_value_str;
       let selectedValues = this.props.selectedFacetValues.get(
         tsv_es_field_name
       );
