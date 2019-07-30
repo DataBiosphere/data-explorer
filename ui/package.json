@@ -29,7 +29,8 @@
     "precommit": "pretty-quick --staged",
     "start": "PORT=4400 react-scripts start",
     "build": "react-scripts build",
-    "test": "jest tests/e2e",
+    "test": "jest tests/e2e/1000-genomes.test.js",
+    "test-framingham": "jest tests/e2e/framingham-heart-study.test.js",
     "eject": "react-scripts eject"
   },
   "//": [

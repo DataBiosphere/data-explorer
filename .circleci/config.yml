@@ -40,15 +40,28 @@ jobs:
             # Some files are missing because of .gitignore
             echo '{"project_id": "ci-test-data-explorer"}' > dataset_config/1000_genomes/deploy.json
             echo ${GOOGLE_SERVICE_KEY} > dataset_config/1000_genomes/private-key.json
+            echo '{"project_id": "ci-test-data-explorer"}' > dataset_config/framingham_heart_study_teaching/deploy.json
+            echo ${GOOGLE_SERVICE_KEY} > dataset_config/framingham_heart_study_teaching/private-key.json
             pip install tox
             cd api
             tox
       - run:
-          name: Run docker-compose
+          name: Run docker-compose for 1000 genomes dataset
           command: |
             # Set GOOGLE_APPLICATION_CREDENTIALS so GCP client libraries (such as reading export bucket) work.
             GOOGLE_APPLICATION_CREDENTIALS="dataset_config/1000_genomes/private-key.json" docker-compose up --build -d
       - run:
-          name: Run e2e tests
+          name: Run e2e tests for 1000 Genomes dataset
           command: |
             cd ui && npm test
+      - run:
+          name: Run docker-compose for framingham heart study teaching dataset
+          command: |
+            # Set GOOGLE_APPLICATION_CREDENTIALS so GCP client libraries (such as reading export bucket) work.
+            GOOGLE_APPLICATION_CREDENTIALS="dataset_config/framingham_heart_study_teaching/private-key.json" \
+            DATASET_CONFIG_DIR=dataset_config/framingham_heart_study_teaching \
+            docker-compose up --build -d
+      - run:
+          name: Run e2e tests for Framingham Heart Study teaching dataset
+          command: |
+            cd ui && npm run test-framingham

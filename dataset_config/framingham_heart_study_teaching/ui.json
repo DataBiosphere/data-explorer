@@ -17,7 +17,7 @@
   "facets": [
     {
       "ui_facet_name": "TIME",
-      "ui_facet_description": "",
+      "ui_facet_description": "Number of days since baseline exam",
       "elasticsearch_field_name": "verily-public-data.framingham_heart_study_teaching.framingham_heart_study_teaching.TIME"
     },
     {
@@ -26,9 +26,44 @@
       "elasticsearch_field_name": "verily-public-data.framingham_heart_study_teaching.framingham_heart_study_teaching.AGE"
     },
     {
+      "ui_facet_name": "DEATH",
+      "ui_facet_description": "Death from any cause",
+      "elasticsearch_field_name": "verily-public-data.framingham_heart_study_teaching.framingham_heart_study_teaching.DEATH"
+    },
+    {
       "ui_facet_name": "GLUCOSE",
-      "ui_facet_description": "",
+      "ui_facet_description": "Casual serum glucose (mg/dL)",
       "elasticsearch_field_name": "verily-public-data.framingham_heart_study_teaching.framingham_heart_study_teaching.GLUCOSE"
+    },
+    {
+      "ui_facet_name": "HEARTRTE",
+      "ui_facet_description": "Heart rate (Ventricular rate) in beats/min",
+      "elasticsearch_field_name": "verily-public-data.framingham_heart_study_teaching.framingham_heart_study_teaching.HEARTRTE"
+    },
+    {
+      "ui_facet_name": "TOTCHOL",
+      "ui_facet_description": "Serum Total Cholesterol (mg/dL)",
+      "elasticsearch_field_name": "verily-public-data.framingham_heart_study_teaching.framingham_heart_study_teaching.TOTCHOL"
+    },
+    {
+      "ui_facet_name": "SYSBP",
+      "ui_facet_description": "Systolic Blood Pressure (mean of last two of three measurements) (mmHg)",
+      "elasticsearch_field_name": "verily-public-data.framingham_heart_study_teaching.framingham_heart_study_teaching.SYSBP"
+    },
+    {
+      "ui_facet_name": "DIABP",
+      "ui_facet_description": "Diastolic Blood Pressure (mean of last two of three measurements) (mmHg)",
+      "elasticsearch_field_name": "verily-public-data.framingham_heart_study_teaching.framingham_heart_study_teaching.DIABP"
+    },
+    {
+      "ui_facet_name": "CIGPDAY",
+      "ui_facet_description": "Number of cigarettes smoked each day",
+      "elasticsearch_field_name": "verily-public-data.framingham_heart_study_teaching.framingham_heart_study_teaching.CIGPDAY"
+    },
+    {
+      "ui_facet_name": "DIABETES",
+      "ui_facet_description": "Diabetic according to criteria of first exam treated or first exam with casual glucose of 200 mg/dL or more",
+      "elasticsearch_field_name": "verily-public-data.framingham_heart_study_teaching.framingham_heart_study_teaching.DIABETES"
     }
   ]
 }
