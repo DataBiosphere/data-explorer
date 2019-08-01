@@ -182,10 +182,7 @@ definitions:
         type: array
         items:
           type: string
-        description: >
-          Array of times. Type string is used to allow for either ints
-          or floats, where floats have underscores replacing decimal
-          points.
+        description: Array of times.
       time_series_value_counts:
         type: array
         items:
