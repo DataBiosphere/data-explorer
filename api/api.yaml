@@ -181,7 +181,7 @@ definitions:
       time_names:
         type: array
         items:
-          type: integer
+          type: string
         description: Array of times.
       time_series_value_counts:
         type: array

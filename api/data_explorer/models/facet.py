@@ -38,7 +38,7 @@ class Facet(Model):
         :param value_counts: The value_counts of this Facet.  # noqa: E501
         :type value_counts: List[int]
         :param time_names: The time_names of this Facet.  # noqa: E501
-        :type time_names: List[int]
+        :type time_names: List[str]
         :param time_series_value_counts: The time_series_value_counts of this Facet.  # noqa: E501
         :type time_series_value_counts: List[List[int]]
         """
@@ -49,7 +49,7 @@ class Facet(Model):
             'es_field_type': str,
             'value_names': List[str],
             'value_counts': List[int],
-            'time_names': List[int],
+            'time_names': List[str],
             'time_series_value_counts': List[List[int]]
         }
 
@@ -226,10 +226,10 @@ class Facet(Model):
     def time_names(self):
         """Gets the time_names of this Facet.
 
-        Array of times.  # noqa: E501
+        Array of times. Type string is used to allow for either ints or floats, where floats have underscores replacing decimal points.   # noqa: E501
 
         :return: The time_names of this Facet.
-        :rtype: List[int]
+        :rtype: List[str]
         """
         return self._time_names
 
@@ -237,10 +237,10 @@ class Facet(Model):
     def time_names(self, time_names):
         """Sets the time_names of this Facet.
 
-        Array of times.  # noqa: E501
+        Array of times. Type string is used to allow for either ints or floats, where floats have underscores replacing decimal points.   # noqa: E501
 
         :param time_names: The time_names of this Facet.
-        :type time_names: List[int]
+        :type time_names: List[str]
         """
 
         self._time_names = time_names

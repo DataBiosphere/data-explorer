@@ -40,7 +40,7 @@ function setWidth(facetValueNames, baseVegaLiteSpec) {
   }
 }
 
-class HistogramPlot extends Component {
+class Histogram extends Component {
   constructor(props) {
     // props has:
     // es_field_name (from facet.es_field_name)
@@ -297,4 +297,4 @@ class HistogramPlot extends Component {
   }
 }
 
-export default withStyles(styles)(HistogramPlot);
+export default withStyles(styles)(Histogram);

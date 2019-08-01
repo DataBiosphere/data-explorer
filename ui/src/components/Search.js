@@ -147,6 +147,9 @@ class Search extends React.Component {
     if (option.facetValue !== null && option.facetValue !== "") {
       if (option.isTimeSeries) {
         let fieldNameArr = option.esFieldName.split(".");
+        let timeSeriesValue = parseFloat(
+          fieldNameArr[fieldNameArr.length - 1].replace("_", ".")
+        );
         return (
           <div>
             <span style={{ color: "#cccfd4" }}>Add</span>
@@ -156,7 +159,7 @@ class Search extends React.Component {
             <span style={{ color: "#cccfd4" }}>
               at {this.props.timeSeriesUnit}
             </span>
-            <span> {fieldNameArr[fieldNameArr.length - 1]} </span>
+            <span> {timeSeriesValue} </span>
           </div>
         );
       } else {
@@ -212,7 +215,7 @@ class Search extends React.Component {
           " (" +
           this.props.timeSeriesUnit +
           " " +
-          keySplit[keySplit.length - 1] +
+          parseFloat(keySplit[keySplit.length - 1].replace("_", ".")) +
           ")";
       if (values.length > 0) {
         for (let value of values) {
