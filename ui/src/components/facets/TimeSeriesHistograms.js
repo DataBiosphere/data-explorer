@@ -156,13 +156,13 @@ class TimeSeriesHistograms extends Component {
 
     const facetValueTimeAxis = {
       field: "time_series_value",
-      type: "ordinal",
+      type: "nominal",
       title: this.props.timeSeriesUnit,
       header: {
         labelColor: colors.dark(),
         labelFont: "Montserrat",
         labelFontWeight: 500,
-        labelFontSize: 14,
+        labelFontSize: 12,
         labelPadding: 12,
         labelOrient: "bottom",
         titleColor: colors.dark(),
@@ -194,7 +194,7 @@ class TimeSeriesHistograms extends Component {
         data.values.push({
           facet_value: name,
           count: count,
-          time_series_value: parseFloat(time),
+          time_series_value: time === "unknown" ? "Unknown" : parseFloat(time),
           tsv_es_field_name: tsv_es_field_name,
           dimmed: this.isValueDimmed(name, tsv_es_field_name),
           text: `${name}: ${count}`,
