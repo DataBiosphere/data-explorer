@@ -1,7 +1,6 @@
 # Data explorer
 
 [![CircleCI](https://circleci.com/gh/DataBiosphere/data-explorer.svg?style=svg)](https://circleci.com/gh/DataBiosphere/data-explorer)
-[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 ## Overview
 
@@ -9,10 +8,16 @@ Data Explorer lets you explore a dataset. The code (in this repo and
 [data-explorer-indexers repo](https://github.com/DataBiosphere/data-explorer-indexers))
 is dataset-agnostic. All dataset configuration happens in config files.
 
-For example, [here's the Data Explorer](https://test-data-explorer.appspot.com/)
-for the public [1000 Genomes](http://www.internationalgenome.org/about) dataset.
-The config files for this dataset are [here](https://github.com/DataBiosphere/data-explorer/tree/master/dataset_config/1000_genomes)
-and [here](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/dataset_config/1000_genomes).
+Examples:
+
+- [Data Explorer](https://test-data-explorer.appspot.com/)
+  for the [1000 Genomes](http://www.internationalgenome.org/about) dataset.
+  Config files [here](https://github.com/DataBiosphere/data-explorer/tree/master/dataset_config/1000_genomes)
+  and [here](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/dataset_config/1000_genomes).
+- [Data Explorer](https://time-series-data-explorer.appspot.com/)
+  for the [Framingham Heart Study Teaching Dataset](http://www.internationalgenome.org/about). This Data Explorer demonstrates time-series visualizations.
+  Config files [here](https://github.com/DataBiosphere/data-explorer/tree/master/dataset_config/framingham_heart_study_teaching)
+  and [here](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/dataset_config/framingham_heart_study_teaching).
 
 ## Quickstart
 
@@ -82,6 +87,27 @@ Here's one possible flow.
 - Deploy on GCP for your dataset
   - [Deploy indexer for your dataset](https://github.com/DataBiosphere/data-explorer-indexers/tree/master/bigquery/deploy)
   - [Deploy UI and API servers for your dataset](https://github.com/DataBiosphere/data-explorer/tree/master/deploy)
+
+### Sample file support
+
+If your dataset includes sample files (VCF, BAM, etc), then Data Explorer will have:
+
+- A Samples Overview facet, which gives an overview of your sample files:
+
+  <img src="https://i.imgur.com/JuLczW5.png" width="400">
+
+- Sample file facets will display number of sample files instead of number of
+  participants. For example, if your dataset has 100 participant and each participant
+  has 5 files, and there is a facet for "Raw coverage", the number on the upper
+  right of the facet can be 0-500, and represents how many sample files are in the
+  current selection.
+
+### Time series support
+
+If your dataset has longitudinal data, then Data Explorer will show
+time-series visualizations:
+
+<img src="https://i.imgur.com/tPM63dX.png" width="400">
 
 ## Development
 

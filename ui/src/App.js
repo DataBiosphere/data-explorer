@@ -50,7 +50,7 @@ const theme = createMuiTheme({
   }
 });
 
-const Disclaimer = function(classes) {
+const ThousandGenomesDisclaimer = function(classes) {
   return (
     <div className={classes.disclaimer}>
       This dataset is publicly available for anyone to use under the terms
@@ -65,6 +65,26 @@ const Disclaimer = function(classes) {
       Verily Life Sciences, LLC. Verily Life Sciences, LLC disclaims all
       liability for any damages, direct or indirect, resulting from the use of
       the dataset.
+    </div>
+  );
+};
+
+const FraminghamDisclaimer = function(classes) {
+  return (
+    <div className={classes.disclaimer}>
+      This dataset is publicly available for anyone to use under the terms
+      provided by the dataset source (
+      <a
+        href="https://biolincc.nhlbi.nih.gov/teaching"
+        className={classes.disclaimerLink}
+      >
+        https://biolincc.nhlbi.nih.gov/teaching
+      </a>
+      ) and are provided "AS IS" without any warranty, express or implied, from
+      Verily Life Sciences, LLC. Verily Life Sciences, LLC disclaims all
+      liability for any damages, direct or indirect, resulting from the use of
+      the dataset. This is a teaching dataset and may not be used for
+      publication.
     </div>
   );
 };
@@ -207,7 +227,10 @@ class App extends Component {
               timeSeriesUnit={this.state.timeSeriesUnit}
             />
             {this.state.datasetName === "1000 Genomes"
-              ? Disclaimer(classes)
+              ? ThousandGenomesDisclaimer(classes)
+              : this.state.datasetName ===
+                "Framingham Heart Study Teaching Dataset"
+              ? FraminghamDisclaimer(classes)
               : null}
           </div>
         </MuiThemeProvider>

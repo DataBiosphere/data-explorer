@@ -87,7 +87,7 @@ class SaveButton extends React.Component {
           title="Save cohort so you can work with it later"
         >
           <PrimaryButton onClick={this.handleButtonClick}>
-            Save in Terra
+            Save cohort
           </PrimaryButton>
         </TerraTooltip>
         <Dialog
