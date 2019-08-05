@@ -180,6 +180,7 @@ definitions:
         description: Array of counts for each facet value.
       time_names:
         type: array
+        # This is string because time may be "Unknown"
         items:
           type: string
         description: Array of times.
