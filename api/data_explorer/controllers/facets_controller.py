@@ -70,7 +70,7 @@ def _process_extra_facets(extra_facets):
 
 
 def _get_time_name(tsv):
-    return tsv.replace('_', '.').replace('u', 'U')
+    return tsv.replace('_', '.')
 
 
 def _get_time_series_params(ts_value_names, ts_values):

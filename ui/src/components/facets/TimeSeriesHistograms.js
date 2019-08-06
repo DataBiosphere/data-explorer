@@ -188,11 +188,9 @@ class TimeSeriesHistograms extends Component {
         let time = this.props.facet.time_names[ti];
         // To compute elasticsearch field name with this time, need to
         // replace decimal point with underscore as is done in the
-        // index, and make sure "unknown" is lowercase.
+        // index.
         let tsv_es_field_name =
-          this.props.facet.es_field_name +
-          "." +
-          time.replace(".", "_").replace("U", "u");
+          this.props.facet.es_field_name + "." + time.replace(".", "_");
         data.values.push({
           facet_value: name,
           count: count,

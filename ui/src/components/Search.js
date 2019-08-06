@@ -141,8 +141,8 @@ class Search extends React.Component {
   parseTimeSeriesValue(esFieldName) {
     let arr = esFieldName.split(".");
     let timeSeriesValue = arr[arr.length - 1].replace("_", ".");
-    if (timeSeriesValue === "unknown") {
-      return "Unknown";
+    if (timeSeriesValue === "Unknown") {
+      return timeSeriesValue;
     } else {
       return parseFloat(timeSeriesValue);
     }
