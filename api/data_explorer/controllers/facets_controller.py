@@ -69,6 +69,10 @@ def _process_extra_facets(extra_facets):
     current_app.config['EXTRA_FACET_INFO'] = facets
 
 
+def _get_time_name(tsv):
+    return tsv.replace('_', '.').replace('u', 'U')
+
+
 def _get_time_series_params(ts_value_names, ts_values):
     """_get_time_series_params
     Converts data in ts_value_names and ts_values into the value_names
@@ -168,8 +172,7 @@ def _get_time_series_facet(time_series_facets, es_response_facets):
                         value_names[i])
 
         if not all(count == 0 for count in value_counts):
-            ts_time_names.append(
-                es_field_name.split('.')[-1].replace('_', '.'))
+            ts_time_names.append(_get_time_name(es_field_name.split('.')[-1]))
             ts_values.append([value_names, value_counts])
 
     value_names, time_series_value_counts = _get_time_series_params(
