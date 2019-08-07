@@ -235,7 +235,7 @@ def get_field_description(es, field_name):
     return ''
 
 
-def get_field_type(es, field_name, mapping):
+def get_field_type(field_name, mapping):
     submapping = mapping[
         current_app.config['INDEX_NAME']]['mappings']['type']['properties']
     for subname in field_name.split('.')[:-1]:
@@ -244,7 +244,7 @@ def get_field_type(es, field_name, mapping):
     return submapping['type']
 
 
-def is_time_series(es, field_name, mapping):
+def is_time_series(field_name, mapping):
     """Returns true iff field_name has time series data.
     """
     submapping = mapping[
@@ -256,7 +256,7 @@ def is_time_series(es, field_name, mapping):
             and '_is_time_series' in submapping['properties'])
 
 
-def get_time_series_vals(es, field_name, mapping):
+def get_time_series_vals(field_name, mapping):
     """Returns a sorted array of the times at which field_name could have
     data.
     """

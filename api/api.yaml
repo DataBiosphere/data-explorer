@@ -230,5 +230,5 @@ definitions:
       is_time_series:
         type: boolean
         description: >
-          Is true when facet_value is nonempty and the field is a time
-          series field.
+          Is true when elasticsearch_field_name gives a complete time
+          series field, including the time.

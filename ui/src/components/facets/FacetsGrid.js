@@ -73,7 +73,7 @@ function FacetsGrid(props) {
       // GridListTile's built-in "style=padding:2".
       <GridListTile
         classes={{ tile: classes.tile }}
-        key={facet.name}
+        key={facet.es_field_name}
         style={{ padding: 0 }}
         cols={numCols(facet)}
       >
