@@ -267,6 +267,9 @@ def get_time_series_vals(es, field_name, mapping):
     time_series_vals = submapping.keys()
     assert '_is_time_series' in time_series_vals
     time_series_vals.remove('_is_time_series')
+    has_unknown = 'Unknown' in time_series_vals
+    if has_unknown:
+        time_series_vals.remove('Unknown')
     if '_' in time_series_vals[0]:
         # time_series_vals contains floats, which have been stored in
         # elasticsearch with '_' replacing '.'
@@ -278,6 +281,8 @@ def get_time_series_vals(es, field_name, mapping):
     else:
         # time_series_vals contains ints
         time_series_vals = map(str, sorted(map(int, time_series_vals)))
+    if has_unknown:
+        time_series_vals.append('Unknown')
     return time_series_vals
 
 
