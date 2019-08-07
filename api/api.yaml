@@ -230,5 +230,4 @@ definitions:
       is_time_series:
         type: boolean
         description: >
-          Is true when elasticsearch_field_name gives a complete time
-          series field, including the time.
+          True if this is a time series field at a specific point in time.

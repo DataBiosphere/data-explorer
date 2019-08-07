@@ -279,9 +279,14 @@ def _process_facets(es):
             _add_facet(es_base_field_name, is_time_series, False, True,
                        facet_config, [], facets, es, mapping)
 
-    # Map from Elasticsearch field name to dict with ui facet name,
-    # Elasticsearch field type, optional UI facet description and Elasticsearch
-    # facet.
+    # Map from Elasticsearch field name to dict with:
+    # - ui facet name
+    # - Elasticsearch field type
+    # - time_series_panel and separate_panel, booleans indicating if the
+    #   Elasticsearch facet is meant to be part of a time series panel, or in
+    #   its own separate panel
+    # - optional UI facet description
+    # - Elasticsearch facet
     app.app.config['FACET_INFO'] = facets
     app.app.config['EXTRA_FACET_INFO'] = {}
 
