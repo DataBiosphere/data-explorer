@@ -304,12 +304,13 @@ class App extends Component {
       let option = action.option;
       // Drop-down row was clicked.
       let newExtraFacetEsFieldNames = this.state.extraFacetEsFieldNames;
-      let facetEsFieldName = option.isTimeSeries
-        ? option.esFieldName
-            .split(".")
-            .slice(0, -1)
-            .join(".")
-        : option.esFieldName;
+      let facetEsFieldName =
+        option.isTimeSeries && option.facetValue
+          ? option.esFieldName
+              .split(".")
+              .slice(0, -1)
+              .join(".")
+          : option.esFieldName;
       newExtraFacetEsFieldNames.push(facetEsFieldName);
 
       let selectedFacetValues = this.state.selectedFacetValues;

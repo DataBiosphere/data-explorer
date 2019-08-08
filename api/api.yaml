@@ -230,5 +230,4 @@ definitions:
       is_time_series:
         type: boolean
         description: >
-          Is true when facet_value is nonempty and the field is a time
-          series field.
+          True if this is a time series field at a specific point in time.

@@ -154,9 +154,11 @@ class Search extends React.Component {
     if (option.label != null) {
       return option.label;
     }
+    if (option.isTimeSeries) {
+      var timeSeriesValue = this.parseTimeSeriesValue(option.esFieldName);
+    }
     if (option.facetValue !== null && option.facetValue !== "") {
       if (option.isTimeSeries) {
-        let timeSeriesValue = this.parseTimeSeriesValue(option.esFieldName);
         return (
           <div>
             <span style={{ color: "#cccfd4" }}>Add</span>
@@ -180,22 +182,50 @@ class Search extends React.Component {
         );
       }
     } else if (option.facetDescription != null) {
-      return (
-        <div>
-          <span style={{ color: "#cccfd4" }}>Add</span>
-          <span> {option.facetName} </span>
-          <span style={{ color: "#cccfd4" }}>facet with description</span>
-          <span> {option.facetDescription} </span>
-        </div>
-      );
+      if (option.isTimeSeries) {
+        return (
+          <div>
+            <span style={{ color: "#cccfd4" }}>Add</span>
+            <span> {option.facetName} </span>
+            <span style={{ color: "#cccfd4" }}>
+              facet at {this.props.timeSeriesUnit}
+            </span>
+            <span> {timeSeriesValue} </span>
+            <span style={{ color: "#cccfd4" }}>with description</span>
+            <span> {option.facetDescription} </span>
+          </div>
+        );
+      } else {
+        return (
+          <div>
+            <span style={{ color: "#cccfd4" }}>Add</span>
+            <span> {option.facetName} </span>
+            <span style={{ color: "#cccfd4" }}>facet with description</span>
+            <span> {option.facetDescription} </span>
+          </div>
+        );
+      }
     } else {
-      return (
-        <div>
-          <span style={{ color: "#cccfd4" }}>Add</span>
-          <span> {option.facetName} </span>
-          <span style={{ color: "#cccfd4" }}>facet</span>
-        </div>
-      );
+      if (option.isTimeSeries) {
+        return (
+          <div>
+            <span style={{ color: "#cccfd4" }}>Add</span>
+            <span> {option.facetName} </span>
+            <span style={{ color: "#cccfd4" }}>
+              facet at {this.props.timeSeriesUnit}
+            </span>
+            <span> {timeSeriesValue} </span>
+          </div>
+        );
+      } else {
+        return (
+          <div>
+            <span style={{ color: "#cccfd4" }}>Add</span>
+            <span> {option.facetName} </span>
+            <span style={{ color: "#cccfd4" }}>facet</span>
+          </div>
+        );
+      }
     }
   };
   renderValue = option => {
