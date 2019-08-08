@@ -197,9 +197,6 @@ def _add_facet(es_field_name, is_time_series, parent_is_time_series,
         raise EnvironmentError(
             '%s has inconsistent values for ui_facet_name in ui.json' %
             es_field_name)
-    need_name_suffix = (parent_is_time_series
-                        or (es_field_name in facets
-                            and facets[es_field_name]['need_name_suffix']))
 
     if es_field_name in facets and is_time_series:
         # Need to remove and re-insert time series items to
@@ -214,7 +211,7 @@ def _add_facet(es_field_name, is_time_series, parent_is_time_series,
         # is the case.
         'time_series_panel': time_series_panel,
         'separate_panel': separate_panel,
-        'need_name_suffix': need_name_suffix
+        'time_series_field': is_time_series or parent_is_time_series
     }
     if 'ui_facet_description' in facet_config:
         facets[es_field_name]['description'] = facet_config[
@@ -299,8 +296,7 @@ def _process_facets(es):
     # - separate_panel: If facet is either not for a time series field, or is
     #       for a time series field with its own separate panel
     #       (https://i.imgur.com/JsTb5r0.png)
-    # - need_name_suffix: If facet is for a time series field and has its own
-    #       separate panel, so facets_get must add the time to ui_facet_name
+    # - time_series_field: If facet is for a time series field
     # - description: optional UI facet description
     # - es_facet: Elasticsearch facet
     app.app.config['FACET_INFO'] = facets

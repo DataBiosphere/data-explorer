@@ -130,16 +130,22 @@ def _get_table_and_clause(es_field_name, field_type, value, bucket_interval,
             sample_file_type_field = True
     if is_time_series:
         table_name, column, tsv = es_field_name.rsplit('.', 2)
+        tsv = tsv.replace('_', '.')
+        if tsv == 'Unknown':
+            tsv = 'NULL'
+            op = 'IS'
+        else:
+            op = '='
         assert not sample_file_type_field
         if field_type == 'text':
-            clause = '%s = "%s" AND %s = %s' % (column, value,
-                                                time_series_column, tsv)
+            clause = '%s = "%s" AND %s %s %s' % (column, value,
+                                                 time_series_column, op, tsv)
         elif field_type == 'boolean':
-            clause = '%s = %s AND %s = %s' % (column, value,
-                                              time_series_column, tsv)
+            clause = '%s = %s AND %s %s %s' % (column, value,
+                                               time_series_column, op, tsv)
         else:
-            clause = '%s AND %s = %s' % (_get_range_clause(
-                column, value, bucket_interval), time_series_column, tsv)
+            clause = '%s AND %s %s %s' % (_get_range_clause(
+                column, value, bucket_interval), time_series_column, op, tsv)
     else:
         table_name, column = es_field_name.rsplit('.', 1)
         if sample_file_type_field:
@@ -204,14 +210,14 @@ def _get_sql_query(filters):
         if facet_id in current_app.config['FACET_INFO']:
             field_type = current_app.config['FACET_INFO'][facet_id]['type']
             is_time_series = current_app.config['FACET_INFO'][facet_id].get(
-                'is_time_series', False)
+                'time_series_field', False)
             bucket_interval = _get_bucket_interval(
                 current_app.config['FACET_INFO'][facet_id]['es_facet'])
         elif facet_id in current_app.config['EXTRA_FACET_INFO']:
             field_type = current_app.config['EXTRA_FACET_INFO'][facet_id][
                 'type']
             is_time_series = current_app.config['EXTRA_FACET_INFO'][
-                facet_id].get('is_time_series', False)
+                facet_id].get('time_series_field', False)
             bucket_interval = _get_bucket_interval(
                 current_app.config['EXTRA_FACET_INFO'][facet_id]['es_facet'])
         table_name, column, clause = _get_table_and_clause(
