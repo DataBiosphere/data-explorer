@@ -256,8 +256,13 @@ def _process_facets(es):
     for facet_config in facets_config:
         es_base_field_name = facet_config['elasticsearch_field_name']
         es_parent_field_name = es_base_field_name.rsplit('.', 1)[0]
-        is_time_series = elasticsearch_util.is_time_series(
-            es_base_field_name, mapping)
+        try:
+            is_time_series = elasticsearch_util.is_time_series(
+                es_base_field_name, mapping)
+        except KeyError:
+            raise EnvironmentError(
+                'Elasticsearch field name %s in ui.json not found in index' %
+                es_base_field_name)
         parent_is_time_series = elasticsearch_util.is_time_series(
             es_parent_field_name, mapping)
 
