@@ -112,9 +112,9 @@ class Histogram extends Component {
         cursor: "pointer"
       },
       padding: {
-        left: 0,
+        left: 11,
         top: 17,
-        right: 0,
+        right: 11,
         bottom: 16
       }
     };
