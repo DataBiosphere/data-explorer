@@ -191,7 +191,9 @@ class TimeSeriesHistograms extends Component {
         // replace decimal point with underscore as is done in the
         // index.
         let tsv_es_field_name =
-          this.props.facet.es_field_name + "." + time.replace(".", "_");
+          time === "Total"
+            ? "Total"
+            : this.props.facet.es_field_name + "." + time.replace(".", "_");
         data.values.push({
           facet_value: name,
           count: count,
@@ -244,7 +246,7 @@ class TimeSeriesHistograms extends Component {
   }
 
   getVegaTime(time) {
-    return time === "Unknown" ? time : parseFloat(time);
+    return time === "Unknown" || time === "Total" ? time : parseFloat(time);
   }
 
   isValueDimmed(facetValueName, tsv_es_field_name) {
@@ -259,7 +261,12 @@ class TimeSeriesHistograms extends Component {
   onClick(event, item) {
     // Ignore clicks which are not located on histogram
     // bars.
-    if (item && item.datum && item.datum.facet_value) {
+    if (
+      item &&
+      item.datum &&
+      item.datum.facet_value &&
+      item.datum.tsv_es_field_name !== "Total"
+    ) {
       let selectedValues = this.props.selectedFacetValues.get(
         item.datum.tsv_es_field_name
       );

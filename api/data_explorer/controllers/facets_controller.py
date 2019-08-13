@@ -220,6 +220,9 @@ def _get_time_series_facet(time_series_facets, es_response_facets):
 
     value_names, time_series_value_counts = _get_time_series_params(
         ts_value_names, ts_values)
+    ts_time_names.append('Total')
+    time_series_value_counts.append([sum(x) for x in zip(*time_series_value_counts)])
+
     return Facet(name=ts_ui_name,
                  description=ts_description,
                  es_field_name=ts_field_name,
