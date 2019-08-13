@@ -104,9 +104,9 @@ class TimeSeriesHistograms extends Component {
         cursor: "pointer"
       },
       padding: {
-        left: 0,
+        left: 11,
         top: 17,
-        right: 35,
+        right: 30,
         bottom: 16
       },
       width: 50
