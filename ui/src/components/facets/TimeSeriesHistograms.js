@@ -156,7 +156,8 @@ class TimeSeriesHistograms extends Component {
 
     const facetValueTimeAxis = {
       field: "time_series_value",
-      type: "nominal",
+      type: "ordinal",
+      sort: this.props.facet.time_names.map(time => this.getVegaTime(time)),
       title: this.props.timeSeriesUnit,
       header: {
         labelColor: colors.dark(),
@@ -194,7 +195,7 @@ class TimeSeriesHistograms extends Component {
         data.values.push({
           facet_value: name,
           count: count,
-          time_series_value: time === "Unknown" ? time : parseFloat(time),
+          time_series_value: this.getVegaTime(time),
           tsv_es_field_name: tsv_es_field_name,
           dimmed: this.isValueDimmed(name, tsv_es_field_name),
           text: `${name}: ${count}`,
@@ -240,6 +241,10 @@ class TimeSeriesHistograms extends Component {
         <div className={classes.vega}> {vega} </div>
       </div>
     );
+  }
+
+  getVegaTime(time) {
+    return time === "Unknown" ? time : parseFloat(time);
   }
 
   isValueDimmed(facetValueName, tsv_es_field_name) {
