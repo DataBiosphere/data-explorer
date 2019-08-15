@@ -220,6 +220,11 @@ def _get_time_series_facet(time_series_facets, es_response_facets):
 
     value_names, time_series_value_counts = _get_time_series_params(
         ts_value_names, ts_values)
+    if len(value_names) > 500:
+        value_names = value_names[:500]
+        time_series_value_counts = [
+            counts[:500] for counts in time_series_value_counts
+        ]
     return Facet(name=ts_ui_name,
                  description=ts_description,
                  es_field_name=ts_field_name,
@@ -245,6 +250,11 @@ def _get_histogram_facet(es_field_name, facet_info, es_response_facets):
                                tsv)
     value_names, value_counts = _get_facet_values(es_field_name, facet_info,
                                                   es_response_facets)
+    if len(value_names) > 500:
+        # Limit facets to 500 rows, as react-vega can't seem to handle
+        # plots that are much bigger.
+        value_names = value_names[:500]
+        value_counts = value_counts[:500]
     return Facet(name=name,
                  description=facet_info.get('description'),
                  es_field_name=es_field_name,
