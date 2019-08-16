@@ -9,6 +9,7 @@
     "@clr/icons": "^0.13.10",
     "@material-ui/core": "^3.9.2",
     "@material-ui/icons": "^2.0.3",
+    "@webcomponents/custom-elements": "^1.2.4",
     "axios": "^0.18.0",
     "classnames": "^2.2.6",
     "data_explorer_service": "file:src/api",
