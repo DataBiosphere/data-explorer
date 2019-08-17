@@ -1,4 +1,6 @@
 import React from "react";
+// custom-elements needed for old versions of Firefox. Must be before @clr.
+import "@webcomponents/custom-elements";
 import "@clr/icons";
 import "@clr/icons/shapes/essential-shapes.min.js";
 import "@clr/icons/clr-icons.css";
