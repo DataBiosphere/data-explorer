@@ -74,7 +74,7 @@ function FacetsGrid(props) {
       <GridListTile
         classes={{ tile: classes.tile }}
         key={facet.es_field_name}
-        style={{ padding: 0 }}
+        style={{ padding: 0, marginBottom: 28 }}
         cols={numCols(facet)}
       >
         {getFacetDefinition(facet)}

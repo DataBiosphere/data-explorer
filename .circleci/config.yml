@@ -42,6 +42,8 @@ jobs:
             echo ${GOOGLE_SERVICE_KEY} > dataset_config/1000_genomes/private-key.json
             echo '{"project_id": "ci-test-data-explorer"}' > dataset_config/framingham_heart_study_teaching/deploy.json
             echo ${GOOGLE_SERVICE_KEY} > dataset_config/framingham_heart_study_teaching/private-key.json
+            # Needed to prevent https://github.com/erikrose/more-itertools/issues/272
+            pip install --upgrade pip
             pip install tox
             cd api
             tox
