@@ -328,9 +328,9 @@ class Search extends React.Component {
     // Use react-window to make UI faster when there are a lot of search
     // results. See
     // https://github.com/JedWatson/react-select/issues/2850#issuecomment-410318717
-    const height = 35;
     class MenuList extends Component {
       render() {
+        const height = 35;
         const { options, children, maxHeight, getValue } = this.props;
         const [value] = getValue();
         const initialOffset = options.indexOf(value) * height;
