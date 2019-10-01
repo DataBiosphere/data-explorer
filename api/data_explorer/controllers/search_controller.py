@@ -127,9 +127,8 @@ def search_get(query=None):
     num_search_results = 100
 
     # The number of results that Elasticsearch returns from search queries to
-    # the fields index. If this is high (like 1000), it makes the
-    # UI sluggish (such as initial click in search box).
-    num_field_search_results = 100
+    # the fields index.
+    num_field_search_results = 10000
 
     if not query:
         # Return all dataset fields, to populate initial search box drop-down.
