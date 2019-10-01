@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 // custom-elements needed for old versions of Firefox. Must be before @clr.
 import "@webcomponents/custom-elements";
 import "@clr/icons";
@@ -6,6 +6,7 @@ import "@clr/icons/shapes/essential-shapes.min.js";
 import "@clr/icons/clr-icons.css";
 import AsyncSelect from "react-select/lib/Async";
 import { components } from "react-select";
+import { FixedSizeList } from "react-window";
 import { withStyles } from "@material-ui/core/styles";
 
 import colors from "libs/colors";
@@ -324,6 +325,29 @@ class Search extends React.Component {
       );
     };
 
+    // Use react-window to make UI faster when there are a lot of search
+    // results. See
+    // https://github.com/JedWatson/react-select/issues/2850#issuecomment-410318717
+    const height = 35;
+    class MenuList extends Component {
+      render() {
+        const { options, children, maxHeight, getValue } = this.props;
+        const [value] = getValue();
+        const initialOffset = options.indexOf(value) * height;
+
+        return (
+          <FixedSizeList
+            height={maxHeight}
+            itemCount={children.length}
+            itemSize={height}
+            initialScrollOffset={initialOffset}
+          >
+            {({ index, style }) => <div style={style}>{children[index]}</div>}
+          </FixedSizeList>
+        );
+      }
+    }
+
     return (
       <AsyncSelect
         isMulti="true"
@@ -341,7 +365,8 @@ class Search extends React.Component {
           Placeholder,
           MultiValueRemove,
           ClearIndicator,
-          DropdownIndicator
+          DropdownIndicator,
+          MenuList
         }}
       />
     );
