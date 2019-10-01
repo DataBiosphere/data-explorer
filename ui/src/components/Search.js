@@ -330,16 +330,16 @@ class Search extends React.Component {
     // https://github.com/JedWatson/react-select/issues/2850#issuecomment-410318717
     class MenuList extends Component {
       render() {
-        const height = 35;
+        const itemSizeHeight = 35;
         const { options, children, maxHeight, getValue } = this.props;
         const [value] = getValue();
-        const initialOffset = options.indexOf(value) * height;
+        const initialOffset = options.indexOf(value) * itemSizeHeight;
 
         return (
           <FixedSizeList
             height={maxHeight}
             itemCount={children.length}
-            itemSize={height}
+            itemSize={itemSizeHeight}
             initialScrollOffset={initialOffset}
           >
             {({ index, style }) => <div style={style}>{children[index]}</div>}
