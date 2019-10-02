@@ -133,8 +133,18 @@ class App extends Component {
         this.setState({
           facetsApiDone: true,
           facets: this.getFacetMap(data.facets),
+          invalidExtraFacets: data.invalid_extra_facets,
           totalCount: data.count
         });
+
+        if (data.invalid_extra_facets && data.invalid_extra_facets.length) {
+          // Delete extraFacets param so if user tries to save a cohort,
+          // cohort won't have invalid extraFacets param
+          const filterParam = new URLSearchParams(window.location.search).get(
+            "filter"
+          );
+          this.updateQueryString(filterParam, "");
+        }
       }
     }.bind(this);
 
@@ -212,6 +222,7 @@ class App extends Component {
               facets={this.state.facets}
               handleSearchBoxChange={this.handleSearchBoxChange}
               handleSearchBoxTyping={this.handleSearchBoxTyping}
+              invalidExtraFacets={this.state.invalidExtraFacets}
               searchPlaceholderText={this.state.searchPlaceholderText}
               searchResults={this.state.searchResults}
               selectedFacetValues={this.state.selectedFacetValues}

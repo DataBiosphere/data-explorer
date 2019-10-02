@@ -12,7 +12,8 @@ const styles = {
   contentMessage: {
     fontWeight: 500,
     padding: 0,
-    width: 200
+    width: 200,
+    wordWrap: "break-word"
   },
   contentRoot: {
     alignItems: "baseline",
@@ -51,12 +52,17 @@ class Snackbar extends React.Component {
   };
 
   render() {
-    const { classes, message } = this.props;
+    const { classes, localStorageKey, message, type } = this.props;
+
+    if (type === "warning") {
+      styles.contentRoot.backgroundColor = colors.warning();
+      styles.contentRoot.borderLeft = "5px solid #dc8412";
+    }
 
     const key = "hasShownSnackbarv2";
     let snackbar = null;
     if (localStorage.getItem(key) === null) {
-      // O NOT COMMIT
+      // DO NOT OMMIT
       //      localStorage.setItem(key, "true");
       snackbar = (
         <MaterialUiSnackbar
@@ -70,9 +76,9 @@ class Snackbar extends React.Component {
           TransitionComponent={TransitionLeft}
         >
           <SnackbarContent
+            style={styles.contentRoot}
             classes={{
-              message: classes.contentMessage,
-              root: classes.contentRoot
+              message: classes.contentMessage
             }}
             message={message}
             action={[
