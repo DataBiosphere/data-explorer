@@ -14,6 +14,7 @@ class Facet(Model):
 
     Do not edit the class manually.
     """
+
     def __init__(self,
                  name=None,
                  description=None,
@@ -226,7 +227,7 @@ class Facet(Model):
     def time_names(self):
         """Gets the time_names of this Facet.
 
-        Array of times. Type string is used to allow for either ints or floats, where floats have underscores replacing decimal points.   # noqa: E501
+        Array of times.  # noqa: E501
 
         :return: The time_names of this Facet.
         :rtype: List[str]
@@ -237,7 +238,7 @@ class Facet(Model):
     def time_names(self, time_names):
         """Sets the time_names of this Facet.
 
-        Array of times. Type string is used to allow for either ints or floats, where floats have underscores replacing decimal points.   # noqa: E501
+        Array of times.  # noqa: E501
 
         :param time_names: The time_names of this Facet.
         :type time_names: List[str]

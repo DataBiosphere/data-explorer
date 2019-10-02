@@ -14,6 +14,7 @@ class SearchResult(Model):
 
     Do not edit the class manually.
     """
+
     def __init__(self,
                  facet_name=None,
                  facet_description=None,
@@ -162,7 +163,7 @@ class SearchResult(Model):
     def is_time_series(self):
         """Gets the is_time_series of this SearchResult.
 
-        Is true when facet_value is nonempty and the field is a time series field.   # noqa: E501
+        True if this is a time series field at a specific point in time.   # noqa: E501
 
         :return: The is_time_series of this SearchResult.
         :rtype: bool
@@ -173,7 +174,7 @@ class SearchResult(Model):
     def is_time_series(self, is_time_series):
         """Sets the is_time_series of this SearchResult.
 
-        Is true when facet_value is nonempty and the field is a time series field.   # noqa: E501
+        True if this is a time series field at a specific point in time.   # noqa: E501
 
         :param is_time_series: The is_time_series of this SearchResult.
         :type is_time_series: bool

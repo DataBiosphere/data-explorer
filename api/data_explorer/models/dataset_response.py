@@ -14,6 +14,7 @@ class DatasetResponse(Model):
 
     Do not edit the class manually.
     """
+
     def __init__(self,
                  name=None,
                  search_placeholder_text=None,

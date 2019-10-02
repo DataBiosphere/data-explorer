@@ -21,6 +21,15 @@ import Facet from "./Facet";
  */
 export default class FacetsResponse {
   /**
+   * Constructs a new <code>FacetsResponse</code>.
+   * Results from a faceted search.
+   * @alias module:model/FacetsResponse
+   * @class
+   */
+
+  constructor() {}
+
+  /**
    * Constructs a <code>FacetsResponse</code> from a plain JavaScript object, optionally creating a new instance.
    * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
    * @param {Object} data The plain JavaScript object bearing properties of interest.
@@ -37,6 +46,18 @@ export default class FacetsResponse {
       if (data.hasOwnProperty("count")) {
         obj["count"] = ApiClient.convertToType(data["count"], "Number");
       }
+      if (data.hasOwnProperty("invalid_filter_facets")) {
+        obj["invalid_filter_facets"] = ApiClient.convertToType(
+          data["invalid_filter_facets"],
+          ["String"]
+        );
+      }
+      if (data.hasOwnProperty("invalid_extra_facets")) {
+        obj["invalid_extra_facets"] = ApiClient.convertToType(
+          data["invalid_extra_facets"],
+          ["String"]
+        );
+      }
     }
     return obj;
   }
@@ -50,4 +71,14 @@ export default class FacetsResponse {
    * @member {Number} count
    */
   count = undefined;
+  /**
+   * Facets that were passed in filter param that don't exist in Elasticsearch index. Example: - Data Explorer url contains   filter=amppd.2019_v1_0101.demographics.sex which is valid. User   saves a cohort with this filter - A new version of AMP PD is released. (Data explorer url remains the   same.) The dataset 2019_v1_0101 is replaced by dataset 2019_v2_0401. - User won't be able to open saved cohort in DE;   amppd.2019_v1_0101.demographics.sex is no longer is Elasticsearch   index. invalid_filter_facets will contain   amppd.2019_v1_0101.demographics.sex
+   * @member {Array.<String>} invalid_filter_facets
+   */
+  invalid_filter_facets = undefined;
+  /**
+   * Facets that were passed in extraFacets param that don't exist in Elasticsearch index. Example: - Data Explorer url contains   extraFacets=amppd.2019_v1_0101.demographics.sex which is valid. User   saves a cohort with this extra facet - A new version of AMP PD is released. (Data explorer url remains the   same.) The dataset 2019_v1_0101 is replaced by dataset 2019_v2_0401. - User won't be able to open saved cohort in DE;   amppd.2019_v1_0101.demographics.sex is no longer is Elasticsearch   index. invalid_extra_facets will contain   amppd.2019_v1_0101.demographics.sex
+   * @member {Array.<String>} invalid_extra_facets
+   */
+  invalid_extra_facets = undefined;
 }

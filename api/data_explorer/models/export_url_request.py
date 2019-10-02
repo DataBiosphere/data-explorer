@@ -14,6 +14,7 @@ class ExportUrlRequest(Model):
 
     Do not edit the class manually.
     """
+
     def __init__(self, cohort_name=None, filter=None,
                  data_explorer_url=None):  # noqa: E501
         """ExportUrlRequest - a model defined in Swagger
