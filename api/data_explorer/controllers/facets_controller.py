@@ -69,8 +69,13 @@ def _process_extra_facets(extra_facets):
     es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
     facets = OrderedDict()
     mapping = es.indices.get_mapping(index=current_app.config['INDEX_NAME'])
+    invalid_extra_facets = []
 
     for es_base_field_name in extra_facets:
+        if not elasticsearch_util.field_exists(es, es_base_field_name):
+            invalid_extra_facets.append(es_base_field_name)
+            continue
+
         es_parent_field_name = es_base_field_name.rsplit('.', 1)[0]
         is_time_series = elasticsearch_util.is_time_series(
             es_base_field_name, mapping)
@@ -102,14 +107,14 @@ def _process_extra_facets(extra_facets):
                        parent_is_time_series, False, True, [], facets, es,
                        mapping)
 
-    # Map from Elasticsearch field name to dict with ui facet name,
-    # Elasticsearch field type, optional UI facet description and Elasticsearch
-    # facet. This map is for extra facets added from the field search dropdown
+    # Map that follows same format as FACET_INFO in __main__.py.
+    # This map is for extra facets added from the field search dropdown
     # on the UI.
     # This must be stored separately from FACET_INFO. If this were added to
     # FACET_INFO, then if user deletes extra facets chip, we wouldn't know which
     # facet to remove from FACET_INFO.
     current_app.config['EXTRA_FACET_INFO'] = facets
+    return invalid_extra_facets
 
 
 def _get_time_name(tsv):
@@ -267,7 +272,7 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     :type extraFacets: List[str]
     :rtype: FacetsResponse
     """
-    _process_extra_facets(extraFacets)
+    invalid_extra_facets = _process_extra_facets(extraFacets)
     combined_facets = (current_app.config['EXTRA_FACET_INFO'].items() +
                        current_app.config['FACET_INFO'].items())
     combined_facets_dict = OrderedDict(combined_facets)
@@ -315,4 +320,5 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
                                      es_response_facets))
 
     return FacetsResponse(facets=facets,
-                          count=es_response._faceted_search.count())
+                          count=es_response._faceted_search.count(),
+                          invalid_extra_facets=invalid_extra_facets)

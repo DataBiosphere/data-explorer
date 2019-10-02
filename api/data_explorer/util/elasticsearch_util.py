@@ -1,6 +1,6 @@
 import json
-import urllib
 import math
+import urllib
 
 from elasticsearch import helpers
 from elasticsearch_dsl import Search
@@ -213,8 +213,18 @@ def get_facet_value_dict(filter_arr, facets):
     return parsed_filter
 
 
+def field_exists(es, field_name):
+    try:
+        response = es.get(index=current_app.config['FIELDS_INDEX_NAME'],
+                          doc_type='type',
+                          id=field_name)
+    except Exception as e:
+        return False
+    return True
+
+
 def get_field_description(es, field_name):
-    s = Search(using=es, index=current_app.config['INDEX_NAME'] + '_fields')
+    s = Search(using=es, index=current_app.config['FIELDS_INDEX_NAME'])
     s.update_from_dict(
         {"query": {
             "bool": {
@@ -229,7 +239,7 @@ def get_field_description(es, field_name):
     if len(hits) == 0:
         raise ValueError(
             'elasticsearch_field_name %s not found in Elasticsearch index %s' %
-            (field_name, current_app.config['INDEX_NAME'] + '_fields'))
+            (field_name, current_app.config['FIELDS_INDEX_NAME']))
     if 'description' in hits[0]['_source']:
         return hits[0]['_source']['description']
     return ''
