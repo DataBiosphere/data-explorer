@@ -88,7 +88,7 @@ class DeHeader extends React.Component {
     const howToUseKey = "hasShownSnackbarv2";
     let howToUseSnackbar = null;
     if (localStorage.getItem(howToUseKey) === null) {
-      // DO OT COMMIT
+      // O NOT COMMIT
       //      localStorage.setItem(howToUseKey, "true");
       howToUseSnackbar = (
         <Snackbar
