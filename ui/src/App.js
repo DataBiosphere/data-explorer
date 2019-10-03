@@ -98,7 +98,7 @@ class App extends Component {
       // looks like https://app.terra.bio/#library/datasets/1000%20Genomes/data-explorer
       // If embed is false: DE is stand-alone. Top-level URL looks like
       // https://test-data-explorer.appspot.com
-      embed: false,
+      embed: new URLSearchParams(window.location.search).has("embed"),
       datasetName: "",
       // What to show in search box by default. If this is the empty string, the
       // react-select default of "Select..." is shown.
@@ -468,7 +468,6 @@ class App extends Component {
       function(error, data) {
         this.facetsCallback(error, data);
         this.setState({
-          embed: params.has("embed"),
           // Set selectedFacetValues state after facetsCallback.
           // If it were set before, the relevant facet might not yet be in extraFacetEsFieldsNames.
           selectedFacetValues: filterArrayToMap(
@@ -489,6 +488,12 @@ class App extends Component {
     window.history.replaceState(null, "", "?" + params.toString());
 
     // Tell Terra about new params so top-level Terra url can be updated
+    // There is a minor bug where on initial page load for embeeded DE, an
+    // invalid filter/extraFacet param is removed from iframe url but not
+    // parent Terra url. This is because the iframe is not yet initialized in
+    // parent dom, so window.parentIFrame doesn't exist yet. Next time user
+    // takes an action (such as add a new filter), the invalid param will be
+    // removed in parent.
     if (this.state.embed && "parentIFrame" in window) {
       params.delete("embed");
       // Don't set targetOrigin because it's unknown. It could be app.terra.bio,
