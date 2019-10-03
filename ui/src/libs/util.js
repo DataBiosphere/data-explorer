@@ -4,16 +4,23 @@
  * In: ["Gender esfn%3Dmale", "Gender esfn%3Dfemale", "Population esfn%3DAmerican"]
  * Out: {"Gender esfn" => ["male", "female"], "Population esfn" => ["American"]}
  */
-const filterArrayToMap = function(filterArray) {
+const filterArrayToMap = function(filterArray, invalidFilterFacets) {
   let filterMap = new Map();
   filterArray.forEach(function(pair) {
     pair = pair.split(encodeURIComponent("="));
-    if (filterMap.has(pair[0])) {
-      let arr = filterMap.get(pair[0]);
-      arr.push(pair[1]);
-      filterMap.set(pair[0], arr);
+    const esFieldName = pair[0];
+    const facetValue = pair[1];
+
+    if (invalidFilterFacets && invalidFilterFacets.includes(esFieldName)) {
+      return;
+    }
+
+    if (filterMap.has(esFieldName)) {
+      let arr = filterMap.get(esFieldName);
+      arr.push(facetValue);
+      filterMap.set(esFieldName, arr);
     } else {
-      filterMap.set(pair[0], [pair[1]]);
+      filterMap.set(esFieldName, [facetValue]);
     }
   });
   return filterMap;

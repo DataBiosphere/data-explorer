@@ -188,29 +188,35 @@ def convert_to_index_name(s):
     return s
 
 
-def get_facet_value_dict(filter_arr, facets):
+def get_facet_value_dict(es, filter_arr, facets):
     """
     Parses an array of filters and es facets into a dict of facet_name:[facet_value]
     mappings.
     """
+    invalid_filter_facets = []
     if not filter_arr or filter_arr == [""]:
-        return {}
-    parsed_filter = {}
+        return {}, invalid_filter_facets
+
+    filter_dict = {}
     for facet_filter in filter_arr:
         filter_str = urllib.unquote(facet_filter).decode('utf8')
-        key_val = filter_str.split('=')
-        name = key_val[0]
-        es_facet = facets[name]['es_facet']
-        if is_histogram_facet(es_facet):
-            value = range_to_number(key_val[1])
-        else:
-            value = key_val[1]
+        facet_name_value = filter_str.rsplit('=', 1)
+        es_field_name = facet_name_value[0]
+        facet_value = facet_name_value[1]
 
-        if not name in parsed_filter:
-            parsed_filter[name] = [value]
+        if es_field_name != 'Samples Overview' and not field_exists(
+                es, es_field_name):
+            invalid_filter_facets.append(es_field_name)
+            continue
+
+        if is_histogram_facet(facets[es_field_name]['es_facet']):
+            facet_value = range_to_number(facet_value)
+
+        if not es_field_name in filter_dict:
+            filter_dict[es_field_name] = [facet_value]
         else:
-            parsed_filter[name].append(value)
-    return parsed_filter
+            filter_dict[es_field_name].append(facet_value)
+    return filter_dict, invalid_filter_facets
 
 
 def field_exists(es, field_name):

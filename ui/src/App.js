@@ -137,9 +137,17 @@ class App extends Component {
           totalCount: data.count
         });
 
+        if (data.invalid_filter_facets && data.invalid_filter_facets.length) {
+          // Delete filter param so if user tries to save a cohort,
+          // cohort won't have invalid param
+          const extraFacetsParam = new URLSearchParams(
+            window.location.search
+          ).get("extraFacets");
+          this.updateQueryString("", extraFacetsParam);
+        }
         if (data.invalid_extra_facets && data.invalid_extra_facets.length) {
           // Delete extraFacets param so if user tries to save a cohort,
-          // cohort won't have invalid extraFacets param
+          // cohort won't have invalid param
           const filterParam = new URLSearchParams(window.location.search).get(
             "filter"
           );
@@ -446,7 +454,10 @@ class App extends Component {
           embed: params.has("embed"),
           // Set selectedFacetValues state after facetsCallback.
           // If it were set before, the relevant facet might not yet be in extraFacetEsFieldsNames.
-          selectedFacetValues: filterArrayToMap(filter),
+          selectedFacetValues: filterArrayToMap(
+            filter,
+            data.invalid_filter_facets
+          ),
           extraFacetEsFieldNames: extraFacets
         });
       }.bind(this)

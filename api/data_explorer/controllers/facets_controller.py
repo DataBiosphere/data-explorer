@@ -61,12 +61,11 @@ def _add_facet(es_field_name, is_time_series, parent_is_time_series,
             es, es_field_name, field_type, time_series_vals)
 
 
-def _process_extra_facets(extra_facets):
+def _process_extra_facets(es, extra_facets):
     if (not extra_facets) or extra_facets == ['']:
         current_app.config['EXTRA_FACET_INFO'] = {}
         return
 
-    es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
     facets = OrderedDict()
     mapping = es.indices.get_mapping(index=current_app.config['INDEX_NAME'])
     invalid_extra_facets = []
@@ -272,13 +271,15 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     :type extraFacets: List[str]
     :rtype: FacetsResponse
     """
-    invalid_extra_facets = _process_extra_facets(extraFacets)
+    es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
+    invalid_extra_facets = _process_extra_facets(es, extraFacets)
     combined_facets = (current_app.config['EXTRA_FACET_INFO'].items() +
                        current_app.config['FACET_INFO'].items())
     combined_facets_dict = OrderedDict(combined_facets)
-    search = DatasetFacetedSearch(
-        elasticsearch_util.get_facet_value_dict(filter, combined_facets_dict),
-        combined_facets_dict)
+
+    filter_dict, invalid_filter_facets = elasticsearch_util.get_facet_value_dict(
+        es, filter, combined_facets_dict)
+    search = DatasetFacetedSearch(filter_dict, combined_facets_dict)
     # Uncomment to print Elasticsearch request python object
     # current_app.logger.info(
     #     'Elasticsearch request: %s' % pprint.pformat(search.build_search().to_dict()))
@@ -321,4 +322,5 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
 
     return FacetsResponse(facets=facets,
                           count=es_response._faceted_search.count(),
+                          invalid_filter_facets=invalid_filter_facets,
                           invalid_extra_facets=invalid_extra_facets)

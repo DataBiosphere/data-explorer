@@ -62,7 +62,7 @@ class Snackbar extends React.Component {
     const key = "hasShownSnackbarv2";
     let snackbar = null;
     if (localStorage.getItem(key) === null) {
-      // DO NOT OMMIT
+      // O NOT COMMIT
       //      localStorage.setItem(key, "true");
       snackbar = (
         <MaterialUiSnackbar
