@@ -188,17 +188,28 @@ def convert_to_index_name(s):
     return s
 
 
-def get_facet_value_dict(es, filter_arr, facets):
+def get_facet_value_dict(es, filters, facets):
     """
-    Parses an array of filters and es facets into a dict of facet_name:[facet_value]
-    mappings.
+    Parses filters and facets into a dict from es_field_name to list of facet values.
+
+    Args:
+      es: Elasticsearch
+      filters: List of filter params, where each param has the format
+        es_field_name=facet_value
+      facets: A dict of facet info's. For facet info structure, see
+        app.app.config['FACET_INFO'] in __main__.py
+
+    Returns:
+      1. Dict from es_field_name to list of facet values
+      2. List of es_field_name that don't exist in Elasticsearch index. These
+         invalid fields are not in above dict.
     """
     invalid_filter_facets = []
-    if not filter_arr or filter_arr == [""]:
+    if not filters or filters == [""]:
         return {}, invalid_filter_facets
 
     filter_dict = {}
-    for facet_filter in filter_arr:
+    for facet_filter in filters:
         filter_str = urllib.unquote(facet_filter).decode('utf8')
         facet_name_value = filter_str.rsplit('=', 1)
         es_field_name = facet_name_value[0]

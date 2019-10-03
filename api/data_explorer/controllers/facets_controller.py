@@ -62,6 +62,16 @@ def _add_facet(es_field_name, is_time_series, parent_is_time_series,
 
 
 def _process_extra_facets(es, extra_facets):
+    """Processes extra facets and sets current_app.config['EXTRA_FACET_INFO'].
+
+    Args:
+      es: Elasticsearch
+      extra_facets: List of es_field_name
+
+    Returns:
+      A list of es_field_names that don't exist in Elasticsearch index. The
+      invalid fields are not included in current_app.config['EXTRA_FACET_INFO']
+    """
     if (not extra_facets) or extra_facets == ['']:
         current_app.config['EXTRA_FACET_INFO'] = {}
         return
