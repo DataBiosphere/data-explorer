@@ -221,11 +221,21 @@ def get_facet_value_dict(es, filter_arr, facets):
 
 def field_exists(es, field_name):
     try:
-        response = es.get(index=current_app.config['FIELDS_INDEX_NAME'],
-                          doc_type='type',
-                          id=field_name)
-    except Exception as e:
-        return False
+        es.get(index=current_app.config['FIELDS_INDEX_NAME'],
+               doc_type='type',
+               id=field_name)
+    except Exception:
+        # Time series field_name looks like
+        # verily-public-data.framingham_heart_study_teaching.framingham_heart_study_teaching.AGE.1
+        # Remove the ".1" and try again
+        field_name = field_name.rsplit('.', 1)[0]
+        try:
+            es.get(index=current_app.config['FIELDS_INDEX_NAME'],
+                   doc_type='type',
+                   id=field_name)
+        except Exception:
+            return False
+        return True
     return True
 
 
