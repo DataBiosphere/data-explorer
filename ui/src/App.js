@@ -139,12 +139,12 @@ class App extends Component {
         });
 
         const pipe = encodeURIComponent("|");
-        const params = new URLSearchParams(window.location.search);
         if (data.invalid_filter_facets && data.invalid_filter_facets.length) {
           // Delete invalid filter params so if user tries to save a cohort,
           // cohort won't have invalid param.
           // Also, there is no chip for invalid filter. So delete invalid parts
           // of filter param so filter param matches chips.
+          const params = new URLSearchParams(window.location.search);
           const filterParam = params
             .get("filter")
             .split(pipe)
@@ -160,6 +160,7 @@ class App extends Component {
         if (data.invalid_extra_facets && data.invalid_extra_facets.length) {
           // Delete invalid extraFacets params so if user tries to save a cohort,
           // cohort won't have invalid param.
+          const params = new URLSearchParams(window.location.search);
           const extraFacetsParam = params
             .get("extraFacets")
             .split(pipe)
@@ -488,12 +489,6 @@ class App extends Component {
     window.history.replaceState(null, "", "?" + params.toString());
 
     // Tell Terra about new params so top-level Terra url can be updated
-    // There is a minor bug where on initial page load for embeeded DE, an
-    // invalid filter/extraFacet param is removed from iframe url but not
-    // parent Terra url. This is because the iframe is not yet initialized in
-    // parent dom, so window.parentIFrame doesn't exist yet. Next time user
-    // takes an action (such as add a new filter), the invalid param will be
-    // removed in parent.
     if (this.state.embed && "parentIFrame" in window) {
       params.delete("embed");
       // Don't set targetOrigin because it's unknown. It could be app.terra.bio,
