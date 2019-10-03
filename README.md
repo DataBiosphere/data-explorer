@@ -136,7 +136,8 @@ update the server implementations:
     swagger-codegen generate -i api/api.yaml -l javascript -o ui/src/api -DuseES6=true
     yapf -ir . --exclude ui/node_modules
     ```
-- Update the server implementations to resolve any broken dependencies on old API definitions or implement additional functionality to match the new specs.
+- Update API and UI servers.
+- Don't forget to fix JS warnings. (Otherwise CircleCI will fail.)
 
 ### One-time setup
 

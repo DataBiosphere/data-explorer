@@ -65,7 +65,7 @@ const createInvalidFacetsSnackbar = function(
               style={styles.snackbarWarningIcon}
             />
             <div className={classes.snackbarTitle}>
-              {invalidFacets.length == 1 ? "Unknown facet" : "Unknown facets"}
+              {invalidFacets.length === 1 ? "Unknown facet" : "Unknown facets"}
             </div>
           </div>
           <br />
@@ -88,8 +88,7 @@ class DeHeader extends React.Component {
     const howToUseKey = "hasShownSnackbarv2";
     let howToUseSnackbar = null;
     if (localStorage.getItem(howToUseKey) === null) {
-      // O NOT COMMIT
-      //      localStorage.setItem(howToUseKey, "true");
+      localStorage.setItem(howToUseKey, "true");
       howToUseSnackbar = (
         <Snackbar
           message={
@@ -124,7 +123,7 @@ class DeHeader extends React.Component {
             invalidExtraFacets,
             <div>
               Try searching for
-              {invalidFilterFacets.length == 1
+              {invalidFilterFacets.length === 1
                 ? " this facet "
                 : " these facets "}
               and saving cohort to Terra again.
