@@ -27,7 +27,7 @@ const styles = {
   closeButton: {
     height: "24px",
     width: "24px",
-    // Disble hover circle so we don't have to line it up with close icon
+    // Disable hover circle so we don't have to line it up with close icon
     "&:hover": {
       backgroundColor: "unset"
     }
@@ -52,52 +52,44 @@ class Snackbar extends React.Component {
   };
 
   render() {
-    const { classes, localStorageKey, message, type } = this.props;
+    const { classes, message, type } = this.props;
 
     if (type === "warning") {
       styles.contentRoot.backgroundColor = colors.warning();
       styles.contentRoot.borderLeft = "5px solid #dc8412";
     }
 
-    const key = "hasShownSnackbarv2";
-    let snackbar = null;
-    if (localStorage.getItem(key) === null) {
-      // O NOT COMMIT
-      //      localStorage.setItem(key, "true");
-      snackbar = (
-        <MaterialUiSnackbar
-          className={classes.root}
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "right"
+    return (
+      <MaterialUiSnackbar
+        className={classes.root}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right"
+        }}
+        open={this.state.open}
+        onClose={this.handleClose}
+        TransitionComponent={TransitionLeft}
+      >
+        <SnackbarContent
+          style={styles.contentRoot}
+          classes={{
+            message: classes.contentMessage
           }}
-          open={this.state.open}
-          onClose={this.handleClose}
-          TransitionComponent={TransitionLeft}
-        >
-          <SnackbarContent
-            style={styles.contentRoot}
-            classes={{
-              message: classes.contentMessage
-            }}
-            message={message}
-            action={[
-              <IconButton
-                key="close"
-                aria-label="Close"
-                color="inherit"
-                onClick={this.handleClose}
-                className={classes.closeButton}
-              >
-                <CloseIcon className={classes.closeIcon} />
-              </IconButton>
-            ]}
-          />
-        </MaterialUiSnackbar>
-      );
-    }
-
-    return snackbar;
+          message={message}
+          action={[
+            <IconButton
+              key="close"
+              aria-label="Close"
+              color="inherit"
+              onClick={this.handleClose}
+              className={classes.closeButton}
+            >
+              <CloseIcon className={classes.closeIcon} />
+            </IconButton>
+          ]}
+        />
+      </MaterialUiSnackbar>
+    );
   }
 
   handleClose = (event, reason) => {

@@ -48,55 +48,96 @@ const styles = {
   }
 };
 
+const createInvalidFacetsSnackbar = function(
+  classes,
+  invalidFacets,
+  instructionDiv
+) {
+  const invalidFacetsDivs = invalidFacets.map(facet => <div>{facet}</div>);
+  return (
+    <Snackbar
+      message={
+        <>
+          <div className={classes.snackbarHeader}>
+            {/* Set style instead of className; otherwise, width is not overridden */}
+            <FontAwesomeIcon
+              icon={faExclamationTriangle}
+              style={styles.snackbarWarningIcon}
+            />
+            <div className={classes.snackbarTitle}>
+              {invalidFacets.length == 1 ? "Unknown facet" : "Unknown facets"}
+            </div>
+          </div>
+          <br />
+          <div>
+            <i>{invalidFacetsDivs}</i>
+          </div>
+          <br />
+          {instructionDiv}
+        </>
+      }
+      type="warning"
+    />
+  );
+};
+
 class DeHeader extends React.Component {
   render() {
-    const { classes, invalidExtraFacets } = this.props;
+    const { classes, invalidFilterFacets, invalidExtraFacets } = this.props;
 
-    let snackbar = null;
-    if (invalidExtraFacets && invalidExtraFacets.length) {
-      // Render each facet on its own line
-      const invalidExtraFacetsDivs = invalidExtraFacets.map(facet => (
-        <div>{facet}</div>
-      ));
-      snackbar = (
+    const howToUseKey = "hasShownSnackbarv2";
+    let howToUseSnackbar = null;
+    if (localStorage.getItem(howToUseKey) === null) {
+      // DO OT COMMIT
+      //      localStorage.setItem(howToUseKey, "true");
+      howToUseSnackbar = (
         <Snackbar
           message={
             <>
-              <div className={classes.snackbarHeader}>
-                {/* Set style instead of className; otherwise, width is not overridden */}
-                <FontAwesomeIcon
-                  icon={faExclamationTriangle}
-                  style={styles.snackbarWarningIcon}
-                />
-                <div className={classes.snackbarTitle}>
-                  {invalidExtraFacets.length == 1
-                    ? "Unknown facet"
-                    : "Unknown facets"}
-                </div>
+              <div>
+                <b>How to use Data Explorer</b>
               </div>
               <br />
+              <div>Click on a bar to select it</div>
               <div>
-                <i>{invalidExtraFacetsDivs}</i>
-              </div>
-              <br />
-              <div>
-                Try searching for
-                {invalidExtraFacets.length == 1
-                  ? " this facet "
-                  : " these facets "}
-                and saving cohort to Terra again.
+                <i>Hint:&nbsp;</i> Clicking on whitespace also works
               </div>
             </>
           }
-          type="warning"
         />
       );
     }
 
+    const invalidFilterFacetsSnackbar =
+      invalidFilterFacets && invalidFilterFacets.length
+        ? createInvalidFacetsSnackbar(
+            classes,
+            invalidFilterFacets,
+            <div>Try recreating your cohort and saving to Terra again.</div>
+          )
+        : null;
+
+    const invalidExtraFacetsSnackbar =
+      invalidExtraFacets && invalidExtraFacets.length
+        ? createInvalidFacetsSnackbar(
+            classes,
+            invalidExtraFacets,
+            <div>
+              Try searching for
+              {invalidFilterFacets.length == 1
+                ? " this facet "
+                : " these facets "}
+              and saving cohort to Terra again.
+            </div>
+          )
+        : null;
+
     return (
       <AppBar position="static" className={classes.appBar}>
         <Toolbar className={classes.toolbar}>
-          {snackbar}
+          {howToUseSnackbar}
+          {invalidFilterFacetsSnackbar}
+          {invalidExtraFacetsSnackbar}
           <Search
             searchPlaceholderText={this.props.searchPlaceholderText}
             defaultOptions={this.props.searchResults}

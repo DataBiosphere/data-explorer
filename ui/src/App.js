@@ -133,6 +133,7 @@ class App extends Component {
         this.setState({
           facetsApiDone: true,
           facets: this.getFacetMap(data.facets),
+          invalidFilterFacets: data.invalid_filter_facets,
           invalidExtraFacets: data.invalid_extra_facets,
           totalCount: data.count
         });
@@ -230,6 +231,7 @@ class App extends Component {
               facets={this.state.facets}
               handleSearchBoxChange={this.handleSearchBoxChange}
               handleSearchBoxTyping={this.handleSearchBoxTyping}
+              invalidFilterFacets={this.state.invalidFilterFacets}
               invalidExtraFacets={this.state.invalidExtraFacets}
               searchPlaceholderText={this.state.searchPlaceholderText}
               searchResults={this.state.searchResults}
