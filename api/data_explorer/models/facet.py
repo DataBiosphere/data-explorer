@@ -14,7 +14,6 @@ class Facet(Model):
 
     Do not edit the class manually.
     """
-
     def __init__(self,
                  name=None,
                  description=None,

@@ -9,7 +9,6 @@ from elasticsearch_dsl import FacetedSearch
 
 class DatasetFacetedSearch(FacetedSearch):
     """Subclass of FacetedSearch for Datasets."""
-
     def __init__(self, filters={}, es_facets={}):
         """
         :param filters: a dictionary of facet_name:[object] values to filter

@@ -14,7 +14,6 @@ class ExportUrlResponse(Model):
 
     Do not edit the class manually.
     """
-
     def __init__(self, url=None, authorization_domain=None):  # noqa: E501
         """ExportUrlResponse - a model defined in Swagger
 

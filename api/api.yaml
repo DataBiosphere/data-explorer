@@ -147,7 +147,7 @@ definitions:
           Facets that were passed in filter param that don't exist in
           Elasticsearch index. Example:
           - Data Explorer url contains
-            filter=amppd.2019_v1_0101.demographics.sex which is valid. User
+            filter=amppd.2019_v1_0101.demographics.sex=female which is valid. User
             saves a cohort with this filter
           - A new version of AMP PD is released. (Data explorer url remains the
             same.) The dataset 2019_v1_0101 is replaced by dataset 2019_v2_0401.

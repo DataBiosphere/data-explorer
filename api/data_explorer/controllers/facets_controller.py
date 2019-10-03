@@ -107,8 +107,7 @@ def _process_extra_facets(es, extra_facets):
                        mapping)
 
     # Map that follows same format as FACET_INFO in __main__.py.
-    # This map is for extra facets added from the field search dropdown
-    # on the UI.
+    # This map is for extra facets added from the search dropdown.
     # This must be stored separately from FACET_INFO. If this were added to
     # FACET_INFO, then if user deletes extra facets chip, we wouldn't know which
     # facet to remove from FACET_INFO.
