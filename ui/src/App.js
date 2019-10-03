@@ -138,21 +138,36 @@ class App extends Component {
           totalCount: data.count
         });
 
+        const pipe = encodeURIComponent("|");
+        const params = new URLSearchParams(window.location.search);
         if (data.invalid_filter_facets && data.invalid_filter_facets.length) {
-          // Delete filter param so if user tries to save a cohort,
-          // cohort won't have invalid param
-          const extraFacetsParam = new URLSearchParams(
-            window.location.search
-          ).get("extraFacets");
-          this.updateQueryString("", extraFacetsParam);
+          // Delete invalid filter params so if user tries to save a cohort,
+          // cohort won't have invalid param.
+          // Also, there is no chip for invalid filter. So delete invalid parts
+          // of filter param so filter param matches chips.
+          const filterParam = params
+            .get("filter")
+            .split(pipe)
+            .filter(
+              filter =>
+                !data.invalid_filter_facets.some(invalidFacet =>
+                  filter.includes(invalidFacet)
+                )
+            )
+            .join(encodeURIComponent("|"));
+          this.updateQueryString(filterParam, params.get("extraFacets"));
         }
         if (data.invalid_extra_facets && data.invalid_extra_facets.length) {
-          // Delete extraFacets param so if user tries to save a cohort,
-          // cohort won't have invalid param
-          const filterParam = new URLSearchParams(window.location.search).get(
-            "filter"
-          );
-          this.updateQueryString(filterParam, "");
+          // Delete invalid extraFacets params so if user tries to save a cohort,
+          // cohort won't have invalid param.
+          const extraFacetsParam = params
+            .get("extraFacets")
+            .split(pipe)
+            .filter(
+              extraFacet => !data.invalid_extra_facets.includes(extraFacet)
+            )
+            .join(encodeURIComponent("|"));
+          this.updateQueryString(params.get("filter"), extraFacetsParam);
         }
       }
     }.bind(this);

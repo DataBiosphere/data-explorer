@@ -53,7 +53,9 @@ const createInvalidFacetsSnackbar = function(
   invalidFacets,
   instructionDiv
 ) {
-  const invalidFacetsDivs = invalidFacets.map(facet => <div>{facet}</div>);
+  const invalidFacetsDivs = invalidFacets.map(facet => (
+    <div key={facet}>{facet}</div>
+  ));
   return (
     <Snackbar
       message={
