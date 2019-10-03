@@ -142,6 +142,38 @@ definitions:
         description: >
           Number of entities represented by current facet selection. For
           example, this could be 40, representing 40 people.
+      invalid_filter_facets:
+        description: >
+          Facets that were passed in filter param that don't exist in
+          Elasticsearch index. Example:
+          - Data Explorer url contains
+            filter=amppd.2019_v1_0101.demographics.sex=female which is valid. User
+            saves a cohort with this filter
+          - A new version of AMP PD is released. (Data explorer url remains the
+            same.) The dataset 2019_v1_0101 is replaced by dataset 2019_v2_0401.
+          - User won't be able to open saved cohort in DE;
+            amppd.2019_v1_0101.demographics.sex is no longer is Elasticsearch
+            index. invalid_filter_facets will contain
+            amppd.2019_v1_0101.demographics.sex
+        type: array
+        items:
+          type: string
+      invalid_extra_facets:
+        description: >
+          Facets that were passed in extraFacets param that don't exist in
+          Elasticsearch index. Example:
+          - Data Explorer url contains
+            extraFacets=amppd.2019_v1_0101.demographics.sex which is valid. User
+            saves a cohort with this extra facet
+          - A new version of AMP PD is released. (Data explorer url remains the
+            same.) The dataset 2019_v1_0101 is replaced by dataset 2019_v2_0401.
+          - User won't be able to open saved cohort in DE;
+            amppd.2019_v1_0101.demographics.sex is no longer is Elasticsearch
+            index. invalid_extra_facets will contain
+            amppd.2019_v1_0101.demographics.sex
+        type: array
+        items:
+          type: string
   Facet:
     description: >
       A facet. For example, the Gender facet would include the facet name

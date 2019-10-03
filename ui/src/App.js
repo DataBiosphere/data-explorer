@@ -98,7 +98,7 @@ class App extends Component {
       // looks like https://app.terra.bio/#library/datasets/1000%20Genomes/data-explorer
       // If embed is false: DE is stand-alone. Top-level URL looks like
       // https://test-data-explorer.appspot.com
-      embed: false,
+      embed: new URLSearchParams(window.location.search).has("embed"),
       datasetName: "",
       // What to show in search box by default. If this is the empty string, the
       // react-select default of "Select..." is shown.
@@ -133,8 +133,43 @@ class App extends Component {
         this.setState({
           facetsApiDone: true,
           facets: this.getFacetMap(data.facets),
+          invalidFilterFacets: data.invalid_filter_facets,
+          invalidExtraFacets: data.invalid_extra_facets,
           totalCount: data.count
         });
+
+        const pipe = encodeURIComponent("|");
+        if (data.invalid_filter_facets && data.invalid_filter_facets.length) {
+          // Delete invalid filter params so if user tries to save a cohort,
+          // cohort won't have invalid param.
+          // Also, there is no chip for invalid filter. So delete invalid parts
+          // of filter param so filter param matches chips.
+          const params = new URLSearchParams(window.location.search);
+          const filterParam = params
+            .get("filter")
+            .split(pipe)
+            .filter(
+              filter =>
+                !data.invalid_filter_facets.some(invalidFacet =>
+                  filter.includes(invalidFacet)
+                )
+            )
+            .join(encodeURIComponent("|"));
+          this.updateQueryString(filterParam, params.get("extraFacets"));
+        }
+        if (data.invalid_extra_facets && data.invalid_extra_facets.length) {
+          // Delete invalid extraFacets params so if user tries to save a cohort,
+          // cohort won't have invalid param.
+          const params = new URLSearchParams(window.location.search);
+          const extraFacetsParam = params
+            .get("extraFacets")
+            .split(pipe)
+            .filter(
+              extraFacet => !data.invalid_extra_facets.includes(extraFacet)
+            )
+            .join(encodeURIComponent("|"));
+          this.updateQueryString(params.get("filter"), extraFacetsParam);
+        }
       }
     }.bind(this);
 
@@ -212,6 +247,8 @@ class App extends Component {
               facets={this.state.facets}
               handleSearchBoxChange={this.handleSearchBoxChange}
               handleSearchBoxTyping={this.handleSearchBoxTyping}
+              invalidFilterFacets={this.state.invalidFilterFacets}
+              invalidExtraFacets={this.state.invalidExtraFacets}
               searchPlaceholderText={this.state.searchPlaceholderText}
               searchResults={this.state.searchResults}
               selectedFacetValues={this.state.selectedFacetValues}
@@ -432,10 +469,12 @@ class App extends Component {
       function(error, data) {
         this.facetsCallback(error, data);
         this.setState({
-          embed: params.has("embed"),
           // Set selectedFacetValues state after facetsCallback.
           // If it were set before, the relevant facet might not yet be in extraFacetEsFieldsNames.
-          selectedFacetValues: filterArrayToMap(filter),
+          selectedFacetValues: filterArrayToMap(
+            filter,
+            data.invalid_filter_facets
+          ),
           extraFacetEsFieldNames: extraFacets
         });
       }.bind(this)

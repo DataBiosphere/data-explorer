@@ -15,20 +15,40 @@ class FacetsResponse(Model):
 
     Do not edit the class manually.
     """
-    def __init__(self, facets=None, count=None):  # noqa: E501
+    def __init__(self,
+                 facets=None,
+                 count=None,
+                 invalid_filter_facets=None,
+                 invalid_extra_facets=None):  # noqa: E501
         """FacetsResponse - a model defined in Swagger
 
         :param facets: The facets of this FacetsResponse.  # noqa: E501
         :type facets: List[Facet]
         :param count: The count of this FacetsResponse.  # noqa: E501
         :type count: int
+        :param invalid_filter_facets: The invalid_filter_facets of this FacetsResponse.  # noqa: E501
+        :type invalid_filter_facets: List[str]
+        :param invalid_extra_facets: The invalid_extra_facets of this FacetsResponse.  # noqa: E501
+        :type invalid_extra_facets: List[str]
         """
-        self.swagger_types = {'facets': List[Facet], 'count': int}
+        self.swagger_types = {
+            'facets': List[Facet],
+            'count': int,
+            'invalid_filter_facets': List[str],
+            'invalid_extra_facets': List[str]
+        }
 
-        self.attribute_map = {'facets': 'facets', 'count': 'count'}
+        self.attribute_map = {
+            'facets': 'facets',
+            'count': 'count',
+            'invalid_filter_facets': 'invalid_filter_facets',
+            'invalid_extra_facets': 'invalid_extra_facets'
+        }
 
         self._facets = facets
         self._count = count
+        self._invalid_filter_facets = invalid_filter_facets
+        self._invalid_extra_facets = invalid_extra_facets
 
     @classmethod
     def from_dict(cls, dikt):
@@ -84,3 +104,49 @@ class FacetsResponse(Model):
         """
 
         self._count = count
+
+    @property
+    def invalid_filter_facets(self):
+        """Gets the invalid_filter_facets of this FacetsResponse.
+
+        Facets that were passed in filter param that don't exist in Elasticsearch index. Example: - Data Explorer url contains   filter=amppd.2019_v1_0101.demographics.sex which is valid. User   saves a cohort with this filter - A new version of AMP PD is released. (Data explorer url remains the   same.) The dataset 2019_v1_0101 is replaced by dataset 2019_v2_0401. - User won't be able to open saved cohort in DE;   amppd.2019_v1_0101.demographics.sex is no longer is Elasticsearch   index. invalid_filter_facets will contain   amppd.2019_v1_0101.demographics.sex   # noqa: E501
+
+        :return: The invalid_filter_facets of this FacetsResponse.
+        :rtype: List[str]
+        """
+        return self._invalid_filter_facets
+
+    @invalid_filter_facets.setter
+    def invalid_filter_facets(self, invalid_filter_facets):
+        """Sets the invalid_filter_facets of this FacetsResponse.
+
+        Facets that were passed in filter param that don't exist in Elasticsearch index. Example: - Data Explorer url contains   filter=amppd.2019_v1_0101.demographics.sex which is valid. User   saves a cohort with this filter - A new version of AMP PD is released. (Data explorer url remains the   same.) The dataset 2019_v1_0101 is replaced by dataset 2019_v2_0401. - User won't be able to open saved cohort in DE;   amppd.2019_v1_0101.demographics.sex is no longer is Elasticsearch   index. invalid_filter_facets will contain   amppd.2019_v1_0101.demographics.sex   # noqa: E501
+
+        :param invalid_filter_facets: The invalid_filter_facets of this FacetsResponse.
+        :type invalid_filter_facets: List[str]
+        """
+
+        self._invalid_filter_facets = invalid_filter_facets
+
+    @property
+    def invalid_extra_facets(self):
+        """Gets the invalid_extra_facets of this FacetsResponse.
+
+        Facets that were passed in extraFacets param that don't exist in Elasticsearch index. Example: - Data Explorer url contains   extraFacets=amppd.2019_v1_0101.demographics.sex which is valid. User   saves a cohort with this extra facet - A new version of AMP PD is released. (Data explorer url remains the   same.) The dataset 2019_v1_0101 is replaced by dataset 2019_v2_0401. - User won't be able to open saved cohort in DE;   amppd.2019_v1_0101.demographics.sex is no longer is Elasticsearch   index. invalid_extra_facets will contain   amppd.2019_v1_0101.demographics.sex   # noqa: E501
+
+        :return: The invalid_extra_facets of this FacetsResponse.
+        :rtype: List[str]
+        """
+        return self._invalid_extra_facets
+
+    @invalid_extra_facets.setter
+    def invalid_extra_facets(self, invalid_extra_facets):
+        """Sets the invalid_extra_facets of this FacetsResponse.
+
+        Facets that were passed in extraFacets param that don't exist in Elasticsearch index. Example: - Data Explorer url contains   extraFacets=amppd.2019_v1_0101.demographics.sex which is valid. User   saves a cohort with this extra facet - A new version of AMP PD is released. (Data explorer url remains the   same.) The dataset 2019_v1_0101 is replaced by dataset 2019_v2_0401. - User won't be able to open saved cohort in DE;   amppd.2019_v1_0101.demographics.sex is no longer is Elasticsearch   index. invalid_extra_facets will contain   amppd.2019_v1_0101.demographics.sex   # noqa: E501
+
+        :param invalid_extra_facets: The invalid_extra_facets of this FacetsResponse.
+        :type invalid_extra_facets: List[str]
+        """
+
+        self._invalid_extra_facets = invalid_extra_facets

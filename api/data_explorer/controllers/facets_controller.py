@@ -61,16 +61,30 @@ def _add_facet(es_field_name, is_time_series, parent_is_time_series,
             es, es_field_name, field_type, time_series_vals)
 
 
-def _process_extra_facets(extra_facets):
+def _process_extra_facets(es, extra_facets):
+    """Processes extra facets and sets current_app.config['EXTRA_FACET_INFO'].
+
+    Args:
+      es: Elasticsearch
+      extra_facets: List of es_field_name
+
+    Returns:
+      A list of es_field_names that don't exist in Elasticsearch index. The
+      invalid fields are not included in current_app.config['EXTRA_FACET_INFO']
+    """
     if (not extra_facets) or extra_facets == ['']:
         current_app.config['EXTRA_FACET_INFO'] = {}
         return
 
-    es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
     facets = OrderedDict()
     mapping = es.indices.get_mapping(index=current_app.config['INDEX_NAME'])
+    invalid_extra_facets = []
 
     for es_base_field_name in extra_facets:
+        if not elasticsearch_util.field_exists(es, es_base_field_name):
+            invalid_extra_facets.append(es_base_field_name)
+            continue
+
         es_parent_field_name = es_base_field_name.rsplit('.', 1)[0]
         is_time_series = elasticsearch_util.is_time_series(
             es_base_field_name, mapping)
@@ -102,14 +116,13 @@ def _process_extra_facets(extra_facets):
                        parent_is_time_series, False, True, [], facets, es,
                        mapping)
 
-    # Map from Elasticsearch field name to dict with ui facet name,
-    # Elasticsearch field type, optional UI facet description and Elasticsearch
-    # facet. This map is for extra facets added from the field search dropdown
-    # on the UI.
+    # Map that follows same format as FACET_INFO in __main__.py.
+    # This map is for extra facets added from the search dropdown.
     # This must be stored separately from FACET_INFO. If this were added to
     # FACET_INFO, then if user deletes extra facets chip, we wouldn't know which
     # facet to remove from FACET_INFO.
     current_app.config['EXTRA_FACET_INFO'] = facets
+    return invalid_extra_facets
 
 
 def _get_time_name(tsv):
@@ -267,13 +280,15 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     :type extraFacets: List[str]
     :rtype: FacetsResponse
     """
-    _process_extra_facets(extraFacets)
+    es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
+    invalid_extra_facets = _process_extra_facets(es, extraFacets)
     combined_facets = (current_app.config['EXTRA_FACET_INFO'].items() +
                        current_app.config['FACET_INFO'].items())
     combined_facets_dict = OrderedDict(combined_facets)
-    search = DatasetFacetedSearch(
-        elasticsearch_util.get_facet_value_dict(filter, combined_facets_dict),
-        combined_facets_dict)
+
+    filter_dict, invalid_filter_facets = elasticsearch_util.get_facet_value_dict(
+        es, filter, combined_facets_dict)
+    search = DatasetFacetedSearch(filter_dict, combined_facets_dict)
     # Uncomment to print Elasticsearch request python object
     # current_app.logger.info(
     #     'Elasticsearch request: %s' % pprint.pformat(search.build_search().to_dict()))
@@ -315,4 +330,6 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
                                      es_response_facets))
 
     return FacetsResponse(facets=facets,
-                          count=es_response._faceted_search.count())
+                          count=es_response._faceted_search.count(),
+                          invalid_filter_facets=invalid_filter_facets,
+                          invalid_extra_facets=invalid_extra_facets)

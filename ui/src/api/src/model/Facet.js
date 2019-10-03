@@ -20,6 +20,13 @@ import ApiClient from "../ApiClient";
  */
 export default class Facet {
   /**
+   * Constructs a new <code>Facet</code>.
+   * A facet. For example, the Gender facet would include the facet name \&quot;Gender\&quot;, as well as counts for all possible values.
+   * @alias module:model/Facet
+   * @class
+   */
+
+  /**
    * Constructs a <code>Facet</code> from a plain JavaScript object, optionally creating a new instance.
    * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
    * @param {Object} data The plain JavaScript object bearing properties of interest.
@@ -107,7 +114,7 @@ export default class Facet {
    */
   value_counts = undefined;
   /**
-   * Array of times. Type string is used to allow for either ints or floats, where floats have underscores replacing decimal points.
+   * Array of times.
    * @member {Array.<String>} time_names
    */
   time_names = undefined;

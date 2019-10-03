@@ -132,9 +132,41 @@ definitions:
         description:
           "Number of entities represented by current facet selection. For\
           \ example, this could be 40, representing 40 people.\n"
+      invalid_filter_facets:
+        type: "array"
+        description:
+          "Facets that were passed in filter param that don't exist in\
+          \ Elasticsearch index. Example: - Data Explorer url contains\n  filter=amppd.2019_v1_0101.demographics.sex\
+          \ which is valid. User\n  saves a cohort with this filter\n- A new version\
+          \ of AMP PD is released. (Data explorer url remains the\n  same.) The dataset\
+          \ 2019_v1_0101 is replaced by dataset 2019_v2_0401.\n- User won't be able\
+          \ to open saved cohort in DE;\n  amppd.2019_v1_0101.demographics.sex is\
+          \ no longer is Elasticsearch\n  index. invalid_filter_facets will contain\n\
+          \  amppd.2019_v1_0101.demographics.sex\n"
+        items:
+          type: "string"
+      invalid_extra_facets:
+        type: "array"
+        description:
+          "Facets that were passed in extraFacets param that don't exist\
+          \ in Elasticsearch index. Example: - Data Explorer url contains\n  extraFacets=amppd.2019_v1_0101.demographics.sex\
+          \ which is valid. User\n  saves a cohort with this extra facet\n- A new\
+          \ version of AMP PD is released. (Data explorer url remains the\n  same.)\
+          \ The dataset 2019_v1_0101 is replaced by dataset 2019_v2_0401.\n- User\
+          \ won't be able to open saved cohort in DE;\n  amppd.2019_v1_0101.demographics.sex\
+          \ is no longer is Elasticsearch\n  index. invalid_extra_facets will contain\n\
+          \  amppd.2019_v1_0101.demographics.sex\n"
+        items:
+          type: "string"
     description: "Results from a faceted search."
     example:
       count: 1
+      invalid_filter_facets:
+        - "invalid_filter_facets"
+        - "invalid_filter_facets"
+      invalid_extra_facets:
+        - "invalid_extra_facets"
+        - "invalid_extra_facets"
       facets:
         - time_names:
             - "time_names"
@@ -198,9 +230,7 @@ definitions:
           type: "integer"
       time_names:
         type: "array"
-        description:
-          "Array of times. Type string is used to allow for either ints\
-          \ or floats, where floats have underscores replacing decimal points.\n"
+        description: "Array of times."
         items:
           type: "string"
       time_series_value_counts:
@@ -283,9 +313,7 @@ definitions:
           \ facet_value is the selected value.\n"
       is_time_series:
         type: "boolean"
-        description:
-          "Is true when facet_value is nonempty and the field is a time\
-          \ series field.\n"
+        description: "True if this is a time series field at a specific point in time.\n"
     description:
       "Can represent a facet (Gender), or a facet and selected value (Gender\
       \ = female).\n"

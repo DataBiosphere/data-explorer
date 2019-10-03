@@ -1,8 +1,8 @@
 import json
-import urllib
 import math
+import urllib
 
-from elasticsearch import helpers
+from elasticsearch import helpers, NotFoundError
 from elasticsearch_dsl import Search
 from elasticsearch_dsl import HistogramFacet
 from elasticsearch_dsl import TermsFacet
@@ -188,33 +188,70 @@ def convert_to_index_name(s):
     return s
 
 
-def get_facet_value_dict(filter_arr, facets):
+def get_facet_value_dict(es, filters, facets):
     """
-    Parses an array of filters and es facets into a dict of facet_name:[facet_value]
-    mappings.
-    """
-    if not filter_arr or filter_arr == [""]:
-        return {}
-    parsed_filter = {}
-    for facet_filter in filter_arr:
-        filter_str = urllib.unquote(facet_filter).decode('utf8')
-        key_val = filter_str.split('=')
-        name = key_val[0]
-        es_facet = facets[name]['es_facet']
-        if is_histogram_facet(es_facet):
-            value = range_to_number(key_val[1])
-        else:
-            value = key_val[1]
+    Parses filters and facets into a dict from es_field_name to list of facet values.
 
-        if not name in parsed_filter:
-            parsed_filter[name] = [value]
+    Args:
+      es: Elasticsearch
+      filters: List of filter params, where each param has the format
+        es_field_name=facet_value
+      facets: A dict of facet info's. For facet info structure, see
+        app.app.config['FACET_INFO'] in __main__.py
+
+    Returns:
+      1. Dict from es_field_name to list of facet values
+      2. List of es_field_name that don't exist in Elasticsearch index. These
+         invalid fields are not in above dict.
+    """
+    invalid_filter_facets = []
+    if not filters or filters == [""]:
+        return {}, invalid_filter_facets
+
+    filter_dict = {}
+    for facet_filter in filters:
+        filter_str = urllib.unquote(facet_filter).decode('utf8')
+        facet_name_value = filter_str.rsplit('=', 1)
+        es_field_name = facet_name_value[0]
+        facet_value = facet_name_value[1]
+
+        if es_field_name != 'Samples Overview' and not field_exists(
+                es, es_field_name):
+            invalid_filter_facets.append(es_field_name)
+            continue
+
+        if is_histogram_facet(facets[es_field_name]['es_facet']):
+            facet_value = range_to_number(facet_value)
+
+        if not es_field_name in filter_dict:
+            filter_dict[es_field_name] = [facet_value]
         else:
-            parsed_filter[name].append(value)
-    return parsed_filter
+            filter_dict[es_field_name].append(facet_value)
+    return filter_dict, invalid_filter_facets
+
+
+def field_exists(es, field_name):
+    try:
+        es.get(index=current_app.config['FIELDS_INDEX_NAME'],
+               doc_type='type',
+               id=field_name)
+    except NotFoundError:
+        # Time series field_name looks like
+        # verily-public-data.framingham_heart_study_teaching.framingham_heart_study_teaching.AGE.1
+        # Remove the ".1" and try again
+        field_name = field_name.rsplit('.', 1)[0]
+        try:
+            es.get(index=current_app.config['FIELDS_INDEX_NAME'],
+                   doc_type='type',
+                   id=field_name)
+        except NotFoundError:
+            return False
+        return True
+    return True
 
 
 def get_field_description(es, field_name):
-    s = Search(using=es, index=current_app.config['INDEX_NAME'] + '_fields')
+    s = Search(using=es, index=current_app.config['FIELDS_INDEX_NAME'])
     s.update_from_dict(
         {"query": {
             "bool": {
@@ -229,7 +266,7 @@ def get_field_description(es, field_name):
     if len(hits) == 0:
         raise ValueError(
             'elasticsearch_field_name %s not found in Elasticsearch index %s' %
-            (field_name, current_app.config['INDEX_NAME'] + '_fields'))
+            (field_name, current_app.config['FIELDS_INDEX_NAME']))
     if 'description' in hits[0]['_source']:
         return hits[0]['_source']['description']
     return ''
