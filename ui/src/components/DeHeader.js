@@ -128,7 +128,7 @@ class DeHeader extends React.Component {
               {invalidFilterFacets.length === 1
                 ? " this facet "
                 : " these facets "}
-              and saving cohort to Terra again.
+              and saving the cohort to Terra again.
             </div>
           )
         : null;

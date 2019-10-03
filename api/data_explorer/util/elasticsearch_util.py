@@ -2,7 +2,7 @@ import json
 import math
 import urllib
 
-from elasticsearch import helpers
+from elasticsearch import helpers, NotFoundError
 from elasticsearch_dsl import Search
 from elasticsearch_dsl import HistogramFacet
 from elasticsearch_dsl import TermsFacet
@@ -224,7 +224,7 @@ def field_exists(es, field_name):
         es.get(index=current_app.config['FIELDS_INDEX_NAME'],
                doc_type='type',
                id=field_name)
-    except Exception:
+    except NotFoundError:
         # Time series field_name looks like
         # verily-public-data.framingham_heart_study_teaching.framingham_heart_study_teaching.AGE.1
         # Remove the ".1" and try again
@@ -233,7 +233,7 @@ def field_exists(es, field_name):
             es.get(index=current_app.config['FIELDS_INDEX_NAME'],
                    doc_type='type',
                    id=field_name)
-        except Exception:
+        except NotFoundError:
             return False
         return True
     return True
