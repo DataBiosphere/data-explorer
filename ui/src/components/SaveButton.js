@@ -17,6 +17,10 @@ const styles = {
     fontWeight: "600",
     margin: "-3px 0 6px 0"
   },
+  dialogCohortNameError: {
+    color: colors.danger(),
+    fontSize: 12
+  },
   dialogDesc: {
     color: colors.dark(),
     fontSize: 14
@@ -38,6 +42,19 @@ const styles = {
   dialogInputCssFocused: {},
   dialogInputNotchedOutline: {
     borderColor: "#dfe3e9 !important",
+    borderWidth: "1px !important"
+  },
+  dialogInputRootCohortNameInvalid: {
+    margin: "5px 0 16px 0",
+    "&:hover $dialogInputNotchedOutline": {
+      borderColor: colors.danger() + " !important"
+    },
+    "&$dialogInputCssFocused $dialogInputNotchedOutline": {
+      borderColor: colors.danger() + " !important"
+    }
+  },
+  dialogInputNotchedOutlineCohortNameInvalid: {
+    borderColor: colors.danger() + " !important",
     borderWidth: "1px !important"
   },
   dialogButton: {
@@ -63,6 +80,10 @@ const styles = {
     width: 200
   }
 };
+
+function isCohortNameValid(cohortName) {
+  return /^[\w-_]+$/.test(cohortName);
+}
 
 class SaveButton extends React.Component {
   constructor(props) {
@@ -114,10 +135,18 @@ class SaveButton extends React.Component {
               id="name"
               InputProps={{
                 classes: {
-                  root: classes.dialogInputRoot,
+                  root:
+                    !this.state.cohortName ||
+                    isCohortNameValid(this.state.cohortName)
+                      ? classes.dialogInputRoot
+                      : classes.dialogInputRootCohortNameInvalid,
                   focused: classes.dialogInputCssFocused,
                   input: classes.dialogInputInput,
-                  notchedOutline: classes.dialogInputNotchedOutline
+                  notchedOutline:
+                    !this.state.cohortName ||
+                    isCohortNameValid(this.state.cohortName)
+                      ? classes.dialogInputNotchedOutline
+                      : classes.dialogInputNotchedOutlineCohortNameInvalid
                 }
               }}
               onChange={this.handleCohortNameChange}
@@ -130,11 +159,16 @@ class SaveButton extends React.Component {
               type="text"
               variant="outlined"
             />
+            {!isCohortNameValid(this.state.cohortName) &&
+              this.state.cohortName && (
+                <div className={classes.dialogCohortNameError}>
+                  Cohort name can only contain letters, numbers, dashes and
+                  underscores
+                </div>
+              )}
             <PrimaryButton
               className={classes.dialogButton}
-              disabled={
-                !("cohortName" in this.state) || this.state.cohortName === ""
-              }
+              disabled={!isCohortNameValid(this.state.cohortName)}
               onClick={this.handleDialogSave}
             >
               Save
@@ -157,7 +191,7 @@ class SaveButton extends React.Component {
 
   handleButtonClick() {
     const cohortName = !this.props.selectedFacetValues.size
-      ? "all participants"
+      ? "all_participants"
       : "";
     this.setState(state => ({ cohortName: cohortName, dialogOpen: true }));
   }

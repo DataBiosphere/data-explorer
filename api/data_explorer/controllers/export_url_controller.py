@@ -318,8 +318,6 @@ def _get_entities_dict(cohort_name, filter_arr, data_explorer_url):
             }
         })
 
-    for c in ' .:=':
-        cohort_name = cohort_name.replace(c, '_')
     entities.append({
         'entityType': 'cohort',
         'name': cohort_name,
