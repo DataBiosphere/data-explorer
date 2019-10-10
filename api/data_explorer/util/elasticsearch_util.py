@@ -267,9 +267,13 @@ def get_field_description(es, field_name):
         raise ValueError(
             'elasticsearch_field_name %s not found in Elasticsearch index %s' %
             (field_name, current_app.config['FIELDS_INDEX_NAME']))
+
+    dataset = field_name.split('.')[1]
+    table = field_name.split('.')[2]
+    description = 'Dataset {}, table {}'.format(dataset, table)
     if 'description' in hits[0]['_source']:
-        return hits[0]['_source']['description']
-    return ''
+        description += ': {}'.format(hits[0]['_source']['description'])
+    return description
 
 
 def get_field_type(field_name, mapping):
