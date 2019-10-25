@@ -46,7 +46,7 @@ jobs:
             pip install --upgrade pip
             pip install tox
             cd api
-            tox -e py37
+            tox -e py3
       - run:
           name: Run docker-compose for 1000 genomes dataset
           command: |
