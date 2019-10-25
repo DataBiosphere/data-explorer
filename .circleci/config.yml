@@ -11,10 +11,10 @@ jobs:
       - restore_cache:
           key: node-modules-{{ .Branch }}-{{ checksum "ui/package.json" }}
       - run:
-        name: "Switch to Python v3.8"
-        command: |
-          pyenv versions
-          pyenv global 3.8.0
+          name: "Switch to Python v3.8"
+          command: |
+            pyenv versions
+            pyenv global 3.8.0
       - run:
           name: npm install
           command: |
