@@ -21,7 +21,7 @@ class FiltersFacet(Facet):
         slightly different.
         """
         out = []
-        for key, val in data.buckets.to_dict().iteritems():
+        for key, val in data.buckets.to_dict().items():
             out.append(
                 (key, val['doc_count'], self.is_filtered(key, filter_values)))
         return sorted(out, key=lambda v: v[1], reverse=True)

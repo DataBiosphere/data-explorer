@@ -1,5 +1,5 @@
 # This must be run in project root, to pick up dataset_config/.
-FROM python:2
+FROM python:3
 
 WORKDIR /app
 COPY api/requirements.txt /app

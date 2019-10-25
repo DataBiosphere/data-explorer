@@ -7,6 +7,7 @@ import jsmin
 import json
 import logging
 import os
+import sys
 import time
 
 from collections import OrderedDict
@@ -16,6 +17,9 @@ from elasticsearch import Elasticsearch
 from elasticsearch.client.cat import CatClient
 from elasticsearch.exceptions import ConnectionError
 from elasticsearch.exceptions import TransportError
+
+if sys.version_info.major < 3:
+    raise Exception('Python2 is deprecated. Please upgrade to Python3')
 
 # gunicorn flags are passed via env variables, so we use these as the default
 # values. These arguments will rarely be specified as flags directly, aside from
@@ -235,7 +239,7 @@ def _process_facets(es):
         # Construct Elasticsearch filters. See
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-filters-aggregation.html
         es_field_names = {}
-        for name, field in app.app.config['SAMPLE_FILE_COLUMNS'].iteritems():
+        for name, field in app.app.config['SAMPLE_FILE_COLUMNS'].items():
             facet_name = 'Has %s' % name
             es_field_name = 'samples._has_%s' % name.lower().replace(' ', '_')
             es_field_names[facet_name] = es_field_name

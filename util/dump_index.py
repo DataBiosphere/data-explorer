@@ -44,7 +44,7 @@ def main():
     output_fields_file = os.path.join(args.output_dir, 'fields.json')
     output_mappings_file = os.path.join(args.output_dir, 'mappings.json')
 
-    print 'Dumping index: %s' % index
+    print('Dumping index: %s' % index)
     index_file = open(output_index_file, 'w')
     for row in scan(client, query={}, index=index):
         json.dump(row, index_file)
@@ -52,14 +52,14 @@ def main():
     index_file.close()
 
     fields_index_file = open(output_fields_file, 'w')
-    print 'Dumping index: %s' % fields_index
+    print('Dumping index: %s' % fields_index)
     for row in scan(client, query={}, index=fields_index):
         print(row)
         json.dump(row, fields_index_file)
         fields_index_file.write('\n')
     fields_index_file.close()
 
-    print 'Dump index mappings: %s' % index
+    print('Dump index mappings: %s' % index)
     mappings_file = open(output_mappings_file, 'w')
     mappings = requests.get('%s/%s/_mapping/type' %
                             (args.es_url, index)).json()
