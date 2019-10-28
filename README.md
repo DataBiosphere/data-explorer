@@ -52,7 +52,7 @@ Run local Data Explorer with the 1000 Genomes dataset:
 
   - The `-t 0` makes Kibana stop more quickly after `Ctrl-C`
   - If you get an error like `ui_1 | Module not found: Can't resolve 'superagent' in '/ui/src/api/src'`,
-    add `-V`: `docker-compose up --build -t 0 -V`. `-V` is only needed for the
+    add `-V`: `DATASET_CONFIG_DIR=dataset_config/<my dataset> docker-compose up --build -t 0 -V`. `-V` is only needed for the
     next invocation of `docker-compose`, not all future invocations.
   - If ES crashes due to OOM, you can increase [heap size](https://www.elastic.co/guide/en/elasticsearch/reference/current/heap-size.html):
     ```
