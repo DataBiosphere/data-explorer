@@ -14,7 +14,7 @@ jobs:
           name: "Switch to Python v3.5"
           command: |
             pyenv versions
-            pyenv global 3.5.0
+            pyenv global 3.5.2
       - run:
           name: npm install
           command: |
