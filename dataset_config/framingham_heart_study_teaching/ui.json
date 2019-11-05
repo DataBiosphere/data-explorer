@@ -13,7 +13,7 @@
 // elasticsearch_field_name:
 //   Required. Elasticsearch field name.
 {
-  "search_placeholder_text": "Search to add a facet. Try \"BMI\" or \"STROKE\"",
+  "search_placeholder_text": "Search to add a facet. Try \"bmi\" or \"stroke\"",
   "facets": [
     {
       "ui_facet_name": "TIME",

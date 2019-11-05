@@ -142,7 +142,7 @@ def number_to_range(interval_start, interval):
     """Converts "X" -> "X-Y"."""
     if interval < 1:
         # Return something like "0.1-0.2"
-        return '%s-%s' % (interval_start, interval_start + interval)
+        return '%.1f-%.1f' % (interval_start, interval_start + interval)
     elif interval == 1:
         # Return something like "5"
         return '%d' % interval_start
