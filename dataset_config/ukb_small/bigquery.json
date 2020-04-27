@@ -1,0 +1,11 @@
+{
+  "participant_id_column": "eid",
+  "time_series_column":"instanceId",
+  "time_series_unit":"Instance",
+  "table_names": [
+    "ukb-itt-demo-data.application_42992.single_instance_phenotypes",
+    "ukb-itt-demo-data.application_42992.multi_instance_phenotypes",
+    "ukb-itt-demo-data.application_42992.array_phenotypes",
+    "ukb-itt-demo-data.application_42992.medical_records_count"
+  ]
+}

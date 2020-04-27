@@ -8,6 +8,7 @@ import string
 import sys
 import time
 import urllib
+import sqlparse
 
 from collections import OrderedDict
 from elasticsearch import Elasticsearch
@@ -293,7 +294,7 @@ def _get_sql_query(filters):
         query = _append_to_query(query, table, join, table_num)
         table_num += 1
 
-    return query
+    return str(sqlparse.format(query, reindent=True, keyword_case='upper'))
 
 
 def _get_entities_dict(cohort_name, filter_arr, data_explorer_url):
