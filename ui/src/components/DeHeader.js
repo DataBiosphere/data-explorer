@@ -6,6 +6,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import { withStyles } from "@material-ui/core/styles";
 
 import colors from "libs/colors";
+import CopyQueryButton from "components/CopyQueryButton";
 import SaveButton from "components/SaveButton";
 import Search from "components/Search";
 import Snackbar from "components/Snackbar";
@@ -151,6 +152,11 @@ class DeHeader extends React.Component {
           <div className={classes.totalCount}>
             {this.props.totalCount} Participants
           </div>
+          <CopyQueryButton 
+            className={classes.saveButton}
+            exportUrlApi={this.props.exportUrlApi}
+            selectedFacetValues={this.props.selectedFacetValues}
+          />
           <SaveButton
             className={classes.saveButton}
             datasetName={this.props.datasetName}

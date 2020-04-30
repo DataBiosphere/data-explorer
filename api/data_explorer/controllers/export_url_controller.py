@@ -375,7 +375,12 @@ def export_url_post():  # noqa: E501
     _check_preconditions()
     data = json.loads(request.data)
     current_app.logger.info('Export URL request data %s' % request.data)
-
+    if data['cohortName'] == 'QUERY_ONLY_f4fef853-bdc5-486e-8aa0-0e524bd6685a':
+        query = _get_sql_query(data['filter'])
+        current_app.logger.info(query)
+        return ExportUrlResponse(
+            url=query,
+            authorization_domain=current_app.config['AUTHORIZATION_DOMAIN'])
     entities = _get_entities_dict(data['cohortName'], data['filter'],
                                   data['dataExplorerUrl'])
     gcs_path = _write_gcs_file(entities)
