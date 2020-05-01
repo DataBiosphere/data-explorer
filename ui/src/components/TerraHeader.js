@@ -12,22 +12,25 @@ import { ReactComponent as TerraLogo } from "libs/icons/logo-wShadow.svg";
 const styles = {
   ...TerraLogoStyles,
   appBar: {
-    background:
-      `81px url(${headerLeftHexes}) no-repeat, right url(${headerRightHexes}) no-repeat, ` +
-      colors.success(),
-    borderBottom: "2px solid #b0d239",
+    // background:
+    //   `81px url(${headerLeftHexes}) no-repeat, right url(${headerRightHexes}) no-repeat, ` +
+    //   colors.success(),
+    backgroundColor: colors.light(),
+    borderBottom: "2px solid #73a7b0",
     boxShadow: "rgba(0, 0, 0, 0.12) 0px 1px 2px 0px",
     height: 66
   },
   dataExplorerText: {
     fontSize: 18,
     fontWeight: 600,
-    marginRight: 15
+    marginRight: 15,
+    color: "#045C6C"
   },
   datasetName: {
     fontSize: 18,
     fontWeight: 600,
-    marginLeft: 15
+    marginLeft: 15,
+    color: "#045C6C"
   },
   toolbar: {
     padding: 0
