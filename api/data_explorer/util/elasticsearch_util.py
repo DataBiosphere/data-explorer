@@ -270,9 +270,9 @@ def get_field_description(es, field_name):
 
     dataset = field_name.split('.')[1]
     table = field_name.split('.')[2]
-    description = 'Dataset {}, table {}'.format(dataset, table)
+    description = ''
     if 'description' in hits[0]['_source']:
-        description += ': {}'.format(hits[0]['_source']['description'])
+        description += hits[0]['_source']['description']
     return description
 
 
