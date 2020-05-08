@@ -229,7 +229,7 @@ class SaveButton extends React.Component {
           window.parentIFrame.sendMessage({ importDataQueryStr: queryStr });
         } else {
           window.location.assign(
-            "https://app.terra.bio/#import-data?" + queryStr
+            "https://ukbiobank.terra.bio/#import-data?" + queryStr
           );
         }
       }
