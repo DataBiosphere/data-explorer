@@ -9,10 +9,12 @@ const styles = {
   timeSeriesFacet: {
     ...Style.elements.card,
     margin: "0 25px 28px 0",
+    height: "500px",
     maxHeight: "500px",
     overflowX: "auto",
     overflowY: "auto",
-    padding: 0
+    padding: 0,
+    justifyContent: "flex-start"
   }
 };
 

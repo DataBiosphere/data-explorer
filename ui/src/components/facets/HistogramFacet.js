@@ -10,9 +10,11 @@ const styles = {
   histogramFacet: {
     ...Style.elements.card,
     margin: "0 25px 28px 0",
-    maxHeight: "500px",
+    height: "400px",
+    maxHeight: "400px",
     overflowY: "auto",
-    padding: 0
+    padding: 0,
+    justifyContent: "flex-start"
   }
 };
 

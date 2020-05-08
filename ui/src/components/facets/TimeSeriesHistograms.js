@@ -10,7 +10,8 @@ import "./HistogramFacet.css";
 const styles = {
   timeSeriesHistogram: {
     overflowX: "visible",
-    overflowY: "auto"
+    overflowY: "auto",
+    margin: "auto"
   },
   vega: {
     textAlign: "center"

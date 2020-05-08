@@ -329,6 +329,43 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
                 _get_histogram_facet(es_field_name, facet_info,
                                      es_response_facets))
 
+    # test_time_names = ['0','1','2','3','4']
+    # test_time_series_value_counts = []
+    # test_value_names = []
+    # for i in range(3752):
+    #     test_value_names.append('foo-{}'.format(i))
+    # for _ in test_time_names:
+    #     l = [1] * len(test_value_names)
+    #     test_time_series_value_counts.append(l)
+    
+    # example_facet = Facet(name='Willy_test_facet',
+    #              description='test',
+    #              es_field_name='foo',
+    #              es_field_type='text',
+    #              value_names=['a','b'],
+    #              value_counts=[1, 2],
+    #              time_names=[0,1],
+    #              time_series_value_counts=[[100, 101],[200, 201]])
+    # facets.insert(0, example_facet)
+
+    # test_facet = Facet(name='really_big_facet',
+    #              description='test',
+    #              es_field_name='foo2',
+    #              es_field_type='text',
+    #              value_names=test_value_names,
+    #              value_counts=[],
+    #              time_names=test_time_names,
+    #              time_series_value_counts=test_time_series_value_counts)
+    # facets.insert(0, test_facet)
+
+    MAX_LEN_FACET_VALUES = 50
+    for facet in facets:
+        facet.value_names = facet.value_names[:MAX_LEN_FACET_VALUES]
+        facet.value_counts = facet.value_counts[:MAX_LEN_FACET_VALUES]
+        facet.time_names = facet.time_names[:MAX_LEN_FACET_VALUES]
+        facet.time_series_value_counts = facet.time_series_value_counts[:MAX_LEN_FACET_VALUES]
+
+
     return FacetsResponse(facets=facets,
                           count=es_response._faceted_search.count(),
                           invalid_filter_facets=invalid_filter_facets,

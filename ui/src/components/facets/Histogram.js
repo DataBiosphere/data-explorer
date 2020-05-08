@@ -10,7 +10,8 @@ import "./HistogramFacet.css";
 
 const styles = {
   vega: {
-    textAlign: "center"
+    textAlign: "center",
+    margin: "auto"
   }
 };
 
