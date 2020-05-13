@@ -131,6 +131,12 @@ def _get_table_and_clause(es_field_name, field_type, value, bucket_interval,
             sample_file_type_field = True
     if is_time_series:
         table_name, column, tsv = es_field_name.rsplit('.', 2)
+        last_two_chars = column[-2:]
+        if last_two_chars in ['-0','-1','-2','-3','-4','-5','-6','-7','-8','-9']:
+            arrayId = last_two_chars[-1]
+            column = column[:-2]
+        else:
+            arrayId = None
         tsv = tsv.replace('_', '.')
         if tsv == 'Unknown':
             tsv = 'NULL'
@@ -147,6 +153,8 @@ def _get_table_and_clause(es_field_name, field_type, value, bucket_interval,
         else:
             clause = '%s AND %s %s %s' % (_get_range_clause(
                 column, value, bucket_interval), time_series_column, op, tsv)
+        if arrayId:
+            clause += ' AND arrayId = {}'.format(arrayId) 
     else:
         table_name, column = es_field_name.rsplit('.', 1)
         if sample_file_type_field:
@@ -246,20 +254,9 @@ def _get_sql_query(filters):
         for table_name, clauses in table_clauses.iteritems():
             current_app.logger.info('In table clauses loop')
             current_app.logger.info(table_name)
-            last_two_chars = table_name[-2:]
-            if last_two_chars in ['-0','-1','-2','-3','-4','-5','-6','-7','-8','-9']:
-                arrayId = last_two_chars[-1]
-                table_name = table_name[:-2]
-            else:
-                arrayId = None
             where = ''
             for clause in clauses:
                 current_app.logger.info(clause)
-                if arrayId:
-                    # Remove the ending parenthesis
-                    clause = clause[:-1]
-                    # Add the array ID clause
-                    clause += ' AND arrayId = {})'.format(arrayId)
                 if len(where) > 0:
                     where += ' OR (%s)' % clause
                 else:
