@@ -358,6 +358,77 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     #              time_series_value_counts=test_time_series_value_counts)
     # facets.insert(0, test_facet)
 
+    # d = {
+    #   "description": "", 
+    #   "es_field_name": "ukb-itt-demo-data.application_42992.array_phenotypes.f_94_Diastolic_blood_pressure_manual_reading_mmHg-0", 
+    #   "es_field_type": "long", 
+    #   "name": "f_94_Diastolic_blood_pressure_manual_reading_mmHg-0", 
+    #   "time_names": [
+    #     "0", 
+    #     "1"
+    #   ], 
+    #   "time_series_value_counts": [
+    #     [
+    #       2515, 
+    #       3896, 
+    #       0, 
+    #       57708, 
+    #       54998, 
+    #       47492, 
+    #       54955, 
+    #       57140, 
+    #       59953, 
+    #       58943, 
+    #       78352, 
+    #       58492, 
+    #       45621, 
+    #       19935
+    #     ], 
+    #     [
+    #       11103, 
+    #       3595, 
+    #       0, 
+    #       56416, 
+    #       73019, 
+    #       35145, 
+    #       51472, 
+    #       56462, 
+    #       57149, 
+    #       59553, 
+    #       73294, 
+    #       71631, 
+    #       40767, 
+    #       10394
+    #     ]
+    #   ], 
+    #   "value_counts": [], 
+    #   "value_names": [
+    #     "10-19", 
+    #     "20-29", 
+    #     "30-39", 
+    #     "40-49", 
+    #     "50-59", 
+    #     "60-69", 
+    #     "70-79", 
+    #     "80-89", 
+    #     "90-99", 
+    #     "100-109", 
+    #     "110-119", 
+    #     "120-129", 
+    #     "130-139", 
+    #     "140-149"
+    #   ]
+    # }
+    # test_facet = Facet(name=d['name'],
+    #              description=d['description'],
+    #              es_field_name=d['es_field_name'],
+    #              es_field_type=d['es_field_type'],
+    #              value_names=d['value_names'],
+    #              value_counts=d['value_counts'],
+    #              time_names=d['time_names'],
+    #              time_series_value_counts=d['time_series_value_counts'])
+    # facets.insert(0, test_facet)
+
     MAX_LEN_FACET_VALUES = 50
     for facet in facets:
         facet.value_names = facet.value_names[:MAX_LEN_FACET_VALUES]

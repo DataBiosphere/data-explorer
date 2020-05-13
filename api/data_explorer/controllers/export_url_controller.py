@@ -244,13 +244,29 @@ def _get_sql_query(filters):
     for facet_id, table_clauses in facet_table_clauses.iteritems():
         table_wheres_current_facet = {}
         for table_name, clauses in table_clauses.iteritems():
+            current_app.logger.info('In table clauses loop')
+            current_app.logger.info(table_name)
+            last_two_chars = table_name[-2:]
+            if last_two_chars in ['-0','-1','-2','-3','-4','-5','-6','-7','-8','-9']:
+                arrayId = last_two_chars[-1]
+                table_name = table_name[:-2]
+            else:
+                arrayId = None
             where = ''
             for clause in clauses:
+                current_app.logger.info(clause)
+                if arrayId:
+                    # Remove the ending parenthesis
+                    clause = clause[:-1]
+                    # Add the array ID clause
+                    clause += ' AND arrayId = {})'.format(arrayId)
                 if len(where) > 0:
                     where += ' OR (%s)' % clause
                 else:
                     where = '(%s)' % clause
             table_wheres_current_facet[table_name] = where
+            current_app.logger.info(where)
+
 
         if len(table_wheres_current_facet) == 1:
             # If all of the facet where caluses are on the same table, add it
