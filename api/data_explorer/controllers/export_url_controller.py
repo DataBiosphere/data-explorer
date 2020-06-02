@@ -137,7 +137,7 @@ def _get_table_and_clause(es_field_name, field_type, value, bucket_interval,
         else:
             op = '='
         assert not sample_file_type_field
-        if field_type == 'text':
+        if field_type == 'text' or field_type == 'keyword':
             clause = '%s = "%s" AND %s %s %s' % (column, value,
                                                  time_series_column, op, tsv)
         elif field_type == 'boolean':
@@ -153,7 +153,7 @@ def _get_table_and_clause(es_field_name, field_type, value, bucket_interval,
                 clause = '%s IS NOT NULL' % column
             else:
                 clause = '%s IS NULL' % column
-        elif field_type == 'text':
+        elif field_type == 'text' or fied_type == 'keyword':
             clause = '%s = "%s"' % (column, value)
         elif field_type == 'boolean':
             clause = '%s = %s' % (column, value)

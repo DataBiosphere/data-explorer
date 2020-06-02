@@ -68,7 +68,10 @@ app.add_api('swagger.yaml', base_path=args.path_prefix)
 
 def init_elasticsearch():
     # Wait for Elasticsearch to be healthy.
-    es = Elasticsearch(app.app.config['ELASTICSEARCH_URL'])
+    es = Elasticsearch(app.app.config['ELASTICSEARCH_URL'], 
+                       http_auth=('elastic', 'PASSWORD'),
+                       use_ssl=True,
+                       ca_certs='tls.crt')
     start = time.time()
     for _ in range(0, 120):
         try:
@@ -84,20 +87,20 @@ def init_elasticsearch():
 
     # Use the cached JSON files to load the example 1000 genomes and
     # framingham teaching datasets without having to run the indexer.
-    if (app.app.config['INDEX_NAME'] == '1000_genomes'
-            or app.app.config['INDEX_NAME'] ==
-            'framingham_heart_study_teaching_dataset'):
-        index_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
-                                  'index.json')
-        mappings_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
-                                     'mappings.json')
-        fields_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
-                                   'fields.json')
-        elasticsearch_util.load_index_from_json(es,
-                                                app.app.config['INDEX_NAME'],
-                                                index_path, mappings_path)
-        elasticsearch_util.load_index_from_json(
-            es, app.app.config['FIELDS_INDEX_NAME'], fields_path)
+    # if (app.app.config['INDEX_NAME'] == '1000_genomes'
+    #         or app.app.config['INDEX_NAME'] ==
+    #         'framingham_heart_study_teaching_dataset'):
+    #     index_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
+    #                               'index.json')
+    #     mappings_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
+    #                                  'mappings.json')
+    #     fields_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
+    #                                'fields.json')
+    #     elasticsearch_util.load_index_from_json(es,
+    #                                             app.app.config['INDEX_NAME'],
+    #                                             index_path, mappings_path)
+    #     elasticsearch_util.load_index_from_json(
+    #         es, app.app.config['FIELDS_INDEX_NAME'], fields_path)
 
     if not es.indices.exists(app.app.config['INDEX_NAME']):
         raise EnvironmentError('Index %s not found at %s' %

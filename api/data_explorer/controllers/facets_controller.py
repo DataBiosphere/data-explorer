@@ -216,7 +216,7 @@ def _get_time_series_facet(time_series_facets, es_response_facets):
             # the value names (want to sort by name if the name is
             # numeric, or by count if it is text/boolean).
             if facet_info.get('type') == 'text' or facet_info.get(
-                    'type') == 'boolean':
+                    'type') == 'boolean' or facet_info.get('type') == 'keyword':
                 if value_names[i] in ts_value_names:
                     # Subtract to show highest count first.
                     ts_value_names[value_names[i]] -= value_counts[i]
@@ -280,7 +280,10 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     :type extraFacets: List[str]
     :rtype: FacetsResponse
     """
-    es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
+    es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'],
+                       http_auth=('elastic', 'PASSWORD'),
+                       use_ssl=True,
+                       ca_certs='tls.crt')
     invalid_extra_facets = _process_extra_facets(es, extraFacets)
     combined_facets = (current_app.config['EXTRA_FACET_INFO'].items() +
                        current_app.config['FACET_INFO'].items())

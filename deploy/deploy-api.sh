@@ -44,7 +44,7 @@ echo
 # Create api/MY_DATASET.app.yaml from api/app.yaml.templ
 # MY_DATASET is so this script can be run with mulitple datasets simultaneously,
 # and they won't clobber each other's app.yaml
-elasticsearch_url=$(kubectl get svc elasticsearch | grep elasticsearch | awk '{print $4}')
+elasticsearch_url=$(kubectl get svc quickstart-es-http | grep quickstart | awk '{print $4}')
 git_commit=$(git rev-parse HEAD)
 sed -e "s/MY_DATASET/${dataset}/" api/app.yaml.templ > api/${dataset}.app.yaml
 sed -i -e "s/MY_ELASTICSEARCH_URL/${elasticsearch_url}/" api/${dataset}.app.yaml

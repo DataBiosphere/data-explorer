@@ -233,7 +233,6 @@ def get_facet_value_dict(es, filters, facets):
 def field_exists(es, field_name):
     try:
         es.get(index=current_app.config['FIELDS_INDEX_NAME'],
-               doc_type='type',
                id=field_name)
     except NotFoundError:
         # Time series field_name looks like
@@ -242,7 +241,6 @@ def field_exists(es, field_name):
         field_name = field_name.rsplit('.', 1)[0]
         try:
             es.get(index=current_app.config['FIELDS_INDEX_NAME'],
-                   doc_type='type',
                    id=field_name)
         except NotFoundError:
             return False
@@ -278,7 +276,7 @@ def get_field_description(es, field_name):
 
 def get_field_type(field_name, mapping):
     submapping = mapping[
-        current_app.config['INDEX_NAME']]['mappings']['type']['properties']
+        current_app.config['INDEX_NAME']]['mappings']['properties']
     for subname in field_name.split('.')[:-1]:
         submapping = submapping[subname]['properties']
     submapping = submapping[field_name.split('.')[-1]]
@@ -289,7 +287,7 @@ def is_time_series(field_name, mapping):
     """Returns true iff field_name has time series data.
     """
     submapping = mapping[
-        current_app.config['INDEX_NAME']]['mappings']['type']['properties']
+        current_app.config['INDEX_NAME']]['mappings']['properties']
     for subname in field_name.split('.')[:-1]:
         submapping = submapping[subname]['properties']
     submapping = submapping[field_name.split('.')[-1]]
@@ -302,7 +300,7 @@ def get_time_series_vals(field_name, mapping):
     data.
     """
     submapping = mapping[
-        current_app.config['INDEX_NAME']]['mappings']['type']['properties']
+        current_app.config['INDEX_NAME']]['mappings']['properties']
     for subname in field_name.split('.'):
         submapping = submapping[subname]['properties']
     time_series_vals = submapping.keys()
@@ -361,7 +359,7 @@ def get_nested_paths(es):
     mappings = es.indices.get_mapping(index=current_app.config['INDEX_NAME'])
     nested_paths.extend(
         _get_nested_paths_inner(
-            '', mappings[current_app.config['INDEX_NAME']]['mappings']['type']
+            '', mappings[current_app.config['INDEX_NAME']]['mappings']
             ['properties']))
     return nested_paths
 
@@ -390,7 +388,7 @@ def _maybe_get_nested_facet(elasticsearch_field_name, es_facet):
 
 def get_elasticsearch_facet(es, elasticsearch_field_name, field_type,
                             time_series_vals):
-    if field_type == 'text':
+    if field_type == 'text' or field_type == 'keyword':
         # Use ".keyword" because we want aggregation on keyword field, not
         # term field. See
         # https://www.elastic.co/guide/en/elasticsearch/reference/6.2/fielddata.html#before-enabling-fielddata
@@ -478,7 +476,6 @@ def load_index_from_json(es, index, index_file, mappings_file=None):
             action = {
                 '_id': record['_id'],
                 '_index': index,
-                '_type': 'type',
                 '_source': record['_source'],
             }
             actions.append(action)

@@ -116,7 +116,10 @@ def search_get(query=None):
     rtype: SearchResponse
     """
 
-    es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
+    es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'],
+                      http_auth=('elastic', 'PASSWORD'),
+                       use_ssl=True,
+                       ca_certs='tls.crt')
     mapping = es.indices.get_mapping(index=current_app.config['INDEX_NAME'])
     search_results = []
 
