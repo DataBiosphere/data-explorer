@@ -370,9 +370,9 @@ def init():
         _process_dataset()
         _process_ui()
         _process_bigquery()
+        _process_export_url()
         es = init_elasticsearch()
         _process_facets(es)
-        _process_export_url()
 
         app.app.logger.info('app.app.config:')
         for key in sorted(app.app.config.keys()):
