@@ -8,6 +8,4 @@ RUN pip install -r requirements.txt
 COPY dataset_config /app/dataset_config
 COPY api/data_explorer /app/data_explorer
 
-COPY tls.crt /app
-
 ENTRYPOINT ["gunicorn", "data_explorer.__main__:app"]

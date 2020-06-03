@@ -21,10 +21,11 @@ class DatasetFacetedSearch(FacetedSearch):
             (elasticsearch_field_name, field['es_facet'])
             for elasticsearch_field_name, field in es_facets.items()
         ])
-        self.using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'],
-                       http_auth=('elastic', 'PASSWORD'),
+        elasticsearch_util.write_tls_crt()
+        self.using = Elasticsearch(app.app.config['ELASTICSEARCH_URL'], 
+                       http_auth=('elastic', elasticsearch_util.get_kubernetes_password()),
                        use_ssl=True,
-                       ca_certs='tls.crt')
+                       ca_certs=elasticsearch_util.ES_TLS_CERT_FILE)
         # Now that using is set, create _s.
         super(DatasetFacetedSearch, self).__init__(None, filters)
 

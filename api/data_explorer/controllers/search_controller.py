@@ -116,10 +116,11 @@ def search_get(query=None):
     rtype: SearchResponse
     """
 
-    es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'],
-                      http_auth=('elastic', 'PASSWORD'),
+    elasticsearch_util.write_tls_crt()
+    es = Elasticsearch(app.app.config['ELASTICSEARCH_URL'], 
+                       http_auth=('elastic', elasticsearch_util.get_kubernetes_password()),
                        use_ssl=True,
-                       ca_certs='tls.crt')
+                       ca_certs=elasticsearch_util.ES_TLS_CERT_FILE)
     mapping = es.indices.get_mapping(index=current_app.config['INDEX_NAME'])
     search_results = []
 

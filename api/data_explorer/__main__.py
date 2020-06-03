@@ -67,11 +67,12 @@ app.add_api('swagger.yaml', base_path=args.path_prefix)
 
 
 def init_elasticsearch():
+    elasticsearch_util.write_tls_crt()
     # Wait for Elasticsearch to be healthy.
     es = Elasticsearch(app.app.config['ELASTICSEARCH_URL'], 
-                       http_auth=('elastic', 'PASSWORD'),
+                       http_auth=('elastic', elasticsearch_util.get_kubernetes_password()),
                        use_ssl=True,
-                       ca_certs='tls.crt')
+                       ca_certs=elasticsearch_util.ES_TLS_CERT_FILE)
     start = time.time()
     for _ in range(0, 120):
         try:

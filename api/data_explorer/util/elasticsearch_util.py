@@ -2,6 +2,13 @@ import json
 import math
 import urllib
 
+from google.cloud import container_v1
+import google.auth
+import google.auth.transport.requests
+import kubernetes
+from tempfile import NamedTemporaryFile
+import base64
+
 from elasticsearch import helpers, NotFoundError
 from elasticsearch_dsl import Search
 from elasticsearch_dsl import HistogramFacet
@@ -19,6 +26,7 @@ from filters_facet import FiltersFacet
 
 from flask import current_app
 
+ES_TLS_CERT_FILE = "/tmp/tls.crt"
 
 def _get_metrics(es, field_name):
     search = Search(using=es, index=current_app.config['INDEX_NAME'])
@@ -480,3 +488,49 @@ def load_index_from_json(es, index, index_file, mappings_file=None):
             }
             actions.append(action)
     helpers.bulk(es, actions)
+
+def _get_kubernetes_client_config():
+    current_app.logger.info('Attempting to init k8s client from cluster response')
+    
+    project_id = current_app.config['DEPLOY_PROJECT_ID']
+    zone = 'us-central1-c'  # TODO(willyn): Read from config
+    cluster_id = 'es-cluster'   # TODO(willyn): Read from config
+    container_client = container_v1.ClusterManagerClient()
+    response = container_client.get_cluster(project_id, zone, cluster_id)
+    credentials, project = google.auth.default(
+        scopes=['https://www.googleapis.com/auth/cloud-platform'])
+    creds, projects = google.auth.default()
+    auth_req = google.auth.transport.requests.Request()
+    creds.refresh(auth_req)
+
+    current_app.logger.info('Succesfully authorized with k8s cluster')
+    
+    configuration = kubernetes.client.Configuration()
+    configuration.host = 'https://{}'.format(response.endpoint)
+    with NamedTemporaryFile(delete=False) as ca_cert:
+        ca_cert.write(
+            base64.b64decode(response.master_auth.cluster_ca_certificate))
+    configuration.ssl_ca_cert = ca_cert.name
+    configuration.api_key_prefix['authorization'] = 'Bearer'
+    configuration.api_key['authorization'] = creds.token
+    return configuration
+
+def get_kubernetes_password():
+    # Execute the equivalent of:
+    #   kubectl get secret quickstart-es-elastic-user \
+    #     -o go-template='{{.data.elastic | base64decode }}'
+    configuration = _get_kubernetes_client_config()
+    v1 = kubernetes.client.CoreV1Api(kubernetes.client.ApiClient(configuration))
+    secret_dict = v1.read_namespaced_secret("quickstart-es-elastic-user", "default").data
+    return base64.b64decode(secret_dict['elastic'])
+
+def write_tls_crt():
+    # Execute the equivalent of:
+    #   kubectl get secret "quickstart-es-http-certs-public" \
+    #     -o go-template='{{index .data "tls.crt" | base64decode }}' \
+    #     > /tmp/tls.crt
+    configuration = _get_kubernetes_client_config()
+    v1 = kubernetes.client.CoreV1Api(kubernetes.client.ApiClient(configuration))
+    secret_dict = v1.read_namespaced_secret("quickstart-es-http-certs-public", "default").data
+    with open(ES_TLS_CERT_FILE, "w") as f:
+      f.write(base64.b64decode(secret_dict['tls.crt']))
