@@ -493,15 +493,19 @@ def _get_kubernetes_client_config():
     current_app.logger.info('Attempting to init k8s client from cluster response')
     
     project_id = current_app.config['DEPLOY_PROJECT_ID']
+    current_app.logger.info(project_id)
     zone = 'us-central1-c'  # TODO(willyn): Read from config
     cluster_id = 'es-cluster'   # TODO(willyn): Read from config
     container_client = container_v1.ClusterManagerClient()
+    current_app.logger.info('Created container client')
     response = container_client.get_cluster(project_id, zone, cluster_id)
-    credentials, project = google.auth.default(
-        scopes=['https://www.googleapis.com/auth/cloud-platform'])
+    current_app.logger.info('Succesfully got cluster')
     creds, projects = google.auth.default()
+    current_app.logger.info('Succesfully got default auth creds')
     auth_req = google.auth.transport.requests.Request()
+    current_app.logger.info('Succesfully made auth request')
     creds.refresh(auth_req)
+    current_app.logger.info('Succesfully refreshed creds')
 
     current_app.logger.info('Succesfully authorized with k8s cluster')
     
@@ -519,8 +523,10 @@ def get_kubernetes_password():
     # Execute the equivalent of:
     #   kubectl get secret quickstart-es-elastic-user \
     #     -o go-template='{{.data.elastic | base64decode }}'
-    configuration = _get_kubernetes_client_config()
-    v1 = kubernetes.client.CoreV1Api(kubernetes.client.ApiClient(configuration))
+    #configuration = _get_kubernetes_client_config()
+    #v1 = kubernetes.client.CoreV1Api(kubernetes.client.ApiClient(configuration))
+    kubernetes.config.load_kube_config()
+    v1 = kubernetes.client.CoreV1Api()
     secret_dict = v1.read_namespaced_secret("quickstart-es-elastic-user", "default").data
     return base64.b64decode(secret_dict['elastic'])
 
@@ -529,8 +535,10 @@ def write_tls_crt():
     #   kubectl get secret "quickstart-es-http-certs-public" \
     #     -o go-template='{{index .data "tls.crt" | base64decode }}' \
     #     > /tmp/tls.crt
-    configuration = _get_kubernetes_client_config()
-    v1 = kubernetes.client.CoreV1Api(kubernetes.client.ApiClient(configuration))
+    #configuration = _get_kubernetes_client_config()
+    #v1 = kubernetes.client.CoreV1Api(kubernetes.client.ApiClient(configuration))
+    kubernetes.config.load_kube_config()
+    v1 = kubernetes.client.CoreV1Api()
     secret_dict = v1.read_namespaced_secret("quickstart-es-http-certs-public", "default").data
     with open(ES_TLS_CERT_FILE, "w") as f:
       f.write(base64.b64decode(secret_dict['tls.crt']))
