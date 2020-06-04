@@ -6,6 +6,7 @@ from flask import current_app
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl import FacetedSearch
 
+from data_explorer.util import elasticsearch_util
 
 class DatasetFacetedSearch(FacetedSearch):
     """Subclass of FacetedSearch for Datasets."""
@@ -22,7 +23,7 @@ class DatasetFacetedSearch(FacetedSearch):
             for elasticsearch_field_name, field in es_facets.items()
         ])
         elasticsearch_util.write_tls_crt()
-        self.using = Elasticsearch(app.app.config['ELASTICSEARCH_URL'], 
+        self.using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'], 
                        http_auth=('elastic', elasticsearch_util.get_kubernetes_password()),
                        use_ssl=True,
                        ca_certs=elasticsearch_util.ES_TLS_CERT_FILE)

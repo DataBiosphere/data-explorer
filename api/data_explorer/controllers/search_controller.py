@@ -117,7 +117,7 @@ def search_get(query=None):
     """
 
     elasticsearch_util.write_tls_crt()
-    es = Elasticsearch(app.app.config['ELASTICSEARCH_URL'], 
+    es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'], 
                        http_auth=('elastic', elasticsearch_util.get_kubernetes_password()),
                        use_ssl=True,
                        ca_certs=elasticsearch_util.ES_TLS_CERT_FILE)

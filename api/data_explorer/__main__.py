@@ -371,13 +371,6 @@ def init():
         _process_ui()
         _process_bigquery()
         _process_export_url()
-        app.app.logger.info('Attempting to call gcloud container clusters get-credentials')
-        bash_command = 'gcloud container clusters get-credentials es-cluster --zone us-central1-c'
-        import subprocess
-        process = subprocess.Popen(bash_command.split(), stdout=subprocess.PIPE)
-        output, error = process.communicate()
-        app.app.logger.info('gcloud output: {}'.format(output))
-        app.app.logger.info('gcloud error: {}'.format(error))
         es = init_elasticsearch()
         _process_facets(es)
 

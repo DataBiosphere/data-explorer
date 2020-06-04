@@ -281,7 +281,7 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     :rtype: FacetsResponse
     """
     elasticsearch_util.write_tls_crt()
-    es = Elasticsearch(app.app.config['ELASTICSEARCH_URL'], 
+    es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'], 
                        http_auth=('elastic', elasticsearch_util.get_kubernetes_password()),
                        use_ssl=True,
                        ca_certs=elasticsearch_util.ES_TLS_CERT_FILE)
