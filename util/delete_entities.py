@@ -28,14 +28,14 @@ def parse_args():
 
 
 def delete_entity_type(args, entity_type, entities):
-    num_chunks = len(entities) / ENTITY_CHUNK_SIZE
+    num_chunks = len(entities) // ENTITY_CHUNK_SIZE
     if len(entities) % ENTITY_CHUNK_SIZE != 0:
         num_chunks += 1
 
-    for i in xrange(0, len(entities), ENTITY_CHUNK_SIZE):
+    for i in range(0, len(entities), ENTITY_CHUNK_SIZE):
         chunk = entities[i:i + ENTITY_CHUNK_SIZE]
         print('Deleting chunk %s of %s for type: %s' %
-              (i / ENTITY_CHUNK_SIZE + 1, num_chunks, entity_type))
+              (i // ENTITY_CHUNK_SIZE + 1, num_chunks, entity_type))
         resp = fapi.delete_entity_type(args.workspace_namespace,
                                        args.workspace_name, entity_type, chunk)
         fapi._check_response_code(resp, 204)
@@ -66,7 +66,7 @@ def main():
             del entities_by_type[entity_type]
 
     # Delete the remaining entities where order does not matter.
-    for entity_type, entities in entities_by_type.iteritems():
+    for entity_type, entities in entities_by_type.items():
         if entity_type not in FC_ENTITY_TYPES:
             delete_entity_type(args, entity_type, entities)
 

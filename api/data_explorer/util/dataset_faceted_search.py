@@ -20,7 +20,7 @@ class DatasetFacetedSearch(FacetedSearch):
         self.index = current_app.config['INDEX_NAME']
         self.facets = dict([
             (elasticsearch_field_name, field['es_facet'])
-            for elasticsearch_field_name, field in es_facets.items()
+            for elasticsearch_field_name, field in list(es_facets.items())
         ])
         elasticsearch_util.write_tls_crt()
         self.using = Elasticsearch(current_app.config['ELASTICSEARCH_URL'], 

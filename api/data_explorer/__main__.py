@@ -239,7 +239,7 @@ def _process_facets(es):
         # Construct Elasticsearch filters. See
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-filters-aggregation.html
         es_field_names = {}
-        for name, field in app.app.config['SAMPLE_FILE_COLUMNS'].iteritems():
+        for name, field in app.app.config['SAMPLE_FILE_COLUMNS'].items():
             facet_name = 'Has %s' % name
             es_field_name = 'samples._has_%s' % name.lower().replace(' ', '_')
             es_field_names[facet_name] = es_field_name

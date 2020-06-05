@@ -7,7 +7,7 @@ import random
 import string
 import sys
 import time
-import urllib
+import urllib.parse
 
 from collections import OrderedDict
 from elasticsearch import Elasticsearch
@@ -187,7 +187,7 @@ def _get_sql_query(filters):
     participant_id_column = current_app.config['PARTICIPANT_ID_COLUMN']
     sample_file_column_fields = {
         k.lower().replace(" ", "_"): v
-        for k, v in current_app.config['SAMPLE_FILE_COLUMNS'].iteritems()
+        for k, v in current_app.config['SAMPLE_FILE_COLUMNS'].items()
     }
     time_series_column = current_app.config['TIME_SERIES_COLUMN']
 
@@ -240,9 +240,9 @@ def _get_sql_query(filters):
         return existing + join if table_num > 1 else existing + new
 
     # Handle the clauses on a per-facet level.
-    for facet_id, table_clauses in facet_table_clauses.iteritems():
+    for facet_id, table_clauses in facet_table_clauses.items():
         table_wheres_current_facet = {}
-        for table_name, clauses in table_clauses.iteritems():
+        for table_name, clauses in table_clauses.items():
             where = ''
             for clause in clauses:
                 if len(where) > 0:
@@ -263,7 +263,7 @@ def _get_sql_query(filters):
             # Normally, different columns are AND'ed together.
             # Different columns within Samples Overview facet are OR'ed together.
             # OR is done using FULL JOIN in case columns are from different tables.
-            for table_name, where in table_wheres_current_facet.iteritems():
+            for table_name, where in table_wheres_current_facet.items():
                 select = table_select % (participant_id_column, table_name,
                                          where)
                 table = '%s t%d' % (select, table_num)
@@ -277,7 +277,7 @@ def _get_sql_query(filters):
     # using INTERSECT DISTINCT. Cannot just use one WHERE clause with
     # AND's because multiple rows may have the same participant id for
     # time series data.
-    for table_name, wheres in table_wheres.iteritems():
+    for table_name, wheres in table_wheres.items():
         intersect_clause = ''
         for where in wheres:
             if len(intersect_clause) > 0:
@@ -360,12 +360,12 @@ def _create_signed_url(gcs_path):
     timestamp = str(int(time.time()) + 5 * 60)
     file_metadata = '\n'.join(['GET', '', '', timestamp, gcs_path])
     signature = base64.b64encode(creds.sign_blob(file_metadata)[1])
-    signature = urllib.quote(signature, safe='')
+    signature = urllib.parse.quote(signature, safe='')
     signed_url = ('https://storage.googleapis.com%s?GoogleAccessId=%s'
                   '&Expires=%s&Signature=%s') % (
                       gcs_path, service_account_email, timestamp, signature)
     # import-data expects url to be url encoded
-    signed_url = urllib.quote(signed_url, safe='')
+    signed_url = urllib.parse.quote(signed_url, safe='')
     current_app.logger.info('Signed URL: ' + signed_url)
     return signed_url
 

@@ -1,6 +1,6 @@
 import json
 import math
-import urllib
+import urllib.parse
 
 from google.cloud import container_v1
 import google.auth
@@ -22,7 +22,7 @@ from elasticsearch_dsl.aggs import Nested
 # release (6.2.2)
 from elasticsearch_dsl.faceted_search import NestedFacet
 from elasticsearch_dsl.query import Match
-from filters_facet import FiltersFacet
+from .filters_facet import FiltersFacet
 
 from flask import current_app
 
@@ -150,7 +150,7 @@ def number_to_range(interval_start, interval):
     """Converts "X" -> "X-Y"."""
     if interval < 1:
         # Return something like "0.1-0.2"
-        return '%s-%s' % (interval_start, interval_start + interval)
+        return '%.1f-%.1f' % (interval_start, interval_start + interval)
     elif interval == 1:
         # Return something like "5"
         return '%d' % interval_start
@@ -159,20 +159,20 @@ def number_to_range(interval_start, interval):
         return '%d-%d' % (interval_start, interval_start + interval - 1)
     elif interval == 1000000:
         # Return something like "1.0M-1.9M"
-        return '%d.0M-%d.9M' % (interval_start / 1000000,
-                                interval_start / 1000000)
+        return '%d.0M-%d.9M' % (interval_start // 1000000,
+                                interval_start // 1000000)
     elif interval < 1000000000:
         # Return something like "10M-19M"
-        return '%dM-%dM' % (interval_start / 1000000,
-                            (interval_start + interval - 1) / 1000000)
+        return '%dM-%dM' % (interval_start // 1000000,
+                            (interval_start + interval - 1) // 1000000)
     elif interval == 1000000000:
         # Return something like "1.0B-1.9B"
-        return '%d.0B-%d.9B' % (interval_start / 1000000000,
-                                interval_start / 1000000000)
+        return '%d.0B-%d.9B' % (interval_start // 1000000000,
+                                interval_start // 1000000000)
     else:
         # Return something like "10B-19B"
-        return '%dB-%dB' % (interval_start / 1000000000,
-                            (interval_start + interval - 1) / 1000000000)
+        return '%dB-%dB' % (interval_start // 1000000000,
+                            (interval_start + interval - 1) // 1000000000)
 
 
 def convert_to_index_name(s):
@@ -218,7 +218,7 @@ def get_facet_value_dict(es, filters, facets):
 
     filter_dict = {}
     for facet_filter in filters:
-        filter_str = urllib.unquote(facet_filter).decode('utf8')
+        filter_str = urllib.parse.unquote(facet_filter)
         facet_name_value = filter_str.rsplit('=', 1)
         es_field_name = facet_name_value[0]
         facet_value = facet_name_value[1]
@@ -311,7 +311,7 @@ def get_time_series_vals(field_name, mapping):
         current_app.config['INDEX_NAME']]['mappings']['properties']
     for subname in field_name.split('.'):
         submapping = submapping[subname]['properties']
-    time_series_vals = submapping.keys()
+    time_series_vals = list(submapping.keys())
     assert '_is_time_series' in time_series_vals
     time_series_vals.remove('_is_time_series')
     has_unknown = 'Unknown' in time_series_vals
@@ -327,7 +327,7 @@ def get_time_series_vals(field_name, mapping):
         ]
     else:
         # time_series_vals contains ints
-        time_series_vals = map(str, sorted(map(int, time_series_vals)))
+        time_series_vals = list(map(str, sorted(map(int, time_series_vals))))
     if has_unknown:
         time_series_vals.append('Unknown')
     return time_series_vals
@@ -335,7 +335,7 @@ def get_time_series_vals(field_name, mapping):
 
 def _get_nested_paths_inner(prefix, mappings):
     nested_field_paths = []
-    for field_name, field in mappings.items():
+    for field_name, field in list(mappings.items()):
         nested_path = field_name
         if prefix:
             nested_path = '%s.%s' % (prefix, field_name)
@@ -427,7 +427,7 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type,
 def get_samples_overview_facet(es_field_names):
     filters = {
         facet: Match(**{field: True})
-        for facet, field in es_field_names.iteritems()
+        for facet, field in es_field_names.items()
     }
     return NestedFacet('samples', FiltersFacet(filters))
 
@@ -459,7 +459,7 @@ def _delete_index(es, index):
 def _create_index(es, index, mappings_file=None):
     if mappings_file:
         with open(mappings_file) as f:
-            mappings = json.loads(f.next())
+            mappings = json.loads(next(f))
         es.indices.create(index=index, body=mappings)
     else:
         es.indices.create(index=index)
@@ -523,22 +523,22 @@ def get_kubernetes_password():
     # Execute the equivalent of:
     #   kubectl get secret quickstart-es-elastic-user \
     #     -o go-template='{{.data.elastic | base64decode }}'
-    #configuration = _get_kubernetes_client_config()
-    #v1 = kubernetes.client.CoreV1Api(kubernetes.client.ApiClient(configuration))
-    kubernetes.config.load_kube_config()
-    v1 = kubernetes.client.CoreV1Api()
+    configuration = _get_kubernetes_client_config()
+    v1 = kubernetes.client.CoreV1Api(kubernetes.client.ApiClient(configuration))
+    #kubernetes.config.load_kube_config()
+    #v1 = kubernetes.client.CoreV1Api()
     secret_dict = v1.read_namespaced_secret("quickstart-es-elastic-user", "default").data
-    return base64.b64decode(secret_dict['elastic'])
+    return base64.b64decode(secret_dict['elastic']).decode('ascii')
 
 def write_tls_crt():
     # Execute the equivalent of:
     #   kubectl get secret "quickstart-es-http-certs-public" \
     #     -o go-template='{{index .data "tls.crt" | base64decode }}' \
     #     > /tmp/tls.crt
-    #configuration = _get_kubernetes_client_config()
-    #v1 = kubernetes.client.CoreV1Api(kubernetes.client.ApiClient(configuration))
-    kubernetes.config.load_kube_config()
-    v1 = kubernetes.client.CoreV1Api()
+    configuration = _get_kubernetes_client_config()
+    v1 = kubernetes.client.CoreV1Api(kubernetes.client.ApiClient(configuration))
+    #kubernetes.config.load_kube_config()
+    #v1 = kubernetes.client.CoreV1Api()
     secret_dict = v1.read_namespaced_secret("quickstart-es-http-certs-public", "default").data
-    with open(ES_TLS_CERT_FILE, "w") as f:
+    with open(ES_TLS_CERT_FILE, "wb") as f:
       f.write(base64.b64decode(secret_dict['tls.crt']))

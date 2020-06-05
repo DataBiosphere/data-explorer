@@ -82,7 +82,7 @@ def _results_from_main_index(fields, query_regex, time_series_stem=''):
     field name.
     """
     field_to_facet_values = dict()
-    for field_name, field_value in fields.items():
+    for field_name, field_value in list(fields.items()):
         if isinstance(field_value, dict):
             if '_is_time_series' in field_value and field_value[
                     '_is_time_series']:
@@ -91,7 +91,7 @@ def _results_from_main_index(fields, query_regex, time_series_stem=''):
                 ts_stem = ''
             field_to_facet_values.update(
                 _results_from_main_index(field_value, query_regex, ts_stem))
-        elif isinstance(field_value, basestring) and re.findall(
+        elif isinstance(field_value, str) and re.findall(
                 query_regex, field_value.lower()):
             if time_series_stem:
                 field_name = time_series_stem + '.' + field_name
