@@ -115,12 +115,14 @@ def search_get(query=None):
 
     rtype: SearchResponse
     """
-
-    elasticsearch_util.write_tls_crt()
-    es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'], 
-                       http_auth=('elastic', elasticsearch_util.get_kubernetes_password()),
-                       use_ssl=True,
-                       ca_certs=elasticsearch_util.ES_TLS_CERT_FILE)
+    if current_app.config['DEPLOY_LOCAL']:
+        es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
+    else:
+        elasticsearch_util.write_tls_crt()
+        es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'], 
+                           http_auth=('elastic', elasticsearch_util.get_kubernetes_password()),
+                           use_ssl=True,
+                           ca_certs=elasticsearch_util.ES_TLS_CERT_FILE)
     mapping = es.indices.get_mapping(index=current_app.config['INDEX_NAME'])
     search_results = []
 

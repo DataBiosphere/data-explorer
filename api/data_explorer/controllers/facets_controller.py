@@ -280,11 +280,14 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     :type extraFacets: List[str]
     :rtype: FacetsResponse
     """
-    elasticsearch_util.write_tls_crt()
-    es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'], 
-                       http_auth=('elastic', elasticsearch_util.get_kubernetes_password()),
-                       use_ssl=True,
-                       ca_certs=elasticsearch_util.ES_TLS_CERT_FILE)
+    if current_app.config['DEPLOY_LOCAL']:
+        es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
+    else:
+        elasticsearch_util.write_tls_crt()
+        es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'], 
+                           http_auth=('elastic', elasticsearch_util.get_kubernetes_password()),
+                           use_ssl=True,
+                           ca_certs=elasticsearch_util.ES_TLS_CERT_FILE)
     invalid_extra_facets = _process_extra_facets(es, extraFacets)
     combined_facets = (list(current_app.config['EXTRA_FACET_INFO'].items()) +
                        list(current_app.config['FACET_INFO'].items()))

@@ -67,12 +67,15 @@ app.add_api('swagger.yaml', base_path=args.path_prefix)
 
 
 def init_elasticsearch():
-    elasticsearch_util.write_tls_crt()
-    # Wait for Elasticsearch to be healthy.
-    es = Elasticsearch(app.app.config['ELASTICSEARCH_URL'], 
-                       http_auth=('elastic', elasticsearch_util.get_kubernetes_password()),
-                       use_ssl=True,
-                       ca_certs=elasticsearch_util.ES_TLS_CERT_FILE)
+    if app.app.config['DEPLOY_LOCAL']:
+        es = Elasticsearch(app.app.config['ELASTICSEARCH_URL'])
+    else:
+        elasticsearch_util.write_tls_crt()
+        # Wait for Elasticsearch to be healthy.
+        es = Elasticsearch(app.app.config['ELASTICSEARCH_URL'], 
+                           http_auth=('elastic', elasticsearch_util.get_kubernetes_password()),
+                           use_ssl=True,
+                           ca_certs=elasticsearch_util.ES_TLS_CERT_FILE)
     start = time.time()
     for _ in range(0, 120):
         try:
@@ -359,6 +362,8 @@ def _process_export_url():
     app.app.config['EXPORT_URL_GCS_BUCKET'] = project_id + '-export'
     app.app.config[
         'EXPORT_URL_SAMPLES_GCS_BUCKET'] = project_id + '-export-samples'
+
+    app.app.config['DEPLOY_LOCAL'] = deploy_config.get('deploy_local', False)
 
 
 # On server startup, read and process config files, and populate

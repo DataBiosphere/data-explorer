@@ -22,7 +22,8 @@ echo "gcloud project set to $(gcloud config get-value project)"
 
 # Need to get cluster name by sorting the list of clusters, and choosing to
 # use the one with the greatest timestamp (most recent)
-cluster_line=$(gcloud container clusters list | grep elasticsearch-cluster- | sort -rn -k1 | head -n1)
+#cluster_line=$(gcloud container clusters list | grep elasticsearch-cluster- | sort -rn -k1 | head -n1)
+cluster_line=$(gcloud container clusters list | grep es-cluster | sort -rn -k1 | head -n1)
 cluster_name=$(echo $cluster_line | awk '{print $1}')
 zone=$(echo $cluster_line | awk '{print $2}')
 gcloud container clusters get-credentials ${cluster_name} --zone ${zone}
