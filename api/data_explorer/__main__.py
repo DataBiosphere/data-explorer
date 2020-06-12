@@ -49,7 +49,7 @@ else:
     # gunicorn.
     args, _ = parser.parse_known_args()
 
-app = connexion.App(__name__, specification_dir='./swagger/', swagger_ui=True)
+app = connexion.App(__name__, specification_dir='./swagger/', options={'swagger_ui': True})
 app.app.config['ELASTICSEARCH_URL'] = args.elasticsearch_url
 app.app.config['DATASET_CONFIG_DIR'] = args.dataset_config_dir
 

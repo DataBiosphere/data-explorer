@@ -198,7 +198,7 @@ API server unit tests use [pytest](https://docs.pytest.org/en/latest/) and
 virtualenv ~/virtualenv/tox
 source ~/virtualenv/tox/bin/activate
 pip install tox
-cd api && tox -e py3
+cd api && tox -e py37
 ```
 
 End-to-end tests use [Puppeteer](https://github.com/GoogleChrome/puppeteer) and

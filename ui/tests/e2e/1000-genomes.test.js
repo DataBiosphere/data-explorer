@@ -164,23 +164,6 @@ describe("End-to-end 1000 genomes", () => {
     await waitForFacetsUpdate(477);
   });
 
-  test("Facet with range intervals", async () => {
-    // Assert facet rendered correctly
-    await assertFacet("% covered 20x or greater (samples)", "2551", "0.9-1.0", "1108");
-
-    // Click on facet bar and assert page updated correctly
-    let facetBar = await getFacetBar("% covered 20x or greater (samples)", "0.7-0.8");
-    await facetBar.click("");
-    await waitForFacetsUpdate(528);
-    await assertFacet("Gender", "528", "female", "265");
-
-    // Make sure unselected facet value bar is dimmed
-    facetBar = await getFacetBar("% covered 20x or greater (samples)", "0.9-1.0");
-    const barColor = await page.evaluate(bar => bar.style.fill, facetBar);
-    // Vega translates our hex colors to rgb so it must be validated this way.
-    expect(barColor).toBe("rgb(191, 225, 240)");
-  });
-
   async function waitForElasticsearchIndex() {
     var waitOneSec = function() {
       return new Promise(resolve => {
