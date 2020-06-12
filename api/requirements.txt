@@ -4,7 +4,7 @@ certifi==2020.4.5.2
 chardet==3.0.4
 Click==7.0
 clickclick==1.2.2
-connexion==2.6.0
+connexion==2.5.0
 elasticsearch==6.1.1
 elasticsearch-dsl==6.2.1
 Flask==1.1.1
