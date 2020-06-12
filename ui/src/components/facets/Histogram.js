@@ -83,10 +83,13 @@ class Histogram extends Component {
           type: "nominal",
           scale: {
             range: [
+              // Unselected bar
+              "#5ee30b",
               // Default bar color
               "#4cabd4",
-              // Unselected bar
-              "#bfe1f0"
+              
+              // My color!
+              "#d44c5e"
             ]
           },
           legend: null
@@ -99,13 +102,16 @@ class Histogram extends Component {
         y: {},
         // opacity is needed for creating transparent bars.
         opacity: {
-          field: "opaque",
-          type: "nominal",
-          scale: {
-            range: [0, 1]
-          },
-          legend: null
+          value: 0.7
         }
+        // opacity: {
+        //   field: "opaque",
+        //   type: "nominal",
+        //   scale: {
+        //     range: [0, 1]
+        //   },
+        //   legend: null
+        // }
       },
       mark: {
         type: "bar",
@@ -156,7 +162,7 @@ class Histogram extends Component {
       field: "count",
       type: "quantitative",
       title: "",
-      stack: null
+      stack: false
     };
 
     // Make bars horizontal, to allow for more space for facet value names for
@@ -176,20 +182,41 @@ class Histogram extends Component {
       })
     };
 
+    // Add upper limits for each bar
+    const upper_limits = {
+      'female': 1760,
+      'male': 1740,
+      'African': 1018,
+      'European': 669,
+      'South Asian': 661,
+      'East Asian': 617,
+      'American': 535
+    };
+    const upper_limit_values = data.values.map(v => {
+        const max = Object.assign({}, v);
+        max.dimmed = 2;
+        max.count = upper_limits[v.facet_value];
+        return max;
+      });
+
     // Create transparent bar that extends the entire length of the chart. This
     // makes tooltip/selection easier for facet values that have very low count.
-    const maxFacetValue =
-      "maxFacetValue" in this.props
-        ? this.props.maxFacetValue
-        : Math.max(...data.values.map(v => v.count));
-    data.values = data.values.concat(
-      data.values.map(v => {
-        const invisible = Object.assign({}, v);
-        invisible.opaque = false;
-        invisible.count = maxFacetValue;
-        return invisible;
-      })
-    );
+    // const maxFacetValue =
+    //   "maxFacetValue" in this.props
+    //     ? this.props.maxFacetValue
+    //     : Math.max(...upper_limit_values.map(v => v.count));
+    // data.values = data.values.concat(
+    //   data.values.map(v => {
+    //     const invisible = Object.assign({}, v);
+    //     invisible.opaque = false;
+    //     invisible.count = maxFacetValue;
+    //     return invisible;
+    //   })
+    // );
+
+    data.values = data.values.concat(upper_limit_values);
+
+    console.log(data.values)
 
     // vega-lite spec is easier to construct than vega spec. But certain
     // properties aren't available in vega-lite spec (vega-lite is a subset of
@@ -263,7 +290,7 @@ class Histogram extends Component {
       this.props.selectedValues != null &&
       this.props.selectedValues.length > 0 &&
       !this.props.selectedValues.includes(facetValue.name)
-    );
+    ) ? 1 : 0;
   }
 
   onClick(event, item) {
