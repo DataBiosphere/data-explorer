@@ -7,6 +7,7 @@ import jsmin
 import json
 import logging
 import os
+import sys
 import time
 
 from collections import OrderedDict
@@ -16,6 +17,9 @@ from elasticsearch import Elasticsearch
 from elasticsearch.client.cat import CatClient
 from elasticsearch.exceptions import ConnectionError
 from elasticsearch.exceptions import TransportError
+
+if sys.version_info.major < 3:
+    raise Exception('Python2 is deprecated. Please upgrade to Python3')
 
 # gunicorn flags are passed via env variables, so we use these as the default
 # values. These arguments will rarely be specified as flags directly, aside from
@@ -45,7 +49,9 @@ else:
     # gunicorn.
     args, _ = parser.parse_known_args()
 
-app = connexion.App(__name__, specification_dir='./swagger/', swagger_ui=True)
+app = connexion.App(__name__,
+                    specification_dir='./swagger/',
+                    options={'swagger_ui': True})
 app.app.config['ELASTICSEARCH_URL'] = args.elasticsearch_url
 app.app.config['DATASET_CONFIG_DIR'] = args.dataset_config_dir
 
@@ -85,8 +91,8 @@ def init_elasticsearch():
     # Use the cached JSON files to load the example 1000 genomes and
     # framingham teaching datasets without having to run the indexer.
     if (app.app.config['INDEX_NAME'] == '1000_genomes'
-            or app.app.config['INDEX_NAME'] ==
-            'framingham_heart_study_teaching_dataset'):
+            or app.app.config['INDEX_NAME']
+            == 'framingham_heart_study_teaching_dataset'):
         index_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                   'index.json')
         mappings_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
@@ -235,7 +241,7 @@ def _process_facets(es):
         # Construct Elasticsearch filters. See
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-filters-aggregation.html
         es_field_names = {}
-        for name, field in app.app.config['SAMPLE_FILE_COLUMNS'].iteritems():
+        for name, field in app.app.config['SAMPLE_FILE_COLUMNS'].items():
             facet_name = 'Has %s' % name
             es_field_name = 'samples._has_%s' % name.lower().replace(' ', '_')
             es_field_names[facet_name] = es_field_name

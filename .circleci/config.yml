@@ -11,6 +11,11 @@ jobs:
       - restore_cache:
           key: node-modules-{{ .Branch }}-{{ checksum "ui/package.json" }}
       - run:
+          name: "Switch to Python v3.5"
+          command: |
+            pyenv versions
+            pyenv global 3.5.2
+      - run:
           name: npm install
           command: |
             cd ui
@@ -46,7 +51,7 @@ jobs:
             pip install --upgrade pip
             pip install tox
             cd api
-            tox
+            tox -e py35
       - run:
           name: Run docker-compose for 1000 genomes dataset
           command: |

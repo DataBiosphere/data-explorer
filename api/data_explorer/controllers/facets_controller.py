@@ -282,8 +282,8 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     """
     es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
     invalid_extra_facets = _process_extra_facets(es, extraFacets)
-    combined_facets = (current_app.config['EXTRA_FACET_INFO'].items() +
-                       current_app.config['FACET_INFO'].items())
+    combined_facets = (list(current_app.config['EXTRA_FACET_INFO'].items()) +
+                       list(current_app.config['FACET_INFO'].items()))
     combined_facets_dict = OrderedDict(combined_facets)
 
     filter_dict, invalid_filter_facets = elasticsearch_util.get_facet_value_dict(
