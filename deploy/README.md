@@ -48,13 +48,14 @@ For private datasets, restrict who can see Data Explorer.
   slow and can take up 10 minutes. When `deploy/deploy-api.sh` returns, that means
   deployment has completed.
 
-### (Optional) Export logs to BigQuery
+### (Optional) Export audit logs to BigQuery
 
 This section applies if you're interested in who is using your Data Explorer.
 
 Note: This section only works if you are using IAP.  
 Note: BigQuery will [only have logs starting from when you set up the export](https://issuetracker.google.com/issues/64718059).
 
+- Navigate to [Audit Logs](https://console.cloud.google.com/iam-admin/audit). Select `Cloud Identity-Aware Proxy API` and enable `Admin Read`, `Data Read`, and `Data Write`.
 - Naviate to [BigQuery](https://console.cloud.google.com/bigquery) and create a dataset named `IAP_data_access_logs`
 - Navigate to [Stackdriver Logging](https://console.cloud.google.com/logs/viewer)
 - In the first drop-down, select `GAE Application`, `All module_id`
