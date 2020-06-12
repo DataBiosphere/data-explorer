@@ -49,7 +49,9 @@ else:
     # gunicorn.
     args, _ = parser.parse_known_args()
 
-app = connexion.App(__name__, specification_dir='./swagger/', options={'swagger_ui': True})
+app = connexion.App(__name__,
+                    specification_dir='./swagger/',
+                    options={'swagger_ui': True})
 app.app.config['ELASTICSEARCH_URL'] = args.elasticsearch_url
 app.app.config['DATASET_CONFIG_DIR'] = args.dataset_config_dir
 
@@ -89,8 +91,8 @@ def init_elasticsearch():
     # Use the cached JSON files to load the example 1000 genomes and
     # framingham teaching datasets without having to run the indexer.
     if (app.app.config['INDEX_NAME'] == '1000_genomes'
-            or app.app.config['INDEX_NAME'] ==
-            'framingham_heart_study_teaching_dataset'):
+            or app.app.config['INDEX_NAME'] 
+            == 'framingham_heart_study_teaching_dataset'):
         index_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
                                   'index.json')
         mappings_path = os.path.join(app.app.config['DATASET_CONFIG_DIR'],
