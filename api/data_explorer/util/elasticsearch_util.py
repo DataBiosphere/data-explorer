@@ -418,14 +418,6 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type,
     return es_facet
 
 
-def get_samples_overview_facet(es_field_names):
-    filters = {
-        facet: Match(**{field: True})
-        for facet, field in es_field_names.items()
-    }
-    return NestedFacet('samples', FiltersFacet(filters))
-
-
 def is_histogram_facet(facet):
     if isinstance(facet, HistogramFacet):
         return True

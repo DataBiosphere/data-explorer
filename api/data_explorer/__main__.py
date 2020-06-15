@@ -234,26 +234,6 @@ def _process_facets(es):
     # Preserve order, so facets are returned in same order as the config file.
     facets = OrderedDict()
 
-    # Add a 'Samples Overview' facet if sample_file_columns were specified in
-    # bigquery.json. This facet is mapped to multiple Elasticsearch facets, and
-    # has keys - 'elasticsearch_field_names', 'type', 'ui_facet_name' and 'es_facet'.
-    if app.app.config['SAMPLE_FILE_COLUMNS']:
-        # Construct Elasticsearch filters. See
-        # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-filters-aggregation.html
-        es_field_names = {}
-        for name, field in app.app.config['SAMPLE_FILE_COLUMNS'].items():
-            facet_name = 'Has %s' % name
-            es_field_name = 'samples._has_%s' % name.lower().replace(' ', '_')
-            es_field_names[facet_name] = es_field_name
-        facets['Samples Overview'] = {
-            'elasticsearch_field_names': es_field_names,
-            'type': 'samples_overview',
-            'ui_facet_name': 'Samples Overview'
-        }
-        facets['Samples Overview'][
-            'es_facet'] = elasticsearch_util.get_samples_overview_facet(
-                es_field_names)
-
     app.app.config['NESTED_PATHS'] = elasticsearch_util.get_nested_paths(es)
 
     # Precompute mapping for getting time series values later.
