@@ -215,8 +215,7 @@ def get_facet_value_dict(es, filters, facets):
         es_field_name = facet_name_value[0]
         facet_value = facet_name_value[1]
 
-        if es_field_name != 'Samples Overview' and not field_exists(
-                es, es_field_name):
+        if not field_exists(es, es_field_name):
             invalid_filter_facets.append(es_field_name)
             continue
 

@@ -12,8 +12,7 @@
 //   The (optional) name of BigQuery column that holds the sample ID.
 // sample_file_columns:
 //   An (optional) map from file type to BigQuery column containing file paths.
-//   File types will appear in special Samples Overview facet. BigQuery column
-//   format is: <project>.<dataset>.<table>.<column>
+//   BigQuery column format is: <project>.<dataset>.<table>.<column>
 // time_series_column:
 //   The (optional) name of BigQuery column that holds the time
 //   associated with a data point. This column must have a numeric

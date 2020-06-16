@@ -116,10 +116,6 @@ def _get_table_and_clause(es_field_name, field_type, value, bucket_interval,
     eg "((age76 >= 20 AND age76 < 30) OR (age76 >= 30 AND age76 < 40))".
     """
     sample_file_type_field = False
-    if field_type == 'samples_overview':
-        es_field_name = current_app.config['FACET_INFO']['Samples Overview'][
-            'elasticsearch_field_names'][value]
-        value = True
 
     if es_field_name.startswith('samples.'):
         es_field_name = es_field_name.replace('samples.', '')

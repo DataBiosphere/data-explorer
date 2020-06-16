@@ -21,7 +21,7 @@ const styles = {
 const facetValueNameWidthLimit = 120;
 
 function isCategorical(es_field_type) {
-  return es_field_type === "text" || es_field_type === "samples_overview";
+  return es_field_type === "text";
 }
 
 // From https://stackoverflow.com/questions/39342575
