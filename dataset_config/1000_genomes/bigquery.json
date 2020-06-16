@@ -12,6 +12,7 @@
 //   The (optional) name of BigQuery column that holds the sample ID.
 // sample_file_columns:
 //   An (optional) map from file type to BigQuery column containing file paths.
+//   Appears as a facet named "Has Exome BAM" for example.
 //   BigQuery column format is: <project>.<dataset>.<table>.<column>
 // time_series_column:
 //   The (optional) name of BigQuery column that holds the time
