@@ -215,8 +215,7 @@ def get_facet_value_dict(es, filters, facets):
         es_field_name = facet_name_value[0]
         facet_value = facet_name_value[1]
 
-        if es_field_name != 'Samples Overview' and not field_exists(
-                es, es_field_name):
+        if not field_exists(es, es_field_name):
             invalid_filter_facets.append(es_field_name)
             continue
 
@@ -416,14 +415,6 @@ def get_elasticsearch_facet(es, elasticsearch_field_name, field_type,
     if nested_facet:
         es_facet = nested_facet
     return es_facet
-
-
-def get_samples_overview_facet(es_field_names):
-    filters = {
-        facet: Match(**{field: True})
-        for facet, field in es_field_names.items()
-    }
-    return NestedFacet('samples', FiltersFacet(filters))
 
 
 def is_histogram_facet(facet):

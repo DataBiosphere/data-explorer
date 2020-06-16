@@ -60,19 +60,6 @@ describe("End-to-end 1000 genomes", () => {
     expect(barColor).toBe("rgb(191, 225, 240)");
   });
 
-  test("Samples Overview facet", async () => {
-    // Skip asserting facet rendered correctly, because this facet doesn't have
-    // totalFacetValueCount span.
-
-    // Click on facet bar and assert page updated correctly
-    let facetBar = await getFacetBar("Samples Overview", "Has Exome CRAM");
-    await facetBar.click("");
-    await waitForFacetsUpdate(2534);
-    await assertFacet("Gender", "2534", "female", "1290");
-
-    await saveInTerra;
-  });
-
   test("Save in Terra", async () => {
     let facetBar = await getFacetBar("Super Population", "African");
     await facetBar.click("");

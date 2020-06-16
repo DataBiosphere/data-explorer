@@ -18,7 +18,7 @@ const styles = {
 const facetValueNameWidthLimit = 120;
 
 function isCategorical(es_field_type) {
-  return es_field_type === "text" || es_field_type === "samples_overview";
+  return es_field_type === "text";
 }
 
 // Make vega chart fill up facet horizontally.

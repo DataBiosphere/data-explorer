@@ -116,10 +116,6 @@ def _get_table_and_clause(es_field_name, field_type, value, bucket_interval,
     eg "((age76 >= 20 AND age76 < 30) OR (age76 >= 30 AND age76 < 40))".
     """
     sample_file_type_field = False
-    if field_type == 'samples_overview':
-        es_field_name = current_app.config['FACET_INFO']['Samples Overview'][
-            'elasticsearch_field_names'][value]
-        value = True
 
     if es_field_name.startswith('samples.'):
         es_field_name = es_field_name.replace('samples.', '')
@@ -194,41 +190,41 @@ def _get_sql_query(filters):
     if not filters or not len(filters):
         return _get_all_participants_query()
 
-    # facet_table_clauses must have two levels of nesting (facet_id, table_name)
+    # facet_table_clauses must have two levels of nesting (es_field_name, table_name)
     # because clauses from the same column are OR'ed together, whereas clauses
     # from different columns are AND'ed together.
     facet_table_clauses = {}
     for filter_str in filters:
         splits = filter_str.rsplit('=', 1)
-        # facet_id is "Samples Overview" for the Samples Overview facet, and
-        # es_field_name for all other facets.
-        facet_id = splits[0]
+        es_field_name = splits[0]
         value = splits[1]
         field_type = ''
         is_time_series = False
         bucket_interval = None
-        if facet_id in current_app.config['FACET_INFO']:
-            field_type = current_app.config['FACET_INFO'][facet_id]['type']
-            is_time_series = current_app.config['FACET_INFO'][facet_id].get(
-                'time_series_field', False)
+        if es_field_name in current_app.config['FACET_INFO']:
+            field_type = current_app.config['FACET_INFO'][es_field_name][
+                'type']
+            is_time_series = current_app.config['FACET_INFO'][
+                es_field_name].get('time_series_field', False)
             bucket_interval = _get_bucket_interval(
-                current_app.config['FACET_INFO'][facet_id]['es_facet'])
-        elif facet_id in current_app.config['EXTRA_FACET_INFO']:
-            field_type = current_app.config['EXTRA_FACET_INFO'][facet_id][
+                current_app.config['FACET_INFO'][es_field_name]['es_facet'])
+        elif es_field_name in current_app.config['EXTRA_FACET_INFO']:
+            field_type = current_app.config['EXTRA_FACET_INFO'][es_field_name][
                 'type']
             is_time_series = current_app.config['EXTRA_FACET_INFO'][
-                facet_id].get('time_series_field', False)
+                es_field_name].get('time_series_field', False)
             bucket_interval = _get_bucket_interval(
-                current_app.config['EXTRA_FACET_INFO'][facet_id]['es_facet'])
+                current_app.config['EXTRA_FACET_INFO'][es_field_name]
+                ['es_facet'])
         table_name, column, clause = _get_table_and_clause(
-            facet_id, field_type, value, bucket_interval,
+            es_field_name, field_type, value, bucket_interval,
             sample_file_column_fields, is_time_series, time_series_column)
 
-        if facet_id not in facet_table_clauses:
-            facet_table_clauses[facet_id] = {}
-        if table_name not in facet_table_clauses[facet_id]:
-            facet_table_clauses[facet_id][table_name] = []
-        facet_table_clauses[facet_id][table_name].append(clause)
+        if es_field_name not in facet_table_clauses:
+            facet_table_clauses[es_field_name] = {}
+        if table_name not in facet_table_clauses[es_field_name]:
+            facet_table_clauses[es_field_name][table_name] = []
+        facet_table_clauses[es_field_name][table_name].append(clause)
 
     # Map from table name to list of where clauses.
     table_wheres = {}
@@ -240,7 +236,7 @@ def _get_sql_query(filters):
         return existing + join if table_num > 1 else existing + new
 
     # Handle the clauses on a per-facet level.
-    for facet_id, table_clauses in facet_table_clauses.items():
+    for es_field_name, table_clauses in facet_table_clauses.items():
         table_wheres_current_facet = {}
         for table_name, clauses in table_clauses.items():
             where = ''
@@ -254,14 +250,14 @@ def _get_sql_query(filters):
         if len(table_wheres_current_facet) == 1:
             # If all of the facet where caluses are on the same table, add it
             # to the table_wheres map for coalescing by table below.
-            # All normal, non-Samples Overview facets fall under this case.
+            # All normal, non-"_has_sample_type" facets fall under this case.
             if table_name not in table_wheres:
                 table_wheres[table_name] = []
             table_wheres[table_name].append(
                 table_wheres_current_facet[table_name])
         else:
             # Normally, different columns are AND'ed together.
-            # Different columns within Samples Overview facet are OR'ed together.
+            # Different columns within a "_has_sample_type" facet are OR'ed together.
             # OR is done using FULL JOIN in case columns are from different tables.
             for table_name, where in table_wheres_current_facet.items():
                 select = table_select % (participant_id_column, table_name,

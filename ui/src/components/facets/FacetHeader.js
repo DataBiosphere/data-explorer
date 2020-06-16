@@ -66,8 +66,7 @@ class FacetHeader extends Component {
         }
       >
         <div className={classes.facetName}>{this.props.facet.name}</div>
-        {this.props.facet.name !== "Samples Overview" &&
-          !this.props.isTimeSeries && (
+        {!this.props.isTimeSeries && (
             <div className={classes.totalFacetValueCount}>
               {this.sumFacetValueCounts(
                 this.props.values,
