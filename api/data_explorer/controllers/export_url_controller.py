@@ -202,9 +202,10 @@ def _get_sql_query(filters):
         is_time_series = False
         bucket_interval = None
         if es_field_name in current_app.config['FACET_INFO']:
-            field_type = current_app.config['FACET_INFO'][es_field_name]['type']
-            is_time_series = current_app.config['FACET_INFO'][es_field_name].get(
-                'time_series_field', False)
+            field_type = current_app.config['FACET_INFO'][es_field_name][
+                'type']
+            is_time_series = current_app.config['FACET_INFO'][
+                es_field_name].get('time_series_field', False)
             bucket_interval = _get_bucket_interval(
                 current_app.config['FACET_INFO'][es_field_name]['es_facet'])
         elif es_field_name in current_app.config['EXTRA_FACET_INFO']:
@@ -213,7 +214,8 @@ def _get_sql_query(filters):
             is_time_series = current_app.config['EXTRA_FACET_INFO'][
                 es_field_name].get('time_series_field', False)
             bucket_interval = _get_bucket_interval(
-                current_app.config['EXTRA_FACET_INFO'][es_field_name]['es_facet'])
+                current_app.config['EXTRA_FACET_INFO'][es_field_name]
+                ['es_facet'])
         table_name, column, clause = _get_table_and_clause(
             es_field_name, field_type, value, bucket_interval,
             sample_file_column_fields, is_time_series, time_series_column)
