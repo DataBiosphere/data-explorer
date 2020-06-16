@@ -185,8 +185,10 @@ def _get_facet_values(es_field_name, facet_info, es_response_facets):
         else:
             # elasticsearch-dsl returns boolean field keys as 0/1. Use the
             # field's 'type' to convert back to boolean, if necessary.
+            # Also cast the bool to a str so that it renders as True/False
+            # instead of true/false (uppercase).
             if facet_info['type'] == 'boolean':
-                interval_name = bool(value_name)
+                interval_name = str(bool(value_name))
             else:
                 interval_name = value_name
         value_names.append(interval_name)

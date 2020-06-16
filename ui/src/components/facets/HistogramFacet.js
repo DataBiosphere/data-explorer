@@ -16,14 +16,6 @@ const styles = {
   }
 };
 
-// Booleans get rendered as lowercase 'true' or 'false'
-// Render them as uppercase 'True' or 'False'
-function true_or_false_to_uppercase(value_name) {
-  return (value_name === "true" ? "True" :
-          value_name === "false" ? "False":
-          value_name);
-}
-
 class HistogramFacet extends Component {
   render() {
     const { classes } = this.props;
@@ -31,7 +23,7 @@ class HistogramFacet extends Component {
     let values = [];
     for (let i = 0; i < this.props.facet.value_names.length; i++) {
       values.push({
-        name: true_or_false_to_uppercase(this.props.facet.value_names[i]),
+        name: this.props.facet.value_names[i],
         count: this.props.facet.value_counts[i]
       });
     }
