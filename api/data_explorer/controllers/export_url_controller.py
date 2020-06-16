@@ -190,7 +190,7 @@ def _get_sql_query(filters):
     if not filters or not len(filters):
         return _get_all_participants_query()
 
-    # facet_table_clauses must have two levels of nesting (facet_id, table_name)
+    # facet_table_clauses must have two levels of nesting (es_field_name, table_name)
     # because clauses from the same column are OR'ed together, whereas clauses
     # from different columns are AND'ed together.
     facet_table_clauses = {}
@@ -236,7 +236,7 @@ def _get_sql_query(filters):
         return existing + join if table_num > 1 else existing + new
 
     # Handle the clauses on a per-facet level.
-    for facet_id, table_clauses in facet_table_clauses.items():
+    for es_field_name, table_clauses in facet_table_clauses.items():
         table_wheres_current_facet = {}
         for table_name, clauses in table_clauses.items():
             where = ''
