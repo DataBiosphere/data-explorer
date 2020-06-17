@@ -11,6 +11,27 @@
 set -o errexit
 set -o nounset
 
+function check_private_key {
+  echo "Checking for valid private key by generating a signed URL on a temp GCS file"
+
+  echo "Private key check" > private_key_check.txt
+  gsutil cp private_key_check.txt "gs://${project_id}-export/"
+
+  signed_url_output="$(gsutil signurl -d 5m dataset_config/${dataset}/private-key.json \
+                      gs://${project_id}-export/private_key_check.txt)"
+  signed_url="$(echo ${signed_url_output} | awk '{print $11}')"
+  file_output="$(curl "${signed_url}")"
+
+  if [[ "${file_output}" != "Private key check" ]]; then
+    echo "Private key check failed. Save in Terra will not work."
+    echo "Check that your private-key.json file is valid."
+    exit 1
+  fi
+
+  gsutil rm "gs://${project_id}-export/private_key_check.txt"
+  rm private_key_check.txt
+}
+
 if (( $# != 1 ))
 then
   echo "Usage: deploy/deploy-api.sh <dataset>"
@@ -25,16 +46,18 @@ util/setup-gcloud.sh ${dataset}
 project_id=$(kubectl config current-context | cut -d "_" -f 2)
 
 if [ ! -f "dataset_config/${dataset}/private-key.json" ]; then
-	echo "Private key not found. Save in Terra feature will not work. "
-	echo "See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-save-in-terra-feature."
-	exit 1
+  echo "Private key not found. Save in Terra feature will not work. "
+  echo "See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-save-in-terra-feature."
+  exit 1
 fi
 
 if ! gsutil ls "gs://${project_id}-export" &> /dev/null; then
-	echo "Export bucket not found. Save in Terra feature will not work. "
-	echo "See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-save-in-terra-feature."
-	exit 1
+  echo "Export bucket not found. Save in Terra feature will not work. "
+  echo "See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-save-in-terra-feature."
+  exit 1
 fi
+
+check_private_key
 
 bold=$(tput bold)
 normal=$(tput sgr0)
