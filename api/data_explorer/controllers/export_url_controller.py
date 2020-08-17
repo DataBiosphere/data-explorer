@@ -8,6 +8,7 @@ import string
 import sys
 import time
 import urllib.parse
+import sqlparse
 
 from collections import OrderedDict
 from elasticsearch import Elasticsearch
@@ -293,7 +294,7 @@ def _get_sql_query(filters):
         query = _append_to_query(query, table, join, table_num)
         table_num += 1
 
-    return query
+    return str(sqlparse.format(query, reindent=True, keyword_case='upper'))
 
 
 def _get_entities_dict(cohort_name, filter_arr, data_explorer_url):
@@ -374,6 +375,13 @@ def export_url_post():  # noqa: E501
     _check_preconditions()
     data = json.loads(request.data)
     current_app.logger.info('Export URL request data %s' % request.data)
+
+    if data['cohortName'] == 'QUERY_ONLY_f4fef853-bdc5-486e-8aa0-0e524bd6685a':
+        query = _get_sql_query(data['filter'])
+        current_app.logger.info(query)
+        return ExportUrlResponse(
+            url=query,
+            authorization_domain=current_app.config['AUTHORIZATION_DOMAIN'])
 
     entities = _get_entities_dict(data['cohortName'], data['filter'],
                                   data['dataExplorerUrl'])

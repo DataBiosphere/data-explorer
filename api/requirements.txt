@@ -5,7 +5,7 @@ chardet==3.0.4
 Click==7.0
 clickclick==1.2.2
 connexion==1.1.13
-elasticsearch==7.7.0
+elasticsearch==7.7.1
 elasticsearch_dsl==7.2.0
 Flask==1.1.1
 Flask-Cors==3.0.3
@@ -39,6 +39,7 @@ PyYAML==5.1.2
 requests==2.22.0
 rsa==4.0
 six==1.12.0
+sqlparse==0.3.1
 swagger-spec-validator==2.4.3
 typing==3.7.4.1
 urllib3==1.24.2

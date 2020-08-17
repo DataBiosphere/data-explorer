@@ -162,54 +162,6 @@ def search_get(query=None):
         fields = fields_search_response.to_dict()
         search_results.extend(_results_from_fields_index(fields, mapping))
 
-        # Part 2: Search main index. For the BigQuery indexer, this searches
-        # BigQuery column values.
-        # Store the query matches in a dict of es_field_name to a set of facet
-        # values.
-        field_to_facet_values = dict()
-
-        search = Search(
-            using=es,
-            index=current_app.config['INDEX_NAME']).query(multi_match).params(
-                request_timeout=30)[0:num_search_results]
-
-        begin = time.time()
-        response = search.execute()
-        end = time.time()
-        current_app.logger.info("Elasticsearch query: %s sec" % (end - begin))
-        response_fields = response.to_dict()
-
-        # This regex matches if there is a word that starts with query,
-        # or a word that contains underscore_query.
-        query_regex = r"\b{query}\w*|_{query}\w*".format(
-            query=re.escape(query.lower()))
-
-        # hits contains entire documents. Iterate over the fields to figure out
-        # which field matched query.
-        # Elasticsearch highlight can do this for us, but it makes the search
-        # too slow, so do it ourselves.
-        # See https://github.com/elastic/elasticsearch/issues/36452
-
-        begin = time.time()
-        for hit in response_fields['hits']['hits']:
-            results = _results_from_main_index(hit['_source'], query_regex)
-            for key in results:
-                if key in field_to_facet_values:
-                    field_to_facet_values[key].update(results[key])
-                else:
-                    field_to_facet_values[key] = results[key]
-        end = time.time()
-        current_app.logger.info("Post-processing: %s sec" % (end - begin))
-
-        for es_field_name in field_to_facet_values:
-            for facet_value, is_time_series in field_to_facet_values[
-                    es_field_name]:
-                search_results.append(
-                    SearchResult(elasticsearch_field_name=es_field_name,
-                                 facet_name=(es_field_name.split('.')[-2]
-                                             if is_time_series else
-                                             es_field_name.split('.')[-1]),
-                                 facet_value=facet_value,
-                                 is_time_series=is_time_series))
+        # Part 2 used to search the main index. That is removed for the UKB Data Explorer.
 
     return SearchResponse(search_results=search_results)

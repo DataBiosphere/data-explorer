@@ -15,7 +15,7 @@ fi
 
 dataset=$1
 # Remove JSON comments with jsmin
-project_id=$(cat dataset_config/${dataset}/deploy.json | jsmin | jq --raw-output '.project_id')
+project_id=$(cat dataset_config/${dataset}/deploy.json | jq --raw-output '.project_id')
 
 gcloud config set project ${project_id}
 echo "gcloud project set to $(gcloud config get-value project)"
@@ -23,7 +23,7 @@ echo "gcloud project set to $(gcloud config get-value project)"
 # Need to get cluster name by sorting the list of clusters, and choosing to
 # use the one with the greatest timestamp (most recent)
 #cluster_line=$(gcloud container clusters list | grep elasticsearch-cluster- | sort -rn -k1 | head -n1)
-cluster_line=$(gcloud container clusters list | grep es-cluster | sort -rn -k1 | head -n1)
+cluster_line=$(gcloud container clusters list | grep ukb-data-explorer-test | sort -rn -k1 | head -n1)
 cluster_name=$(echo $cluster_line | awk '{print $1}')
 zone=$(echo $cluster_line | awk '{print $2}')
 gcloud container clusters get-credentials ${cluster_name} --zone ${zone}

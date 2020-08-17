@@ -37,4 +37,5 @@ class DatasetFacetedSearch(FacetedSearch):
         s = super(DatasetFacetedSearch, self).search()
         # Don't execute query; we only care about aggregations. See
         # https://www.elastic.co/guide/en/elasticsearch/reference/current/returning-only-agg-results.html
-        return s.params(size=0)
+        return s.update_from_dict({'size': 0})
+        #return s.params(size=0)

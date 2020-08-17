@@ -494,8 +494,8 @@ def _get_kubernetes_client_config():
     
     project_id = current_app.config['DEPLOY_PROJECT_ID']
     current_app.logger.info(project_id)
-    zone = 'us-central1-c'  # TODO(willyn): Read from config
-    cluster_id = 'es-cluster'   # TODO(willyn): Read from config
+    zone = 'us-central1-f'  # TODO(willyn): Read from config
+    cluster_id = 'ukb-data-explorer-test'   # TODO(willyn): Read from config
     container_client = container_v1.ClusterManagerClient()
     current_app.logger.info('Created container client')
     response = container_client.get_cluster(project_id, zone, cluster_id)
@@ -527,7 +527,7 @@ def get_kubernetes_password():
     v1 = kubernetes.client.CoreV1Api(kubernetes.client.ApiClient(configuration))
     #kubernetes.config.load_kube_config()
     #v1 = kubernetes.client.CoreV1Api()
-    secret_dict = v1.read_namespaced_secret("quickstart-es-elastic-user", "default").data
+    secret_dict = v1.read_namespaced_secret("elasticsearch-es-elastic-user", "default").data
     return base64.b64decode(secret_dict['elastic']).decode('ascii')
 
 def write_tls_crt():
@@ -539,6 +539,6 @@ def write_tls_crt():
     v1 = kubernetes.client.CoreV1Api(kubernetes.client.ApiClient(configuration))
     #kubernetes.config.load_kube_config()
     #v1 = kubernetes.client.CoreV1Api()
-    secret_dict = v1.read_namespaced_secret("quickstart-es-http-certs-public", "default").data
+    secret_dict = v1.read_namespaced_secret("elasticsearch-es-http-certs-public", "default").data
     with open(ES_TLS_CERT_FILE, "wb") as f:
       f.write(base64.b64decode(secret_dict['tls.crt']))
