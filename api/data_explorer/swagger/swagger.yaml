@@ -11,7 +11,7 @@ paths:
   /dataset:
     get:
       tags:
-        - "Dataset"
+      - "Dataset"
       description: "Gets dataset information, such as name."
       operationId: "dataset_get"
       parameters: []
@@ -24,33 +24,31 @@ paths:
   /facets:
     get:
       tags:
-        - "Facets"
+      - "Facets"
       description: "Returns facets."
       operationId: "facets_get"
       parameters:
-        - name: "filter"
-          in: "query"
-          description:
-            "filter represents selected facet values. Elasticsearch query\
-            \ will be run only over selected facet values. filter is an array of strings,\
-            \ where each string has the format \"esFieldName=facetValue\". Example url\
-            \ /facets?filter=Gender=female,Region=northwest,Region=southwest\n"
-          required: false
-          type: "array"
-          items:
-            type: "string"
-          collectionFormat: "pipes"
-        - name: "extraFacets"
-          in: "query"
-          description:
-            "extraFacets represents the fields selected from the field search\
-            \ box. extraFacets is a list of Elasticsearch field names. In the returned\
-            \ list of facets, the extra facets will come before the facets from ui.json."
-          required: false
-          type: "array"
-          items:
-            type: "string"
-          collectionFormat: "pipes"
+      - name: "filter"
+        in: "query"
+        description: "filter represents selected facet values. Elasticsearch query\
+          \ will be run only over selected facet values. filter is an array of strings,\
+          \ where each string has the format \"esFieldName=facetValue\". Example url\
+          \ /facets?filter=Gender=female,Region=northwest,Region=southwest\n"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "pipes"
+      - name: "extraFacets"
+        in: "query"
+        description: "extraFacets represents the fields selected from the field search\
+          \ box. extraFacets is a list of Elasticsearch field names. In the returned\
+          \ list of facets, the extra facets will come before the facets from ui.json."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+        collectionFormat: "pipes"
       responses:
         200:
           description: "Success"
@@ -60,20 +58,18 @@ paths:
   /search:
     get:
       tags:
-        - "Search"
-      description:
-        "Free text search over dataset. If query is empty, this returns\
+      - "Search"
+      description: "Free text search over dataset. If query is empty, this returns\
         \ all dataset fields, to populate the search drop-down on initial page load.\
         \ If query is set, this returns only dataset fields that match the query.\n"
       operationId: "search_get"
       parameters:
-        - name: "query"
-          in: "query"
-          description:
-            "What was typed into search box. Say user typed \"foo\". query\
-            \ is \"foo\"; Elasticsearch will be searched for \"foo*\".\n"
-          required: false
-          type: "string"
+      - name: "query"
+        in: "query"
+        description: "What was typed into search box. Say user typed \"foo\". query\
+          \ is \"foo\"; Elasticsearch will be searched for \"foo*\".\n"
+        required: false
+        type: "string"
       responses:
         200:
           description: "Success"
@@ -83,20 +79,19 @@ paths:
   /exportUrl:
     post:
       tags:
-        - "ExportUrl"
-      description:
-        "Creates and returns a signed URL to a GCS zip file of JSON files.\
+      - "ExportUrl"
+      description: "Creates and returns a signed URL to a GCS zip file of JSON files.\
         \ The JSON files represent entities to be exported to a Terra workspace. https://app.terra.bio/#import-data\
         \ may be called with the url parameter set to this url. For each JSON file,\
         \ https://rawls.dsde-prod.broadinstitute.org/#!/entities/create_entity may\
         \ be called with the JSON as the POST body.\n"
       operationId: "export_url_post"
       parameters:
-        - in: "body"
-          name: "exportUrlRequest"
-          required: false
-          schema:
-            $ref: "#/definitions/exportUrlRequest"
+      - in: "body"
+        name: "exportUrlRequest"
+        required: false
+        schema:
+          $ref: "#/definitions/exportUrlRequest"
       responses:
         200:
           description: "Success"
@@ -113,8 +108,7 @@ definitions:
         description: "Optional. What to show in the search box by default"
       time_series_unit:
         type: "string"
-        description:
-          "If time_series_column in bigquery.json is set, this must be\
+        description: "If time_series_column in bigquery.json is set, this must be\
           \ set. This is used to label the time axis -- eg Month or Year.\n"
     description: "Dataset information."
     example:
@@ -129,14 +123,12 @@ definitions:
           $ref: "#/definitions/Facet"
       count:
         type: "integer"
-        description:
-          "Number of entities represented by current facet selection. For\
+        description: "Number of entities represented by current facet selection. For\
           \ example, this could be 40, representing 40 people.\n"
       invalid_filter_facets:
         type: "array"
-        description:
-          "Facets that were passed in filter param that don't exist in\
-          \ Elasticsearch index. Example: - Data Explorer url contains\n  filter=amppd.2019_v1_0101.demographics.sex\
+        description: "Facets that were passed in filter param that don't exist in\
+          \ Elasticsearch index. Example: - Data Explorer url contains\n  filter=amppd.2019_v1_0101.demographics.sex=female\
           \ which is valid. User\n  saves a cohort with this filter\n- A new version\
           \ of AMP PD is released. (Data explorer url remains the\n  same.) The dataset\
           \ 2019_v1_0101 is replaced by dataset 2019_v2_0401.\n- User won't be able\
@@ -147,8 +139,7 @@ definitions:
           type: "string"
       invalid_extra_facets:
         type: "array"
-        description:
-          "Facets that were passed in extraFacets param that don't exist\
+        description: "Facets that were passed in extraFacets param that don't exist\
           \ in Elasticsearch index. Example: - Data Explorer url contains\n  extraFacets=amppd.2019_v1_0101.demographics.sex\
           \ which is valid. User\n  saves a cohort with this extra facet\n- A new\
           \ version of AMP PD is released. (Data explorer url remains the\n  same.)\
@@ -158,57 +149,62 @@ definitions:
           \  amppd.2019_v1_0101.demographics.sex\n"
         items:
           type: "string"
+      sql_query:
+        type: "string"
+        description: "SQL query that can be used in BigQuery to get the cohort  (list\
+          \ of participants) of the current filter.\n"
     description: "Results from a faceted search."
     example:
       count: 1
+      sql_query: "sql_query"
       invalid_filter_facets:
-        - "invalid_filter_facets"
-        - "invalid_filter_facets"
+      - "invalid_filter_facets"
+      - "invalid_filter_facets"
       invalid_extra_facets:
-        - "invalid_extra_facets"
-        - "invalid_extra_facets"
+      - "invalid_extra_facets"
+      - "invalid_extra_facets"
       facets:
-        - time_names:
-            - "time_names"
-            - "time_names"
-          time_series_value_counts:
-            - - 6
-              - 6
-            - - 6
-              - 6
-          value_counts:
-            - 0
-            - 0
-          name: "name"
-          description: "description"
-          es_field_name: "es_field_name"
-          value_names:
-            - "value_names"
-            - "value_names"
-          es_field_type: "es_field_type"
-        - time_names:
-            - "time_names"
-            - "time_names"
-          time_series_value_counts:
-            - - 6
-              - 6
-            - - 6
-              - 6
-          value_counts:
-            - 0
-            - 0
-          name: "name"
-          description: "description"
-          es_field_name: "es_field_name"
-          value_names:
-            - "value_names"
-            - "value_names"
-          es_field_type: "es_field_type"
+      - time_names:
+        - "time_names"
+        - "time_names"
+        time_series_value_counts:
+        - - 6
+          - 6
+        - - 6
+          - 6
+        value_counts:
+        - 0
+        - 0
+        name: "name"
+        description: "description"
+        es_field_name: "es_field_name"
+        value_names:
+        - "value_names"
+        - "value_names"
+        es_field_type: "es_field_type"
+      - time_names:
+        - "time_names"
+        - "time_names"
+        time_series_value_counts:
+        - - 6
+          - 6
+        - - 6
+          - 6
+        value_counts:
+        - 0
+        - 0
+        name: "name"
+        description: "description"
+        es_field_name: "es_field_name"
+        value_names:
+        - "value_names"
+        - "value_names"
+        es_field_type: "es_field_type"
   Facet:
     properties:
       name:
         type: "string"
-        description: 'Facet name, for example, "Gender".'
+        description: "Facet name, for example, \"Gender\"."
       description:
         type: "string"
         description: "Optional facet description."
@@ -235,34 +231,32 @@ definitions:
           type: "string"
       time_series_value_counts:
         type: "array"
-        description:
-          "2-dimensional array of facet value counts, indexed by time then\
+        description: "2-dimensional array of facet value counts, indexed by time then\
           \ value; indexes correspond to time_names and then value_names.\n"
         items:
           type: "array"
           items:
             type: "integer"
-    description:
-      "A facet. For example, the Gender facet would include the facet name\
+    description: "A facet. For example, the Gender facet would include the facet name\
       \ \"Gender\", as well as counts for all possible values.\n"
     example:
       time_names:
-        - "time_names"
-        - "time_names"
+      - "time_names"
+      - "time_names"
       time_series_value_counts:
-        - - 6
-          - 6
-        - - 6
-          - 6
+      - - 6
+        - 6
+      - - 6
+        - 6
       value_counts:
-        - 0
-        - 0
+      - 0
+      - 0
       name: "name"
       description: "description"
       es_field_name: "es_field_name"
       value_names:
-        - "value_names"
-        - "value_names"
+      - "value_names"
+      - "value_names"
       es_field_type: "es_field_type"
   ExportUrlResponse:
     properties:
@@ -284,16 +278,16 @@ definitions:
           $ref: "#/definitions/SearchResult"
     example:
       search_results:
-        - facet_value: "facet_value"
-          elasticsearch_field_name: "elasticsearch_field_name"
-          facet_name: "facet_name"
-          is_time_series: true
-          facet_description: "facet_description"
-        - facet_value: "facet_value"
-          elasticsearch_field_name: "elasticsearch_field_name"
-          facet_name: "facet_name"
-          is_time_series: true
-          facet_description: "facet_description"
+      - facet_value: "facet_value"
+        elasticsearch_field_name: "elasticsearch_field_name"
+        facet_name: "facet_name"
+        is_time_series: true
+        facet_description: "facet_description"
+      - facet_value: "facet_value"
+        elasticsearch_field_name: "elasticsearch_field_name"
+        facet_name: "facet_name"
+        is_time_series: true
+        facet_description: "facet_description"
   SearchResult:
     properties:
       facet_name:
@@ -307,15 +301,13 @@ definitions:
         description: "The Elasticsearch field name."
       facet_value:
         type: "string"
-        description:
-          "If this search result represents a facet, facet_value is the\
+        description: "If this search result represents a facet, facet_value is the\
           \ empty string. If this search result represents a facet and selected value,\
           \ facet_value is the selected value.\n"
       is_time_series:
         type: "boolean"
         description: "True if this is a time series field at a specific point in time.\n"
-    description:
-      "Can represent a facet (Gender), or a facet and selected value (Gender\
+    description: "Can represent a facet (Gender), or a facet and selected value (Gender\
       \ = female).\n"
     example:
       facet_value: "facet_value"
@@ -333,4 +325,6 @@ definitions:
         items:
           type: "string"
       dataExplorerUrl:
+        type: "string"
+      sqlQuery:
         type: "string"

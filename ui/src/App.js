@@ -119,7 +119,10 @@ class App extends Component {
       // facetValue
       searchResults: [],
       facetsApiDone: false,
-      fontLoaded: false
+      fontLoaded: false,
+      sqlQuery: ""
+      // SQL query that can be used in BigQuery to get the cohort 
+      // (list of participants) of the current filter.
     };
 
     this.apiClient = new ApiClient();
@@ -135,7 +138,8 @@ class App extends Component {
           facets: this.getFacetMap(data.facets),
           invalidFilterFacets: data.invalid_filter_facets,
           invalidExtraFacets: data.invalid_extra_facets,
-          totalCount: data.count
+          totalCount: data.count,
+          sqlQuery: data.sql_query
         });
 
         const pipe = encodeURIComponent("|");
@@ -254,6 +258,7 @@ class App extends Component {
               selectedFacetValues={this.state.selectedFacetValues}
               totalCount={this.state.totalCount}
               timeSeriesUnit={this.state.timeSeriesUnit}
+              sqlQuery={this.state.sqlQuery}
             />
             <FacetsGrid
               updateFacets={this.updateFacets}
