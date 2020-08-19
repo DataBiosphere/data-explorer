@@ -121,7 +121,7 @@ class App extends Component {
       facetsApiDone: false,
       fontLoaded: false,
       sqlQuery: ""
-      // SQL query that can be used in BigQuery to get the cohort 
+      // SQL query that can be used in BigQuery to get the cohort
       // (list of participants) of the current filter.
     };
 
