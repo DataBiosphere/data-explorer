@@ -25,24 +25,6 @@ import ApiClient from '../ApiClient';
 */
 export default class SearchResult {
     /**
-    * Constructs a new <code>SearchResult</code>.
-    * Can represent a facet (Gender), or a facet and selected value (Gender &#x3D; female). 
-    * @alias module:model/SearchResult
-    * @class
-    */
-
-    constructor() {
-        
-
-        
-        
-
-        
-
-        
-    }
-
-    /**
     * Constructs a <code>SearchResult</code> from a plain JavaScript object, optionally creating a new instance.
     * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
     * @param {Object} data The plain JavaScript object bearing properties of interest.

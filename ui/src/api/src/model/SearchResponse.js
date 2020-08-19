@@ -26,23 +26,6 @@ import SearchResult from './SearchResult';
 */
 export default class SearchResponse {
     /**
-    * Constructs a new <code>SearchResponse</code>.
-    * @alias module:model/SearchResponse
-    * @class
-    */
-
-    constructor() {
-        
-
-        
-        
-
-        
-
-        
-    }
-
-    /**
     * Constructs a <code>SearchResponse</code> from a plain JavaScript object, optionally creating a new instance.
     * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
     * @param {Object} data The plain JavaScript object bearing properties of interest.
