@@ -136,13 +136,11 @@ def get_sql_query(filters, extra_facets_dict):
             bucket_interval = _get_bucket_interval(
                 current_app.config['FACET_INFO'][es_field_name]['es_facet'])
         elif es_field_name in extra_facets_dict:
-            field_type = extra_facets_dict[es_field_name][
-                'type']
-            is_time_series = extra_facets_dict[
-                es_field_name].get('time_series_field', False)
+            field_type = extra_facets_dict[es_field_name]['type']
+            is_time_series = extra_facets_dict[es_field_name].get(
+                'time_series_field', False)
             bucket_interval = _get_bucket_interval(
-                extra_facets_dict[es_field_name]
-                ['es_facet'])
+                extra_facets_dict[es_field_name]['es_facet'])
         table_name, column, clause = _get_table_and_clause(
             es_field_name, field_type, value, bucket_interval,
             sample_file_column_fields, is_time_series, time_series_column)
