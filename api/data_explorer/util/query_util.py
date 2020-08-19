@@ -113,7 +113,7 @@ def get_sql_query(filters, extra_facets_dict):
     }
     time_series_column = current_app.config['TIME_SERIES_COLUMN']
 
-    if not filters or not len(filters):
+    if not filters or not len(filters) or filters == ['']:
         return _get_all_participants_query()
 
     # facet_table_clauses must have two levels of nesting (es_field_name, table_name)

@@ -112,7 +112,7 @@ def _process_extra_facets(es, extra_facets):
                 and extra_facets_dict[es_base_field_name]['time_series_panel'])
             _add_facet(es_base_field_name, is_time_series,
                        parent_is_time_series, time_series_panel, True,
-                       time_series_vals, facets, es, mapping)
+                       time_series_vals, extra_facets_dict, es, mapping)
         else:
             _add_facet(es_base_field_name, is_time_series,
                        parent_is_time_series, False, True, [],
