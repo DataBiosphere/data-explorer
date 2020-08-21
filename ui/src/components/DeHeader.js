@@ -157,6 +157,7 @@ class DeHeader extends React.Component {
             embed={this.props.embed}
             exportUrlApi={this.props.exportUrlApi}
             selectedFacetValues={this.props.selectedFacetValues}
+            sqlQuery={this.props.sqlQuery}
           />
         </Toolbar>
       </AppBar>

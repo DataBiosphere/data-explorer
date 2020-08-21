@@ -107,6 +107,8 @@ paths:
                   type: string
               dataExplorerUrl:
                 type: string
+              sqlQuery:
+                type: string
       responses:
         200:
           description: Success
@@ -174,6 +176,11 @@ definitions:
         type: array
         items:
           type: string
+      sql_query:
+        type: string
+        description: >
+          SQL query that can be used in BigQuery to get the cohort 
+          (list of participants) of the current filter.
   Facet:
     description: >
       A facet. For example, the Gender facet would include the facet name

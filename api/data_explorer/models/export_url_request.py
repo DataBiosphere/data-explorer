@@ -17,7 +17,8 @@ class ExportUrlRequest(Model):
     def __init__(self,
                  cohort_name=None,
                  filter=None,
-                 data_explorer_url=None):  # noqa: E501
+                 data_explorer_url=None,
+                 sql_query=None):  # noqa: E501
         """ExportUrlRequest - a model defined in Swagger
 
         :param cohort_name: The cohort_name of this ExportUrlRequest.  # noqa: E501
@@ -26,22 +27,27 @@ class ExportUrlRequest(Model):
         :type filter: List[str]
         :param data_explorer_url: The data_explorer_url of this ExportUrlRequest.  # noqa: E501
         :type data_explorer_url: str
+        :param sql_query: The sql_query of this ExportUrlRequest.  # noqa: E501
+        :type sql_query: str
         """
         self.swagger_types = {
             'cohort_name': str,
             'filter': List[str],
-            'data_explorer_url': str
+            'data_explorer_url': str,
+            'sql_query': str
         }
 
         self.attribute_map = {
             'cohort_name': 'cohortName',
             'filter': 'filter',
-            'data_explorer_url': 'dataExplorerUrl'
+            'data_explorer_url': 'dataExplorerUrl',
+            'sql_query': 'sqlQuery'
         }
 
         self._cohort_name = cohort_name
         self._filter = filter
         self._data_explorer_url = data_explorer_url
+        self._sql_query = sql_query
 
     @classmethod
     def from_dict(cls, dikt):
@@ -116,3 +122,24 @@ class ExportUrlRequest(Model):
         """
 
         self._data_explorer_url = data_explorer_url
+
+    @property
+    def sql_query(self):
+        """Gets the sql_query of this ExportUrlRequest.
+
+
+        :return: The sql_query of this ExportUrlRequest.
+        :rtype: str
+        """
+        return self._sql_query
+
+    @sql_query.setter
+    def sql_query(self, sql_query):
+        """Sets the sql_query of this ExportUrlRequest.
+
+
+        :param sql_query: The sql_query of this ExportUrlRequest.
+        :type sql_query: str
+        """
+
+        self._sql_query = sql_query

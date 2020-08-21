@@ -251,7 +251,8 @@ class SaveButton extends React.Component {
         exportUrlRequest: {
           cohortName: this.state.cohortName,
           dataExplorerUrl: dataExplorerUrl,
-          filter: filterMapToArray(this.props.selectedFacetValues)
+          filter: filterMapToArray(this.props.selectedFacetValues),
+          sqlQuery: this.props.sqlQuery
         }
       },
       exportUrlCallback

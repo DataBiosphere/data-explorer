@@ -8,6 +8,7 @@ from flask import current_app
 from data_explorer.models.facet import Facet
 from data_explorer.models.facets_response import FacetsResponse
 from data_explorer.util import elasticsearch_util
+from data_explorer.util import query_util
 from data_explorer.util.dataset_faceted_search import DatasetFacetedSearch
 
 
@@ -62,21 +63,21 @@ def _add_facet(es_field_name, is_time_series, parent_is_time_series,
 
 
 def _process_extra_facets(es, extra_facets):
-    """Processes extra facets and sets current_app.config['EXTRA_FACET_INFO'].
+    """Processes extra facets.
 
     Args:
       es: Elasticsearch
       extra_facets: List of es_field_name
 
     Returns:
-      A list of es_field_names that don't exist in Elasticsearch index. The
-      invalid fields are not included in current_app.config['EXTRA_FACET_INFO']
+      1) A dictionary mapping extra facet names to their Elasticsearch facet data.
+      2) A list of es_field_names that don't exist in Elasticsearch index. The
+      invalid fields are not included in the extra facet dictionary.
     """
     if (not extra_facets) or extra_facets == ['']:
-        current_app.config['EXTRA_FACET_INFO'] = {}
-        return
+        return {}, None
 
-    facets = OrderedDict()
+    extra_facets_dict = OrderedDict()
     mapping = es.indices.get_mapping(index=current_app.config['INDEX_NAME'])
     invalid_extra_facets = []
 
@@ -97,32 +98,27 @@ def _process_extra_facets(es, extra_facets):
                 es_base_field_name + '.' + tsv for tsv in time_series_vals
             ]
             for es_field_name in es_field_names:
-                separate_panel = (es_field_name in facets
-                                  and facets[es_field_name]['separate_panel'])
+                separate_panel = (
+                    es_field_name in extra_facets_dict
+                    and extra_facets_dict[es_field_name]['separate_panel'])
                 _add_facet(es_field_name, is_time_series,
                            parent_is_time_series, True, separate_panel,
-                           time_series_vals, facets, es, mapping)
+                           time_series_vals, extra_facets_dict, es, mapping)
         elif parent_is_time_series:
             time_series_vals = elasticsearch_util.get_time_series_vals(
                 es_parent_field_name, mapping)
             time_series_panel = (
-                es_base_field_name in facets
-                and facets[es_base_field_name]['time_series_panel'])
+                es_base_field_name in extra_facets_dict
+                and extra_facets_dict[es_base_field_name]['time_series_panel'])
             _add_facet(es_base_field_name, is_time_series,
                        parent_is_time_series, time_series_panel, True,
-                       time_series_vals, facets, es, mapping)
+                       time_series_vals, extra_facets_dict, es, mapping)
         else:
             _add_facet(es_base_field_name, is_time_series,
-                       parent_is_time_series, False, True, [], facets, es,
-                       mapping)
+                       parent_is_time_series, False, True, [],
+                       extra_facets_dict, es, mapping)
 
-    # Map that follows same format as FACET_INFO in __main__.py.
-    # This map is for extra facets added from the search dropdown.
-    # This must be stored separately from FACET_INFO. If this were added to
-    # FACET_INFO, then if user deletes extra facets chip, we wouldn't know which
-    # facet to remove from FACET_INFO.
-    current_app.config['EXTRA_FACET_INFO'] = facets
-    return invalid_extra_facets
+    return extra_facets_dict, invalid_extra_facets
 
 
 def _get_time_name(tsv):
@@ -283,8 +279,9 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
     :rtype: FacetsResponse
     """
     es = Elasticsearch(current_app.config['ELASTICSEARCH_URL'])
-    invalid_extra_facets = _process_extra_facets(es, extraFacets)
-    combined_facets = (list(current_app.config['EXTRA_FACET_INFO'].items()) +
+    extra_facets_dict, invalid_extra_facets = _process_extra_facets(
+        es, extraFacets)
+    combined_facets = (list(extra_facets_dict.items()) +
                        list(current_app.config['FACET_INFO'].items()))
     combined_facets_dict = OrderedDict(combined_facets)
 
@@ -331,7 +328,10 @@ def facets_get(filter=None, extraFacets=None):  # noqa: E501
                 _get_histogram_facet(es_field_name, facet_info,
                                      es_response_facets))
 
+    sql_query = query_util.get_sql_query(filter, extra_facets_dict)
+
     return FacetsResponse(facets=facets,
                           count=es_response._faceted_search.count(),
                           invalid_filter_facets=invalid_filter_facets,
-                          invalid_extra_facets=invalid_extra_facets)
+                          invalid_extra_facets=invalid_extra_facets,
+                          sql_query=sql_query)
