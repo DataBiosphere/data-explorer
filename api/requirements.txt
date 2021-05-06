@@ -8,7 +8,7 @@ connexion==2.5.0
 elasticsearch==6.1.1
 elasticsearch-dsl==6.2.1
 Flask==1.1.1
-Flask-Cors==3.0.3
+Flask-Cors==3.0.9
 google-api-core==1.20.0
 googleapis-common-protos==1.52.0
 google-auth==1.17.2
