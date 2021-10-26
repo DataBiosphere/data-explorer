@@ -5,21 +5,24 @@ jobs:
     # ports in docker-compose.yml
     # (https://circleci.com/docs/2.0/docker-compose/).
     machine:
-      image: ubuntu-1604:202004-01
+      image: circleci/classic:latest
     steps:
       - checkout
       - restore_cache:
           key: node-modules-{{ .Branch }}-{{ checksum "ui/package.json" }}
       - run:
-          name: "Switch to Python v3.6"
+          name: "Switch to Python v3.5"
           command: |
             pyenv versions
-            pyenv global 3.6.10
+            pyenv global 3.5.2
       - run:
           name: npm install
           command: |
             cd ui
             npm install
+            # As of 5/1/19, circleci/classic:latest has node 6.1.0. async is
+            # not supported until node 7.6.0.
+            npm install node@8.11.1 -g
       - save_cache:
           key: node-modules-{{ .Branch }}-{{ checksum "ui/package.json" }}
           paths:
@@ -48,7 +51,7 @@ jobs:
             pip install --upgrade pip
             pip install tox
             cd api
-            tox -e py36
+            tox -e py35
       - run:
           name: Run docker-compose for 1000 genomes dataset
           command: |
