@@ -20,9 +20,6 @@ jobs:
           command: |
             cd ui
             npm install
-            # As of 5/1/19, circleci/classic:latest has node 6.1.0. async is
-            # not supported until node 7.6.0.
-            npm install node@8.11.1 -g
       - save_cache:
           key: node-modules-{{ .Branch }}-{{ checksum "ui/package.json" }}
           paths:
