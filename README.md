@@ -177,15 +177,14 @@ The Save in Terra feature temporarily stores data in a GCS bucket.
 - Create export bucket. This only needs to be done once per deploy project.
   Run `deploy/create-export-url-bucket.sh DATASET` from the root of the repo,
   where `DATASET` is the name of the directory in `dataset_config`.
-- The Save in Terra feature requires a service account private key. Follow
-  these instructions to download a key. This needs to be done once per person
-  per deploy project. If three people run Data Explorer with the same deploy
-  project, then all three need to download a key for the deploy project.
-  - Go to the [Service Accounts page](https://console.cloud.google.com/iam-admin/serviceaccounts)
-    for your deploy project.
-  - Click on the three-dot Actions menu for the
+- When deployed on Google Cloud, Data Explorer 
+- The Save in Terra feature requires a service account. 
+  - When deploying on Google Cloud, Data Explorer will be able to use the credentials of the default app engine service account. No further action is necessary.
+  - When deploying locally, you will need the credentials keyfile of the service account to act as. Follow these instructions to download a key.
+    - Go to the [Service Accounts page](https://console.cloud.google.com/iam-admin/serviceaccounts) for your deploy project.
+    - Click on the three-dot Actions menu for the
     `App Engine default service account` -> Create Key -> CREATE.
-  - Move the downloaded file to `dataset_config/DATASET/private-key.json`
+    - Move the downloaded file to `dataset_config/DATASET/private-key.json`
 
 ### Testing
 

@@ -1,5 +1,6 @@
 import base64
 import connexion
+import datetime
 import six
 import json
 import os
@@ -17,7 +18,8 @@ from flask import request
 from flask import current_app
 from werkzeug.exceptions import BadRequest
 from google.cloud import storage
-from oauth2client.service_account import ServiceAccountCredentials
+from google.auth.transport import requests
+from google.auth import compute_engine
 
 from data_explorer.models.export_url_response import ExportUrlResponse  # noqa: E501
 from data_explorer.util import elasticsearch_util
@@ -63,16 +65,6 @@ def _check_preconditions():
         error_msg = (
             'Project not set in deploy.json or export URL GCS bucket not '
             'found. Save in Terra feature will not work. '
-            'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-save-in-terra-feature'
-        )
-        current_app.logger.error(error_msg)
-        raise BadRequest(error_msg)
-
-    private_key_path = os.path.join(current_app.config['DATASET_CONFIG_DIR'],
-                                    'private-key.json')
-    if not os.path.isfile(private_key_path):
-        error_msg = (
-            'Private key not found. Save in Terra feature will not work. '
             'See https://github.com/DataBiosphere/data-explorer#one-time-setup-for-save-in-terra-feature'
         )
         current_app.logger.error(error_msg)
@@ -132,22 +124,24 @@ def _write_gcs_file(entities):
     # Return in the format that signing a URL needs.
     return '/%s/%s' % (current_app.config['EXPORT_URL_GCS_BUCKET'], blob.name)
 
-
 def _create_signed_url(gcs_path):
-    private_key_path = os.path.join(current_app.config['DATASET_CONFIG_DIR'],
-                                    'private-key.json')
-    creds = ServiceAccountCredentials.from_json_keyfile_name(private_key_path)
+    auth_request = requests.Request()
     service_account_email = current_app.config[
         'DEPLOY_PROJECT_ID'] + '@appspot.gserviceaccount.com'
-    # Signed URL will be valid for 5 minutes
-    timestamp = str(int(time.time()) + 5 * 60)
-    file_metadata = '\n'.join(['GET', '', '', timestamp, gcs_path])
-    signature = base64.b64encode(creds.sign_blob(file_metadata)[1])
-    signature = urllib.parse.quote(signature, safe='')
-    signed_url = ('https://storage.googleapis.com%s?GoogleAccessId=%s'
-                  '&Expires=%s&Signature=%s') % (
-                      gcs_path, service_account_email, timestamp, signature)
-    # import-data expects url to be url encoded
+    client = storage.Client(project=current_app.config['DEPLOY_PROJECT_ID'])
+    export_bucket = client.get_bucket(
+        current_app.config['EXPORT_URL_GCS_BUCKET'])
+    blob = export_bucket.blob(gcs_path)
+    signing_credentials = compute_engine.IDTokenCredentials(
+        auth_request,
+        "",
+        service_account_email=service_account_email)
+    signed_url = blob.generate_signed_url(
+        version='v4',
+        # Signed URL will be valid for 5 minutes
+        expiration=datetime.timedelta(minutes=5),
+        credentials=signing_credentials,
+        method='GET')
     signed_url = urllib.parse.quote(signed_url, safe='')
     current_app.logger.info('Signed URL: ' + signed_url)
     return signed_url
