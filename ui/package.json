@@ -18,6 +18,7 @@
     "data_explorer_service": "file:src/api",
     "lodash.debounce": "^4.0.8",
     "react": "^16.3.0",
+    "react-copy-to-clipboard": "5.0.1",
     "react-dom": "^16.3.0",
     "react-scripts": "^2.0.0",
     "react-select": "^2.0.0",

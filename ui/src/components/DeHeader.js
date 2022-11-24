@@ -6,6 +6,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import { withStyles } from "@material-ui/core/styles";
 
 import colors from "libs/colors";
+import CopyUrlButton from "components/CopyUrlButton";
 import SaveButton from "components/SaveButton";
 import Search from "components/Search";
 import Snackbar from "components/Snackbar";
@@ -148,6 +149,7 @@ class DeHeader extends React.Component {
             loadOptions={this.props.handleSearchBoxTyping}
             timeSeriesUnit={this.props.timeSeriesUnit}
           />
+          <CopyUrlButton />
           <div className={classes.totalCount}>
             {this.props.totalCount} Participants
           </div>
